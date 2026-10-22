@@ -1,0 +1,23 @@
+{
+  "discovery-test": {
+    "serviceName": "discovery-test",
+    "port": 44303,
+    "pid": 27089,
+    "startedAt": "2025-09-18T01:49:26.780Z",
+    "healthEndpoint": "/health"
+  },
+  "aidis-mcp": {
+    "serviceName": "aidis-mcp",
+    "port": 8080,
+    "pid": 107398,
+    "startedAt": "2025-10-26T04:19:47.919Z",
+    "healthEndpoint": "/healthz"
+  },
+  "aidis-command-dev": {
+    "serviceName": "aidis-command-dev",
+    "port": 5000,
+    "pid": 4042,
+    "startedAt": "2025-11-14T04:22:10.990Z",
+    "healthEndpoint": "/api/health"
+  }
+}

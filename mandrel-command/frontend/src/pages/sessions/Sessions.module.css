@@ -1,0 +1,394 @@
+/* Sessions "live streams" — the locked mock (command-sessions-mock.html) rebuilt
+   on the P0.2 tokens. Colour + type + spacing are 100% token-driven (no literals);
+   residual px are structural geometry (grid tracks, dot/node sizes, rail widths). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+/* Push the New-session control to the right edge of the header row. */
+.headActions {
+  margin-left: auto;
+  align-self: center;
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* ---- pivot / filter bar ---- */
+.pivot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.pvLabel {
+  margin-right: var(--sp-1);
+}
+.pvActor {
+  min-width: 130px;
+}
+.pvStatus {
+  min-width: 120px;
+}
+.pvProject {
+  min-width: 170px;
+}
+.pvRight {
+  margin-left: auto;
+}
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.searchIco {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--tx-4);
+  pointer-events: none;
+}
+.searchInput {
+  padding-left: var(--sp-8);
+  min-width: 190px;
+}
+
+/* ---- section head (live dot + uppercase label + count + hint) ---- */
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  color: var(--tx-3);
+}
+.liveDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--ok);
+  box-shadow: 0 0 8px var(--ok);
+}
+.shCount {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx-4);
+}
+.shHint {
+  margin-left: auto;
+  font-size: var(--fs-data);
+  color: var(--tx-4);
+}
+
+/* ============ STREAM CARDS (accordion) ============ */
+.streams {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-6);
+}
+.stream {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+  overflow: hidden;
+  transition: border-color 0.12s ease;
+}
+.streamOpen {
+  border-color: var(--line-2);
+}
+.streamLive {
+  border-color: var(--teal-dim);
+  box-shadow: 0 0 0 1px var(--teal-glow);
+}
+
+/* header row (a full-width button) */
+.stHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  transition: background 0.12s ease;
+}
+.stHead:hover,
+.stHead:focus-visible {
+  background: var(--s2);
+  outline: none;
+}
+.chev {
+  color: var(--tx-4);
+  flex: none;
+  transition: transform 0.15s ease;
+}
+.chevOpen {
+  transform: rotate(90deg);
+  color: var(--tx-2);
+}
+.stProj {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.pdot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+.pn {
+  font-size: var(--fs-body);
+  font-weight: 620;
+  letter-spacing: -0.015em;
+  white-space: nowrap;
+}
+
+/* actor chip — the "who" on a stream card (mock .actorchip) */
+.actorChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  flex: none;
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  background: var(--s3);
+  border: 1px solid var(--line);
+  padding: 2px var(--sp-2);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.actorChipMuted {
+  color: var(--tx-4);
+}
+.actorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.stTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 320px;
+}
+.stRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  flex: none;
+}
+.stMetrics {
+  display: flex;
+  gap: var(--sp-4);
+}
+.metric {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+}
+.metricV {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+.metricTeal {
+  color: var(--teal);
+}
+.metricK {
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.stSeen {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  min-width: 52px;
+  text-align: right;
+}
+
+/* ============ EXPANDED BODY ============ */
+.body {
+  border-top: 1px solid var(--line-soft);
+  padding: var(--sp-4) var(--sp-5) var(--sp-5);
+  background: var(--bg-2);
+}
+.bodyState {
+  border-top: 1px solid var(--line-soft);
+  padding: var(--sp-6);
+  display: flex;
+  justify-content: center;
+  background: var(--bg-2);
+}
+.bodyTop {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+.bodyMeta {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx-4);
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.bodyMeta b {
+  color: var(--tx-2);
+  font-weight: 600;
+}
+.bodyActs {
+  margin-left: auto;
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* stat row */
+.drow {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+.violetIco {
+  color: var(--violet);
+}
+.greenIco {
+  color: var(--green);
+}
+.blueIco {
+  color: var(--blue);
+}
+.tealIco {
+  color: var(--teal);
+}
+
+/* timeline */
+.timeline {
+  position: relative;
+}
+.tlItem {
+  display: grid;
+  grid-template-columns: 52px 22px 1fr;
+  align-items: start;
+}
+.tlTime {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx-4);
+  text-align: right;
+  padding: 3px var(--sp-3) 0 0;
+  white-space: nowrap;
+}
+.tlRail {
+  position: relative;
+  align-self: stretch;
+}
+.tlRail::before {
+  content: '';
+  position: absolute;
+  left: 9px;
+  top: 0;
+  bottom: -2px;
+  width: 1.5px;
+  background: var(--line-2);
+}
+.tlItem:last-child .tlRail::before {
+  display: none;
+}
+.tlNode {
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-2);
+  background: var(--tx-3);
+  z-index: 1;
+}
+.tlMain {
+  padding: 0 0 var(--sp-4) var(--sp-1);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.tlHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.tlTitle {
+  font-size: var(--fs-body);
+  color: var(--tx);
+  line-height: 1.4;
+}
+.tlId {
+  color: var(--tx-4);
+}
+.moreLink {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  padding: var(--sp-1) 0 0 74px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-family: inherit;
+}
+.moreLink:hover,
+.moreLink:focus-visible {
+  color: var(--teal);
+  outline: none;
+}
+
+/* ---- shared page/section states ---- */
+.pageState {
+  padding: var(--sp-8) var(--sp-6);
+  display: flex;
+  justify-content: center;
+}
+
+@media (max-width: 960px) {
+  .drow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stMetrics {
+    display: none;
+  }
+}
+@media (max-width: 720px) {
+  .stTitle {
+    display: none;
+  }
+}

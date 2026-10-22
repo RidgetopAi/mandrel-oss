@@ -1,0 +1,230 @@
+/* App-shell Sidebar (P0.4) — token-driven, transcribed from the locked IA/nav
+   build-spec (command-ia-nav-reference.html). Zero hardcoded colour: every value
+   is a design token var(--…). */
+
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 226px;
+  padding: 14px 12px 12px;
+  background: var(--bg);
+  border-right: 1px solid var(--line);
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: width 0.2s ease;
+}
+
+/* ── logo ── */
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 8px 14px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-decoration: none;
+  color: var(--tx);
+}
+.mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  background: linear-gradient(150deg, var(--teal), var(--teal-dim));
+  display: grid;
+  place-items: center;
+  box-shadow: 0 0 0 1px var(--teal-glow), 0 4px 14px -4px var(--teal-glow);
+  flex: none;
+  color: var(--on-accent);
+}
+.mark svg {
+  width: 15px;
+  height: 15px;
+  stroke-width: 2;
+}
+.wordmark {
+  font-size: 0.95rem;
+  font-weight: 640;
+  letter-spacing: -0.01em;
+}
+
+/* ── group label ── */
+.navlabel {
+  font-size: 0.63rem;
+  font-weight: 660;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--tx-4);
+  padding: 14px 9px 6px;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.gtag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--tx-4);
+  font-weight: 500;
+  margin-left: auto;
+  opacity: 0.75;
+}
+
+/* ── nav item ── */
+.item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 9px;
+  border-radius: var(--r-sm);
+  color: var(--tx-2);
+  font-size: 0.86rem;
+  position: relative;
+  transition: background 0.12s, color 0.12s;
+  white-space: nowrap;
+  overflow: hidden;
+  text-decoration: none;
+  cursor: pointer;
+}
+.item:hover {
+  background: var(--s-hover);
+  color: var(--tx);
+}
+.item:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: -2px;
+}
+.icon {
+  color: var(--tx-3);
+  flex: none;
+}
+.labelWrap {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+.label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.qualifier {
+  font-family: var(--mono);
+  font-size: 0.62rem;
+  color: var(--tx-4);
+  letter-spacing: 0.02em;
+}
+
+/* ── nav badge (Decision Inbox open count) ── */
+.navBadge {
+  margin-left: auto;
+  flex: none;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 999px;
+  background: var(--teal-glow);
+  color: var(--teal);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  font-weight: 660;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.rail .navBadge {
+  display: none;
+}
+
+/* active route */
+.active {
+  background: linear-gradient(90deg, var(--teal-glow), transparent 82%);
+  color: var(--tx);
+}
+.active::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 6px;
+  bottom: 6px;
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--teal);
+  box-shadow: 0 0 10px var(--teal-glow);
+}
+.active .icon {
+  color: var(--teal);
+}
+
+/* ── utility zone ── */
+.spacer {
+  flex: 1 1 auto;
+  min-height: 8px;
+}
+.sep {
+  height: 1px;
+  background: var(--line-soft);
+  margin: 12px 6px 2px;
+}
+.utilNote {
+  font-size: 0.6rem;
+  color: var(--tx-4);
+  padding: 3px 9px 0;
+  font-family: var(--mono);
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+/* drawer context — fill width, no right border (placed AFTER .side so it wins) */
+.fullWidth {
+  width: 100%;
+  border-right: none;
+}
+
+/* ── collapsed icon rail ── */
+.rail {
+  width: 60px;
+  padding: 14px 8px 12px;
+}
+.rail .logo {
+  justify-content: center;
+  padding: 6px 0 10px;
+}
+.rail .wordmark {
+  display: none;
+}
+.rail .item {
+  justify-content: center;
+  padding: 8px 0;
+  gap: 0;
+}
+.rail .labelWrap,
+.rail .utilNote {
+  display: none;
+}
+.rail .active::before {
+  left: -8px;
+}
+/* group labels become hairline separators in the rail */
+.rail .navlabel {
+  font-size: 0;
+  gap: 0;
+  padding: 0;
+  height: 1px;
+  background: var(--line-soft);
+  margin: 9px 8px 5px;
+}
+.rail .gtag {
+  display: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .side {
+    transition: none;
+  }
+}

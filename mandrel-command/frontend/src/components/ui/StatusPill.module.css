@@ -1,0 +1,49 @@
+/* StatusPill — the doc's `.pl`. Accent text on an accent-derived tint; the
+   accent is set per tone via `--pill-accent`, tint via color-mix. Zero hex. */
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: 999px; /* structural: fully-rounded pill */
+  color: var(--pill-accent);
+  background: color-mix(in srgb, var(--pill-accent) 12%, transparent);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.active {
+  --pill-accent: var(--ok);
+}
+.dormant {
+  --pill-accent: var(--warn);
+}
+.alert {
+  --pill-accent: var(--crit);
+}
+.teal {
+  --pill-accent: var(--teal);
+}
+.violet {
+  --pill-accent: var(--violet);
+}
+.blue {
+  --pill-accent: var(--blue);
+}
+
+/* `ended` — faint, no tint fill (the doc's neutral resting state). */
+.ended {
+  --pill-accent: var(--tx-3);
+  background: color-mix(in srgb, var(--tx-3) 10%, transparent);
+}

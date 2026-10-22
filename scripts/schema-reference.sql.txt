@@ -1,0 +1,1786 @@
+# Mandrel CANONICAL SCHEMA REFERENCE — committed contract for the CI drift gate.
+# DO NOT EDIT BY HAND. Regenerate with:  bash scripts/schema-contract.sh regenerate
+# Generated from a fresh disposable DB migrated by mcp-server/scripts/migrate.ts.
+# Format: one sorted line per schema object (see scripts/schema-fingerprint.sql).
+# Version-agnostic (catalog-derived), so pg15 tenants compare clean vs a pg16 ref.
+#
+COLUMN _aidis_migrations.applied_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN _aidis_migrations.checksum | character varying(64) | null=YES | default=
+COLUMN _aidis_migrations.filename | character varying(255) | null=NO | default=
+COLUMN _aidis_migrations.id | integer | null=NO | default=nextval('_aidis_migrations_id_seq')
+COLUMN _aidis_migrations.migration_number | integer | null=NO | default=
+COLUMN account.accessToken | text | null=YES | default=
+COLUMN account.accessTokenExpiresAt | timestamp with time zone | null=YES | default=
+COLUMN account.accountId | text | null=NO | default=
+COLUMN account.createdAt | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN account.id | text | null=NO | default=
+COLUMN account.idToken | text | null=YES | default=
+COLUMN account.password | text | null=YES | default=
+COLUMN account.providerId | text | null=NO | default=
+COLUMN account.refreshToken | text | null=YES | default=
+COLUMN account.refreshTokenExpiresAt | timestamp with time zone | null=YES | default=
+COLUMN account.scope | text | null=YES | default=
+COLUMN account.updatedAt | timestamp with time zone | null=NO | default=
+COLUMN account.userId | text | null=NO | default=
+COLUMN active_thread_anchors.decision_id | uuid | null=YES | default=
+COLUMN active_thread_anchors.project_id | uuid | null=NO | default=
+COLUMN active_thread_anchors.session_key | text | null=NO | default=
+COLUMN active_thread_anchors.set_at | timestamp with time zone | null=NO | default=now()
+COLUMN active_thread_anchors.task_id | uuid | null=YES | default=
+COLUMN active_thread_anchors.updated_at | timestamp with time zone | null=NO | default=now()
+COLUMN actor_project_defaults.actor | text | null=NO | default=
+COLUMN actor_project_defaults.project_id | uuid | null=NO | default=
+COLUMN actor_project_defaults.updated_at | timestamp with time zone | null=NO | default=now()
+COLUMN admin_users.created_at | timestamp without time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN admin_users.default_project_id | uuid | null=YES | default=
+COLUMN admin_users.email | character varying(100) | null=NO | default=
+COLUMN admin_users.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN admin_users.is_active | boolean | null=YES | default=true
+COLUMN admin_users.last_login | timestamp without time zone | null=YES | default=
+COLUMN admin_users.must_change_password | boolean | null=NO | default=false
+COLUMN admin_users.password_hash | character varying(255) | null=NO | default=
+COLUMN admin_users.role | character varying(20) | null=YES | default='admin'
+COLUMN admin_users.theme | character varying(20) | null=YES | default='light'
+COLUMN admin_users.updated_at | timestamp without time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN admin_users.username | character varying(50) | null=NO | default=
+COLUMN analysis_session_links.analysis_session_id | uuid | null=NO | default=
+COLUMN analysis_session_links.confidence_score | double precision | null=YES | default=1.0
+COLUMN analysis_session_links.content_correlation_score | double precision | null=YES | default=0.0
+COLUMN analysis_session_links.context_id | uuid | null=YES | default=
+COLUMN analysis_session_links.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN analysis_session_links.created_by | character varying(100) | null=YES | default=
+COLUMN analysis_session_links.decision_id | uuid | null=YES | default=
+COLUMN analysis_session_links.development_session_id | uuid | null=YES | default=
+COLUMN analysis_session_links.git_correlation_score | double precision | null=YES | default=0.0
+COLUMN analysis_session_links.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN analysis_session_links.link_type | character varying(50) | null=YES | default='analysis'
+COLUMN analysis_session_links.metadata | jsonb | null=YES | default='{}'
+COLUMN analysis_session_links.project_id | uuid | null=NO | default=
+COLUMN analysis_session_links.time_correlation_score | double precision | null=YES | default=0.0
+COLUMN analytics_events.actor | character varying(20) | null=NO | default=
+COLUMN analytics_events.ai_model_used | character varying(100) | null=YES | default=
+COLUMN analytics_events.completion_tokens | integer | null=YES | default=
+COLUMN analytics_events.context_id | uuid | null=YES | default=
+COLUMN analytics_events.duration_ms | integer | null=YES | default=
+COLUMN analytics_events.event_id | uuid | null=NO | default=gen_random_uuid()
+COLUMN analytics_events.event_type | character varying(50) | null=NO | default=
+COLUMN analytics_events.feedback | integer | null=YES | default=
+COLUMN analytics_events.metadata | jsonb | null=YES | default=
+COLUMN analytics_events.payload | jsonb | null=YES | default=
+COLUMN analytics_events.project_id | uuid | null=YES | default=
+COLUMN analytics_events.prompt_tokens | integer | null=YES | default=
+COLUMN analytics_events.session_id | uuid | null=YES | default=
+COLUMN analytics_events.status | character varying(20) | null=YES | default=
+COLUMN analytics_events.tags | ARRAY | null=YES | default=
+COLUMN analytics_events.timestamp | timestamp with time zone | null=NO | default=now()
+COLUMN analytics_events_shadow._shadow_created_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN analytics_events_shadow._shadow_last_sync | timestamp with time zone | null=YES | default=
+COLUMN analytics_events_shadow._shadow_migration_batch | uuid | null=YES | default=
+COLUMN analytics_events_shadow._shadow_source_id | uuid | null=YES | default=
+COLUMN analytics_events_shadow._shadow_sync_status | USER-DEFINED | null=NO | default='pending'
+COLUMN analytics_events_shadow._shadow_validation_hash | text | null=NO | default=
+COLUMN analytics_events_shadow._shadow_version | integer | null=NO | default=1
+COLUMN analytics_events_shadow.actor | character varying(20) | null=NO | default=
+COLUMN analytics_events_shadow.ai_model_used | character varying(100) | null=YES | default=
+COLUMN analytics_events_shadow.completion_tokens | integer | null=YES | default=
+COLUMN analytics_events_shadow.context_id | uuid | null=YES | default=
+COLUMN analytics_events_shadow.duration_ms | integer | null=YES | default=
+COLUMN analytics_events_shadow.event_id | uuid | null=NO | default=gen_random_uuid()
+COLUMN analytics_events_shadow.event_type | character varying(50) | null=NO | default=
+COLUMN analytics_events_shadow.feedback | integer | null=YES | default=
+COLUMN analytics_events_shadow.metadata | jsonb | null=YES | default=
+COLUMN analytics_events_shadow.payload | jsonb | null=YES | default=
+COLUMN analytics_events_shadow.project_id | uuid | null=YES | default=
+COLUMN analytics_events_shadow.prompt_tokens | integer | null=YES | default=
+COLUMN analytics_events_shadow.session_id | uuid | null=YES | default=
+COLUMN analytics_events_shadow.status | character varying(20) | null=YES | default=
+COLUMN analytics_events_shadow.tags | ARRAY | null=YES | default=
+COLUMN analytics_events_shadow.timestamp | timestamp with time zone | null=NO | default=now()
+COLUMN analyzer_versions.analyzer_name | text | null=NO | default=
+COLUMN analyzer_versions.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN analyzer_versions.params | jsonb | null=YES | default=
+COLUMN analyzer_versions.updated_at | timestamp with time zone | null=YES | default=now()
+COLUMN analyzer_versions.version | text | null=NO | default=
+COLUMN auth_tokens.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN auth_tokens.expires_at | timestamp with time zone | null=NO | default=
+COLUMN auth_tokens.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN auth_tokens.invalidated_at | timestamp with time zone | null=YES | default=
+COLUMN auth_tokens.last_used_at | timestamp with time zone | null=YES | default=
+COLUMN auth_tokens.token_id | uuid | null=NO | default=
+COLUMN auth_tokens.user_id | uuid | null=NO | default=
+COLUMN belief_adjudication_attempts.a_id | uuid | null=YES | default=
+COLUMN belief_adjudication_attempts.b_id | uuid | null=YES | default=
+COLUMN belief_adjudication_attempts.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN belief_adjudication_attempts.duration_ms | integer | null=YES | default=
+COLUMN belief_adjudication_attempts.error_class | text | null=YES | default=
+COLUMN belief_adjudication_attempts.error_message | text | null=YES | default=
+COLUMN belief_adjudication_attempts.failed_stage | text | null=YES | default=
+COLUMN belief_adjudication_attempts.failed_tier | text | null=YES | default=
+COLUMN belief_adjudication_attempts.http_status | integer | null=YES | default=
+COLUMN belief_adjudication_attempts.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN belief_adjudication_attempts.model | text | null=YES | default=
+COLUMN belief_adjudication_attempts.outcome | text | null=NO | default=
+COLUMN belief_adjudication_attempts.pair_key | text | null=YES | default=
+COLUMN belief_adjudication_attempts.project_id | uuid | null=YES | default=
+COLUMN belief_adjudication_attempts.provider | text | null=YES | default=
+COLUMN belief_adjudication_attempts.scope | text | null=NO | default=
+COLUMN belief_adjudication_attempts.source_id | uuid | null=YES | default=
+COLUMN belief_adjudication_costs.cache_creation_tokens | integer | null=NO | default=0
+COLUMN belief_adjudication_costs.cache_read_tokens | integer | null=NO | default=0
+COLUMN belief_adjudication_costs.cost_usd | numeric | null=NO | default=0
+COLUMN belief_adjudication_costs.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN belief_adjudication_costs.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN belief_adjudication_costs.input_tokens | integer | null=NO | default=0
+COLUMN belief_adjudication_costs.model | text | null=NO | default=
+COLUMN belief_adjudication_costs.output_tokens | integer | null=NO | default=0
+COLUMN belief_adjudication_costs.pair_key | text | null=YES | default=
+COLUMN belief_adjudication_costs.project_id | uuid | null=YES | default=
+COLUMN belief_adjudication_costs.provider | text | null=NO | default=
+COLUMN belief_adjudication_costs.tier | text | null=NO | default=
+COLUMN belief_adjudications.a_id | uuid | null=NO | default=
+COLUMN belief_adjudications.a_type | text | null=NO | default=
+COLUMN belief_adjudications.adjudicated_at | timestamp with time zone | null=NO | default=now()
+COLUMN belief_adjudications.b_id | uuid | null=NO | default=
+COLUMN belief_adjudications.b_type | text | null=NO | default=
+COLUMN belief_adjudications.confidence | numeric | null=YES | default=
+COLUMN belief_adjudications.cosine | numeric | null=YES | default=
+COLUMN belief_adjudications.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN belief_adjudications.derived_action | text | null=NO | default=
+COLUMN belief_adjudications.direction | text | null=NO | default='none'
+COLUMN belief_adjudications.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN belief_adjudications.minted_edge_id | uuid | null=YES | default=
+COLUMN belief_adjudications.mode | text | null=NO | default='none'
+COLUMN belief_adjudications.model | text | null=NO | default=
+COLUMN belief_adjudications.no_edge_reason | text | null=YES | default=
+COLUMN belief_adjudications.pair_key | text | null=NO | default=
+COLUMN belief_adjudications.project_id | uuid | null=YES | default=
+COLUMN belief_adjudications.provider | text | null=NO | default=
+COLUMN belief_adjudications.rationale | text | null=YES | default=
+COLUMN belief_adjudications.same_subject | boolean | null=NO | default=
+COLUMN belief_adjudications.subject | text | null=YES | default=
+COLUMN belief_adjudications.verdict | text | null=NO | default=
+COLUMN branch_membership_moves.actor | text | null=NO | default=
+COLUMN branch_membership_moves.from_spine_id | uuid | null=YES | default=
+COLUMN branch_membership_moves.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN branch_membership_moves.moved_at | timestamp with time zone | null=NO | default=now()
+COLUMN branch_membership_moves.project_id | uuid | null=NO | default=
+COLUMN branch_membership_moves.reason | text | null=YES | default=
+COLUMN branch_membership_moves.record_id | uuid | null=NO | default=
+COLUMN branch_membership_moves.to_spine_id | uuid | null=YES | default=
+COLUMN branch_memberships.attached_to_id | uuid | null=NO | default=
+COLUMN branch_memberships.attached_to_type | text | null=NO | default=
+COLUMN branch_memberships.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN branch_memberships.project_id | uuid | null=NO | default=
+COLUMN branch_memberships.record_id | uuid | null=NO | default=
+COLUMN branch_memberships.record_type | text | null=NO | default=
+COLUMN branch_memberships.source | text | null=NO | default=
+COLUMN branch_memberships.spine_id | uuid | null=NO | default=
+COLUMN branch_memberships.spine_type | text | null=NO | default=
+COLUMN branch_positions.member_writes | integer | null=NO | default=0
+COLUMN branch_positions.opened_at | timestamp with time zone | null=NO | default=now()
+COLUMN branch_positions.origin | text | null=NO | default='declared'
+COLUMN branch_positions.project_id | uuid | null=NO | default=
+COLUMN branch_positions.session_key | text | null=NO | default=
+COLUMN branch_positions.spine_id | uuid | null=NO | default=
+COLUMN branch_positions.spine_type | text | null=NO | default=
+COLUMN branch_positions.tip_id | uuid | null=YES | default=
+COLUMN branch_positions.tip_type | text | null=YES | default=
+COLUMN branch_positions.updated_at | timestamp with time zone | null=NO | default=now()
+COLUMN bug_workflow_events.action | character varying(50) | null=NO | default=
+COLUMN bug_workflow_events.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN bug_workflow_events.details | jsonb | null=NO | default='{}'
+COLUMN bug_workflow_events.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN bug_workflow_events.sequence | integer | null=NO | default=
+COLUMN bug_workflow_events.workflow_id | uuid | null=NO | default=
+COLUMN bug_workflows.analysis | jsonb | null=YES | default=
+COLUMN bug_workflows.branch_name | text | null=YES | default=
+COLUMN bug_workflows.bug_report | jsonb | null=NO | default=
+COLUMN bug_workflows.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN bug_workflows.failed_at | timestamp with time zone | null=YES | default=
+COLUMN bug_workflows.failure_reason | text | null=YES | default=
+COLUMN bug_workflows.failure_stage | character varying(50) | null=YES | default=
+COLUMN bug_workflows.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN bug_workflows.implementation | jsonb | null=YES | default=
+COLUMN bug_workflows.project_path | text | null=NO | default=
+COLUMN bug_workflows.review | jsonb | null=YES | default=
+COLUMN bug_workflows.state | character varying(50) | null=NO | default='draft'
+COLUMN bug_workflows.updated_at | timestamp with time zone | null=NO | default=now()
+COLUMN code_analysis_sessions.analysis_context | text | null=YES | default=
+COLUMN code_analysis_sessions.analysis_duration_ms | integer | null=YES | default=
+COLUMN code_analysis_sessions.analysis_scope | character varying(100) | null=YES | default='full'
+COLUMN code_analysis_sessions.analyzer_agent_id | uuid | null=YES | default=
+COLUMN code_analysis_sessions.analyzer_version | character varying(50) | null=YES | default='1.0.0'
+COLUMN code_analysis_sessions.auto_triggered | boolean | null=YES | default=false
+COLUMN code_analysis_sessions.branch_name | character varying(255) | null=YES | default=
+COLUMN code_analysis_sessions.cache_hit_rate | double precision | null=YES | default=0.0
+COLUMN code_analysis_sessions.commit_sha | character varying(40) | null=YES | default=
+COLUMN code_analysis_sessions.compatibility_flags | jsonb | null=YES | default='{}'
+COLUMN code_analysis_sessions.completed_at | timestamp with time zone | null=YES | default=
+COLUMN code_analysis_sessions.components_found | integer | null=YES | default=0
+COLUMN code_analysis_sessions.database_duration_ms | integer | null=YES | default=0
+COLUMN code_analysis_sessions.deleted_components_count | integer | null=YES | default=0
+COLUMN code_analysis_sessions.dependencies_found | integer | null=YES | default=0
+COLUMN code_analysis_sessions.dependency_changes_count | integer | null=YES | default=0
+COLUMN code_analysis_sessions.development_session_id | uuid | null=YES | default=
+COLUMN code_analysis_sessions.error_message | text | null=YES | default=
+COLUMN code_analysis_sessions.excluded_patterns | ARRAY | null=YES | default='{}'
+COLUMN code_analysis_sessions.files_analyzed | ARRAY | null=YES | default='{}'
+COLUMN code_analysis_sessions.files_changed_count | integer | null=YES | default=0
+COLUMN code_analysis_sessions.git_status_clean | boolean | null=YES | default=
+COLUMN code_analysis_sessions.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN code_analysis_sessions.language_filter | character varying(50) | null=YES | default=
+COLUMN code_analysis_sessions.metadata | jsonb | null=YES | default='{"triggers": {}, "git_context": {}, "performance": {}, "analysis_config": {}, "session_context": {}}'
+COLUMN code_analysis_sessions.new_components_count | integer | null=YES | default=0
+COLUMN code_analysis_sessions.parse_duration_ms | integer | null=YES | default=0
+COLUMN code_analysis_sessions.project_id | uuid | null=NO | default=
+COLUMN code_analysis_sessions.quality_score | double precision | null=YES | default=
+COLUMN code_analysis_sessions.schema_version | integer | null=YES | default=1
+COLUMN code_analysis_sessions.session_correlation_confidence | double precision | null=YES | default=0.0
+COLUMN code_analysis_sessions.session_type | character varying(100) | null=NO | default='full'
+COLUMN code_analysis_sessions.started_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN code_analysis_sessions.status | character varying(50) | null=NO | default='completed'
+COLUMN code_analysis_sessions.target_files | ARRAY | null=YES | default='{}'
+COLUMN code_analysis_sessions.total_complexity_delta | integer | null=YES | default=0
+COLUMN code_analysis_sessions.total_loc_delta | integer | null=YES | default=0
+COLUMN code_analysis_sessions.trigger_metadata | jsonb | null=YES | default='{}'
+COLUMN code_analysis_sessions.trigger_type | character varying(100) | null=YES | default='manual'
+COLUMN code_analysis_sessions.triggered_by_agent | uuid | null=YES | default=
+COLUMN code_analysis_sessions.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN code_analysis_sessions.updated_components_count | integer | null=YES | default=0
+COLUMN code_analysis_sessions.working_directory | text | null=YES | default=
+COLUMN code_components.analysis_frequency | integer | null=YES | default=0
+COLUMN code_components.analyzed_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN code_components.complexity_score | integer | null=YES | default=0
+COLUMN code_components.component_type | character varying(100) | null=NO | default=
+COLUMN code_components.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN code_components.creation_commit | character varying(40) | null=YES | default=
+COLUMN code_components.documentation | text | null=YES | default=
+COLUMN code_components.end_line | integer | null=YES | default=
+COLUMN code_components.file_path | text | null=NO | default=
+COLUMN code_components.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN code_components.is_deprecated | boolean | null=YES | default=false
+COLUMN code_components.is_exported | boolean | null=YES | default=false
+COLUMN code_components.last_analysis_session_id | uuid | null=YES | default=
+COLUMN code_components.last_modified_commit | character varying(40) | null=YES | default=
+COLUMN code_components.lines_of_code | integer | null=YES | default=0
+COLUMN code_components.metadata | jsonb | null=YES | default='{}'
+COLUMN code_components.modification_frequency | integer | null=YES | default=0
+COLUMN code_components.name | character varying(500) | null=NO | default=
+COLUMN code_components.project_id | uuid | null=NO | default=
+COLUMN code_components.signature | text | null=YES | default=
+COLUMN code_components.start_line | integer | null=YES | default=
+COLUMN code_components.tags | ARRAY | null=YES | default='{}'
+COLUMN code_components.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN code_dependencies.confidence_score | double precision | null=YES | default=1.0
+COLUMN code_dependencies.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN code_dependencies.dependency_type | character varying(100) | null=NO | default=
+COLUMN code_dependencies.from_component_id | uuid | null=NO | default=
+COLUMN code_dependencies.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN code_dependencies.import_alias | character varying(255) | null=YES | default=
+COLUMN code_dependencies.import_path | text | null=YES | default=
+COLUMN code_dependencies.is_external | boolean | null=YES | default=false
+COLUMN code_dependencies.metadata | jsonb | null=YES | default='{}'
+COLUMN code_dependencies.project_id | uuid | null=NO | default=
+COLUMN code_dependencies.to_component_id | uuid | null=YES | default=
+COLUMN commit_session_links.author_match | boolean | null=YES | default=false
+COLUMN commit_session_links.commit_id | uuid | null=NO | default=
+COLUMN commit_session_links.confidence_score | numeric | null=YES | default=0.50
+COLUMN commit_session_links.content_similarity | numeric | null=YES | default=
+COLUMN commit_session_links.context_ids | ARRAY | null=YES | default='{}'
+COLUMN commit_session_links.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN commit_session_links.created_by | character varying(100) | null=YES | default=
+COLUMN commit_session_links.decision_ids | ARRAY | null=YES | default='{}'
+COLUMN commit_session_links.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN commit_session_links.link_type | character varying(50) | null=YES | default='contributed'
+COLUMN commit_session_links.metadata | jsonb | null=YES | default='{}'
+COLUMN commit_session_links.project_id | uuid | null=NO | default=
+COLUMN commit_session_links.relevant_context_ids | ARRAY | null=YES | default='{}'
+COLUMN commit_session_links.session_id | uuid | null=NO | default=
+COLUMN commit_session_links.time_proximity_minutes | integer | null=YES | default=
+COLUMN commit_session_links.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN complexity_metrics.analyzer_version | text | null=NO | default='complexity-v1'
+COLUMN complexity_metrics.branching_factor | integer | null=YES | default=
+COLUMN complexity_metrics.causal_chain_length | integer | null=YES | default=
+COLUMN complexity_metrics.char_count | integer | null=NO | default=
+COLUMN complexity_metrics.chars_per_second | numeric | null=YES | default=
+COLUMN complexity_metrics.cognitive_complexity_score | numeric | null=YES | default=
+COLUMN complexity_metrics.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN complexity_metrics.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN complexity_metrics.nesting_depth | integer | null=YES | default=
+COLUMN complexity_metrics.overall_complexity_score | numeric | null=YES | default=
+COLUMN complexity_metrics.paragraph_count | integer | null=NO | default=
+COLUMN complexity_metrics.reasoning_layers | integer | null=YES | default=
+COLUMN complexity_metrics.sentence_count | integer | null=NO | default=
+COLUMN complexity_metrics.spindle_id | uuid | null=NO | default=
+COLUMN complexity_metrics.structural_complexity_score | numeric | null=YES | default=
+COLUMN complexity_metrics.thinking_duration_ms | integer | null=YES | default=
+COLUMN complexity_metrics.word_count | integer | null=NO | default=
+COLUMN contexts.archived_at | timestamp with time zone | null=YES | default=
+COLUMN contexts.commit_context_type | character varying(50) | null=YES | default=
+COLUMN contexts.content | text | null=NO | default=
+COLUMN contexts.context_type | character varying(50) | null=NO | default=
+COLUMN contexts.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN contexts.declared_limbs | ARRAY | null=YES | default=
+COLUMN contexts.declared_limbs_ambiguous_drops | integer | null=YES | default=
+COLUMN contexts.embedding | USER-DEFINED | null=YES | default=
+COLUMN contexts.embedding_384_backup | USER-DEFINED | null=YES | default=
+COLUMN contexts.embedding_gemma | USER-DEFINED | null=YES | default=
+COLUMN contexts.embedding_migrated | boolean | null=YES | default=false
+COLUMN contexts.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN contexts.mapped_at | timestamp with time zone | null=YES | default=
+COLUMN contexts.mapping_method | character varying(20) | null=YES | default='umap'
+COLUMN contexts.metadata | jsonb | null=YES | default='{}'
+COLUMN contexts.pattern_relevance_score | numeric | null=YES | default=
+COLUMN contexts.pattern_session_id | uuid | null=YES | default=
+COLUMN contexts.project_id | uuid | null=YES | default=
+COLUMN contexts.related_commit_sha | character varying(40) | null=YES | default=
+COLUMN contexts.related_insights | ARRAY | null=YES | default='{}'
+COLUMN contexts.relevance_score | double precision | null=YES | default=1.0
+COLUMN contexts.search_idents | tsvector | null=YES | default=
+COLUMN contexts.search_tsv | tsvector | null=YES | default=
+COLUMN contexts.session_id | uuid | null=YES | default=
+COLUMN contexts.tags | ARRAY | null=YES | default='{}'
+COLUMN contexts.vector_x | double precision | null=YES | default=
+COLUMN contexts.vector_y | double precision | null=YES | default=
+COLUMN contexts.vector_z | double precision | null=YES | default=
+COLUMN contexts_shadow._shadow_created_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN contexts_shadow._shadow_last_sync | timestamp with time zone | null=YES | default=
+COLUMN contexts_shadow._shadow_migration_batch | uuid | null=YES | default=
+COLUMN contexts_shadow._shadow_source_id | uuid | null=YES | default=
+COLUMN contexts_shadow._shadow_sync_status | USER-DEFINED | null=NO | default='pending'
+COLUMN contexts_shadow._shadow_validation_hash | text | null=NO | default=
+COLUMN contexts_shadow._shadow_version | integer | null=NO | default=1
+COLUMN contexts_shadow.commit_context_type | character varying(50) | null=YES | default=
+COLUMN contexts_shadow.content | text | null=NO | default=
+COLUMN contexts_shadow.context_type | character varying(50) | null=NO | default=
+COLUMN contexts_shadow.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN contexts_shadow.embedding | USER-DEFINED | null=YES | default=
+COLUMN contexts_shadow.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN contexts_shadow.metadata | jsonb | null=YES | default='{}'
+COLUMN contexts_shadow.pattern_relevance_score | numeric | null=YES | default=
+COLUMN contexts_shadow.pattern_session_id | uuid | null=YES | default=
+COLUMN contexts_shadow.project_id | uuid | null=NO | default=
+COLUMN contexts_shadow.related_commit_sha | character varying(40) | null=YES | default=
+COLUMN contexts_shadow.related_insights | ARRAY | null=YES | default='{}'
+COLUMN contexts_shadow.relevance_score | double precision | null=YES | default=1.0
+COLUMN contexts_shadow.session_id | uuid | null=YES | default=
+COLUMN contexts_shadow.tags | ARRAY | null=YES | default='{}'
+COLUMN decision_impact_analysis.analysis_method | character varying(50) | null=YES | default=
+COLUMN decision_impact_analysis.complexity_impact_score | integer | null=YES | default=
+COLUMN decision_impact_analysis.confidence_score | numeric | null=YES | default=
+COLUMN decision_impact_analysis.cost_impact_amount | numeric | null=YES | default=
+COLUMN decision_impact_analysis.description | text | null=YES | default=
+COLUMN decision_impact_analysis.discovered_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_impact_analysis.discovered_by | character varying(100) | null=YES | default=
+COLUMN decision_impact_analysis.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN decision_impact_analysis.impact_direction | character varying(20) | null=YES | default=
+COLUMN decision_impact_analysis.impact_strength | character varying(20) | null=YES | default='medium'
+COLUMN decision_impact_analysis.impact_type | character varying(50) | null=NO | default=
+COLUMN decision_impact_analysis.impacted_decision_id | uuid | null=YES | default=
+COLUMN decision_impact_analysis.project_id | uuid | null=YES | default=
+COLUMN decision_impact_analysis.source_decision_id | uuid | null=YES | default=
+COLUMN decision_impact_analysis.time_impact_days | integer | null=YES | default=
+COLUMN decision_impact_analysis.validated | boolean | null=YES | default=false
+COLUMN decision_impact_analysis.validation_notes | text | null=YES | default=
+COLUMN decision_learning_insights.applicable_components | ARRAY | null=YES | default=
+COLUMN decision_learning_insights.application_success_rate | numeric | null=YES | default=
+COLUMN decision_learning_insights.confidence_score | numeric | null=YES | default=
+COLUMN decision_learning_insights.contextual_factors | jsonb | null=YES | default='{}'
+COLUMN decision_learning_insights.contradicting_evidence_count | integer | null=YES | default=0
+COLUMN decision_learning_insights.decision_types | ARRAY | null=YES | default=
+COLUMN decision_learning_insights.derived_from_insights | ARRAY | null=YES | default=
+COLUMN decision_learning_insights.enhancement_strategy | text | null=YES | default=
+COLUMN decision_learning_insights.first_observed | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_learning_insights.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN decision_learning_insights.impact_levels | ARRAY | null=YES | default=
+COLUMN decision_learning_insights.insight_type | character varying(50) | null=NO | default=
+COLUMN decision_learning_insights.last_applied | timestamp with time zone | null=YES | default=
+COLUMN decision_learning_insights.last_confirmed | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_learning_insights.pattern_conditions | jsonb | null=NO | default=
+COLUMN decision_learning_insights.pattern_description | text | null=NO | default=
+COLUMN decision_learning_insights.pattern_name | character varying(200) | null=NO | default=
+COLUMN decision_learning_insights.prevention_strategy | text | null=YES | default=
+COLUMN decision_learning_insights.project_id | uuid | null=YES | default=
+COLUMN decision_learning_insights.recommendation | text | null=YES | default=
+COLUMN decision_learning_insights.source_decisions | ARRAY | null=YES | default=
+COLUMN decision_learning_insights.status | character varying(20) | null=YES | default='active'
+COLUMN decision_learning_insights.supporting_evidence_count | integer | null=YES | default=1
+COLUMN decision_learning_insights.times_applied | integer | null=YES | default=0
+COLUMN decision_metrics.alternatives_count | integer | null=YES | default=0
+COLUMN decision_metrics.alternatives_explored | jsonb | null=YES | default=
+COLUMN decision_metrics.analyzer_version | text | null=NO | default='decision-v1'
+COLUMN decision_metrics.clarity_score | numeric | null=YES | default=
+COLUMN decision_metrics.coherence_score | numeric | null=YES | default=
+COLUMN decision_metrics.confidence_keywords | jsonb | null=YES | default=
+COLUMN decision_metrics.confidence_level | text | null=YES | default=
+COLUMN decision_metrics.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN decision_metrics.decision_quality_score | numeric | null=YES | default=
+COLUMN decision_metrics.evidence_references | integer | null=YES | default=0
+COLUMN decision_metrics.evidence_types | jsonb | null=YES | default=
+COLUMN decision_metrics.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN decision_metrics.revision_count | integer | null=YES | default=0
+COLUMN decision_metrics.revision_markers | jsonb | null=YES | default=
+COLUMN decision_metrics.spindle_id | uuid | null=NO | default=
+COLUMN decision_outcomes.actual_value | numeric | null=YES | default=
+COLUMN decision_outcomes.confidence_level | character varying(20) | null=YES | default='medium'
+COLUMN decision_outcomes.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_outcomes.decision_id | uuid | null=YES | default=
+COLUMN decision_outcomes.evidence_data | jsonb | null=YES | default='{}'
+COLUMN decision_outcomes.evidence_type | character varying(50) | null=YES | default=
+COLUMN decision_outcomes.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN decision_outcomes.measured_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_outcomes.measured_by | character varying(100) | null=YES | default=
+COLUMN decision_outcomes.measurement_period_days | integer | null=YES | default=
+COLUMN decision_outcomes.notes | text | null=YES | default=
+COLUMN decision_outcomes.outcome_score | integer | null=YES | default=
+COLUMN decision_outcomes.outcome_status | character varying(50) | null=NO | default='in_progress'
+COLUMN decision_outcomes.outcome_type | character varying(50) | null=NO | default=
+COLUMN decision_outcomes.predicted_value | numeric | null=YES | default=
+COLUMN decision_outcomes.project_id | uuid | null=YES | default=
+COLUMN decision_outcomes.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_outcomes.variance_percentage | numeric | null=YES | default=
+COLUMN decision_retrospectives.action_items | jsonb | null=YES | default='[]'
+COLUMN decision_retrospectives.adoption_challenges | text | null=YES | default=
+COLUMN decision_retrospectives.change_management_lessons | text | null=YES | default=
+COLUMN decision_retrospectives.decision_id | uuid | null=YES | default=
+COLUMN decision_retrospectives.facilitator | character varying(100) | null=YES | default=
+COLUMN decision_retrospectives.follow_up_date | timestamp with time zone | null=YES | default=
+COLUMN decision_retrospectives.follow_up_required | boolean | null=YES | default=false
+COLUMN decision_retrospectives.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN decision_retrospectives.new_risks_discovered | text | null=YES | default=
+COLUMN decision_retrospectives.overall_satisfaction | integer | null=YES | default=
+COLUMN decision_retrospectives.participants | ARRAY | null=YES | default=
+COLUMN decision_retrospectives.process_improvements | text | null=YES | default=
+COLUMN decision_retrospectives.project_id | uuid | null=YES | default=
+COLUMN decision_retrospectives.recommendation_to_others | integer | null=YES | default=
+COLUMN decision_retrospectives.recommendations_for_similar_decisions | text | null=YES | default=
+COLUMN decision_retrospectives.retrospective_date | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN decision_retrospectives.retrospective_quality_score | integer | null=YES | default=
+COLUMN decision_retrospectives.retrospective_type | character varying(30) | null=YES | default=
+COLUMN decision_retrospectives.risk_mitigation_effectiveness | text | null=YES | default=
+COLUMN decision_retrospectives.stakeholder_feedback | jsonb | null=YES | default='{}'
+COLUMN decision_retrospectives.time_to_value_actual_days | integer | null=YES | default=
+COLUMN decision_retrospectives.time_to_value_predicted_days | integer | null=YES | default=
+COLUMN decision_retrospectives.tools_or_resources_needed | text | null=YES | default=
+COLUMN decision_retrospectives.total_effort_actual_hours | numeric | null=YES | default=
+COLUMN decision_retrospectives.total_effort_predicted_hours | numeric | null=YES | default=
+COLUMN decision_retrospectives.unforeseen_risks | text | null=YES | default=
+COLUMN decision_retrospectives.what_we_learned | text | null=YES | default=
+COLUMN decision_retrospectives.what_we_would_do_differently | text | null=YES | default=
+COLUMN decision_retrospectives.what_went_poorly | text | null=YES | default=
+COLUMN decision_retrospectives.what_went_well | text | null=YES | default=
+COLUMN decision_retrospectives.would_decide_same_again | boolean | null=YES | default=
+COLUMN dual_write_config.created_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN dual_write_config.emergency_stop | boolean | null=NO | default=false
+COLUMN dual_write_config.enabled | boolean | null=NO | default=false
+COLUMN dual_write_config.failure_count | integer | null=NO | default=0
+COLUMN dual_write_config.last_failure_at | timestamp with time zone | null=YES | default=
+COLUMN dual_write_config.max_failures | integer | null=NO | default=5
+COLUMN dual_write_config.notes | text | null=YES | default=
+COLUMN dual_write_config.performance_threshold_ms | integer | null=NO | default=1000
+COLUMN dual_write_config.sync_mode | character varying(20) | null=NO | default='async'
+COLUMN dual_write_config.table_name | character varying(100) | null=NO | default=
+COLUMN dual_write_config.updated_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN dual_write_stats.duration_ms | integer | null=YES | default=
+COLUMN dual_write_stats.error_message | text | null=YES | default=
+COLUMN dual_write_stats.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN dual_write_stats.operation | character varying(10) | null=NO | default=
+COLUMN dual_write_stats.record_id | uuid | null=YES | default=
+COLUMN dual_write_stats.record_size_bytes | integer | null=YES | default=
+COLUMN dual_write_stats.success | boolean | null=NO | default=
+COLUMN dual_write_stats.sync_lag_ms | integer | null=YES | default=
+COLUMN dual_write_stats.table_name | character varying(100) | null=NO | default=
+COLUMN dual_write_stats.timestamp | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN dual_write_stats.validation_hash | text | null=YES | default=
+COLUMN envelope_audit.actor | text | null=YES | default=
+COLUMN envelope_audit.envelope_raw | jsonb | null=NO | default=
+COLUMN envelope_audit.hash | text | null=NO | default=
+COLUMN envelope_audit.id | text | null=NO | default=
+COLUMN envelope_audit.idempotency_key | text | null=YES | default=
+COLUMN envelope_audit.op | text | null=NO | default=
+COLUMN envelope_audit.origin | text | null=YES | default=
+COLUMN envelope_audit.received_at | timestamp with time zone | null=NO | default=now()
+COLUMN envelope_audit.result | jsonb | null=YES | default=
+COLUMN envelope_audit.thread | text | null=YES | default=
+COLUMN event_log.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN event_log.event_data | jsonb | null=YES | default='{}'
+COLUMN event_log.event_type | character varying(100) | null=NO | default=
+COLUMN event_log.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN event_log.project_id | uuid | null=YES | default=
+COLUMN event_log.session_id | uuid | null=YES | default=
+COLUMN feedback.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN feedback.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN feedback.message | text | null=NO | default=
+COLUMN feedback.page | text | null=YES | default=
+COLUMN feedback.severity | text | null=NO | default='medium'
+COLUMN feedback.type | text | null=NO | default='bug'
+COLUMN feedback.user_id | uuid | null=YES | default=
+COLUMN feedback.username | text | null=YES | default=
+COLUMN file_analysis_cache.analysis_result | jsonb | null=NO | default=
+COLUMN file_analysis_cache.analyzed_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN file_analysis_cache.complexity_total | integer | null=YES | default=0
+COLUMN file_analysis_cache.components_count | integer | null=YES | default=0
+COLUMN file_analysis_cache.dependencies_count | integer | null=YES | default=0
+COLUMN file_analysis_cache.file_hash | character varying(64) | null=NO | default=
+COLUMN file_analysis_cache.file_path | text | null=NO | default=
+COLUMN file_analysis_cache.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN file_analysis_cache.language | character varying(50) | null=YES | default=
+COLUMN file_analysis_cache.last_modified | timestamp with time zone | null=YES | default=
+COLUMN file_analysis_cache.lines_of_code | integer | null=YES | default=0
+COLUMN file_analysis_cache.project_id | uuid | null=NO | default=
+COLUMN git_branches.associated_sessions | ARRAY | null=YES | default='{}'
+COLUMN git_branches.base_branch | character varying(255) | null=YES | default=
+COLUMN git_branches.branch_name | character varying(255) | null=NO | default=
+COLUMN git_branches.branch_type | character varying(50) | null=YES | default='feature'
+COLUMN git_branches.commit_count | integer | null=YES | default=0
+COLUMN git_branches.commits_ahead | integer | null=YES | default=0
+COLUMN git_branches.commits_behind | integer | null=YES | default=0
+COLUMN git_branches.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN git_branches.current_commit_sha | character varying(40) | null=YES | default=
+COLUMN git_branches.current_sha | character varying(40) | null=YES | default=
+COLUMN git_branches.deleted_at | timestamp with time zone | null=YES | default=
+COLUMN git_branches.description | text | null=YES | default=
+COLUMN git_branches.first_commit_date | timestamp with time zone | null=YES | default=
+COLUMN git_branches.full_ref_name | character varying(500) | null=YES | default=
+COLUMN git_branches.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN git_branches.is_active | boolean | null=YES | default=true
+COLUMN git_branches.is_default | boolean | null=YES | default=false
+COLUMN git_branches.is_default_branch | boolean | null=YES | default=false
+COLUMN git_branches.is_protected | boolean | null=YES | default=false
+COLUMN git_branches.last_commit_date | timestamp with time zone | null=YES | default=
+COLUMN git_branches.merge_target | character varying(255) | null=YES | default=
+COLUMN git_branches.metadata | jsonb | null=YES | default='{}'
+COLUMN git_branches.project_id | uuid | null=NO | default=
+COLUMN git_branches.session_id | uuid | null=YES | default=
+COLUMN git_branches.total_commits | integer | null=YES | default=0
+COLUMN git_branches.unique_authors | integer | null=YES | default=0
+COLUMN git_branches.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN git_branches.upstream_branch | character varying(255) | null=YES | default=
+COLUMN git_commits.analysis_version | integer | null=YES | default=1
+COLUMN git_commits.author_date | timestamp with time zone | null=NO | default=
+COLUMN git_commits.author_email | character varying(255) | null=NO | default=
+COLUMN git_commits.author_name | character varying(255) | null=NO | default=
+COLUMN git_commits.branch_name | character varying(255) | null=YES | default=
+COLUMN git_commits.commit_sha | character varying(40) | null=NO | default=
+COLUMN git_commits.commit_type | character varying(50) | null=YES | default='feature'
+COLUMN git_commits.committer_date | timestamp with time zone | null=NO | default=
+COLUMN git_commits.committer_email | character varying(255) | null=NO | default=
+COLUMN git_commits.committer_name | character varying(255) | null=NO | default=
+COLUMN git_commits.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN git_commits.deletions | integer | null=YES | default=0
+COLUMN git_commits.discovered_by | character varying(100) | null=YES | default=
+COLUMN git_commits.files_changed | integer | null=YES | default=0
+COLUMN git_commits.first_seen | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN git_commits.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN git_commits.insertions | integer | null=YES | default=0
+COLUMN git_commits.is_analyzed | boolean | null=YES | default=false
+COLUMN git_commits.is_merge_commit | boolean | null=YES | default=
+COLUMN git_commits.merge_strategy | character varying(50) | null=YES | default=
+COLUMN git_commits.message | text | null=NO | default=
+COLUMN git_commits.metadata | jsonb | null=YES | default='{}'
+COLUMN git_commits.parent_shas | ARRAY | null=YES | default='{}'
+COLUMN git_commits.project_id | uuid | null=NO | default=
+COLUMN git_commits.repository_url | text | null=YES | default=
+COLUMN git_commits.short_sha | character varying(12) | null=YES | default=
+COLUMN git_commits.tags | ARRAY | null=YES | default='{}'
+COLUMN git_commits.total_changes | integer | null=YES | default=
+COLUMN git_commits.tree_sha | character varying(40) | null=YES | default=
+COLUMN git_commits.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN git_file_changes.affects_exports | boolean | null=YES | default=false
+COLUMN git_file_changes.change_type | character varying(20) | null=NO | default=
+COLUMN git_file_changes.commit_id | uuid | null=NO | default=
+COLUMN git_file_changes.complexity_delta | integer | null=YES | default=0
+COLUMN git_file_changes.component_id | uuid | null=YES | default=
+COLUMN git_file_changes.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN git_file_changes.file_path | text | null=NO | default=
+COLUMN git_file_changes.file_size_bytes | integer | null=YES | default=
+COLUMN git_file_changes.file_type | character varying(50) | null=YES | default=
+COLUMN git_file_changes.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN git_file_changes.is_binary | boolean | null=YES | default=false
+COLUMN git_file_changes.is_generated | boolean | null=YES | default=false
+COLUMN git_file_changes.lines_added | integer | null=YES | default=0
+COLUMN git_file_changes.lines_changed | integer | null=YES | default=
+COLUMN git_file_changes.lines_removed | integer | null=YES | default=0
+COLUMN git_file_changes.metadata | jsonb | null=YES | default='{}'
+COLUMN git_file_changes.new_file_mode | character varying(10) | null=YES | default=
+COLUMN git_file_changes.old_file_mode | character varying(10) | null=YES | default=
+COLUMN git_file_changes.old_file_path | text | null=YES | default=
+COLUMN git_file_changes.project_id | uuid | null=NO | default=
+COLUMN jwks.createdAt | timestamp with time zone | null=NO | default=
+COLUMN jwks.expiresAt | timestamp with time zone | null=YES | default=
+COLUMN jwks.id | text | null=NO | default=
+COLUMN jwks.privateKey | text | null=NO | default=
+COLUMN jwks.publicKey | text | null=NO | default=
+COLUMN links.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN links.created_by | text | null=YES | default=
+COLUMN links.edge_type | text | null=NO | default=
+COLUMN links.from_id | uuid | null=NO | default=
+COLUMN links.from_type | text | null=NO | default=
+COLUMN links.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN links.metadata | jsonb | null=NO | default='{}'
+COLUMN links.mint_via | text | null=NO | default=
+COLUMN links.project_id | uuid | null=YES | default=
+COLUMN links.provenance_class | text | null=YES | default=
+COLUMN links.to_id | uuid | null=NO | default=
+COLUMN links.to_type | text | null=NO | default=
+COLUMN oauthAccessToken.clientId | text | null=NO | default=
+COLUMN oauthAccessToken.createdAt | timestamp with time zone | null=NO | default=
+COLUMN oauthAccessToken.expiresAt | timestamp with time zone | null=NO | default=
+COLUMN oauthAccessToken.id | text | null=NO | default=
+COLUMN oauthAccessToken.referenceId | text | null=YES | default=
+COLUMN oauthAccessToken.refreshId | text | null=YES | default=
+COLUMN oauthAccessToken.scopes | jsonb | null=NO | default=
+COLUMN oauthAccessToken.sessionId | text | null=YES | default=
+COLUMN oauthAccessToken.token | text | null=NO | default=
+COLUMN oauthAccessToken.userId | text | null=YES | default=
+COLUMN oauthClient.clientId | text | null=NO | default=
+COLUMN oauthClient.clientSecret | text | null=YES | default=
+COLUMN oauthClient.contacts | jsonb | null=YES | default=
+COLUMN oauthClient.createdAt | timestamp with time zone | null=YES | default=
+COLUMN oauthClient.disabled | boolean | null=YES | default=
+COLUMN oauthClient.enableEndSession | boolean | null=YES | default=
+COLUMN oauthClient.grantTypes | jsonb | null=YES | default=
+COLUMN oauthClient.icon | text | null=YES | default=
+COLUMN oauthClient.id | text | null=NO | default=
+COLUMN oauthClient.metadata | jsonb | null=YES | default=
+COLUMN oauthClient.name | text | null=YES | default=
+COLUMN oauthClient.policy | text | null=YES | default=
+COLUMN oauthClient.postLogoutRedirectUris | jsonb | null=YES | default=
+COLUMN oauthClient.public | boolean | null=YES | default=
+COLUMN oauthClient.redirectUris | jsonb | null=NO | default=
+COLUMN oauthClient.referenceId | text | null=YES | default=
+COLUMN oauthClient.requirePKCE | boolean | null=YES | default=
+COLUMN oauthClient.responseTypes | jsonb | null=YES | default=
+COLUMN oauthClient.scopes | jsonb | null=YES | default=
+COLUMN oauthClient.skipConsent | boolean | null=YES | default=
+COLUMN oauthClient.softwareId | text | null=YES | default=
+COLUMN oauthClient.softwareStatement | text | null=YES | default=
+COLUMN oauthClient.softwareVersion | text | null=YES | default=
+COLUMN oauthClient.subjectType | text | null=YES | default=
+COLUMN oauthClient.tokenEndpointAuthMethod | text | null=YES | default=
+COLUMN oauthClient.tos | text | null=YES | default=
+COLUMN oauthClient.type | text | null=YES | default=
+COLUMN oauthClient.updatedAt | timestamp with time zone | null=YES | default=
+COLUMN oauthClient.uri | text | null=YES | default=
+COLUMN oauthClient.userId | text | null=YES | default=
+COLUMN oauthConsent.clientId | text | null=NO | default=
+COLUMN oauthConsent.createdAt | timestamp with time zone | null=NO | default=
+COLUMN oauthConsent.id | text | null=NO | default=
+COLUMN oauthConsent.referenceId | text | null=YES | default=
+COLUMN oauthConsent.scopes | jsonb | null=NO | default=
+COLUMN oauthConsent.updatedAt | timestamp with time zone | null=NO | default=
+COLUMN oauthConsent.userId | text | null=YES | default=
+COLUMN oauthRefreshToken.authTime | timestamp with time zone | null=YES | default=
+COLUMN oauthRefreshToken.clientId | text | null=NO | default=
+COLUMN oauthRefreshToken.createdAt | timestamp with time zone | null=NO | default=
+COLUMN oauthRefreshToken.expiresAt | timestamp with time zone | null=NO | default=
+COLUMN oauthRefreshToken.id | text | null=NO | default=
+COLUMN oauthRefreshToken.referenceId | text | null=YES | default=
+COLUMN oauthRefreshToken.revoked | timestamp with time zone | null=YES | default=
+COLUMN oauthRefreshToken.scopes | jsonb | null=NO | default=
+COLUMN oauthRefreshToken.sessionId | text | null=YES | default=
+COLUMN oauthRefreshToken.token | text | null=NO | default=
+COLUMN oauthRefreshToken.userId | text | null=NO | default=
+COLUMN productivity_config.config_name | text | null=NO | default=
+COLUMN productivity_config.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN productivity_config.formula_weights | jsonb | null=NO | default=
+COLUMN productivity_config.id | integer | null=NO | default=nextval('productivity_config_id_seq')
+COLUMN productivity_config.updated_at | timestamp with time zone | null=YES | default=now()
+COLUMN projects.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN projects.description | text | null=YES | default=
+COLUMN projects.git_repo_url | text | null=YES | default=
+COLUMN projects.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN projects.metadata | jsonb | null=YES | default='{}'
+COLUMN projects.name | character varying(255) | null=NO | default=
+COLUMN projects.root_directory | text | null=YES | default=
+COLUMN projects.status | character varying(50) | null=YES | default='active'
+COLUMN projects.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN projects_shadow._shadow_created_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN projects_shadow._shadow_last_sync | timestamp with time zone | null=YES | default=
+COLUMN projects_shadow._shadow_migration_batch | uuid | null=YES | default=
+COLUMN projects_shadow._shadow_source_id | uuid | null=YES | default=
+COLUMN projects_shadow._shadow_sync_status | USER-DEFINED | null=NO | default='pending'
+COLUMN projects_shadow._shadow_validation_hash | text | null=NO | default=
+COLUMN projects_shadow._shadow_version | integer | null=NO | default=1
+COLUMN projects_shadow.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN projects_shadow.description | text | null=YES | default=
+COLUMN projects_shadow.git_repo_url | text | null=YES | default=
+COLUMN projects_shadow.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN projects_shadow.metadata | jsonb | null=YES | default='{}'
+COLUMN projects_shadow.name | character varying(255) | null=NO | default=
+COLUMN projects_shadow.root_directory | text | null=YES | default=
+COLUMN projects_shadow.status | character varying(50) | null=YES | default='active'
+COLUMN projects_shadow.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN reasoning_patterns.analyzer_version | text | null=NO | default='patterns-v1'
+COLUMN reasoning_patterns.confidence | numeric | null=YES | default=
+COLUMN reasoning_patterns.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN reasoning_patterns.end_pos | integer | null=NO | default=
+COLUMN reasoning_patterns.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN reasoning_patterns.matched_text | text | null=NO | default=
+COLUMN reasoning_patterns.metadata | jsonb | null=YES | default=
+COLUMN reasoning_patterns.pattern_subtype | text | null=YES | default=
+COLUMN reasoning_patterns.pattern_type | text | null=NO | default=
+COLUMN reasoning_patterns.spindle_id | uuid | null=NO | default=
+COLUMN reasoning_patterns.start_pos | integer | null=NO | default=
+COLUMN schema_migrations.applied_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN schema_migrations.description | text | null=YES | default=
+COLUMN schema_migrations.version | character varying(255) | null=NO | default=
+COLUMN session.createdAt | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN session.expiresAt | timestamp with time zone | null=NO | default=
+COLUMN session.id | text | null=NO | default=
+COLUMN session.ipAddress | text | null=YES | default=
+COLUMN session.token | text | null=NO | default=
+COLUMN session.updatedAt | timestamp with time zone | null=NO | default=
+COLUMN session.userAgent | text | null=YES | default=
+COLUMN session.userId | text | null=NO | default=
+COLUMN session_activities.activity_data | jsonb | null=YES | default='{}'
+COLUMN session_activities.activity_type | text | null=NO | default=
+COLUMN session_activities.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN session_activities.id | integer | null=NO | default=nextval('session_activities_id_seq')
+COLUMN session_activities.occurred_at | timestamp with time zone | null=YES | default=now()
+COLUMN session_activities.session_id | uuid | null=NO | default=
+COLUMN session_files.file_path | text | null=NO | default=
+COLUMN session_files.first_modified | timestamp with time zone | null=YES | default=now()
+COLUMN session_files.id | integer | null=NO | default=nextval('session_files_id_seq')
+COLUMN session_files.last_modified | timestamp with time zone | null=YES | default=now()
+COLUMN session_files.lines_added | integer | null=YES | default=0
+COLUMN session_files.lines_deleted | integer | null=YES | default=0
+COLUMN session_files.session_id | uuid | null=NO | default=
+COLUMN session_files.source | text | null=NO | default=
+COLUMN session_pins.actor | text | null=NO | default=
+COLUMN session_pins.pinned_at | timestamp with time zone | null=NO | default=now()
+COLUMN session_pins.session_id | uuid | null=NO | default=
+COLUMN session_project_mappings.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN session_project_mappings.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN session_project_mappings.metadata | jsonb | null=YES | default='{}'
+COLUMN session_project_mappings.project_id | uuid | null=YES | default=
+COLUMN session_project_mappings.session_id | character varying(255) | null=NO | default=
+COLUMN session_project_mappings.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN sessions.active_branch | character varying(255) | null=YES | default=
+COLUMN sessions.activity_count | integer | null=YES | default=0
+COLUMN sessions.actor | text | null=YES | default=
+COLUMN sessions.agent_display_name | character varying(100) | null=YES | default=
+COLUMN sessions.agent_type | character varying(50) | null=NO | default=
+COLUMN sessions.ai_model | text | null=YES | default=
+COLUMN sessions.commits_contributed | integer | null=YES | default=0
+COLUMN sessions.connection_id | text | null=YES | default=
+COLUMN sessions.context_summary | text | null=YES | default=
+COLUMN sessions.contexts_created | integer | null=NO | default=0
+COLUMN sessions.created_via_connection | text | null=YES | default=
+COLUMN sessions.creation_reason | text | null=YES | default=
+COLUMN sessions.decisions_created | integer | null=NO | default=0
+COLUMN sessions.description | text | null=YES | default=
+COLUMN sessions.display_id | character varying(20) | null=NO | default=
+COLUMN sessions.ended_at | timestamp with time zone | null=YES | default=
+COLUMN sessions.files_modified_count | integer | null=YES | default=0
+COLUMN sessions.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN sessions.input_tokens | bigint | null=NO | default=0
+COLUMN sessions.insights_generated | integer | null=YES | default=0
+COLUMN sessions.ip_address | inet | null=YES | default=
+COLUMN sessions.last_activity_at | timestamp with time zone | null=YES | default=
+COLUMN sessions.last_pattern_analysis | timestamp with time zone | null=YES | default=
+COLUMN sessions.lines_added | integer | null=YES | default=0
+COLUMN sessions.lines_deleted | integer | null=YES | default=0
+COLUMN sessions.lines_net | integer | null=YES | default=0
+COLUMN sessions.metadata | jsonb | null=YES | default='{}'
+COLUMN sessions.output_tokens | bigint | null=NO | default=0
+COLUMN sessions.pattern_preferences | jsonb | null=YES | default='{}'
+COLUMN sessions.productivity_score | numeric | null=YES | default=
+COLUMN sessions.project_id | uuid | null=YES | default=
+COLUMN sessions.session_goal | text | null=YES | default=
+COLUMN sessions.started_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN sessions.status | character varying(20) | null=YES | default='active'
+COLUMN sessions.tags | ARRAY | null=YES | default='{}'
+COLUMN sessions.tasks_completed | integer | null=NO | default=0
+COLUMN sessions.tasks_created | integer | null=NO | default=0
+COLUMN sessions.tasks_updated | integer | null=NO | default=0
+COLUMN sessions.title | character varying(255) | null=YES | default=
+COLUMN sessions.token_id | character varying(255) | null=YES | default=
+COLUMN sessions.tokens_used | integer | null=YES | default=0
+COLUMN sessions.total_tokens | bigint | null=NO | default=0
+COLUMN sessions.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN sessions.user_agent | text | null=YES | default=
+COLUMN sessions.user_id | uuid | null=YES | default=
+COLUMN sessions.working_commit_sha | character varying(40) | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.agent_type | character varying(50) | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.description | text | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.ended_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.id | uuid | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.project_id | uuid | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.started_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.title | character varying(255) | null=YES | default=
+COLUMN sessions_backup_52d295df_9b0d_4b13_812f_c7353b530d7b.updated_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.agent_type | character varying(50) | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.description | text | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.ended_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.id | uuid | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.project_id | uuid | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.started_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.title | character varying(255) | null=YES | default=
+COLUMN sessions_backup_64fbdb1e_d900_4b17_969c_2a34f53de6a3.updated_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_shadow._shadow_created_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN sessions_shadow._shadow_last_sync | timestamp with time zone | null=YES | default=
+COLUMN sessions_shadow._shadow_migration_batch | uuid | null=YES | default=
+COLUMN sessions_shadow._shadow_source_id | uuid | null=YES | default=
+COLUMN sessions_shadow._shadow_sync_status | USER-DEFINED | null=NO | default='pending'
+COLUMN sessions_shadow._shadow_validation_hash | text | null=NO | default=
+COLUMN sessions_shadow._shadow_version | integer | null=NO | default=1
+COLUMN sessions_shadow.active_branch | character varying(255) | null=YES | default=
+COLUMN sessions_shadow.agent_type | character varying(50) | null=NO | default=
+COLUMN sessions_shadow.commits_contributed | integer | null=YES | default=0
+COLUMN sessions_shadow.context_summary | text | null=YES | default=
+COLUMN sessions_shadow.description | text | null=YES | default=
+COLUMN sessions_shadow.ended_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_shadow.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN sessions_shadow.insights_generated | integer | null=YES | default=0
+COLUMN sessions_shadow.last_pattern_analysis | timestamp with time zone | null=YES | default=
+COLUMN sessions_shadow.metadata | jsonb | null=YES | default='{}'
+COLUMN sessions_shadow.pattern_preferences | jsonb | null=YES | default='{}'
+COLUMN sessions_shadow.project_id | uuid | null=NO | default=
+COLUMN sessions_shadow.started_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN sessions_shadow.title | character varying(255) | null=YES | default=
+COLUMN sessions_shadow.tokens_used | integer | null=YES | default=0
+COLUMN sessions_shadow.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN sessions_shadow.working_commit_sha | character varying(40) | null=YES | default=
+COLUMN sessions_status_reconcile_backup_061.backed_up_at | timestamp with time zone | null=NO | default=now()
+COLUMN sessions_status_reconcile_backup_061.ended_at | timestamp with time zone | null=YES | default=
+COLUMN sessions_status_reconcile_backup_061.old_status | text | null=YES | default=
+COLUMN sessions_status_reconcile_backup_061.session_id | uuid | null=NO | default=
+COLUMN spindles.captured_at | timestamp with time zone | null=NO | default=
+COLUMN spindles.content | text | null=NO | default=
+COLUMN spindles.content_hash | text | null=NO | default=
+COLUMN spindles.content_length | integer | null=NO | default=
+COLUMN spindles.created_at | timestamp with time zone | null=YES | default=now()
+COLUMN spindles.embedding | USER-DEFINED | null=YES | default=
+COLUMN spindles.fts | tsvector | null=YES | default=
+COLUMN spindles.id | uuid | null=NO | default=
+COLUMN spindles.model | text | null=NO | default=
+COLUMN spindles.processed_at | timestamp with time zone | null=YES | default=
+COLUMN spindles.processing_error | text | null=YES | default=
+COLUMN spindles.processing_status | text | null=YES | default='pending'
+COLUMN spindles.raw_metadata | jsonb | null=YES | default=
+COLUMN spindles.session_id | uuid | null=YES | default=
+COLUMN spindles.thinking_duration_ms | integer | null=YES | default=
+COLUMN spindles.updated_at | timestamp with time zone | null=YES | default=now()
+COLUMN task_attachments.byte_size | integer | null=NO | default=
+COLUMN task_attachments.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN task_attachments.created_by | character varying(200) | null=YES | default=
+COLUMN task_attachments.data | bytea | null=NO | default=
+COLUMN task_attachments.filename | character varying(255) | null=NO | default=
+COLUMN task_attachments.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN task_attachments.kind | character varying(20) | null=NO | default='before'
+COLUMN task_attachments.mime | character varying(100) | null=NO | default=
+COLUMN task_attachments.project_id | uuid | null=NO | default=
+COLUMN task_attachments.task_id | uuid | null=NO | default=
+COLUMN task_claim_events.actor | character varying(200) | null=YES | default=
+COLUMN task_claim_events.claim_id | uuid | null=YES | default=
+COLUMN task_claim_events.event_type | character varying(40) | null=NO | default=
+COLUMN task_claim_events.expires_at | timestamp with time zone | null=YES | default=
+COLUMN task_claim_events.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN task_claim_events.lease_seconds | integer | null=YES | default=
+COLUMN task_claim_events.metadata | jsonb | null=NO | default='{}'
+COLUMN task_claim_events.new_version | integer | null=YES | default=
+COLUMN task_claim_events.occurred_at | timestamp with time zone | null=NO | default=now()
+COLUMN task_claim_events.old_version | integer | null=YES | default=
+COLUMN task_claim_events.outcome | character varying(20) | null=NO | default=
+COLUMN task_claim_events.previous_claim_id | uuid | null=YES | default=
+COLUMN task_claim_events.project_id | uuid | null=YES | default=
+COLUMN task_claim_events.reason | character varying(40) | null=YES | default=
+COLUMN task_claim_events.task_id | uuid | null=NO | default=
+COLUMN tasks.archived_at | timestamp with time zone | null=YES | default=
+COLUMN tasks.assigned_to | character varying(200) | null=YES | default=
+COLUMN tasks.blocked_on | character varying(16) | null=YES | default=
+COLUMN tasks.claim_actor | character varying(200) | null=YES | default=
+COLUMN tasks.claim_expires_at | timestamp with time zone | null=YES | default=
+COLUMN tasks.claim_id | uuid | null=YES | default=
+COLUMN tasks.closed_at | timestamp with time zone | null=YES | default=
+COLUMN tasks.completed_at | timestamp with time zone | null=YES | default=
+COLUMN tasks.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN tasks.created_by | character varying(200) | null=YES | default=
+COLUMN tasks.declared_limbs | ARRAY | null=YES | default=
+COLUMN tasks.declared_limbs_ambiguous_drops | integer | null=YES | default=
+COLUMN tasks.dependencies | ARRAY | null=YES | default='{}'
+COLUMN tasks.description | text | null=YES | default=
+COLUMN tasks.due_at | timestamp with time zone | null=YES | default=
+COLUMN tasks.embedding | USER-DEFINED | null=YES | default=
+COLUMN tasks.embedding_gemma | USER-DEFINED | null=YES | default=
+COLUMN tasks.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN tasks.metadata | jsonb | null=YES | default='{}'
+COLUMN tasks.priority | character varying(20) | null=NO | default='medium'
+COLUMN tasks.progress | integer | null=YES | default=0
+COLUMN tasks.project_id | uuid | null=NO | default=
+COLUMN tasks.search_idents | tsvector | null=YES | default=
+COLUMN tasks.search_tsv | tsvector | null=YES | default=
+COLUMN tasks.session_id | uuid | null=YES | default=
+COLUMN tasks.stage | character varying(20) | null=YES | default=
+COLUMN tasks.started_at | timestamp with time zone | null=YES | default=
+COLUMN tasks.status | character varying(50) | null=NO | default='todo'
+COLUMN tasks.tags | ARRAY | null=YES | default='{}'
+COLUMN tasks.title | character varying(500) | null=NO | default=
+COLUMN tasks.type | character varying(100) | null=NO | default='general'
+COLUMN tasks.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN tasks.version | integer | null=NO | default=0
+COLUMN technical_decisions.affected_components | ARRAY | null=YES | default=
+COLUMN technical_decisions.alternatives_considered | jsonb | null=YES | default='[]'
+COLUMN technical_decisions.answer_note | text | null=YES | default=
+COLUMN technical_decisions.answer_status | character varying(20) | null=NO | default='decided'
+COLUMN technical_decisions.answered_at | timestamp with time zone | null=YES | default=
+COLUMN technical_decisions.answered_by | text | null=YES | default=
+COLUMN technical_decisions.archived_at | timestamp with time zone | null=YES | default=
+COLUMN technical_decisions.category | text | null=YES | default=
+COLUMN technical_decisions.chosen | text | null=YES | default=
+COLUMN technical_decisions.deadline | timestamp with time zone | null=YES | default=
+COLUMN technical_decisions.decided_by | text | null=YES | default=
+COLUMN technical_decisions.decision_date | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN technical_decisions.decision_type | character varying(50) | null=NO | default=
+COLUMN technical_decisions.declared_limbs | ARRAY | null=YES | default=
+COLUMN technical_decisions.declared_limbs_ambiguous_drops | integer | null=YES | default=
+COLUMN technical_decisions.description | text | null=NO | default=
+COLUMN technical_decisions.embedding | USER-DEFINED | null=YES | default=
+COLUMN technical_decisions.embedding_gemma | USER-DEFINED | null=YES | default=
+COLUMN technical_decisions.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN technical_decisions.impact_level | character varying(20) | null=NO | default='medium'
+COLUMN technical_decisions.implementation_status | character varying(50) | null=YES | default='planned'
+COLUMN technical_decisions.implementing_commits | ARRAY | null=YES | default='{}'
+COLUMN technical_decisions.lessons_learned | text | null=YES | default=
+COLUMN technical_decisions.metadata | jsonb | null=NO | default='{}'
+COLUMN technical_decisions.options | jsonb | null=NO | default='[]'
+COLUMN technical_decisions.outcome_notes | text | null=YES | default=
+COLUMN technical_decisions.outcome_status | character varying(50) | null=YES | default='unknown'
+COLUMN technical_decisions.problem_statement | text | null=YES | default=
+COLUMN technical_decisions.project_id | uuid | null=YES | default=
+COLUMN technical_decisions.question | text | null=YES | default=
+COLUMN technical_decisions.rationale | text | null=NO | default=
+COLUMN technical_decisions.search_idents | tsvector | null=YES | default=
+COLUMN technical_decisions.search_tsv | tsvector | null=YES | default=
+COLUMN technical_decisions.session_id | uuid | null=YES | default=
+COLUMN technical_decisions.stakeholders | ARRAY | null=YES | default=
+COLUMN technical_decisions.status | character varying(50) | null=YES | default='active'
+COLUMN technical_decisions.success_criteria | text | null=YES | default=
+COLUMN technical_decisions.superseded_by | uuid | null=YES | default=
+COLUMN technical_decisions.superseded_date | timestamp with time zone | null=YES | default=
+COLUMN technical_decisions.superseded_reason | text | null=YES | default=
+COLUMN technical_decisions.tags | ARRAY | null=YES | default='{}'
+COLUMN technical_decisions.title | character varying(255) | null=NO | default=
+COLUMN technical_decisions.updated_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
+COLUMN traffic_routing_config.auto_rollback_enabled | boolean | null=NO | default=true
+COLUMN traffic_routing_config.baseline_read_latency_ms | numeric | null=YES | default=
+COLUMN traffic_routing_config.baseline_write_latency_ms | numeric | null=YES | default=
+COLUMN traffic_routing_config.consecutive_failures | integer | null=NO | default=0
+COLUMN traffic_routing_config.created_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN traffic_routing_config.current_read_latency_ms | numeric | null=YES | default=
+COLUMN traffic_routing_config.current_write_latency_ms | numeric | null=YES | default=
+COLUMN traffic_routing_config.cutover_stage | USER-DEFINED | null=NO | default='disabled'
+COLUMN traffic_routing_config.health_status | character varying(20) | null=NO | default='healthy'
+COLUMN traffic_routing_config.last_health_check | timestamp with time zone | null=YES | default=
+COLUMN traffic_routing_config.max_error_rate_percent | numeric | null=NO | default=1.0
+COLUMN traffic_routing_config.max_latency_increase_percent | numeric | null=NO | default=20.0
+COLUMN traffic_routing_config.min_validation_score | numeric | null=NO | default=99.0
+COLUMN traffic_routing_config.next_stage_eligible_at | timestamp with time zone | null=YES | default=
+COLUMN traffic_routing_config.notes | text | null=YES | default=
+COLUMN traffic_routing_config.read_percentage | integer | null=NO | default=0
+COLUMN traffic_routing_config.stage_duration_target_minutes | integer | null=YES | default=60
+COLUMN traffic_routing_config.stage_started_at | timestamp with time zone | null=YES | default=
+COLUMN traffic_routing_config.table_name | character varying(100) | null=NO | default=
+COLUMN traffic_routing_config.updated_at | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN traffic_routing_config.updated_by | character varying(100) | null=YES | default='system'
+COLUMN traffic_routing_config.write_shadow_enabled | boolean | null=NO | default=false
+COLUMN user.createdAt | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN user.email | text | null=NO | default=
+COLUMN user.emailVerified | boolean | null=NO | default=
+COLUMN user.id | text | null=NO | default=
+COLUMN user.image | text | null=YES | default=
+COLUMN user.name | text | null=NO | default=
+COLUMN user.updatedAt | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN user_project_access.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN user_project_access.granted_by | uuid | null=YES | default=
+COLUMN user_project_access.project_id | uuid | null=NO | default=
+COLUMN user_project_access.user_id | uuid | null=NO | default=
+COLUMN verification.createdAt | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN verification.expiresAt | timestamp with time zone | null=NO | default=
+COLUMN verification.id | text | null=NO | default=
+COLUMN verification.identifier | text | null=NO | default=
+COLUMN verification.updatedAt | timestamp with time zone | null=NO | default=CURRENT_TIMESTAMP
+COLUMN verification.value | text | null=NO | default=
+CONSTRAINT _aidis_migrations PRIMARY_KEY _aidis_migrations_pkey :: PRIMARYKEYid
+CONSTRAINT _aidis_migrations UNIQUE _aidis_migrations_filename_key :: UNIQUEfilename
+CONSTRAINT account FOREIGN_KEY account_userId_fkey :: FOREIGNKEY"userId"REFERENCES"user"idONDELETECASCADE
+CONSTRAINT account PRIMARY_KEY account_pkey :: PRIMARYKEYid
+CONSTRAINT active_thread_anchors FOREIGN_KEY active_thread_anchors_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT active_thread_anchors PRIMARY_KEY active_thread_anchors_pkey :: PRIMARYKEYproject_id,session_key
+CONSTRAINT actor_project_defaults FOREIGN_KEY actor_project_defaults_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT actor_project_defaults PRIMARY_KEY actor_project_defaults_pkey :: PRIMARYKEYactor
+CONSTRAINT admin_users CHECK admin_users_theme_check :: CHECKtheme=ANYARRAY'light','dark'
+CONSTRAINT admin_users FOREIGN_KEY admin_users_default_project_id_fkey :: FOREIGNKEYdefault_project_idREFERENCESprojectsidONDELETESETNULL
+CONSTRAINT admin_users PRIMARY_KEY admin_users_pkey :: PRIMARYKEYid
+CONSTRAINT admin_users UNIQUE admin_users_email_key :: UNIQUEemail
+CONSTRAINT admin_users UNIQUE admin_users_username_key :: UNIQUEusername
+CONSTRAINT analysis_session_links CHECK analysis_session_links_confidence_score_check :: CHECKconfidence_score>=0ANDconfidence_score<=1
+CONSTRAINT analysis_session_links CHECK analysis_session_links_link_type_check :: CHECKlink_type=ANYARRAY'analysis','validation','impact_assessment','quality_check','pre_commit','post_commit','debugging','refactoring'
+CONSTRAINT analysis_session_links FOREIGN_KEY analysis_session_links_analysis_session_id_fkey :: FOREIGNKEYanalysis_session_idREFERENCEScode_analysis_sessionsidONDELETECASCADE
+CONSTRAINT analysis_session_links FOREIGN_KEY analysis_session_links_context_id_fkey :: FOREIGNKEYcontext_idREFERENCEScontextsidONDELETESETNULL
+CONSTRAINT analysis_session_links FOREIGN_KEY analysis_session_links_decision_id_fkey :: FOREIGNKEYdecision_idREFERENCEStechnical_decisionsidONDELETESETNULL
+CONSTRAINT analysis_session_links FOREIGN_KEY analysis_session_links_development_session_id_fkey :: FOREIGNKEYdevelopment_session_idREFERENCESsessionsidONDELETECASCADE
+CONSTRAINT analysis_session_links FOREIGN_KEY analysis_session_links_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT analysis_session_links PRIMARY_KEY analysis_session_links_pkey :: PRIMARYKEYid
+CONSTRAINT analysis_session_links UNIQUE analysis_session_links_analysis_session_id_development_sess_key :: UNIQUEanalysis_session_id,development_session_id,link_type
+CONSTRAINT analytics_events FOREIGN_KEY analytics_events_context_id_fkey :: FOREIGNKEYcontext_idREFERENCEScontextsidONDELETESETNULL
+CONSTRAINT analytics_events FOREIGN_KEY analytics_events_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT analytics_events PRIMARY_KEY analytics_events_pkey :: PRIMARYKEYevent_id
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_actor_check :: CHECKactor=ANYARRAY'human','ai','system'
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_completion_tokens_check :: CHECKcompletion_tokensISNULLORcompletion_tokens>=0
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_duration_ms_check :: CHECKduration_msISNULLORduration_ms>=0
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_event_type_check :: CHECKlengthTRIMBOTHFROMevent_type>=1
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_feedback_check :: CHECKfeedbackISNULLORfeedback=ANYARRAY'-1',0,1
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_metadata_valid :: CHECKmetadataISNULLORjsonb_typeofmetadata='object'
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_payload_valid :: CHECKpayloadISNULLORjsonb_typeofpayload='object'
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_prompt_tokens_check :: CHECKprompt_tokensISNULLORprompt_tokens>=0
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_status_check :: CHECKstatusISNULLORstatus=ANYARRAY'open','closed','error','pending','processing'
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_sync_timestamps :: CHECK_shadow_last_syncISNULLOR_shadow_last_sync>=_shadow_created_at
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_tags_check :: CHECKarray_lengthtags,1ISNULLORarray_lengthtags,1<=20
+CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_token_consistency :: CHECKprompt_tokensISNULLANDcompletion_tokensISNULLORprompt_tokensISNOTNULLANDcompletion_tokensISNOTNULL
+CONSTRAINT analytics_events_shadow PRIMARY_KEY analytics_events_shadow_pkey :: PRIMARYKEYevent_id
+CONSTRAINT analyzer_versions PRIMARY_KEY analyzer_versions_pkey :: PRIMARYKEYanalyzer_name
+CONSTRAINT auth_tokens FOREIGN_KEY auth_tokens_user_id_fkey :: FOREIGNKEYuser_idREFERENCESadmin_usersid
+CONSTRAINT auth_tokens PRIMARY_KEY auth_tokens_pkey :: PRIMARYKEYid
+CONSTRAINT auth_tokens UNIQUE auth_tokens_token_id_key :: UNIQUEtoken_id
+CONSTRAINT belief_adjudication_attempts CHECK belief_adjudication_attempts_failed_stage_check :: CHECKfailed_stage=ANYARRAY'provider','provider_init','pairing','derivation','persist','unknown'
+CONSTRAINT belief_adjudication_attempts CHECK belief_adjudication_attempts_failed_tier_check :: CHECKfailed_tier=ANYARRAY'tier1','tier2','single'
+CONSTRAINT belief_adjudication_attempts CHECK belief_adjudication_attempts_outcome_check :: CHECKoutcome=ANYARRAY'completed','failed'
+CONSTRAINT belief_adjudication_attempts CHECK belief_adjudication_attempts_scope_check :: CHECKscope=ANYARRAY'pair','neighbourhood'
+CONSTRAINT belief_adjudication_attempts FOREIGN_KEY belief_adjudication_attempts_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETESETNULL
+CONSTRAINT belief_adjudication_attempts PRIMARY_KEY belief_adjudication_attempts_pkey :: PRIMARYKEYid
+CONSTRAINT belief_adjudication_costs CHECK belief_adjudication_costs_tier_check :: CHECKtier=ANYARRAY'tier1','tier2','single'
+CONSTRAINT belief_adjudication_costs FOREIGN_KEY belief_adjudication_costs_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETESETNULL
+CONSTRAINT belief_adjudication_costs PRIMARY_KEY belief_adjudication_costs_pkey :: PRIMARYKEYid
+CONSTRAINT belief_adjudications CHECK belief_adjudications_a_type_check :: CHECKa_type=ANYARRAY'context','decision','task'
+CONSTRAINT belief_adjudications CHECK belief_adjudications_b_type_check :: CHECKb_type=ANYARRAY'context','decision','task'
+CONSTRAINT belief_adjudications CHECK belief_adjudications_derived_action_check :: CHECKderived_action=ANYARRAY'mint_supersedes','soft_possibly_superseded','none'
+CONSTRAINT belief_adjudications CHECK belief_adjudications_direction_check :: CHECKdirection=ANYARRAY'a_supersedes_b','b_supersedes_a','none'
+CONSTRAINT belief_adjudications CHECK belief_adjudications_mode_check :: CHECKmode=ANYARRAY'replaced','fallback_retained','none'
+CONSTRAINT belief_adjudications CHECK belief_adjudications_verdict_check :: CHECKverdict=ANYARRAY'supersedes','contests','restates','unrelated'
+CONSTRAINT belief_adjudications FOREIGN_KEY belief_adjudications_minted_edge_id_fkey :: FOREIGNKEYminted_edge_idREFERENCESlinksidONDELETESETNULL
+CONSTRAINT belief_adjudications FOREIGN_KEY belief_adjudications_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT belief_adjudications PRIMARY_KEY belief_adjudications_pkey :: PRIMARYKEYid
+CONSTRAINT belief_adjudications UNIQUE belief_adjudications_pair_model_uniq :: UNIQUEpair_key,provider,model
+CONSTRAINT branch_membership_moves CHECK branch_membership_moves_has_an_end :: CHECKfrom_spine_idISNOTNULLORto_spine_idISNOTNULL
+CONSTRAINT branch_membership_moves CHECK branch_membership_moves_not_noop :: CHECKfrom_spine_idISDISTINCTFROMto_spine_id
+CONSTRAINT branch_membership_moves FOREIGN_KEY branch_membership_moves_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT branch_membership_moves PRIMARY_KEY branch_membership_moves_pkey :: PRIMARYKEYid
+CONSTRAINT branch_memberships CHECK branch_memberships_attached_to_type_check :: CHECKattached_to_type=ANYARRAY'context','decision','task'
+CONSTRAINT branch_memberships CHECK branch_memberships_not_self :: CHECKrecord_id<>spine_id
+CONSTRAINT branch_memberships CHECK branch_memberships_record_type_check :: CHECKrecord_type=ANYARRAY'context','decision','task'
+CONSTRAINT branch_memberships CHECK branch_memberships_source_check :: CHECKsource=ANYARRAY'recorded','legacy-approx','assigned'
+CONSTRAINT branch_memberships CHECK branch_memberships_spine_type_check :: CHECKspine_type=ANYARRAY'context','decision','task'
+CONSTRAINT branch_memberships FOREIGN_KEY branch_memberships_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT branch_memberships PRIMARY_KEY branch_memberships_pkey :: PRIMARYKEYrecord_id
+CONSTRAINT branch_positions CHECK branch_positions_declared_has_no_tip_check :: CHECKorigin<>ALLARRAY'declared','byproduct'ORtip_idISNULL
+CONSTRAINT branch_positions CHECK branch_positions_origin_check :: CHECKorigin=ANYARRAY'declared','auto','byproduct','trunk'
+CONSTRAINT branch_positions CHECK branch_positions_spine_type_check :: CHECKspine_type=ANYARRAY'context','decision','task'
+CONSTRAINT branch_positions CHECK branch_positions_tip_pair_check :: CHECKtip_idISNULL=tip_typeISNULL
+CONSTRAINT branch_positions CHECK branch_positions_tip_type_check :: CHECKtip_typeISNULLORtip_type=ANYARRAY'context','decision','task'
+CONSTRAINT branch_positions FOREIGN_KEY branch_positions_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT branch_positions PRIMARY_KEY branch_positions_pkey :: PRIMARYKEYproject_id,session_key
+CONSTRAINT bug_workflow_events FOREIGN_KEY bug_workflow_events_workflow_id_fkey :: FOREIGNKEYworkflow_idREFERENCESbug_workflowsidONDELETECASCADE
+CONSTRAINT bug_workflow_events PRIMARY_KEY bug_workflow_events_pkey :: PRIMARYKEYid
+CONSTRAINT bug_workflow_events UNIQUE unique_workflow_sequence :: UNIQUEworkflow_id,sequence
+CONSTRAINT bug_workflows CHECK valid_state :: CHECKstate=ANYARRAY'draft','submitted','analyzing','proposed','reviewing','approved','changes_requested','rejected','implementing','verifying','completed','failed'
+CONSTRAINT bug_workflows PRIMARY_KEY bug_workflows_pkey :: PRIMARYKEYid
+CONSTRAINT code_analysis_sessions CHECK code_analysis_sessions_analysis_scope_check :: CHECKanalysis_scope=ANYARRAY'full','incremental','targeted','file_specific','commit_diff','branch_diff'
+CONSTRAINT code_analysis_sessions CHECK code_analysis_sessions_session_correlation_confidence_check :: CHECKsession_correlation_confidence>=0ANDsession_correlation_confidence<=1
+CONSTRAINT code_analysis_sessions CHECK code_analysis_sessions_trigger_type_check :: CHECKtrigger_type=ANYARRAY'manual','commit_hook','file_watch','scheduled','session_start','request_analysis','git_status_change','branch_switch','api_request','test_scenario','integration_test'
+CONSTRAINT code_analysis_sessions FOREIGN_KEY code_analysis_sessions_development_session_id_fkey :: FOREIGNKEYdevelopment_session_idREFERENCESsessionsidONDELETESETNULL
+CONSTRAINT code_analysis_sessions FOREIGN_KEY code_analysis_sessions_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT code_analysis_sessions FOREIGN_KEY fk_code_analysis_sessions_commit :: FOREIGNKEYproject_id,commit_shaREFERENCESgit_commitsproject_id,commit_shaONDELETESETNULL
+CONSTRAINT code_analysis_sessions PRIMARY_KEY code_analysis_sessions_pkey :: PRIMARYKEYid
+CONSTRAINT code_components FOREIGN_KEY code_components_last_analysis_session_id_fkey :: FOREIGNKEYlast_analysis_session_idREFERENCEScode_analysis_sessionsidONDELETESETNULL
+CONSTRAINT code_components FOREIGN_KEY code_components_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT code_components PRIMARY_KEY code_components_pkey :: PRIMARYKEYid
+CONSTRAINT code_dependencies FOREIGN_KEY code_dependencies_from_component_id_fkey :: FOREIGNKEYfrom_component_idREFERENCEScode_componentsidONDELETECASCADE
+CONSTRAINT code_dependencies FOREIGN_KEY code_dependencies_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT code_dependencies FOREIGN_KEY code_dependencies_to_component_id_fkey :: FOREIGNKEYto_component_idREFERENCEScode_componentsidONDELETECASCADE
+CONSTRAINT code_dependencies PRIMARY_KEY code_dependencies_pkey :: PRIMARYKEYid
+CONSTRAINT commit_session_links CHECK commit_session_links_confidence_score_check :: CHECKconfidence_score>=0.0ANDconfidence_score<=1.0
+CONSTRAINT commit_session_links CHECK commit_session_links_link_type_check :: CHECKlink_type=ANYARRAY'contributed','reviewed','planned','discussed','debugged','tested','mentioned','related'
+CONSTRAINT commit_session_links FOREIGN_KEY commit_session_links_commit_id_fkey :: FOREIGNKEYcommit_idREFERENCESgit_commitsidONDELETECASCADE
+CONSTRAINT commit_session_links FOREIGN_KEY commit_session_links_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT commit_session_links PRIMARY_KEY commit_session_links_pkey :: PRIMARYKEYid
+CONSTRAINT commit_session_links UNIQUE uq_commit_session_links_unique :: UNIQUEcommit_id,session_id
+CONSTRAINT complexity_metrics CHECK complexity_metrics_cognitive_complexity_score_check :: CHECKcognitive_complexity_score>=0ANDcognitive_complexity_score<=100
+CONSTRAINT complexity_metrics CHECK complexity_metrics_overall_complexity_score_check :: CHECKoverall_complexity_score>=0ANDoverall_complexity_score<=100
+CONSTRAINT complexity_metrics CHECK complexity_metrics_structural_complexity_score_check :: CHECKstructural_complexity_score>=0ANDstructural_complexity_score<=100
+CONSTRAINT complexity_metrics FOREIGN_KEY complexity_metrics_spindle_id_fkey :: FOREIGNKEYspindle_idREFERENCESspindlesidONDELETECASCADE
+CONSTRAINT complexity_metrics PRIMARY_KEY complexity_metrics_pkey :: PRIMARYKEYid
+CONSTRAINT complexity_metrics UNIQUE complexity_metrics_spindle_id_key :: UNIQUEspindle_id
+CONSTRAINT contexts CHECK content_not_empty :: CHECKlengthTRIMBOTHFROMcontent>0
+CONSTRAINT contexts CHECK contexts_context_type_check :: CHECKcontext_type=ANYARRAY'code','decision','error','discussion','planning','completion','milestone','reflections','handoff','lessons','note'
+CONSTRAINT contexts CHECK contexts_embedding_gemma_dimension_check :: CHECKembedding_gemmaISNULLORvector_dimsembedding_gemma=768
+CONSTRAINT contexts CHECK contexts_pattern_relevance_score_check :: CHECKpattern_relevance_score>=0ANDpattern_relevance_score<=1
+CONSTRAINT contexts CHECK contexts_relevance_score_check :: CHECKrelevance_score>=0ANDrelevance_score<=10
+CONSTRAINT contexts FOREIGN_KEY contexts_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT contexts FOREIGN_KEY contexts_session_id_fkey :: FOREIGNKEYsession_idREFERENCESsessionsidONDELETESETNULL
+CONSTRAINT contexts PRIMARY_KEY contexts_pkey :: PRIMARYKEYid
+CONSTRAINT contexts_shadow CHECK contexts_shadow_content_check :: CHECKlengthTRIMBOTHFROMcontent>0
+CONSTRAINT contexts_shadow CHECK contexts_shadow_content_reasonable :: CHECKlengthcontent<=1000000
+CONSTRAINT contexts_shadow CHECK contexts_shadow_context_type_check :: CHECKcontext_type=ANYARRAY'code','decision','error','discussion','planning','completion','milestone'
+CONSTRAINT contexts_shadow CHECK contexts_shadow_metadata_valid :: CHECKjsonb_typeofmetadata='object'
+CONSTRAINT contexts_shadow CHECK contexts_shadow_pattern_relevance_score_check :: CHECKpattern_relevance_scoreISNULLORpattern_relevance_score>=0ANDpattern_relevance_score<=1
+CONSTRAINT contexts_shadow CHECK contexts_shadow_related_commit_sha_check :: CHECKrelated_commit_shaISNULLORrelated_commit_sha~'^a-f0-9{40}$'
+CONSTRAINT contexts_shadow CHECK contexts_shadow_relevance_score_check :: CHECKrelevance_score>=0ANDrelevance_score<=10
+CONSTRAINT contexts_shadow CHECK contexts_shadow_sync_timestamps :: CHECK_shadow_last_syncISNULLOR_shadow_last_sync>=_shadow_created_at
+CONSTRAINT contexts_shadow CHECK contexts_shadow_tags_check :: CHECKarray_lengthtags,1ISNULLORarray_lengthtags,1<=50
+CONSTRAINT contexts_shadow CHECK contexts_shadow_tags_valid :: CHECKarray_lengthtags,1ISNULLORarray_lengthtags,1>0
+CONSTRAINT contexts_shadow CHECK embedding_dimension_1536 :: CHECKembeddingISNULLORvector_dimsembedding=1536
+CONSTRAINT contexts_shadow PRIMARY_KEY contexts_shadow_pkey :: PRIMARYKEYid
+CONSTRAINT decision_impact_analysis CHECK decision_impact_analysis_analysis_method_check :: CHECKanalysis_method=ANYARRAY'manual_review','automated_analysis','stakeholder_feedback','performance_correlation','timeline_analysis','dependency_graph'
+CONSTRAINT decision_impact_analysis CHECK decision_impact_analysis_complexity_impact_score_check :: CHECKcomplexity_impact_score>='-10'ANDcomplexity_impact_score<=10
+CONSTRAINT decision_impact_analysis CHECK decision_impact_analysis_confidence_score_check :: CHECKconfidence_score>=0ANDconfidence_score<=1
+CONSTRAINT decision_impact_analysis CHECK decision_impact_analysis_impact_direction_check :: CHECKimpact_direction=ANYARRAY'positive','negative','neutral'
+CONSTRAINT decision_impact_analysis CHECK decision_impact_analysis_impact_strength_check :: CHECKimpact_strength=ANYARRAY'low','medium','high'
+CONSTRAINT decision_impact_analysis CHECK decision_impact_analysis_impact_type_check :: CHECKimpact_type=ANYARRAY'enables','conflicts_with','depends_on','supersedes','complements','complicates','simplifies','blocks','accelerates'
+CONSTRAINT decision_impact_analysis FOREIGN_KEY decision_impact_analysis_impacted_decision_id_fkey :: FOREIGNKEYimpacted_decision_idREFERENCEStechnical_decisionsidONDELETECASCADE
+CONSTRAINT decision_impact_analysis FOREIGN_KEY decision_impact_analysis_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT decision_impact_analysis FOREIGN_KEY decision_impact_analysis_source_decision_id_fkey :: FOREIGNKEYsource_decision_idREFERENCEStechnical_decisionsidONDELETECASCADE
+CONSTRAINT decision_impact_analysis PRIMARY_KEY decision_impact_analysis_pkey :: PRIMARYKEYid
+CONSTRAINT decision_impact_analysis UNIQUE decision_impact_analysis_source_decision_id_impacted_decisi_key :: UNIQUEsource_decision_id,impacted_decision_id,impact_type
+CONSTRAINT decision_learning_insights CHECK decision_learning_insights_application_success_rate_check :: CHECKapplication_success_rate>=0ANDapplication_success_rate<=1
+CONSTRAINT decision_learning_insights CHECK decision_learning_insights_confidence_score_check :: CHECKconfidence_score>=0ANDconfidence_score<=1
+CONSTRAINT decision_learning_insights CHECK decision_learning_insights_insight_type_check :: CHECKinsight_type=ANYARRAY'success_pattern','failure_pattern','risk_indicator','best_practice','anti_pattern','correlation','threshold','timing_pattern'
+CONSTRAINT decision_learning_insights CHECK decision_learning_insights_status_check :: CHECKstatus=ANYARRAY'active','deprecated','under_review'
+CONSTRAINT decision_learning_insights FOREIGN_KEY decision_learning_insights_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT decision_learning_insights PRIMARY_KEY decision_learning_insights_pkey :: PRIMARYKEYid
+CONSTRAINT decision_learning_insights UNIQUE decision_learning_insights_project_id_pattern_name_key :: UNIQUEproject_id,pattern_name
+CONSTRAINT decision_metrics CHECK decision_metrics_clarity_score_check :: CHECKclarity_score>=0ANDclarity_score<=100
+CONSTRAINT decision_metrics CHECK decision_metrics_coherence_score_check :: CHECKcoherence_score>=0ANDcoherence_score<=100
+CONSTRAINT decision_metrics CHECK decision_metrics_confidence_level_check :: CHECKconfidence_level=ANYARRAY'high','medium','low','uncertain'
+CONSTRAINT decision_metrics CHECK decision_metrics_decision_quality_score_check :: CHECKdecision_quality_score>=0ANDdecision_quality_score<=100
+CONSTRAINT decision_metrics FOREIGN_KEY decision_metrics_spindle_id_fkey :: FOREIGNKEYspindle_idREFERENCESspindlesidONDELETECASCADE
+CONSTRAINT decision_metrics PRIMARY_KEY decision_metrics_pkey :: PRIMARYKEYid
+CONSTRAINT decision_metrics UNIQUE decision_metrics_spindle_id_key :: UNIQUEspindle_id
+CONSTRAINT decision_outcomes CHECK decision_outcomes_confidence_level_check :: CHECKconfidence_level=ANYARRAY'low','medium','high'
+CONSTRAINT decision_outcomes CHECK decision_outcomes_evidence_type_check :: CHECKevidence_type=ANYARRAY'metrics','user_feedback','performance_data','cost_analysis','developer_survey','incident_report','code_review','automated_test'
+CONSTRAINT decision_outcomes CHECK decision_outcomes_outcome_score_check :: CHECKoutcome_score>=1ANDoutcome_score<=10
+CONSTRAINT decision_outcomes CHECK decision_outcomes_outcome_status_check :: CHECKoutcome_status=ANYARRAY'in_progress','successful','failed','mixed','abandoned','superseded'
+CONSTRAINT decision_outcomes CHECK decision_outcomes_outcome_type_check :: CHECKoutcome_type=ANYARRAY'implementation','performance','maintenance','cost','adoption','security','scalability','developer_experience','user_experience'
+CONSTRAINT decision_outcomes FOREIGN_KEY decision_outcomes_decision_id_fkey :: FOREIGNKEYdecision_idREFERENCEStechnical_decisionsidONDELETECASCADE
+CONSTRAINT decision_outcomes FOREIGN_KEY decision_outcomes_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT decision_outcomes PRIMARY_KEY decision_outcomes_pkey :: PRIMARYKEYid
+CONSTRAINT decision_retrospectives CHECK decision_retrospectives_overall_satisfaction_check :: CHECKoverall_satisfaction>=1ANDoverall_satisfaction<=10
+CONSTRAINT decision_retrospectives CHECK decision_retrospectives_recommendation_to_others_check :: CHECKrecommendation_to_others>=1ANDrecommendation_to_others<=10
+CONSTRAINT decision_retrospectives CHECK decision_retrospectives_retrospective_quality_score_check :: CHECKretrospective_quality_score>=1ANDretrospective_quality_score<=10
+CONSTRAINT decision_retrospectives CHECK decision_retrospectives_retrospective_type_check :: CHECKretrospective_type=ANYARRAY'quarterly','post_implementation','incident_driven','milestone','ad_hoc'
+CONSTRAINT decision_retrospectives FOREIGN_KEY decision_retrospectives_decision_id_fkey :: FOREIGNKEYdecision_idREFERENCEStechnical_decisionsidONDELETECASCADE
+CONSTRAINT decision_retrospectives FOREIGN_KEY decision_retrospectives_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT decision_retrospectives PRIMARY_KEY decision_retrospectives_pkey :: PRIMARYKEYid
+CONSTRAINT dual_write_config CHECK dual_write_config_sync_mode_check :: CHECKsync_mode=ANYARRAY'sync','async','disabled'
+CONSTRAINT dual_write_config PRIMARY_KEY dual_write_config_pkey :: PRIMARYKEYtable_name
+CONSTRAINT dual_write_stats CHECK dual_write_stats_operation_check :: CHECKoperation=ANYARRAY'INSERT','UPDATE','DELETE'
+CONSTRAINT dual_write_stats PRIMARY_KEY dual_write_stats_pkey :: PRIMARYKEYid
+CONSTRAINT envelope_audit PRIMARY_KEY envelope_audit_pkey :: PRIMARYKEYid
+CONSTRAINT event_log FOREIGN_KEY event_log_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT event_log FOREIGN_KEY event_log_session_id_fkey :: FOREIGNKEYsession_idREFERENCESsessionsid
+CONSTRAINT event_log PRIMARY_KEY event_log_pkey :: PRIMARYKEYid
+CONSTRAINT feedback CHECK feedback_message_check :: CHECKlengthTRIMBOTHFROMmessage>0
+CONSTRAINT feedback CHECK feedback_severity_check :: CHECKseverity=ANYARRAY'low','medium','high'
+CONSTRAINT feedback CHECK feedback_type_check :: CHECKtype=ANYARRAY'bug','idea','question'
+CONSTRAINT feedback FOREIGN_KEY feedback_user_id_fkey :: FOREIGNKEYuser_idREFERENCESadmin_usersidONDELETESETNULL
+CONSTRAINT feedback PRIMARY_KEY feedback_pkey :: PRIMARYKEYid
+CONSTRAINT file_analysis_cache FOREIGN_KEY file_analysis_cache_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT file_analysis_cache PRIMARY_KEY file_analysis_cache_pkey :: PRIMARYKEYid
+CONSTRAINT file_analysis_cache UNIQUE file_analysis_cache_project_id_file_path_file_hash_key :: UNIQUEproject_id,file_path,file_hash
+CONSTRAINT git_branches CHECK git_branches_active_deleted_logic :: CHECKis_active=trueANDdeleted_atISNULLORis_active=false
+CONSTRAINT git_branches CHECK git_branches_commit_count_check :: CHECKcommit_count>=0
+CONSTRAINT git_branches CHECK git_branches_current_commit_sha_format :: CHECKcurrent_commit_shaISNULLORcurrent_commit_sha~'^a-f0-9{40}$'
+CONSTRAINT git_branches CHECK git_branches_current_sha_check :: CHECKcurrent_sha~'^a-f0-9{40}$'
+CONSTRAINT git_branches CHECK git_branches_stats_positive :: CHECKcommits_ahead>=0ANDcommits_behind>=0ANDtotal_commits>=0ANDunique_authors>=0
+CONSTRAINT git_branches FOREIGN_KEY git_branches_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT git_branches PRIMARY_KEY git_branches_pkey :: PRIMARYKEYid
+CONSTRAINT git_branches UNIQUE uq_git_branches_project_name :: UNIQUEproject_id,branch_name
+CONSTRAINT git_commits CHECK git_commits_author_email_check :: CHECKauthor_email~'^^@+@^@+\.^@+$'
+CONSTRAINT git_commits CHECK git_commits_check :: CHECKcommitter_date>=author_date
+CONSTRAINT git_commits CHECK git_commits_commit_sha_check :: CHECKcommit_sha~'^a-f0-9{40}$'
+CONSTRAINT git_commits CHECK git_commits_committer_email_check :: CHECKcommitter_email~'^^@+@^@+\.^@+$'
+CONSTRAINT git_commits CHECK git_commits_deletions_check :: CHECKdeletions>=0
+CONSTRAINT git_commits CHECK git_commits_files_changed_check :: CHECKfiles_changed>=0
+CONSTRAINT git_commits CHECK git_commits_insertions_check :: CHECKinsertions>=0
+CONSTRAINT git_commits CHECK git_commits_merge_strategy_values :: CHECKmerge_strategyISNULLORmerge_strategy=ANYARRAY'recursive','ours','theirs','octopus','resolve','subtree'
+CONSTRAINT git_commits CHECK git_commits_message_check :: CHECKlengthTRIMBOTHFROMmessage>0
+CONSTRAINT git_commits CHECK git_commits_tree_sha_format :: CHECKtree_shaISNULLORtree_sha~'^a-f0-9{40}$'
+CONSTRAINT git_commits FOREIGN_KEY git_commits_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT git_commits PRIMARY_KEY git_commits_pkey :: PRIMARYKEYid
+CONSTRAINT git_commits UNIQUE uq_git_commits_project_sha :: UNIQUEproject_id,commit_sha
+CONSTRAINT git_file_changes CHECK git_file_changes_change_type_check :: CHECKchange_type=ANYARRAY'added','modified','deleted','renamed','copied','type_changed','typechange'
+CONSTRAINT git_file_changes CHECK git_file_changes_file_mode_format :: CHECKold_file_modeISNULLORold_file_mode~'^0-7{6}$'ANDnew_file_modeISNULLORnew_file_mode~'^0-7{6}$'
+CONSTRAINT git_file_changes CHECK git_file_changes_lines_added_check :: CHECKlines_added>=0
+CONSTRAINT git_file_changes CHECK git_file_changes_lines_removed_check :: CHECKlines_removed>=0
+CONSTRAINT git_file_changes FOREIGN_KEY git_file_changes_commit_id_fkey :: FOREIGNKEYcommit_idREFERENCESgit_commitsidONDELETECASCADE
+CONSTRAINT git_file_changes FOREIGN_KEY git_file_changes_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT git_file_changes PRIMARY_KEY git_file_changes_pkey :: PRIMARYKEYid
+CONSTRAINT jwks PRIMARY_KEY jwks_pkey :: PRIMARYKEYid
+CONSTRAINT links CHECK links_edge_type_check :: CHECKedge_type=ANYARRAY'decided_by','caused','built_by','supersedes','possibly_supersedes','learned_from','proposed_by','informs','produced_outcome','depends_on','subtask_of','related_to'
+CONSTRAINT links CHECK links_from_type_check :: CHECKfrom_type=ANYARRAY'context','decision','task'
+CONSTRAINT links CHECK links_mint_via_nonempty :: CHECKbtrimmint_via<>''
+CONSTRAINT links CHECK links_supersedes_declared_only :: CHECKedge_type<>'supersedes'ORprovenance_class='declared'
+CONSTRAINT links CHECK links_to_type_check :: CHECKto_type=ANYARRAY'context','decision','task'
+CONSTRAINT links FOREIGN_KEY links_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT links PRIMARY_KEY links_pkey :: PRIMARYKEYid
+CONSTRAINT links UNIQUE links_from_to_edge_uniq :: UNIQUEfrom_id,to_id,edge_type
+CONSTRAINT oauthAccessToken FOREIGN_KEY oauthAccessToken_clientId_fkey :: FOREIGNKEY"clientId"REFERENCES"oauthClient""clientId"ONDELETECASCADE
+CONSTRAINT oauthAccessToken FOREIGN_KEY oauthAccessToken_refreshId_fkey :: FOREIGNKEY"refreshId"REFERENCES"oauthRefreshToken"idONDELETECASCADE
+CONSTRAINT oauthAccessToken FOREIGN_KEY oauthAccessToken_sessionId_fkey :: FOREIGNKEY"sessionId"REFERENCESsessionidONDELETESETNULL
+CONSTRAINT oauthAccessToken FOREIGN_KEY oauthAccessToken_userId_fkey :: FOREIGNKEY"userId"REFERENCES"user"idONDELETECASCADE
+CONSTRAINT oauthAccessToken PRIMARY_KEY oauthAccessToken_pkey :: PRIMARYKEYid
+CONSTRAINT oauthAccessToken UNIQUE oauthAccessToken_token_key :: UNIQUEtoken
+CONSTRAINT oauthClient FOREIGN_KEY oauthClient_userId_fkey :: FOREIGNKEY"userId"REFERENCES"user"idONDELETECASCADE
+CONSTRAINT oauthClient PRIMARY_KEY oauthClient_pkey :: PRIMARYKEYid
+CONSTRAINT oauthClient UNIQUE oauthClient_clientId_key :: UNIQUE"clientId"
+CONSTRAINT oauthConsent FOREIGN_KEY oauthConsent_clientId_fkey :: FOREIGNKEY"clientId"REFERENCES"oauthClient""clientId"ONDELETECASCADE
+CONSTRAINT oauthConsent FOREIGN_KEY oauthConsent_userId_fkey :: FOREIGNKEY"userId"REFERENCES"user"idONDELETECASCADE
+CONSTRAINT oauthConsent PRIMARY_KEY oauthConsent_pkey :: PRIMARYKEYid
+CONSTRAINT oauthRefreshToken FOREIGN_KEY oauthRefreshToken_clientId_fkey :: FOREIGNKEY"clientId"REFERENCES"oauthClient""clientId"ONDELETECASCADE
+CONSTRAINT oauthRefreshToken FOREIGN_KEY oauthRefreshToken_sessionId_fkey :: FOREIGNKEY"sessionId"REFERENCESsessionidONDELETESETNULL
+CONSTRAINT oauthRefreshToken FOREIGN_KEY oauthRefreshToken_userId_fkey :: FOREIGNKEY"userId"REFERENCES"user"idONDELETECASCADE
+CONSTRAINT oauthRefreshToken PRIMARY_KEY oauthRefreshToken_pkey :: PRIMARYKEYid
+CONSTRAINT oauthRefreshToken UNIQUE oauthRefreshToken_token_key :: UNIQUEtoken
+CONSTRAINT productivity_config CHECK valid_config_name :: CHECKlengthconfig_name>0
+CONSTRAINT productivity_config PRIMARY_KEY productivity_config_pkey :: PRIMARYKEYid
+CONSTRAINT productivity_config UNIQUE productivity_config_config_name_key :: UNIQUEconfig_name
+CONSTRAINT projects CHECK projects_status_check :: CHECKstatus=ANYARRAY'active','archived','completed','paused'
+CONSTRAINT projects PRIMARY_KEY projects_pkey :: PRIMARYKEYid
+CONSTRAINT projects UNIQUE projects_name_key :: UNIQUEname
+CONSTRAINT projects_shadow CHECK projects_shadow_description_reasonable :: CHECKdescriptionISNULLORlengthdescription<=10000
+CONSTRAINT projects_shadow CHECK projects_shadow_metadata_valid :: CHECKjsonb_typeofmetadata='object'
+CONSTRAINT projects_shadow CHECK projects_shadow_name_length :: CHECKlengthTRIMBOTHFROMname>=1ANDlengthname<=255
+CONSTRAINT projects_shadow CHECK projects_shadow_status_check :: CHECKstatus=ANYARRAY'active','archived','completed','paused','migrating'
+CONSTRAINT projects_shadow CHECK projects_shadow_sync_timestamps :: CHECK_shadow_last_syncISNULLOR_shadow_last_sync>=_shadow_created_at
+CONSTRAINT projects_shadow CHECK valid_git_repo_url :: CHECKgit_repo_urlISNULLORgit_repo_url~'^https?://.*\.git$'ORgit_repo_url~'^git@.*:.*\.git$'ORgit_repo_url~'^https://github\.com/.*$'
+CONSTRAINT projects_shadow CHECK valid_root_directory :: CHECKroot_directoryISNULLORroot_directory~'^/^/\0++/?$'
+CONSTRAINT projects_shadow PRIMARY_KEY projects_shadow_pkey :: PRIMARYKEYid
+CONSTRAINT reasoning_patterns CHECK reasoning_patterns_check :: CHECKend_pos>=start_pos
+CONSTRAINT reasoning_patterns CHECK reasoning_patterns_confidence_check :: CHECKconfidence>=0ANDconfidence<=1
+CONSTRAINT reasoning_patterns CHECK reasoning_patterns_start_pos_check :: CHECKstart_pos>=1
+CONSTRAINT reasoning_patterns FOREIGN_KEY reasoning_patterns_spindle_id_fkey :: FOREIGNKEYspindle_idREFERENCESspindlesidONDELETECASCADE
+CONSTRAINT reasoning_patterns PRIMARY_KEY reasoning_patterns_pkey :: PRIMARYKEYid
+CONSTRAINT schema_migrations PRIMARY_KEY schema_migrations_pkey :: PRIMARYKEYversion
+CONSTRAINT session FOREIGN_KEY session_userId_fkey :: FOREIGNKEY"userId"REFERENCES"user"idONDELETECASCADE
+CONSTRAINT session PRIMARY_KEY session_pkey :: PRIMARYKEYid
+CONSTRAINT session UNIQUE session_token_key :: UNIQUEtoken
+CONSTRAINT session_activities FOREIGN_KEY fk_session_activities_session :: FOREIGNKEYsession_idREFERENCESsessionsidONDELETECASCADE
+CONSTRAINT session_activities PRIMARY_KEY session_activities_pkey :: PRIMARYKEYid
+CONSTRAINT session_files CHECK valid_file_source :: CHECKsource=ANYARRAY'tool','git','manual'
+CONSTRAINT session_files FOREIGN_KEY fk_session_files_session :: FOREIGNKEYsession_idREFERENCESsessionsidONDELETECASCADE
+CONSTRAINT session_files PRIMARY_KEY session_files_pkey :: PRIMARYKEYid
+CONSTRAINT session_files UNIQUE unique_session_file :: UNIQUEsession_id,file_path
+CONSTRAINT session_pins FOREIGN_KEY session_pins_session_id_fkey :: FOREIGNKEYsession_idREFERENCESsessionsidONDELETECASCADE
+CONSTRAINT session_pins PRIMARY_KEY session_pins_pkey :: PRIMARYKEYactor
+CONSTRAINT session_project_mappings FOREIGN_KEY session_project_mappings_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT session_project_mappings PRIMARY_KEY session_project_mappings_pkey :: PRIMARYKEYid
+CONSTRAINT session_project_mappings UNIQUE unique_session_mapping :: UNIQUEsession_id
+CONSTRAINT sessions CHECK reasonable_session_duration :: CHECKended_atISNULLORended_at>=started_at
+CONSTRAINT sessions CHECK reasonable_title_length :: CHECKtitleISNULLORlengthtitle>=1ANDlengthtitle<=255
+CONSTRAINT sessions CHECK sessions_creation_reason_check :: CHECKcreation_reasonISNULLORcreation_reason=ANYARRAY'explicit','automatic-write','reconnect'
+CONSTRAINT sessions CHECK sessions_status_check :: CHECKstatus=ANYARRAY'active','inactive','disconnected','interrupted','ended','dormant'
+CONSTRAINT sessions FOREIGN_KEY sessions_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT sessions FOREIGN_KEY sessions_user_id_fkey :: FOREIGNKEYuser_idREFERENCESadmin_usersidONDELETESETNULL
+CONSTRAINT sessions PRIMARY_KEY sessions_pkey :: PRIMARYKEYid
+CONSTRAINT sessions UNIQUE sessions_display_id_key :: UNIQUEdisplay_id
+CONSTRAINT sessions_shadow CHECK sessions_shadow_agent_type_check :: CHECKlengthTRIMBOTHFROMagent_type>=1
+CONSTRAINT sessions_shadow CHECK sessions_shadow_commits_contributed_check :: CHECKcommits_contributed>=0
+CONSTRAINT sessions_shadow CHECK sessions_shadow_description_check :: CHECKdescriptionISNULLORlengthdescription<=10000
+CONSTRAINT sessions_shadow CHECK sessions_shadow_insights_generated_check :: CHECKinsights_generated>=0
+CONSTRAINT sessions_shadow CHECK sessions_shadow_metadata_valid :: CHECKjsonb_typeofmetadata='object'ANDjsonb_typeofpattern_preferences='object'
+CONSTRAINT sessions_shadow CHECK sessions_shadow_pattern_analysis_after_start :: CHECKlast_pattern_analysisISNULLORlast_pattern_analysis>=started_at
+CONSTRAINT sessions_shadow CHECK sessions_shadow_reasonable_duration :: CHECKended_atISNULLORended_at>=started_at
+CONSTRAINT sessions_shadow CHECK sessions_shadow_sync_timestamps :: CHECK_shadow_last_syncISNULLOR_shadow_last_sync>=_shadow_created_at
+CONSTRAINT sessions_shadow CHECK sessions_shadow_title_check :: CHECKtitleISNULLORlengthTRIMBOTHFROMtitle>=1ANDlengthtitle<=255
+CONSTRAINT sessions_shadow CHECK sessions_shadow_tokens_used_check :: CHECKtokens_used>=0
+CONSTRAINT sessions_shadow CHECK sessions_shadow_working_commit_sha_check :: CHECKworking_commit_shaISNULLORworking_commit_sha~'^a-f0-9{40}$'
+CONSTRAINT sessions_shadow PRIMARY_KEY sessions_shadow_pkey :: PRIMARYKEYid
+CONSTRAINT sessions_status_reconcile_backup_061 PRIMARY_KEY sessions_status_reconcile_backup_061_pkey :: PRIMARYKEYsession_id
+CONSTRAINT spindles CHECK spindles_processing_status_check :: CHECKprocessing_status=ANYARRAY'pending','running','done','error'
+CONSTRAINT spindles FOREIGN_KEY spindles_session_id_fkey :: FOREIGNKEYsession_idREFERENCESsessionsid
+CONSTRAINT spindles PRIMARY_KEY spindles_pkey :: PRIMARYKEYid
+CONSTRAINT task_attachments CHECK task_attachments_byte_size_check :: CHECKbyte_size>0ANDbyte_size<=5242880
+CONSTRAINT task_attachments CHECK task_attachments_kind_check :: CHECKkind=ANYARRAY'before','evidence'
+CONSTRAINT task_attachments FOREIGN_KEY task_attachments_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsid
+CONSTRAINT task_attachments FOREIGN_KEY task_attachments_task_id_fkey :: FOREIGNKEYtask_idREFERENCEStasksidONDELETECASCADE
+CONSTRAINT task_attachments PRIMARY_KEY task_attachments_pkey :: PRIMARYKEYid
+CONSTRAINT task_claim_events FOREIGN_KEY task_claim_events_task_id_fkey :: FOREIGNKEYtask_idREFERENCEStasksidONDELETECASCADE
+CONSTRAINT task_claim_events PRIMARY_KEY task_claim_events_pkey :: PRIMARYKEYid
+CONSTRAINT tasks CHECK tasks_blocked_on_check :: CHECKblocked_onISNULLORblocked_on=ANYARRAY'human','agent','external'
+CONSTRAINT tasks CHECK tasks_embedding_gemma_dimension_check :: CHECKembedding_gemmaISNULLORvector_dimsembedding_gemma=768
+CONSTRAINT tasks CHECK tasks_progress_check :: CHECKprogress>=0ANDprogress<=100
+CONSTRAINT tasks CHECK tasks_stage_check :: CHECKstageISNULLORstage=ANYARRAY'draft','ready','claimed','verifying','evidence','merged','deployed'
+CONSTRAINT tasks FOREIGN_KEY fk_tasks_project :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT tasks FOREIGN_KEY fk_tasks_session_id :: FOREIGNKEYsession_idREFERENCESsessionsidONDELETESETNULL
+CONSTRAINT tasks PRIMARY_KEY tasks_pkey :: PRIMARYKEYid
+CONSTRAINT technical_decisions CHECK technical_decisions_answer_status_check :: CHECKanswer_status=ANYARRAY'open','discussing','decided'
+CONSTRAINT technical_decisions CHECK technical_decisions_decision_type_check :: CHECKdecision_type=ANYARRAY'architecture','library','framework','pattern','api_design','database','deployment','security','performance','ui_ux','testing','tooling','process','naming_convention','code_style'
+CONSTRAINT technical_decisions CHECK technical_decisions_embedding_dimension_check :: CHECKembeddingISNULLORvector_dimsembedding=1536
+CONSTRAINT technical_decisions CHECK technical_decisions_embedding_gemma_dimension_check :: CHECKembedding_gemmaISNULLORvector_dimsembedding_gemma=768
+CONSTRAINT technical_decisions CHECK technical_decisions_impact_level_check :: CHECKimpact_level=ANYARRAY'low','medium','high','critical'
+CONSTRAINT technical_decisions CHECK technical_decisions_implementation_status_check :: CHECKimplementation_status=ANYARRAY'planned','in_progress','implemented','validated','deprecated'
+CONSTRAINT technical_decisions CHECK technical_decisions_outcome_status_check :: CHECKoutcome_status=ANYARRAY'unknown','successful','failed','mixed','too_early'
+CONSTRAINT technical_decisions CHECK technical_decisions_status_check :: CHECKstatus=ANYARRAY'active','deprecated','superseded','under_review'
+CONSTRAINT technical_decisions FOREIGN_KEY technical_decisions_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT technical_decisions FOREIGN_KEY technical_decisions_session_id_fkey :: FOREIGNKEYsession_idREFERENCESsessionsidONDELETESETNULL
+CONSTRAINT technical_decisions FOREIGN_KEY technical_decisions_superseded_by_fkey :: FOREIGNKEYsuperseded_byREFERENCEStechnical_decisionsid
+CONSTRAINT technical_decisions PRIMARY_KEY technical_decisions_pkey :: PRIMARYKEYid
+CONSTRAINT traffic_routing_config CHECK traffic_routing_config_health_status_check :: CHECKhealth_status=ANYARRAY'healthy','warning','error','emergency_stop'
+CONSTRAINT traffic_routing_config CHECK traffic_routing_config_read_percentage_check :: CHECKread_percentage>=0ANDread_percentage<=100
+CONSTRAINT traffic_routing_config PRIMARY_KEY traffic_routing_config_pkey :: PRIMARYKEYtable_name
+CONSTRAINT user PRIMARY_KEY user_pkey :: PRIMARYKEYid
+CONSTRAINT user UNIQUE user_email_key :: UNIQUEemail
+CONSTRAINT user_project_access FOREIGN_KEY user_project_access_granted_by_fkey :: FOREIGNKEYgranted_byREFERENCESadmin_usersidONDELETESETNULL
+CONSTRAINT user_project_access FOREIGN_KEY user_project_access_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
+CONSTRAINT user_project_access FOREIGN_KEY user_project_access_user_id_fkey :: FOREIGNKEYuser_idREFERENCESadmin_usersidONDELETECASCADE
+CONSTRAINT user_project_access PRIMARY_KEY user_project_access_pkey :: PRIMARYKEYuser_id,project_id
+CONSTRAINT verification PRIMARY_KEY verification_pkey :: PRIMARYKEYid
+ENUM cutover_stage = disabled,dual_write,test_1,test_10,half_50,full_100,completed,rolled_back
+ENUM shadow_sync_status = pending,synced,conflict,migrated,validated
+ENUM task_type_enum = feature,bug,bugfix,refactor,test,review,docs,documentation,devops,general
+INDEX _aidis_migrations._aidis_migrations_filename_key :: CREATE UNIQUE INDEX _aidis_migrations_filename_key ON _aidis_migrations USING btree (filename)
+INDEX _aidis_migrations._aidis_migrations_pkey :: CREATE UNIQUE INDEX _aidis_migrations_pkey ON _aidis_migrations USING btree (id)
+INDEX _aidis_migrations.idx_migrations_number :: CREATE INDEX idx_migrations_number ON _aidis_migrations USING btree (migration_number)
+INDEX account.account_pkey :: CREATE UNIQUE INDEX account_pkey ON account USING btree (id)
+INDEX account.account_userId_idx :: CREATE INDEX "account_userId_idx" ON account USING btree ("userId")
+INDEX active_thread_anchors.active_thread_anchors_pkey :: CREATE UNIQUE INDEX active_thread_anchors_pkey ON active_thread_anchors USING btree (project_id, session_key)
+INDEX active_thread_anchors.idx_active_thread_anchors_project_recent :: CREATE INDEX idx_active_thread_anchors_project_recent ON active_thread_anchors USING btree (project_id, updated_at DESC)
+INDEX actor_project_defaults.actor_project_defaults_pkey :: CREATE UNIQUE INDEX actor_project_defaults_pkey ON actor_project_defaults USING btree (actor)
+INDEX actor_project_defaults.idx_actor_project_defaults_project :: CREATE INDEX idx_actor_project_defaults_project ON actor_project_defaults USING btree (project_id)
+INDEX admin_users.admin_users_email_key :: CREATE UNIQUE INDEX admin_users_email_key ON admin_users USING btree (email)
+INDEX admin_users.admin_users_pkey :: CREATE UNIQUE INDEX admin_users_pkey ON admin_users USING btree (id)
+INDEX admin_users.admin_users_username_key :: CREATE UNIQUE INDEX admin_users_username_key ON admin_users USING btree (username)
+INDEX admin_users.idx_admin_users_default_project :: CREATE INDEX idx_admin_users_default_project ON admin_users USING btree (default_project_id)
+INDEX admin_users.idx_admin_users_email :: CREATE INDEX idx_admin_users_email ON admin_users USING btree (email)
+INDEX admin_users.idx_admin_users_username :: CREATE INDEX idx_admin_users_username ON admin_users USING btree (username)
+INDEX analysis_session_links.analysis_session_links_analysis_session_id_development_sess_key :: CREATE UNIQUE INDEX analysis_session_links_analysis_session_id_development_sess_key ON analysis_session_links USING btree (analysis_session_id, development_session_id, link_type)
+INDEX analysis_session_links.analysis_session_links_pkey :: CREATE UNIQUE INDEX analysis_session_links_pkey ON analysis_session_links USING btree (id)
+INDEX analysis_session_links.idx_analysis_session_links_analysis :: CREATE INDEX idx_analysis_session_links_analysis ON analysis_session_links USING btree (analysis_session_id)
+INDEX analysis_session_links.idx_analysis_session_links_context :: CREATE INDEX idx_analysis_session_links_context ON analysis_session_links USING btree (context_id) WHERE (context_id IS NOT NULL)
+INDEX analysis_session_links.idx_analysis_session_links_development :: CREATE INDEX idx_analysis_session_links_development ON analysis_session_links USING btree (development_session_id) WHERE (development_session_id IS NOT NULL)
+INDEX analysis_session_links.idx_analysis_session_links_project :: CREATE INDEX idx_analysis_session_links_project ON analysis_session_links USING btree (project_id)
+INDEX analysis_session_links.idx_analysis_session_links_type :: CREATE INDEX idx_analysis_session_links_type ON analysis_session_links USING btree (link_type, confidence_score DESC)
+INDEX analytics_events.analytics_events_pkey :: CREATE UNIQUE INDEX analytics_events_pkey ON analytics_events USING btree (event_id)
+INDEX analytics_events.idx_analytics_events_actor :: CREATE INDEX idx_analytics_events_actor ON analytics_events USING btree (actor)
+INDEX analytics_events.idx_analytics_events_event_type :: CREATE INDEX idx_analytics_events_event_type ON analytics_events USING btree (event_type)
+INDEX analytics_events.idx_analytics_events_project_id :: CREATE INDEX idx_analytics_events_project_id ON analytics_events USING btree (project_id)
+INDEX analytics_events.idx_analytics_events_session_id :: CREATE INDEX idx_analytics_events_session_id ON analytics_events USING btree (session_id)
+INDEX analytics_events.idx_analytics_events_timestamp :: CREATE INDEX idx_analytics_events_timestamp ON analytics_events USING btree ("timestamp")
+INDEX analytics_events_shadow.analytics_events_shadow_pkey :: CREATE UNIQUE INDEX analytics_events_shadow_pkey ON analytics_events_shadow USING btree (event_id)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_actor :: CREATE INDEX idx_analytics_events_shadow_actor ON analytics_events_shadow USING btree (actor)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_event_type :: CREATE INDEX idx_analytics_events_shadow_event_type ON analytics_events_shadow USING btree (event_type)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_metadata_gin :: CREATE INDEX idx_analytics_events_shadow_metadata_gin ON analytics_events_shadow USING gin (metadata)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_payload_gin :: CREATE INDEX idx_analytics_events_shadow_payload_gin ON analytics_events_shadow USING gin (payload)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_project_id :: CREATE INDEX idx_analytics_events_shadow_project_id ON analytics_events_shadow USING btree (project_id)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_session_id :: CREATE INDEX idx_analytics_events_shadow_session_id ON analytics_events_shadow USING btree (session_id)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_source_id :: CREATE INDEX idx_analytics_events_shadow_source_id ON analytics_events_shadow USING btree (_shadow_source_id)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_status :: CREATE INDEX idx_analytics_events_shadow_status ON analytics_events_shadow USING btree (status)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_sync_status :: CREATE INDEX idx_analytics_events_shadow_sync_status ON analytics_events_shadow USING btree (_shadow_sync_status)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_tags_gin :: CREATE INDEX idx_analytics_events_shadow_tags_gin ON analytics_events_shadow USING gin (tags)
+INDEX analytics_events_shadow.idx_analytics_events_shadow_timestamp :: CREATE INDEX idx_analytics_events_shadow_timestamp ON analytics_events_shadow USING btree ("timestamp")
+INDEX analyzer_versions.analyzer_versions_pkey :: CREATE UNIQUE INDEX analyzer_versions_pkey ON analyzer_versions USING btree (analyzer_name)
+INDEX auth_tokens.auth_tokens_pkey :: CREATE UNIQUE INDEX auth_tokens_pkey ON auth_tokens USING btree (id)
+INDEX auth_tokens.auth_tokens_token_id_key :: CREATE UNIQUE INDEX auth_tokens_token_id_key ON auth_tokens USING btree (token_id)
+INDEX auth_tokens.idx_auth_tokens_expires :: CREATE INDEX idx_auth_tokens_expires ON auth_tokens USING btree (expires_at)
+INDEX auth_tokens.idx_auth_tokens_token_id :: CREATE INDEX idx_auth_tokens_token_id ON auth_tokens USING btree (token_id)
+INDEX auth_tokens.idx_auth_tokens_user_id :: CREATE INDEX idx_auth_tokens_user_id ON auth_tokens USING btree (user_id)
+INDEX belief_adjudication_attempts.belief_adjudication_attempts_pkey :: CREATE UNIQUE INDEX belief_adjudication_attempts_pkey ON belief_adjudication_attempts USING btree (id)
+INDEX belief_adjudication_attempts.idx_belief_attempt_created_at :: CREATE INDEX idx_belief_attempt_created_at ON belief_adjudication_attempts USING btree (created_at)
+INDEX belief_adjudication_attempts.idx_belief_attempt_failed :: CREATE INDEX idx_belief_attempt_failed ON belief_adjudication_attempts USING btree (created_at) WHERE (outcome = 'failed'::text)
+INDEX belief_adjudication_attempts.idx_belief_attempt_project_created :: CREATE INDEX idx_belief_attempt_project_created ON belief_adjudication_attempts USING btree (project_id, created_at)
+INDEX belief_adjudication_costs.belief_adjudication_costs_pkey :: CREATE UNIQUE INDEX belief_adjudication_costs_pkey ON belief_adjudication_costs USING btree (id)
+INDEX belief_adjudication_costs.idx_belief_cost_created_at :: CREATE INDEX idx_belief_cost_created_at ON belief_adjudication_costs USING btree (created_at)
+INDEX belief_adjudication_costs.idx_belief_cost_project_created :: CREATE INDEX idx_belief_cost_project_created ON belief_adjudication_costs USING btree (project_id, created_at)
+INDEX belief_adjudications.belief_adjudications_pair_model_uniq :: CREATE UNIQUE INDEX belief_adjudications_pair_model_uniq ON belief_adjudications USING btree (pair_key, provider, model)
+INDEX belief_adjudications.belief_adjudications_pkey :: CREATE UNIQUE INDEX belief_adjudications_pkey ON belief_adjudications USING btree (id)
+INDEX belief_adjudications.idx_belief_adj_a :: CREATE INDEX idx_belief_adj_a ON belief_adjudications USING btree (a_id)
+INDEX belief_adjudications.idx_belief_adj_action :: CREATE INDEX idx_belief_adj_action ON belief_adjudications USING btree (derived_action)
+INDEX belief_adjudications.idx_belief_adj_b :: CREATE INDEX idx_belief_adj_b ON belief_adjudications USING btree (b_id)
+INDEX belief_adjudications.idx_belief_adj_minted_edge :: CREATE INDEX idx_belief_adj_minted_edge ON belief_adjudications USING btree (minted_edge_id) WHERE (minted_edge_id IS NOT NULL)
+INDEX belief_adjudications.idx_belief_adj_project :: CREATE INDEX idx_belief_adj_project ON belief_adjudications USING btree (project_id)
+INDEX branch_membership_moves.branch_membership_moves_pkey :: CREATE UNIQUE INDEX branch_membership_moves_pkey ON branch_membership_moves USING btree (id)
+INDEX branch_membership_moves.idx_branch_membership_moves_record :: CREATE INDEX idx_branch_membership_moves_record ON branch_membership_moves USING btree (record_id, moved_at)
+INDEX branch_memberships.branch_memberships_pkey :: CREATE UNIQUE INDEX branch_memberships_pkey ON branch_memberships USING btree (record_id)
+INDEX branch_memberships.idx_branch_memberships_spine :: CREATE INDEX idx_branch_memberships_spine ON branch_memberships USING btree (project_id, spine_id, created_at)
+INDEX branch_positions.branch_positions_pkey :: CREATE UNIQUE INDEX branch_positions_pkey ON branch_positions USING btree (project_id, session_key)
+INDEX branch_positions.idx_branch_positions_spine :: CREATE INDEX idx_branch_positions_spine ON branch_positions USING btree (project_id, spine_id)
+INDEX bug_workflow_events.bug_workflow_events_pkey :: CREATE UNIQUE INDEX bug_workflow_events_pkey ON bug_workflow_events USING btree (id)
+INDEX bug_workflow_events.idx_bug_workflow_events_workflow :: CREATE INDEX idx_bug_workflow_events_workflow ON bug_workflow_events USING btree (workflow_id)
+INDEX bug_workflow_events.unique_workflow_sequence :: CREATE UNIQUE INDEX unique_workflow_sequence ON bug_workflow_events USING btree (workflow_id, sequence)
+INDEX bug_workflows.bug_workflows_pkey :: CREATE UNIQUE INDEX bug_workflows_pkey ON bug_workflows USING btree (id)
+INDEX bug_workflows.idx_bug_workflows_created :: CREATE INDEX idx_bug_workflows_created ON bug_workflows USING btree (created_at DESC)
+INDEX bug_workflows.idx_bug_workflows_project :: CREATE INDEX idx_bug_workflows_project ON bug_workflows USING btree (project_path)
+INDEX bug_workflows.idx_bug_workflows_state :: CREATE INDEX idx_bug_workflows_state ON bug_workflows USING btree (state)
+INDEX code_analysis_sessions.code_analysis_sessions_pkey :: CREATE UNIQUE INDEX code_analysis_sessions_pkey ON code_analysis_sessions USING btree (id)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_agent :: CREATE INDEX idx_code_analysis_sessions_agent ON code_analysis_sessions USING btree (analyzer_agent_id)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_branch :: CREATE INDEX idx_code_analysis_sessions_branch ON code_analysis_sessions USING btree (branch_name) WHERE (branch_name IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_cache_rate :: CREATE INDEX idx_code_analysis_sessions_cache_rate ON code_analysis_sessions USING btree (cache_hit_rate DESC) WHERE (cache_hit_rate IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_commit_sha :: CREATE INDEX idx_code_analysis_sessions_commit_sha ON code_analysis_sessions USING btree (commit_sha) WHERE (commit_sha IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_compatibility :: CREATE INDEX idx_code_analysis_sessions_compatibility ON code_analysis_sessions USING gin (compatibility_flags)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_correlation :: CREATE INDEX idx_code_analysis_sessions_correlation ON code_analysis_sessions USING btree (session_correlation_confidence DESC) WHERE (session_correlation_confidence > (0)::double precision)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_dev_session :: CREATE INDEX idx_code_analysis_sessions_dev_session ON code_analysis_sessions USING btree (development_session_id) WHERE (development_session_id IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_excluded :: CREATE INDEX idx_code_analysis_sessions_excluded ON code_analysis_sessions USING gin (excluded_patterns) WHERE (excluded_patterns <> '{}'::text[])
+INDEX code_analysis_sessions.idx_code_analysis_sessions_files :: CREATE INDEX idx_code_analysis_sessions_files ON code_analysis_sessions USING gin (files_analyzed)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_git_clean :: CREATE INDEX idx_code_analysis_sessions_git_clean ON code_analysis_sessions USING btree (git_status_clean) WHERE (git_status_clean IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_metadata :: CREATE INDEX idx_code_analysis_sessions_metadata ON code_analysis_sessions USING gin (metadata)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_performance :: CREATE INDEX idx_code_analysis_sessions_performance ON code_analysis_sessions USING btree (analysis_duration_ms DESC, files_analyzed) WHERE (analysis_duration_ms IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_project :: CREATE INDEX idx_code_analysis_sessions_project ON code_analysis_sessions USING btree (project_id)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_project_commit :: CREATE INDEX idx_code_analysis_sessions_project_commit ON code_analysis_sessions USING btree (project_id, commit_sha, started_at DESC) WHERE (commit_sha IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_project_session :: CREATE INDEX idx_code_analysis_sessions_project_session ON code_analysis_sessions USING btree (project_id, development_session_id, started_at DESC)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_quality :: CREATE INDEX idx_code_analysis_sessions_quality ON code_analysis_sessions USING btree (quality_score DESC) WHERE (quality_score IS NOT NULL)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_recent_activity :: CREATE INDEX idx_code_analysis_sessions_recent_activity ON code_analysis_sessions USING btree (project_id, started_at DESC, status)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_scope :: CREATE INDEX idx_code_analysis_sessions_scope ON code_analysis_sessions USING btree (analysis_scope, project_id)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_started :: CREATE INDEX idx_code_analysis_sessions_started ON code_analysis_sessions USING btree (started_at)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_status :: CREATE INDEX idx_code_analysis_sessions_status ON code_analysis_sessions USING btree (status)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_target_files :: CREATE INDEX idx_code_analysis_sessions_target_files ON code_analysis_sessions USING gin (target_files) WHERE (target_files <> '{}'::text[])
+INDEX code_analysis_sessions.idx_code_analysis_sessions_trigger :: CREATE INDEX idx_code_analysis_sessions_trigger ON code_analysis_sessions USING btree (trigger_type, auto_triggered)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_trigger_metadata :: CREATE INDEX idx_code_analysis_sessions_trigger_metadata ON code_analysis_sessions USING gin (trigger_metadata)
+INDEX code_analysis_sessions.idx_code_analysis_sessions_triggered_by :: CREATE INDEX idx_code_analysis_sessions_triggered_by ON code_analysis_sessions USING btree (triggered_by_agent) WHERE (triggered_by_agent IS NOT NULL)
+INDEX code_components.code_components_pkey :: CREATE UNIQUE INDEX code_components_pkey ON code_components USING btree (id)
+INDEX code_components.idx_code_components_documentation_fts :: CREATE INDEX idx_code_components_documentation_fts ON code_components USING gin (to_tsvector('english'::regconfig, documentation))
+INDEX code_components.idx_code_components_exported :: CREATE INDEX idx_code_components_exported ON code_components USING btree (is_exported)
+INDEX code_components.idx_code_components_file :: CREATE INDEX idx_code_components_file ON code_components USING btree (file_path)
+INDEX code_components.idx_code_components_last_analysis :: CREATE INDEX idx_code_components_last_analysis ON code_components USING btree (last_analysis_session_id) WHERE (last_analysis_session_id IS NOT NULL)
+INDEX code_components.idx_code_components_name :: CREATE INDEX idx_code_components_name ON code_components USING btree (name)
+INDEX code_components.idx_code_components_project :: CREATE INDEX idx_code_components_project ON code_components USING btree (project_id)
+INDEX code_components.idx_code_components_tags :: CREATE INDEX idx_code_components_tags ON code_components USING gin (tags)
+INDEX code_components.idx_code_components_type :: CREATE INDEX idx_code_components_type ON code_components USING btree (component_type)
+INDEX code_components.idx_code_components_updated :: CREATE INDEX idx_code_components_updated ON code_components USING btree (updated_at)
+INDEX code_dependencies.code_dependencies_pkey :: CREATE UNIQUE INDEX code_dependencies_pkey ON code_dependencies USING btree (id)
+INDEX code_dependencies.idx_code_dependencies_external :: CREATE INDEX idx_code_dependencies_external ON code_dependencies USING btree (is_external)
+INDEX code_dependencies.idx_code_dependencies_from :: CREATE INDEX idx_code_dependencies_from ON code_dependencies USING btree (from_component_id)
+INDEX code_dependencies.idx_code_dependencies_project :: CREATE INDEX idx_code_dependencies_project ON code_dependencies USING btree (project_id)
+INDEX code_dependencies.idx_code_dependencies_to :: CREATE INDEX idx_code_dependencies_to ON code_dependencies USING btree (to_component_id)
+INDEX code_dependencies.idx_code_dependencies_type :: CREATE INDEX idx_code_dependencies_type ON code_dependencies USING btree (dependency_type)
+INDEX commit_session_links.commit_session_links_pkey :: CREATE UNIQUE INDEX commit_session_links_pkey ON commit_session_links USING btree (id)
+INDEX commit_session_links.idx_commit_session_links_commit :: CREATE INDEX idx_commit_session_links_commit ON commit_session_links USING btree (commit_id)
+INDEX commit_session_links.idx_commit_session_links_context_ids :: CREATE INDEX idx_commit_session_links_context_ids ON commit_session_links USING gin (context_ids)
+INDEX commit_session_links.idx_commit_session_links_created_by :: CREATE INDEX idx_commit_session_links_created_by ON commit_session_links USING btree (created_by) WHERE (created_by IS NOT NULL)
+INDEX commit_session_links.idx_commit_session_links_decision_ids :: CREATE INDEX idx_commit_session_links_decision_ids ON commit_session_links USING gin (decision_ids)
+INDEX commit_session_links.idx_commit_session_links_project_confidence :: CREATE INDEX idx_commit_session_links_project_confidence ON commit_session_links USING btree (project_id, confidence_score DESC)
+INDEX commit_session_links.idx_commit_session_links_relevant_contexts :: CREATE INDEX idx_commit_session_links_relevant_contexts ON commit_session_links USING gin (relevant_context_ids) WHERE (relevant_context_ids <> '{}'::uuid[])
+INDEX commit_session_links.idx_commit_session_links_session :: CREATE INDEX idx_commit_session_links_session ON commit_session_links USING btree (session_id, confidence_score DESC)
+INDEX commit_session_links.uq_commit_session_links_unique :: CREATE UNIQUE INDEX uq_commit_session_links_unique ON commit_session_links USING btree (commit_id, session_id)
+INDEX complexity_metrics.complexity_metrics_pkey :: CREATE UNIQUE INDEX complexity_metrics_pkey ON complexity_metrics USING btree (id)
+INDEX complexity_metrics.complexity_metrics_spindle_id_key :: CREATE UNIQUE INDEX complexity_metrics_spindle_id_key ON complexity_metrics USING btree (spindle_id)
+INDEX complexity_metrics.idx_complexity_overall :: CREATE INDEX idx_complexity_overall ON complexity_metrics USING btree (overall_complexity_score DESC)
+INDEX complexity_metrics.idx_complexity_structural :: CREATE INDEX idx_complexity_structural ON complexity_metrics USING btree (structural_complexity_score DESC)
+INDEX complexity_metrics.idx_complexity_version :: CREATE INDEX idx_complexity_version ON complexity_metrics USING btree (analyzer_version)
+INDEX complexity_metrics.uq_complexity_spindle :: CREATE UNIQUE INDEX uq_complexity_spindle ON complexity_metrics USING btree (spindle_id)
+INDEX contexts.contexts_embedding_1536_idx :: CREATE INDEX contexts_embedding_1536_idx ON contexts USING ivfflat (embedding vector_cosine_ops)
+INDEX contexts.contexts_pkey :: CREATE UNIQUE INDEX contexts_pkey ON contexts USING btree (id)
+INDEX contexts.idx_contexts_commit_sha :: CREATE INDEX idx_contexts_commit_sha ON contexts USING btree (related_commit_sha) WHERE (related_commit_sha IS NOT NULL)
+INDEX contexts.idx_contexts_commit_type :: CREATE INDEX idx_contexts_commit_type ON contexts USING btree (commit_context_type) WHERE (commit_context_type IS NOT NULL)
+INDEX contexts.idx_contexts_content_fts :: CREATE INDEX idx_contexts_content_fts ON contexts USING gin (to_tsvector('english'::regconfig, content))
+INDEX contexts.idx_contexts_coordinates :: CREATE INDEX idx_contexts_coordinates ON contexts USING btree (vector_x, vector_y, vector_z) WHERE (vector_x IS NOT NULL)
+INDEX contexts.idx_contexts_created_at :: CREATE INDEX idx_contexts_created_at ON contexts USING btree (created_at)
+INDEX contexts.idx_contexts_declared_limbs :: CREATE INDEX idx_contexts_declared_limbs ON contexts USING gin (declared_limbs) WHERE (declared_limbs IS NOT NULL)
+INDEX contexts.idx_contexts_embedding_cosine :: CREATE INDEX idx_contexts_embedding_cosine ON contexts USING ivfflat (embedding_384_backup vector_cosine_ops) WITH (lists='100')
+INDEX contexts.idx_contexts_embedding_gemma_cosine :: CREATE INDEX idx_contexts_embedding_gemma_cosine ON contexts USING ivfflat (embedding_gemma vector_cosine_ops) WITH (lists='100')
+INDEX contexts.idx_contexts_id8 :: CREATE INDEX idx_contexts_id8 ON contexts USING btree ("left"((id)::text, 8))
+INDEX contexts.idx_contexts_insights :: CREATE INDEX idx_contexts_insights ON contexts USING gin (related_insights)
+INDEX contexts.idx_contexts_live :: CREATE INDEX idx_contexts_live ON contexts USING btree (project_id) WHERE (archived_at IS NULL)
+INDEX contexts.idx_contexts_metadata_gin :: CREATE INDEX idx_contexts_metadata_gin ON contexts USING gin (metadata)
+INDEX contexts.idx_contexts_pattern_relevance :: CREATE INDEX idx_contexts_pattern_relevance ON contexts USING btree (pattern_relevance_score DESC) WHERE (pattern_relevance_score IS NOT NULL)
+INDEX contexts.idx_contexts_pattern_session :: CREATE INDEX idx_contexts_pattern_session ON contexts USING btree (pattern_session_id) WHERE (pattern_session_id IS NOT NULL)
+INDEX contexts.idx_contexts_project_id :: CREATE INDEX idx_contexts_project_id ON contexts USING btree (project_id)
+INDEX contexts.idx_contexts_project_type :: CREATE INDEX idx_contexts_project_type ON contexts USING btree (project_id, context_type)
+INDEX contexts.idx_contexts_relevance :: CREATE INDEX idx_contexts_relevance ON contexts USING btree (relevance_score DESC)
+INDEX contexts.idx_contexts_search_idents :: CREATE INDEX idx_contexts_search_idents ON contexts USING gin (search_idents)
+INDEX contexts.idx_contexts_search_tsv :: CREATE INDEX idx_contexts_search_tsv ON contexts USING gin (search_tsv)
+INDEX contexts.idx_contexts_session_id :: CREATE INDEX idx_contexts_session_id ON contexts USING btree (session_id)
+INDEX contexts.idx_contexts_tags_gin :: CREATE INDEX idx_contexts_tags_gin ON contexts USING gin (tags)
+INDEX contexts.idx_contexts_type :: CREATE INDEX idx_contexts_type ON contexts USING btree (context_type)
+INDEX contexts_shadow.contexts_shadow_pkey :: CREATE UNIQUE INDEX contexts_shadow_pkey ON contexts_shadow USING btree (id)
+INDEX contexts_shadow.idx_contexts_shadow_content_fts :: CREATE INDEX idx_contexts_shadow_content_fts ON contexts_shadow USING gin (to_tsvector('english'::regconfig, content))
+INDEX contexts_shadow.idx_contexts_shadow_created_at :: CREATE INDEX idx_contexts_shadow_created_at ON contexts_shadow USING btree (created_at)
+INDEX contexts_shadow.idx_contexts_shadow_embedding_cosine :: CREATE INDEX idx_contexts_shadow_embedding_cosine ON contexts_shadow USING ivfflat (embedding vector_cosine_ops) WITH (lists='100')
+INDEX contexts_shadow.idx_contexts_shadow_insights_gin :: CREATE INDEX idx_contexts_shadow_insights_gin ON contexts_shadow USING gin (related_insights)
+INDEX contexts_shadow.idx_contexts_shadow_metadata_gin :: CREATE INDEX idx_contexts_shadow_metadata_gin ON contexts_shadow USING gin (metadata)
+INDEX contexts_shadow.idx_contexts_shadow_project_id :: CREATE INDEX idx_contexts_shadow_project_id ON contexts_shadow USING btree (project_id)
+INDEX contexts_shadow.idx_contexts_shadow_project_type :: CREATE INDEX idx_contexts_shadow_project_type ON contexts_shadow USING btree (project_id, context_type)
+INDEX contexts_shadow.idx_contexts_shadow_relevance :: CREATE INDEX idx_contexts_shadow_relevance ON contexts_shadow USING btree (relevance_score DESC)
+INDEX contexts_shadow.idx_contexts_shadow_session_id :: CREATE INDEX idx_contexts_shadow_session_id ON contexts_shadow USING btree (session_id)
+INDEX contexts_shadow.idx_contexts_shadow_source_id :: CREATE INDEX idx_contexts_shadow_source_id ON contexts_shadow USING btree (_shadow_source_id)
+INDEX contexts_shadow.idx_contexts_shadow_sync_status :: CREATE INDEX idx_contexts_shadow_sync_status ON contexts_shadow USING btree (_shadow_sync_status)
+INDEX contexts_shadow.idx_contexts_shadow_tags_gin :: CREATE INDEX idx_contexts_shadow_tags_gin ON contexts_shadow USING gin (tags)
+INDEX contexts_shadow.idx_contexts_shadow_type :: CREATE INDEX idx_contexts_shadow_type ON contexts_shadow USING btree (context_type)
+INDEX decision_impact_analysis.decision_impact_analysis_pkey :: CREATE UNIQUE INDEX decision_impact_analysis_pkey ON decision_impact_analysis USING btree (id)
+INDEX decision_impact_analysis.decision_impact_analysis_source_decision_id_impacted_decisi_key :: CREATE UNIQUE INDEX decision_impact_analysis_source_decision_id_impacted_decisi_key ON decision_impact_analysis USING btree (source_decision_id, impacted_decision_id, impact_type)
+INDEX decision_impact_analysis.idx_decision_impact_project :: CREATE INDEX idx_decision_impact_project ON decision_impact_analysis USING btree (project_id, discovered_at DESC)
+INDEX decision_impact_analysis.idx_decision_impact_source :: CREATE INDEX idx_decision_impact_source ON decision_impact_analysis USING btree (source_decision_id)
+INDEX decision_impact_analysis.idx_decision_impact_target :: CREATE INDEX idx_decision_impact_target ON decision_impact_analysis USING btree (impacted_decision_id)
+INDEX decision_impact_analysis.idx_decision_impact_type :: CREATE INDEX idx_decision_impact_type ON decision_impact_analysis USING btree (impact_type, impact_strength)
+INDEX decision_impact_analysis.idx_decision_impact_validated :: CREATE INDEX idx_decision_impact_validated ON decision_impact_analysis USING btree (validated, confidence_score DESC)
+INDEX decision_learning_insights.decision_learning_insights_pkey :: CREATE UNIQUE INDEX decision_learning_insights_pkey ON decision_learning_insights USING btree (id)
+INDEX decision_learning_insights.decision_learning_insights_project_id_pattern_name_key :: CREATE UNIQUE INDEX decision_learning_insights_project_id_pattern_name_key ON decision_learning_insights USING btree (project_id, pattern_name)
+INDEX decision_learning_insights.idx_decision_learning_components_gin :: CREATE INDEX idx_decision_learning_components_gin ON decision_learning_insights USING gin (applicable_components)
+INDEX decision_learning_insights.idx_decision_learning_confidence :: CREATE INDEX idx_decision_learning_confidence ON decision_learning_insights USING btree (confidence_score DESC, supporting_evidence_count DESC)
+INDEX decision_learning_insights.idx_decision_learning_insights_fts :: CREATE INDEX idx_decision_learning_insights_fts ON decision_learning_insights USING gin (to_tsvector('english'::regconfig, (((((pattern_name)::text || ' '::text) || pattern_description) || ' '::text) || COALESCE(recommendation, ''::text))))
+INDEX decision_learning_insights.idx_decision_learning_patterns_gin :: CREATE INDEX idx_decision_learning_patterns_gin ON decision_learning_insights USING gin (pattern_conditions)
+INDEX decision_learning_insights.idx_decision_learning_project_type :: CREATE INDEX idx_decision_learning_project_type ON decision_learning_insights USING btree (project_id, insight_type)
+INDEX decision_learning_insights.idx_decision_learning_status :: CREATE INDEX idx_decision_learning_status ON decision_learning_insights USING btree (status, last_confirmed DESC)
+INDEX decision_learning_insights.idx_decision_learning_types_gin :: CREATE INDEX idx_decision_learning_types_gin ON decision_learning_insights USING gin (decision_types)
+INDEX decision_metrics.decision_metrics_pkey :: CREATE UNIQUE INDEX decision_metrics_pkey ON decision_metrics USING btree (id)
+INDEX decision_metrics.decision_metrics_spindle_id_key :: CREATE UNIQUE INDEX decision_metrics_spindle_id_key ON decision_metrics USING btree (spindle_id)
+INDEX decision_metrics.idx_decision_confidence :: CREATE INDEX idx_decision_confidence ON decision_metrics USING btree (confidence_level)
+INDEX decision_metrics.idx_decision_quality :: CREATE INDEX idx_decision_quality ON decision_metrics USING btree (decision_quality_score DESC)
+INDEX decision_metrics.idx_decision_version :: CREATE INDEX idx_decision_version ON decision_metrics USING btree (analyzer_version)
+INDEX decision_metrics.uq_decision_spindle :: CREATE UNIQUE INDEX uq_decision_spindle ON decision_metrics USING btree (spindle_id)
+INDEX decision_outcomes.decision_outcomes_pkey :: CREATE UNIQUE INDEX decision_outcomes_pkey ON decision_outcomes USING btree (id)
+INDEX decision_outcomes.idx_decision_outcomes_decision_id :: CREATE INDEX idx_decision_outcomes_decision_id ON decision_outcomes USING btree (decision_id)
+INDEX decision_outcomes.idx_decision_outcomes_evidence_gin :: CREATE INDEX idx_decision_outcomes_evidence_gin ON decision_outcomes USING gin (evidence_data)
+INDEX decision_outcomes.idx_decision_outcomes_project_type :: CREATE INDEX idx_decision_outcomes_project_type ON decision_outcomes USING btree (project_id, outcome_type)
+INDEX decision_outcomes.idx_decision_outcomes_score :: CREATE INDEX idx_decision_outcomes_score ON decision_outcomes USING btree (outcome_score DESC)
+INDEX decision_outcomes.idx_decision_outcomes_status :: CREATE INDEX idx_decision_outcomes_status ON decision_outcomes USING btree (outcome_status, measured_at DESC)
+INDEX decision_outcomes.idx_decision_outcomes_timeline :: CREATE INDEX idx_decision_outcomes_timeline ON decision_outcomes USING btree (measured_at DESC, measurement_period_days)
+INDEX decision_retrospectives.decision_retrospectives_pkey :: CREATE UNIQUE INDEX decision_retrospectives_pkey ON decision_retrospectives USING btree (id)
+INDEX decision_retrospectives.idx_decision_retrospectives_decision :: CREATE INDEX idx_decision_retrospectives_decision ON decision_retrospectives USING btree (decision_id, retrospective_date DESC)
+INDEX decision_retrospectives.idx_decision_retrospectives_followup :: CREATE INDEX idx_decision_retrospectives_followup ON decision_retrospectives USING btree (follow_up_required, follow_up_date)
+INDEX decision_retrospectives.idx_decision_retrospectives_fts :: CREATE INDEX idx_decision_retrospectives_fts ON decision_retrospectives USING gin (to_tsvector('english'::regconfig, ((((((what_went_well || ' '::text) || what_went_poorly) || ' '::text) || what_we_learned) || ' '::text) || recommendations_for_similar_decisions)))
+INDEX decision_retrospectives.idx_decision_retrospectives_project_type :: CREATE INDEX idx_decision_retrospectives_project_type ON decision_retrospectives USING btree (project_id, retrospective_type)
+INDEX decision_retrospectives.idx_decision_retrospectives_satisfaction :: CREATE INDEX idx_decision_retrospectives_satisfaction ON decision_retrospectives USING btree (overall_satisfaction DESC)
+INDEX dual_write_config.dual_write_config_pkey :: CREATE UNIQUE INDEX dual_write_config_pkey ON dual_write_config USING btree (table_name)
+INDEX dual_write_stats.dual_write_stats_pkey :: CREATE UNIQUE INDEX dual_write_stats_pkey ON dual_write_stats USING btree (id)
+INDEX dual_write_stats.idx_dual_write_stats_operation :: CREATE INDEX idx_dual_write_stats_operation ON dual_write_stats USING btree (operation, "timestamp")
+INDEX dual_write_stats.idx_dual_write_stats_success :: CREATE INDEX idx_dual_write_stats_success ON dual_write_stats USING btree (success, "timestamp")
+INDEX dual_write_stats.idx_dual_write_stats_table_timestamp :: CREATE INDEX idx_dual_write_stats_table_timestamp ON dual_write_stats USING btree (table_name, "timestamp")
+INDEX envelope_audit.envelope_audit_op_key_unique :: CREATE UNIQUE INDEX envelope_audit_op_key_unique ON envelope_audit USING btree (op, idempotency_key) WHERE (idempotency_key IS NOT NULL)
+INDEX envelope_audit.envelope_audit_pkey :: CREATE UNIQUE INDEX envelope_audit_pkey ON envelope_audit USING btree (id)
+INDEX event_log.event_log_pkey :: CREATE UNIQUE INDEX event_log_pkey ON event_log USING btree (id)
+INDEX feedback.feedback_pkey :: CREATE UNIQUE INDEX feedback_pkey ON feedback USING btree (id)
+INDEX feedback.idx_feedback_created_at :: CREATE INDEX idx_feedback_created_at ON feedback USING btree (created_at DESC)
+INDEX feedback.idx_feedback_user_id_created_at :: CREATE INDEX idx_feedback_user_id_created_at ON feedback USING btree (user_id, created_at DESC)
+INDEX file_analysis_cache.file_analysis_cache_pkey :: CREATE UNIQUE INDEX file_analysis_cache_pkey ON file_analysis_cache USING btree (id)
+INDEX file_analysis_cache.file_analysis_cache_project_id_file_path_file_hash_key :: CREATE UNIQUE INDEX file_analysis_cache_project_id_file_path_file_hash_key ON file_analysis_cache USING btree (project_id, file_path, file_hash)
+INDEX file_analysis_cache.idx_file_analysis_cache_analyzed :: CREATE INDEX idx_file_analysis_cache_analyzed ON file_analysis_cache USING btree (analyzed_at)
+INDEX file_analysis_cache.idx_file_analysis_cache_file :: CREATE INDEX idx_file_analysis_cache_file ON file_analysis_cache USING btree (file_path)
+INDEX file_analysis_cache.idx_file_analysis_cache_hash :: CREATE INDEX idx_file_analysis_cache_hash ON file_analysis_cache USING btree (file_hash)
+INDEX file_analysis_cache.idx_file_analysis_cache_language :: CREATE INDEX idx_file_analysis_cache_language ON file_analysis_cache USING btree (language)
+INDEX file_analysis_cache.idx_file_analysis_cache_project :: CREATE INDEX idx_file_analysis_cache_project ON file_analysis_cache USING btree (project_id)
+INDEX git_branches.git_branches_pkey :: CREATE UNIQUE INDEX git_branches_pkey ON git_branches USING btree (id)
+INDEX git_branches.idx_git_branches_active_status :: CREATE INDEX idx_git_branches_active_status ON git_branches USING btree (is_active, project_id)
+INDEX git_branches.idx_git_branches_associated_sessions :: CREATE INDEX idx_git_branches_associated_sessions ON git_branches USING gin (associated_sessions) WHERE (associated_sessions <> '{}'::uuid[])
+INDEX git_branches.idx_git_branches_current_commit_sha :: CREATE INDEX idx_git_branches_current_commit_sha ON git_branches USING btree (current_commit_sha) WHERE (current_commit_sha IS NOT NULL)
+INDEX git_branches.idx_git_branches_default :: CREATE INDEX idx_git_branches_default ON git_branches USING btree (project_id) WHERE (is_default = true)
+INDEX git_branches.idx_git_branches_default_branch :: CREATE INDEX idx_git_branches_default_branch ON git_branches USING btree (is_default_branch, project_id) WHERE (is_default_branch = true)
+INDEX git_branches.idx_git_branches_description_fts :: CREATE INDEX idx_git_branches_description_fts ON git_branches USING gin (to_tsvector('english'::regconfig, description)) WHERE (description IS NOT NULL)
+INDEX git_branches.idx_git_branches_full_ref :: CREATE INDEX idx_git_branches_full_ref ON git_branches USING btree (full_ref_name) WHERE (full_ref_name IS NOT NULL)
+INDEX git_branches.idx_git_branches_project_active :: CREATE INDEX idx_git_branches_project_active ON git_branches USING btree (project_id, last_commit_date DESC) WHERE (current_sha IS NOT NULL)
+INDEX git_branches.idx_git_branches_project_type :: CREATE INDEX idx_git_branches_project_type ON git_branches USING btree (project_id, branch_type)
+INDEX git_branches.idx_git_branches_protected :: CREATE INDEX idx_git_branches_protected ON git_branches USING btree (project_id) WHERE (is_protected = true)
+INDEX git_branches.idx_git_branches_session :: CREATE INDEX idx_git_branches_session ON git_branches USING btree (session_id) WHERE (session_id IS NOT NULL)
+INDEX git_branches.idx_git_branches_stats :: CREATE INDEX idx_git_branches_stats ON git_branches USING btree (total_commits DESC, commits_ahead DESC)
+INDEX git_branches.uq_git_branches_project_name :: CREATE UNIQUE INDEX uq_git_branches_project_name ON git_branches USING btree (project_id, branch_name)
+INDEX git_commits.git_commits_pkey :: CREATE UNIQUE INDEX git_commits_pkey ON git_commits USING btree (id)
+INDEX git_commits.idx_git_commits_analysis_status :: CREATE INDEX idx_git_commits_analysis_status ON git_commits USING btree (is_analyzed, analysis_version)
+INDEX git_commits.idx_git_commits_discovered_by :: CREATE INDEX idx_git_commits_discovered_by ON git_commits USING btree (discovered_by) WHERE (discovered_by IS NOT NULL)
+INDEX git_commits.idx_git_commits_first_seen :: CREATE INDEX idx_git_commits_first_seen ON git_commits USING btree (first_seen)
+INDEX git_commits.idx_git_commits_merge_commits :: CREATE INDEX idx_git_commits_merge_commits ON git_commits USING btree (project_id, author_date DESC) WHERE (is_merge_commit = true)
+INDEX git_commits.idx_git_commits_message_fts :: CREATE INDEX idx_git_commits_message_fts ON git_commits USING gin (to_tsvector('english'::regconfig, message))
+INDEX git_commits.idx_git_commits_metadata :: CREATE INDEX idx_git_commits_metadata ON git_commits USING gin (metadata)
+INDEX git_commits.idx_git_commits_parent_shas :: CREATE INDEX idx_git_commits_parent_shas ON git_commits USING gin (parent_shas)
+INDEX git_commits.idx_git_commits_project_author :: CREATE INDEX idx_git_commits_project_author ON git_commits USING btree (project_id, author_email, author_date DESC)
+INDEX git_commits.idx_git_commits_project_branch :: CREATE INDEX idx_git_commits_project_branch ON git_commits USING btree (project_id, branch_name, author_date DESC)
+INDEX git_commits.idx_git_commits_project_date :: CREATE INDEX idx_git_commits_project_date ON git_commits USING btree (project_id, author_date DESC)
+INDEX git_commits.idx_git_commits_repository_url :: CREATE INDEX idx_git_commits_repository_url ON git_commits USING btree (repository_url) WHERE (repository_url IS NOT NULL)
+INDEX git_commits.idx_git_commits_sha_lookup :: CREATE INDEX idx_git_commits_sha_lookup ON git_commits USING btree (commit_sha)
+INDEX git_commits.idx_git_commits_short_sha :: CREATE INDEX idx_git_commits_short_sha ON git_commits USING btree (short_sha)
+INDEX git_commits.idx_git_commits_tags :: CREATE INDEX idx_git_commits_tags ON git_commits USING gin (tags)
+INDEX git_commits.idx_git_commits_tree_sha :: CREATE INDEX idx_git_commits_tree_sha ON git_commits USING btree (tree_sha) WHERE (tree_sha IS NOT NULL)
+INDEX git_commits.uq_git_commits_project_sha :: CREATE UNIQUE INDEX uq_git_commits_project_sha ON git_commits USING btree (project_id, commit_sha)
+INDEX git_file_changes.git_file_changes_pkey :: CREATE UNIQUE INDEX git_file_changes_pkey ON git_file_changes USING btree (id)
+INDEX git_file_changes.idx_git_file_changes_affects_exports :: CREATE INDEX idx_git_file_changes_affects_exports ON git_file_changes USING btree (affects_exports, project_id) WHERE (affects_exports = true)
+INDEX git_file_changes.idx_git_file_changes_commit :: CREATE INDEX idx_git_file_changes_commit ON git_file_changes USING btree (commit_id)
+INDEX git_file_changes.idx_git_file_changes_complexity :: CREATE INDEX idx_git_file_changes_complexity ON git_file_changes USING btree (complexity_delta) WHERE (complexity_delta <> 0)
+INDEX git_file_changes.idx_git_file_changes_file_type :: CREATE INDEX idx_git_file_changes_file_type ON git_file_changes USING btree (file_type, project_id) WHERE (file_type IS NOT NULL)
+INDEX git_file_changes.idx_git_file_changes_path_pattern :: CREATE INDEX idx_git_file_changes_path_pattern ON git_file_changes USING gin (to_tsvector('english'::regconfig, file_path))
+INDEX git_file_changes.idx_git_file_changes_project_path :: CREATE INDEX idx_git_file_changes_project_path ON git_file_changes USING btree (project_id, file_path, created_at DESC)
+INDEX jwks.jwks_pkey :: CREATE UNIQUE INDEX jwks_pkey ON jwks USING btree (id)
+INDEX links.idx_links_from :: CREATE INDEX idx_links_from ON links USING btree (from_id, edge_type)
+INDEX links.idx_links_mint_via :: CREATE INDEX idx_links_mint_via ON links USING btree (mint_via)
+INDEX links.idx_links_project :: CREATE INDEX idx_links_project ON links USING btree (project_id)
+INDEX links.idx_links_provenance_class :: CREATE INDEX idx_links_provenance_class ON links USING btree (provenance_class)
+INDEX links.idx_links_to :: CREATE INDEX idx_links_to ON links USING btree (to_id, edge_type)
+INDEX links.links_from_to_edge_uniq :: CREATE UNIQUE INDEX links_from_to_edge_uniq ON links USING btree (from_id, to_id, edge_type)
+INDEX links.links_pkey :: CREATE UNIQUE INDEX links_pkey ON links USING btree (id)
+INDEX oauthAccessToken.oauthAccessToken_clientId_idx :: CREATE INDEX "oauthAccessToken_clientId_idx" ON "oauthAccessToken" USING btree ("clientId")
+INDEX oauthAccessToken.oauthAccessToken_pkey :: CREATE UNIQUE INDEX "oauthAccessToken_pkey" ON "oauthAccessToken" USING btree (id)
+INDEX oauthAccessToken.oauthAccessToken_refreshId_idx :: CREATE INDEX "oauthAccessToken_refreshId_idx" ON "oauthAccessToken" USING btree ("refreshId")
+INDEX oauthAccessToken.oauthAccessToken_sessionId_idx :: CREATE INDEX "oauthAccessToken_sessionId_idx" ON "oauthAccessToken" USING btree ("sessionId")
+INDEX oauthAccessToken.oauthAccessToken_token_key :: CREATE UNIQUE INDEX "oauthAccessToken_token_key" ON "oauthAccessToken" USING btree (token)
+INDEX oauthAccessToken.oauthAccessToken_userId_idx :: CREATE INDEX "oauthAccessToken_userId_idx" ON "oauthAccessToken" USING btree ("userId")
+INDEX oauthClient.oauthClient_clientId_key :: CREATE UNIQUE INDEX "oauthClient_clientId_key" ON "oauthClient" USING btree ("clientId")
+INDEX oauthClient.oauthClient_pkey :: CREATE UNIQUE INDEX "oauthClient_pkey" ON "oauthClient" USING btree (id)
+INDEX oauthClient.oauthClient_userId_idx :: CREATE INDEX "oauthClient_userId_idx" ON "oauthClient" USING btree ("userId")
+INDEX oauthConsent.oauthConsent_clientId_idx :: CREATE INDEX "oauthConsent_clientId_idx" ON "oauthConsent" USING btree ("clientId")
+INDEX oauthConsent.oauthConsent_pkey :: CREATE UNIQUE INDEX "oauthConsent_pkey" ON "oauthConsent" USING btree (id)
+INDEX oauthConsent.oauthConsent_userId_idx :: CREATE INDEX "oauthConsent_userId_idx" ON "oauthConsent" USING btree ("userId")
+INDEX oauthRefreshToken.oauthRefreshToken_clientId_idx :: CREATE INDEX "oauthRefreshToken_clientId_idx" ON "oauthRefreshToken" USING btree ("clientId")
+INDEX oauthRefreshToken.oauthRefreshToken_pkey :: CREATE UNIQUE INDEX "oauthRefreshToken_pkey" ON "oauthRefreshToken" USING btree (id)
+INDEX oauthRefreshToken.oauthRefreshToken_sessionId_idx :: CREATE INDEX "oauthRefreshToken_sessionId_idx" ON "oauthRefreshToken" USING btree ("sessionId")
+INDEX oauthRefreshToken.oauthRefreshToken_token_key :: CREATE UNIQUE INDEX "oauthRefreshToken_token_key" ON "oauthRefreshToken" USING btree (token)
+INDEX oauthRefreshToken.oauthRefreshToken_userId_idx :: CREATE INDEX "oauthRefreshToken_userId_idx" ON "oauthRefreshToken" USING btree ("userId")
+INDEX productivity_config.productivity_config_config_name_key :: CREATE UNIQUE INDEX productivity_config_config_name_key ON productivity_config USING btree (config_name)
+INDEX productivity_config.productivity_config_pkey :: CREATE UNIQUE INDEX productivity_config_pkey ON productivity_config USING btree (id)
+INDEX projects.idx_projects_created_at :: CREATE INDEX idx_projects_created_at ON projects USING btree (created_at)
+INDEX projects.idx_projects_metadata_gin :: CREATE INDEX idx_projects_metadata_gin ON projects USING gin (metadata)
+INDEX projects.idx_projects_name :: CREATE INDEX idx_projects_name ON projects USING btree (name)
+INDEX projects.idx_projects_status :: CREATE INDEX idx_projects_status ON projects USING btree (status)
+INDEX projects.projects_name_key :: CREATE UNIQUE INDEX projects_name_key ON projects USING btree (name)
+INDEX projects.projects_pkey :: CREATE UNIQUE INDEX projects_pkey ON projects USING btree (id)
+INDEX projects_shadow.idx_projects_shadow_created_at :: CREATE INDEX idx_projects_shadow_created_at ON projects_shadow USING btree (created_at)
+INDEX projects_shadow.idx_projects_shadow_metadata_gin :: CREATE INDEX idx_projects_shadow_metadata_gin ON projects_shadow USING gin (metadata)
+INDEX projects_shadow.idx_projects_shadow_migration_batch :: CREATE INDEX idx_projects_shadow_migration_batch ON projects_shadow USING btree (_shadow_migration_batch)
+INDEX projects_shadow.idx_projects_shadow_name_unique :: CREATE UNIQUE INDEX idx_projects_shadow_name_unique ON projects_shadow USING btree (name) WHERE (_shadow_sync_status = ANY (ARRAY['synced'::shadow_sync_status, 'migrated'::shadow_sync_status, 'validated'::shadow_sync_status]))
+INDEX projects_shadow.idx_projects_shadow_source_id :: CREATE UNIQUE INDEX idx_projects_shadow_source_id ON projects_shadow USING btree (_shadow_source_id) WHERE (_shadow_source_id IS NOT NULL)
+INDEX projects_shadow.idx_projects_shadow_status :: CREATE INDEX idx_projects_shadow_status ON projects_shadow USING btree (status)
+INDEX projects_shadow.idx_projects_shadow_sync_status :: CREATE INDEX idx_projects_shadow_sync_status ON projects_shadow USING btree (_shadow_sync_status)
+INDEX projects_shadow.projects_shadow_pkey :: CREATE UNIQUE INDEX projects_shadow_pkey ON projects_shadow USING btree (id)
+INDEX reasoning_patterns.idx_patterns_metadata :: CREATE INDEX idx_patterns_metadata ON reasoning_patterns USING gin (metadata)
+INDEX reasoning_patterns.idx_patterns_spindle :: CREATE INDEX idx_patterns_spindle ON reasoning_patterns USING btree (spindle_id)
+INDEX reasoning_patterns.idx_patterns_type :: CREATE INDEX idx_patterns_type ON reasoning_patterns USING btree (pattern_type)
+INDEX reasoning_patterns.idx_patterns_unique :: CREATE UNIQUE INDEX idx_patterns_unique ON reasoning_patterns USING btree (spindle_id, pattern_type, start_pos)
+INDEX reasoning_patterns.idx_patterns_version :: CREATE INDEX idx_patterns_version ON reasoning_patterns USING btree (analyzer_version)
+INDEX reasoning_patterns.reasoning_patterns_pkey :: CREATE UNIQUE INDEX reasoning_patterns_pkey ON reasoning_patterns USING btree (id)
+INDEX schema_migrations.schema_migrations_pkey :: CREATE UNIQUE INDEX schema_migrations_pkey ON schema_migrations USING btree (version)
+INDEX session.session_pkey :: CREATE UNIQUE INDEX session_pkey ON session USING btree (id)
+INDEX session.session_token_key :: CREATE UNIQUE INDEX session_token_key ON session USING btree (token)
+INDEX session.session_userId_idx :: CREATE INDEX "session_userId_idx" ON session USING btree ("userId")
+INDEX session_activities.idx_session_activities_data :: CREATE INDEX idx_session_activities_data ON session_activities USING gin (activity_data)
+INDEX session_activities.idx_session_activities_occurred :: CREATE INDEX idx_session_activities_occurred ON session_activities USING btree (occurred_at)
+INDEX session_activities.idx_session_activities_session_occurred :: CREATE INDEX idx_session_activities_session_occurred ON session_activities USING btree (session_id, occurred_at DESC)
+INDEX session_activities.idx_session_activities_type :: CREATE INDEX idx_session_activities_type ON session_activities USING btree (activity_type)
+INDEX session_activities.session_activities_pkey :: CREATE UNIQUE INDEX session_activities_pkey ON session_activities USING btree (id)
+INDEX session_files.idx_session_files_modified :: CREATE INDEX idx_session_files_modified ON session_files USING btree (last_modified)
+INDEX session_files.idx_session_files_path :: CREATE INDEX idx_session_files_path ON session_files USING btree (file_path)
+INDEX session_files.idx_session_files_session :: CREATE INDEX idx_session_files_session ON session_files USING btree (session_id)
+INDEX session_files.idx_session_files_source :: CREATE INDEX idx_session_files_source ON session_files USING btree (source)
+INDEX session_files.session_files_pkey :: CREATE UNIQUE INDEX session_files_pkey ON session_files USING btree (id)
+INDEX session_files.unique_session_file :: CREATE UNIQUE INDEX unique_session_file ON session_files USING btree (session_id, file_path)
+INDEX session_pins.idx_session_pins_session :: CREATE INDEX idx_session_pins_session ON session_pins USING btree (session_id)
+INDEX session_pins.session_pins_pkey :: CREATE UNIQUE INDEX session_pins_pkey ON session_pins USING btree (actor)
+INDEX session_project_mappings.idx_session_mappings_project_id :: CREATE INDEX idx_session_mappings_project_id ON session_project_mappings USING btree (project_id)
+INDEX session_project_mappings.idx_session_mappings_session_id :: CREATE INDEX idx_session_mappings_session_id ON session_project_mappings USING btree (session_id)
+INDEX session_project_mappings.idx_session_mappings_updated_at :: CREATE INDEX idx_session_mappings_updated_at ON session_project_mappings USING btree (updated_at DESC)
+INDEX session_project_mappings.session_project_mappings_pkey :: CREATE UNIQUE INDEX session_project_mappings_pkey ON session_project_mappings USING btree (id)
+INDEX session_project_mappings.unique_session_mapping :: CREATE UNIQUE INDEX unique_session_mapping ON session_project_mappings USING btree (session_id)
+INDEX sessions.idx_sessions_activity_summary :: CREATE INDEX idx_sessions_activity_summary ON sessions USING btree (tasks_created, tasks_completed, contexts_created)
+INDEX sessions.idx_sessions_actor_open :: CREATE INDEX idx_sessions_actor_open ON sessions USING btree (actor, last_activity_at DESC) WHERE ((actor IS NOT NULL) AND (ended_at IS NULL))
+INDEX sessions.idx_sessions_agent_display_name :: CREATE INDEX idx_sessions_agent_display_name ON sessions USING btree (agent_display_name) WHERE (agent_display_name IS NOT NULL)
+INDEX sessions.idx_sessions_agent_type :: CREATE INDEX idx_sessions_agent_type ON sessions USING btree (agent_type)
+INDEX sessions.idx_sessions_ai_model :: CREATE INDEX idx_sessions_ai_model ON sessions USING btree (ai_model) WHERE (ai_model IS NOT NULL)
+INDEX sessions.idx_sessions_connection_reattach :: CREATE INDEX idx_sessions_connection_reattach ON sessions USING btree (connection_id, last_activity_at DESC) WHERE ((connection_id IS NOT NULL) AND (ended_at IS NULL) AND ((status)::text = ANY (ARRAY['active'::text, 'interrupted'::text, 'dormant'::text])))
+INDEX sessions.idx_sessions_contexts_created :: CREATE INDEX idx_sessions_contexts_created ON sessions USING btree (contexts_created) WHERE (contexts_created > 0)
+INDEX sessions.idx_sessions_display_id :: CREATE UNIQUE INDEX idx_sessions_display_id ON sessions USING btree (display_id)
+INDEX sessions.idx_sessions_display_id_search :: CREATE INDEX idx_sessions_display_id_search ON sessions USING btree (display_id text_pattern_ops)
+INDEX sessions.idx_sessions_files_modified :: CREATE INDEX idx_sessions_files_modified ON sessions USING btree (files_modified_count) WHERE (files_modified_count > 0)
+INDEX sessions.idx_sessions_input_tokens :: CREATE INDEX idx_sessions_input_tokens ON sessions USING btree (input_tokens)
+INDEX sessions.idx_sessions_last_activity :: CREATE INDEX idx_sessions_last_activity ON sessions USING btree (last_activity_at) WHERE (((status)::text = 'active'::text) AND (last_activity_at IS NOT NULL))
+INDEX sessions.idx_sessions_productivity_score :: CREATE INDEX idx_sessions_productivity_score ON sessions USING btree (productivity_score) WHERE (productivity_score IS NOT NULL)
+INDEX sessions.idx_sessions_project_agent :: CREATE INDEX idx_sessions_project_agent ON sessions USING btree (project_id, agent_type)
+INDEX sessions.idx_sessions_project_id :: CREATE INDEX idx_sessions_project_id ON sessions USING btree (project_id)
+INDEX sessions.idx_sessions_started_at :: CREATE INDEX idx_sessions_started_at ON sessions USING btree (started_at)
+INDEX sessions.idx_sessions_status :: CREATE INDEX idx_sessions_status ON sessions USING btree (status) WHERE ((status)::text = 'active'::text)
+INDEX sessions.idx_sessions_tags :: CREATE INDEX idx_sessions_tags ON sessions USING gin (tags)
+INDEX sessions.idx_sessions_tasks_created :: CREATE INDEX idx_sessions_tasks_created ON sessions USING btree (tasks_created) WHERE (tasks_created > 0)
+INDEX sessions.idx_sessions_timeout_check :: CREATE INDEX idx_sessions_timeout_check ON sessions USING btree (status, last_activity_at) WHERE ((status)::text = 'active'::text)
+INDEX sessions.idx_sessions_title :: CREATE INDEX idx_sessions_title ON sessions USING btree (title)
+INDEX sessions.idx_sessions_total_tokens :: CREATE INDEX idx_sessions_total_tokens ON sessions USING btree (total_tokens)
+INDEX sessions.sessions_display_id_key :: CREATE UNIQUE INDEX sessions_display_id_key ON sessions USING btree (display_id)
+INDEX sessions.sessions_pkey :: CREATE UNIQUE INDEX sessions_pkey ON sessions USING btree (id)
+INDEX sessions.uq_sessions_open_per_connection :: CREATE UNIQUE INDEX uq_sessions_open_per_connection ON sessions USING btree (connection_id) WHERE ((connection_id IS NOT NULL) AND (ended_at IS NULL) AND ((status)::text = ANY (ARRAY['active'::text, 'interrupted'::text, 'dormant'::text])))
+INDEX sessions_shadow.idx_sessions_shadow_agent_type :: CREATE INDEX idx_sessions_shadow_agent_type ON sessions_shadow USING btree (agent_type)
+INDEX sessions_shadow.idx_sessions_shadow_project_agent :: CREATE INDEX idx_sessions_shadow_project_agent ON sessions_shadow USING btree (project_id, agent_type)
+INDEX sessions_shadow.idx_sessions_shadow_project_id :: CREATE INDEX idx_sessions_shadow_project_id ON sessions_shadow USING btree (project_id)
+INDEX sessions_shadow.idx_sessions_shadow_source_id :: CREATE INDEX idx_sessions_shadow_source_id ON sessions_shadow USING btree (_shadow_source_id)
+INDEX sessions_shadow.idx_sessions_shadow_started_at :: CREATE INDEX idx_sessions_shadow_started_at ON sessions_shadow USING btree (started_at)
+INDEX sessions_shadow.idx_sessions_shadow_sync_status :: CREATE INDEX idx_sessions_shadow_sync_status ON sessions_shadow USING btree (_shadow_sync_status)
+INDEX sessions_shadow.idx_sessions_shadow_title :: CREATE INDEX idx_sessions_shadow_title ON sessions_shadow USING btree (title) WHERE (title IS NOT NULL)
+INDEX sessions_shadow.sessions_shadow_pkey :: CREATE UNIQUE INDEX sessions_shadow_pkey ON sessions_shadow USING btree (id)
+INDEX sessions_status_reconcile_backup_061.sessions_status_reconcile_backup_061_pkey :: CREATE UNIQUE INDEX sessions_status_reconcile_backup_061_pkey ON sessions_status_reconcile_backup_061 USING btree (session_id)
+INDEX spindles.idx_spindles_fts :: CREATE INDEX idx_spindles_fts ON spindles USING gin (fts)
+INDEX spindles.idx_spindles_hash :: CREATE INDEX idx_spindles_hash ON spindles USING btree (content_hash)
+INDEX spindles.idx_spindles_model :: CREATE INDEX idx_spindles_model ON spindles USING btree (model)
+INDEX spindles.idx_spindles_pending :: CREATE INDEX idx_spindles_pending ON spindles USING btree (processing_status) WHERE (processing_status = ANY (ARRAY['pending'::text, 'error'::text]))
+INDEX spindles.idx_spindles_session_captured :: CREATE INDEX idx_spindles_session_captured ON spindles USING btree (session_id, captured_at DESC)
+INDEX spindles.spindles_pkey :: CREATE UNIQUE INDEX spindles_pkey ON spindles USING btree (id)
+INDEX task_attachments.idx_task_attachments_task_created :: CREATE INDEX idx_task_attachments_task_created ON task_attachments USING btree (task_id, created_at)
+INDEX task_attachments.task_attachments_pkey :: CREATE UNIQUE INDEX task_attachments_pkey ON task_attachments USING btree (id)
+INDEX task_claim_events.idx_task_claim_events_occurred_at :: CREATE INDEX idx_task_claim_events_occurred_at ON task_claim_events USING btree (occurred_at)
+INDEX task_claim_events.idx_task_claim_events_task :: CREATE INDEX idx_task_claim_events_task ON task_claim_events USING btree (task_id, occurred_at DESC)
+INDEX task_claim_events.task_claim_events_pkey :: CREATE UNIQUE INDEX task_claim_events_pkey ON task_claim_events USING btree (id)
+INDEX tasks.idx_tasks_active :: CREATE INDEX idx_tasks_active ON tasks USING btree (project_id, status) WHERE ((status)::text <> ALL (ARRAY[('completed'::character varying)::text, ('cancelled'::character varying)::text]))
+INDEX tasks.idx_tasks_assigned_to :: CREATE INDEX idx_tasks_assigned_to ON tasks USING btree (assigned_to)
+INDEX tasks.idx_tasks_claim_id :: CREATE INDEX idx_tasks_claim_id ON tasks USING btree (claim_id) WHERE (claim_id IS NOT NULL)
+INDEX tasks.idx_tasks_claim_live :: CREATE INDEX idx_tasks_claim_live ON tasks USING btree (claim_expires_at) WHERE (claim_id IS NOT NULL)
+INDEX tasks.idx_tasks_compound_filter :: CREATE INDEX idx_tasks_compound_filter ON tasks USING btree (project_id, status, priority, type) WHERE ((status)::text <> 'cancelled'::text)
+INDEX tasks.idx_tasks_created_at :: CREATE INDEX idx_tasks_created_at ON tasks USING btree (created_at)
+INDEX tasks.idx_tasks_declared_limbs :: CREATE INDEX idx_tasks_declared_limbs ON tasks USING gin (declared_limbs) WHERE (declared_limbs IS NOT NULL)
+INDEX tasks.idx_tasks_dependencies :: CREATE INDEX idx_tasks_dependencies ON tasks USING gin (dependencies)
+INDEX tasks.idx_tasks_id8 :: CREATE INDEX idx_tasks_id8 ON tasks USING btree ("left"((id)::text, 8))
+INDEX tasks.idx_tasks_live :: CREATE INDEX idx_tasks_live ON tasks USING btree (project_id) WHERE (archived_at IS NULL)
+INDEX tasks.idx_tasks_priority :: CREATE INDEX idx_tasks_priority ON tasks USING btree (priority)
+INDEX tasks.idx_tasks_project :: CREATE INDEX idx_tasks_project ON tasks USING btree (project_id)
+INDEX tasks.idx_tasks_project_blocked_on :: CREATE INDEX idx_tasks_project_blocked_on ON tasks USING btree (project_id, blocked_on) WHERE ((blocked_on IS NOT NULL) AND (archived_at IS NULL))
+INDEX tasks.idx_tasks_project_id :: CREATE INDEX idx_tasks_project_id ON tasks USING btree (project_id)
+INDEX tasks.idx_tasks_project_stage :: CREATE INDEX idx_tasks_project_stage ON tasks USING btree (project_id, stage)
+INDEX tasks.idx_tasks_search_idents :: CREATE INDEX idx_tasks_search_idents ON tasks USING gin (search_idents)
+INDEX tasks.idx_tasks_search_tsv :: CREATE INDEX idx_tasks_search_tsv ON tasks USING gin (search_tsv)
+INDEX tasks.idx_tasks_session_id :: CREATE INDEX idx_tasks_session_id ON tasks USING btree (session_id) WHERE (session_id IS NOT NULL)
+INDEX tasks.idx_tasks_status :: CREATE INDEX idx_tasks_status ON tasks USING btree (status)
+INDEX tasks.idx_tasks_tags :: CREATE INDEX idx_tasks_tags ON tasks USING gin (tags)
+INDEX tasks.idx_tasks_type :: CREATE INDEX idx_tasks_type ON tasks USING btree (type)
+INDEX tasks.idx_tasks_updated_at :: CREATE INDEX idx_tasks_updated_at ON tasks USING btree (updated_at)
+INDEX tasks.idx_tasks_urgent :: CREATE INDEX idx_tasks_urgent ON tasks USING btree (project_id, priority) WHERE ((priority)::text = 'urgent'::text)
+INDEX tasks.tasks_pkey :: CREATE UNIQUE INDEX tasks_pkey ON tasks USING btree (id)
+INDEX technical_decisions.idx_decisions_search_idents :: CREATE INDEX idx_decisions_search_idents ON technical_decisions USING gin (search_idents)
+INDEX technical_decisions.idx_decisions_search_tsv :: CREATE INDEX idx_decisions_search_tsv ON technical_decisions USING gin (search_tsv)
+INDEX technical_decisions.idx_technical_decisions_answer_status :: CREATE INDEX idx_technical_decisions_answer_status ON technical_decisions USING btree (project_id, answer_status) WHERE ((answer_status)::text <> 'decided'::text)
+INDEX technical_decisions.idx_technical_decisions_components_gin :: CREATE INDEX idx_technical_decisions_components_gin ON technical_decisions USING gin (affected_components)
+INDEX technical_decisions.idx_technical_decisions_date :: CREATE INDEX idx_technical_decisions_date ON technical_decisions USING btree (decision_date DESC)
+INDEX technical_decisions.idx_technical_decisions_declared_limbs :: CREATE INDEX idx_technical_decisions_declared_limbs ON technical_decisions USING gin (declared_limbs) WHERE (declared_limbs IS NOT NULL)
+INDEX technical_decisions.idx_technical_decisions_embedding_cosine :: CREATE INDEX idx_technical_decisions_embedding_cosine ON technical_decisions USING ivfflat (embedding vector_cosine_ops) WITH (lists='100')
+INDEX technical_decisions.idx_technical_decisions_embedding_gemma_cosine :: CREATE INDEX idx_technical_decisions_embedding_gemma_cosine ON technical_decisions USING ivfflat (embedding_gemma vector_cosine_ops) WITH (lists='100')
+INDEX technical_decisions.idx_technical_decisions_id8 :: CREATE INDEX idx_technical_decisions_id8 ON technical_decisions USING btree ("left"((id)::text, 8))
+INDEX technical_decisions.idx_technical_decisions_impact :: CREATE INDEX idx_technical_decisions_impact ON technical_decisions USING btree (impact_level, project_id)
+INDEX technical_decisions.idx_technical_decisions_impl_commits :: CREATE INDEX idx_technical_decisions_impl_commits ON technical_decisions USING gin (implementing_commits)
+INDEX technical_decisions.idx_technical_decisions_live :: CREATE INDEX idx_technical_decisions_live ON technical_decisions USING btree (project_id) WHERE (archived_at IS NULL)
+INDEX technical_decisions.idx_technical_decisions_project_type :: CREATE INDEX idx_technical_decisions_project_type ON technical_decisions USING btree (project_id, decision_type)
+INDEX technical_decisions.idx_technical_decisions_session_id :: CREATE INDEX idx_technical_decisions_session_id ON technical_decisions USING btree (session_id) WHERE (session_id IS NOT NULL)
+INDEX technical_decisions.idx_technical_decisions_status :: CREATE INDEX idx_technical_decisions_status ON technical_decisions USING btree (status, project_id)
+INDEX technical_decisions.idx_technical_decisions_tags_gin :: CREATE INDEX idx_technical_decisions_tags_gin ON technical_decisions USING gin (tags)
+INDEX technical_decisions.idx_technical_decisions_updated_at :: CREATE INDEX idx_technical_decisions_updated_at ON technical_decisions USING btree (updated_at DESC)
+INDEX technical_decisions.technical_decisions_pkey :: CREATE UNIQUE INDEX technical_decisions_pkey ON technical_decisions USING btree (id)
+INDEX traffic_routing_config.idx_traffic_routing_cutover_stage :: CREATE INDEX idx_traffic_routing_cutover_stage ON traffic_routing_config USING btree (cutover_stage)
+INDEX traffic_routing_config.idx_traffic_routing_health_status :: CREATE INDEX idx_traffic_routing_health_status ON traffic_routing_config USING btree (health_status)
+INDEX traffic_routing_config.idx_traffic_routing_stage_started :: CREATE INDEX idx_traffic_routing_stage_started ON traffic_routing_config USING btree (stage_started_at)
+INDEX traffic_routing_config.traffic_routing_config_pkey :: CREATE UNIQUE INDEX traffic_routing_config_pkey ON traffic_routing_config USING btree (table_name)
+INDEX user.user_email_key :: CREATE UNIQUE INDEX user_email_key ON "user" USING btree (email)
+INDEX user.user_pkey :: CREATE UNIQUE INDEX user_pkey ON "user" USING btree (id)
+INDEX user_project_access.idx_user_project_access_project :: CREATE INDEX idx_user_project_access_project ON user_project_access USING btree (project_id)
+INDEX user_project_access.user_project_access_pkey :: CREATE UNIQUE INDEX user_project_access_pkey ON user_project_access USING btree (user_id, project_id)
+INDEX verification.verification_identifier_idx :: CREATE INDEX verification_identifier_idx ON verification USING btree (identifier)
+INDEX verification.verification_pkey :: CREATE UNIQUE INDEX verification_pkey ON verification USING btree (id)
+SEQUENCE _aidis_migrations_id_seq
+SEQUENCE productivity_config_id_seq
+SEQUENCE session_activities_id_seq
+SEQUENCE session_files_id_seq
+SEQUENCE session_seq_2025
+SEQUENCE session_seq_2026
+VIEW branch_membership :: SELECT record_id AS id, record_id AS member_id, record_type AS member_type, spine_id, spine_type, attached_to_id, attached_to_type, source AS spine_source, project_id, created_at, edge_type, created_by, mint_via, provenance_class FROM (branch_memberships bm LEFT JOIN links l ON (((from_id = record_id) AND (to_id = attached_to_id) AND (edge_type = 'informs'))));
+VIEW decision_outcome_summary :: SELECT id AS decision_id, title, decision_type, impact_level, status, decision_date, count(id) AS outcome_measurements, avg(outcome_score) AS avg_outcome_score, max(measured_at) AS last_measured, string_agg(DISTINCT (outcome_status), ', ') AS outcome_statuses, avg(variance_percentage) AS avg_variance, count(id) AS impact_connections FROM ((technical_decisions td LEFT JOIN decision_outcomes outcomes ON ((id = decision_id))) LEFT JOIN decision_impact_analysis impacts ON (((id = source_decision_id) OR (id = impacted_decision_id)))) GROUP BY id, title, decision_type, impact_level, status, decision_date;
+VIEW developer_productivity :: SELECT project_id, author_email, author_name, count(*) AS total_commits, sum(insertions) AS total_insertions, sum(deletions) AS total_deletions, sum(files_changed) AS total_files_changed, count(DISTINCT branch_name) AS branches_contributed, min(author_date) AS first_commit, max(author_date) AS last_commit, count(*) FILTER (WHERE (author_date >= (now() - '7 days'))) AS commits_last_week, avg((insertions + deletions)) AS avg_lines_per_commit FROM git_commits gc GROUP BY project_id, author_email, author_name;
+VIEW file_change_hotspots :: SELECT project_id, file_path, count(*) AS change_count, count(DISTINCT author_email) AS contributor_count, sum(lines_added) AS total_lines_added, sum(lines_removed) AS total_lines_removed, max(author_date) AS last_changed, min(author_date) AS first_changed, array_agg(DISTINCT commit_type) AS change_types FROM (git_file_changes gfc JOIN git_commits gc ON ((commit_id = id))) GROUP BY project_id, file_path;
+VIEW learning_insights_effectiveness :: SELECT id, project_id, insight_type, pattern_name, pattern_description, pattern_conditions, confidence_score, supporting_evidence_count, contradicting_evidence_count, recommendation, prevention_strategy, enhancement_strategy, decision_types, impact_levels, applicable_components, contextual_factors, first_observed, last_confirmed, status, source_decisions, derived_from_insights, times_applied, last_applied, application_success_rate, CASE WHEN (application_success_rate >= 0.8) THEN 'highly_effective'(application_success_rate >= 0.6) THEN 'effective'(application_success_rate >= 0.4) THEN 'moderately_effective''needs_review', (supporting_evidence_count - contradicting_evidence_count) AS evidence_strength FROM decision_learning_insights dli WHERE ((status)= 'active') ORDER BY confidence_score DESC, (supporting_evidence_count - contradicting_evidence_count) DESC;
+VIEW link_provenance :: SELECT id, from_id, from_type, to_id, to_type, edge_type, project_id, created_at, created_by, provenance_class, mint_via FROM links l;
+VIEW link_provenance_weekly :: SELECT (date_trunc('week', created_at)), project_id, created_by, provenance_class, (count(*))((date_trunc('week', created_at))), project_id, created_by, provenance_class;
+VIEW link_provenance_weekly_class :: SELECT (date_trunc('week', created_at)), project_id, (count(*) FILTER (WHERE (provenance_class = 'declared'))), (count(*) FILTER (WHERE (provenance_class = 'guessed'))), (count(*) FILTER (WHERE (provenance_class = 'unclassified'))), (count(*)), round(((count(*) FILTER (WHERE (provenance_class = 'declared')))/ (NULLIF(count(*), 0))), 4) AS declared_rate FROM link_provenance GROUP BY ((date_trunc('week', created_at))), project_id;
+VIEW project_decision_health :: SELECT id AS project_id, name AS project_name, count(id) AS total_decisions, count( CASE WHEN ((status)= 'active') THEN 1 ELSE NULL) AS active_decisions, count( CASE WHEN ((outcome_status)= 'successful') THEN 1 ELSE NULL) AS successful_decisions, count( CASE WHEN ((outcome_status)= 'failed') THEN 1 ELSE NULL) AS failed_decisions, round(avg(outcome_score), 2) AS avg_outcome_score, count(id) AS learning_insights_generated, count(id) AS retrospectives_conducted, max(decision_date) AS last_decision_date FROM ((((projects p LEFT JOIN technical_decisions td ON ((id = project_id))) LEFT JOIN decision_outcomes outcomes ON ((id = decision_id))) LEFT JOIN decision_learning_insights insights ON ((id = project_id))) LEFT JOIN decision_retrospectives retros ON ((id = decision_id))) GROUP BY id, name;
+VIEW project_git_activity :: SELECT id AS project_id, name AS project_name, count(DISTINCT id) AS total_commits, count(DISTINCT author_email) AS contributors, count(DISTINCT id) AS total_branches, max(author_date) AS last_commit_date, count(DISTINCT id) FILTER (WHERE (author_date >= (now() - '7 days'))) AS commits_last_week, count(DISTINCT id) FILTER (WHERE (author_date >= (now() - '30 days'))) AS commits_last_month FROM ((projects p LEFT JOIN git_commits gc ON ((id = project_id))) LEFT JOIN git_branches gb ON ((id = project_id))) GROUP BY id, name;
+VIEW record_declared_inbound :: WITH records AS ( SELECT 'task', id AS record_id, project_id, created_at FROM tasks t UNION ALL SELECT 'decision', id AS record_id, project_id, decision_date AS created_at FROM technical_decisions d ) SELECT record_type, record_id, project_id, created_at, (count(id) FILTER (WHERE (provenance_class = 'declared'))), (count(id) FILTER (WHERE (provenance_class = 'guessed')))(records r LEFT JOIN link_provenance lp ON (((to_id = record_id) AND (to_type = record_type)))) GROUP BY record_type, record_id, project_id, created_at;
+VIEW v_consolidation_candidates :: SELECT session_id, display_id, project_id, name AS project_name, context_type, count(*) AS context_count, array_agg(id ORDER BY created_at) AS source_context_ids, string_agg("left"(content, 200), ' --- ') AS aggregated_content, sum(length(content)) AS total_chars, avg(relevance_score) AS avg_importance, min(created_at) AS earliest, max(created_at) AS latest, (((((count(*))* 0.4))+ (avg(relevance_score) * (0.3))) + (((EXTRACT(epoch FROM (now() - max(created_at))) / (3600)) * 0.3))) AS consolidation_priority FROM ((contexts c JOIN sessions s ON ((session_id = id))) JOIN projects p ON ((project_id = id))) WHERE (((EXTRACT(epoch FROM (now() - created_at)) / (3600)) >= (2)) AND ((EXTRACT(epoch FROM (now() - created_at)) / (3600)) <= (24)) AND ((context_type)= ANY (ARRAY[('planning'), ('code'), ('discussion')))) GROUP BY session_id, display_id, project_id, name, context_type HAVING (count(*) >= 3);
+VIEW v_session_summaries :: SELECT id, display_id, project_id, name AS project_name, agent_type, started_at, ended_at, (EXTRACT(epoch FROM (COALESCE(ended_at, now()) - started_at)) / (60)) AS duration_minutes, status, title, description, NULL, NULL, NULL, (COALESCE(( SELECT count(*) AS count FROM tasks t WHERE ((session_id = id) AND (archived_at IS NULL))), (0))), (COALESCE(( SELECT count(*) AS count FROM tasks t WHERE ((session_id = id) AND (archived_at IS NULL) AND ((status)= 'completed'))), (0))), CASE WHEN (( SELECT count(*) AS count FROM tasks t WHERE ((session_id = id) AND (archived_at IS NULL))) > 0) THEN round((((( SELECT count(*) AS count FROM tasks t WHERE ((session_id = id) AND (archived_at IS NULL) AND ((status)= 'completed'))))/ (( SELECT count(*) AS count FROM tasks t WHERE ((session_id = id) AND (archived_at IS NULL))))) * (100)), 2) ELSE (0), (COALESCE(( SELECT count(*) AS count FROM contexts c WHERE ((session_id = id) AND (archived_at IS NULL))), (0))), (COALESCE(( SELECT count(*) AS count FROM technical_decisions d WHERE ((session_id = id) AND (archived_at IS NULL))), (0))), 0 AS lines_added, 0 AS lines_deleted, 0 AS lines_net, 0 AS files_modified_count, 0 AS activity_count, input_tokens, output_tokens, total_tokens, NULL, last_activity_at, metadata FROM (sessions s LEFT JOIN projects p ON ((project_id = id))) WHERE ((agent_type)'deploy-smoke');
+VIEW v_working_memory_classification :: SELECT id, project_id, session_id, context_type, content, created_at, relevance_score, tags, metadata, related_commit_sha, commit_context_type, pattern_session_id, related_insights, pattern_relevance_score, embedding_384_backup, embedding, embedding_migrated, display_id AS session_display, (EXTRACT(epoch FROM (now() - created_at)) / (3600)) AS age_hours, CASE WHEN ((EXTRACT(epoch FROM (now() - created_at)) / (3600)) < (2)) THEN 'working'((EXTRACT(epoch FROM (now() - created_at)) / (3600)) < (48)) THEN 'session''project', ((((exp(((- EXTRACT(epoch FROM (now() - created_at))) / (24.0 * (3600)))))+ (COALESCE(relevance_score, (5.0)) / (10.0))) + ( CASE context_type WHEN 'milestone''decision''completion''reflections''planning''code')) / (3.0)) AS combined_score FROM (contexts c JOIN sessions s ON ((session_id = id))) WHERE ((status)= 'active');
+VIEW zero_declared_inbound_weekly :: SELECT (date_trunc('week', created_at)), project_id, record_type, (count(*)), (count(*) FILTER (WHERE (declared_inbound = 0))), round(((count(*) FILTER (WHERE (declared_inbound = 0)))/ (NULLIF(count(*), 0))), 4) AS zero_declared_rate FROM record_declared_inbound GROUP BY ((date_trunc('week', created_at))), project_id, record_type;

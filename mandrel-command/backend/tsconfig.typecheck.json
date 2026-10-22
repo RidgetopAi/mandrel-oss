@@ -1,0 +1,45 @@
+{
+  // TYPECHECK-ONLY config. an earlier Task.
+  //
+  // WHY THIS FILE EXISTS: `tsconfig.json` is the BUILD config — it sets
+  // `rootDir: "./src"`, so its `include` can only ever cover `src/`. The
+  // authoritative gate's STAGE 3 (`the CI gate`, `cd mandrel-command/backend
+  // && npm run type-check`) read that config and inherited its blind spot, so
+  // the `.ts` files under `scripts/` were typechecked by NOTHING: jest's
+  // `roots: ['<rootDir>/src']` cannot reach them either.
+  //
+  // MEASURED, not assumed: appending `export const x: number = "nope";` to
+  // scripts/route-census.ts left `npx tsc --noEmit` (the old STAGE 3 command)
+  // at rc=0 and matched 0 jest test files.
+  //
+  // This is the same hole, and the same fix, that an earlier task closed for
+  // mcp-server. See mcp-server/tsconfig.typecheck.json.
+  //
+  // THE RULES ARE NOT LOOSENED. This extends the build config verbatim, so
+  // `strict`, `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns` and
+  // `noFallthroughCasesInSwitch` all apply to the newly covered files. The
+  // ONLY overrides are `noEmit` (this config never emits) and `rootDir`
+  // (widened so files outside `src/` are legal members of the program at all).
+  //
+  // IF YOU CANNOT MAKE A FILE PASS: exclude it BY NAME with a written reason.
+  // Do NOT relax a compilerOption and do NOT exclude a directory — a named
+  // exclusion is a debt someone can count and pay down; a loosened option is
+  // invisible forever.
+  "extends": "./tsconfig.json",
+
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": "."
+  },
+
+  "include": [
+    "src/**/*",
+    "test-setup.ts",
+    "scripts/**/*"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist"
+  ]
+}

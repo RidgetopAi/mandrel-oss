@@ -1,0 +1,6345 @@
+{
+  "_README": "GOLDEN PARITY FIXTURE — a RECORDING of the pre-change actor registry, captured by executing the source at the commit named in _capturedFromCommit (via `git show`), NOT a hand-written oracle. Consumed by tests/actorRegistry.unit.test.ts to prove that with MANDREL_ACTOR_COMPOSITE_ENABLED off (the shipped default) the actor stack is byte-identical to main. Regenerate ONLY with an explicit decision to change legacy behavior — this file is the thing that says \"the default path did not move\".",
+  "_capturedFromCommit": "f9d9ff9b343b9264696fd32dda9a6999f3a18926",
+  "_capturedUnderEnv": {
+    "MANDREL_ACTOR_REGISTRY_EXTRA": "<unset>",
+    "MANDREL_ACTOR_DEFAULT_KIND": "<unset>",
+    "MANDREL_ACTOR_COMPOSITE_ENABLED": "<unset>"
+  },
+  "_labels": [
+    "<undefined>",
+    "<null>",
+    "",
+    "   ",
+    "operator",
+    "  operator  ",
+    "Operator",
+    "coordinator",
+    "tick",
+    "deploy-smoke",
+    "cron",
+    "builder-0803a2d0",
+    "reviewer-abc123",
+    "anonymous",
+    "some-unregistered-thing",
+    "operator@example.com",
+    "auth0|abc123",
+    "a/b",
+    "/",
+    ":",
+    "a//b",
+    "x:y",
+    "::",
+    "operator@example.com/builder-abc",
+    "operator@example.com/tick",
+    "operator@example.com/operator",
+    "someone-else/coordinator",
+    "UPPER/Operator",
+    "/leading",
+    "trailing/",
+    "a/b/c",
+    "has space",
+    "Builder  --  ABC123",
+    "--edges--",
+    "a-b"
+  ],
+  "deriveActor": [
+    {
+      "sub": null,
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": "",
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": "   ",
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": "operator",
+      "out": "operator"
+    },
+    {
+      "sub": null,
+      "declared": "  operator  ",
+      "out": "operator"
+    },
+    {
+      "sub": null,
+      "declared": "Operator",
+      "out": "Operator"
+    },
+    {
+      "sub": null,
+      "declared": "coordinator",
+      "out": "coordinator"
+    },
+    {
+      "sub": null,
+      "declared": "tick",
+      "out": "tick"
+    },
+    {
+      "sub": null,
+      "declared": "deploy-smoke",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": null,
+      "declared": "cron",
+      "out": "cron"
+    },
+    {
+      "sub": null,
+      "declared": "builder-0803a2d0",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": null,
+      "declared": "reviewer-abc123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": null,
+      "declared": "anonymous",
+      "out": "anonymous"
+    },
+    {
+      "sub": null,
+      "declared": "some-unregistered-thing",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": null,
+      "declared": "auth0|abc123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": null,
+      "declared": "a/b",
+      "out": "a/b"
+    },
+    {
+      "sub": null,
+      "declared": "/",
+      "out": "/"
+    },
+    {
+      "sub": null,
+      "declared": ":",
+      "out": ":"
+    },
+    {
+      "sub": null,
+      "declared": "a//b",
+      "out": "a//b"
+    },
+    {
+      "sub": null,
+      "declared": "x:y",
+      "out": "x:y"
+    },
+    {
+      "sub": null,
+      "declared": "::",
+      "out": "::"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": null,
+      "declared": "someone-else/coordinator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": null,
+      "declared": "UPPER/Operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": null,
+      "declared": "/leading",
+      "out": "/leading"
+    },
+    {
+      "sub": null,
+      "declared": "trailing/",
+      "out": "trailing/"
+    },
+    {
+      "sub": null,
+      "declared": "a/b/c",
+      "out": "a/b/c"
+    },
+    {
+      "sub": null,
+      "declared": "has space",
+      "out": "has space"
+    },
+    {
+      "sub": null,
+      "declared": "Builder  --  ABC123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": null,
+      "declared": "--edges--",
+      "out": "--edges--"
+    },
+    {
+      "sub": null,
+      "declared": "a-b",
+      "out": "a-b"
+    },
+    {
+      "sub": null,
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": "",
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": "   ",
+      "out": null
+    },
+    {
+      "sub": null,
+      "declared": "operator",
+      "out": "operator"
+    },
+    {
+      "sub": null,
+      "declared": "  operator  ",
+      "out": "operator"
+    },
+    {
+      "sub": null,
+      "declared": "Operator",
+      "out": "Operator"
+    },
+    {
+      "sub": null,
+      "declared": "coordinator",
+      "out": "coordinator"
+    },
+    {
+      "sub": null,
+      "declared": "tick",
+      "out": "tick"
+    },
+    {
+      "sub": null,
+      "declared": "deploy-smoke",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": null,
+      "declared": "cron",
+      "out": "cron"
+    },
+    {
+      "sub": null,
+      "declared": "builder-0803a2d0",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": null,
+      "declared": "reviewer-abc123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": null,
+      "declared": "anonymous",
+      "out": "anonymous"
+    },
+    {
+      "sub": null,
+      "declared": "some-unregistered-thing",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": null,
+      "declared": "auth0|abc123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": null,
+      "declared": "a/b",
+      "out": "a/b"
+    },
+    {
+      "sub": null,
+      "declared": "/",
+      "out": "/"
+    },
+    {
+      "sub": null,
+      "declared": ":",
+      "out": ":"
+    },
+    {
+      "sub": null,
+      "declared": "a//b",
+      "out": "a//b"
+    },
+    {
+      "sub": null,
+      "declared": "x:y",
+      "out": "x:y"
+    },
+    {
+      "sub": null,
+      "declared": "::",
+      "out": "::"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": null,
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": null,
+      "declared": "someone-else/coordinator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": null,
+      "declared": "UPPER/Operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": null,
+      "declared": "/leading",
+      "out": "/leading"
+    },
+    {
+      "sub": null,
+      "declared": "trailing/",
+      "out": "trailing/"
+    },
+    {
+      "sub": null,
+      "declared": "a/b/c",
+      "out": "a/b/c"
+    },
+    {
+      "sub": null,
+      "declared": "has space",
+      "out": "has space"
+    },
+    {
+      "sub": null,
+      "declared": "Builder  --  ABC123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": null,
+      "declared": "--edges--",
+      "out": "--edges--"
+    },
+    {
+      "sub": null,
+      "declared": "a-b",
+      "out": "a-b"
+    },
+    {
+      "sub": "",
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": "",
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": "",
+      "declared": "",
+      "out": null
+    },
+    {
+      "sub": "",
+      "declared": "   ",
+      "out": null
+    },
+    {
+      "sub": "",
+      "declared": "operator",
+      "out": "operator"
+    },
+    {
+      "sub": "",
+      "declared": "  operator  ",
+      "out": "operator"
+    },
+    {
+      "sub": "",
+      "declared": "Operator",
+      "out": "Operator"
+    },
+    {
+      "sub": "",
+      "declared": "coordinator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "",
+      "declared": "tick",
+      "out": "tick"
+    },
+    {
+      "sub": "",
+      "declared": "deploy-smoke",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "",
+      "declared": "cron",
+      "out": "cron"
+    },
+    {
+      "sub": "",
+      "declared": "builder-0803a2d0",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "",
+      "declared": "reviewer-abc123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "",
+      "declared": "anonymous",
+      "out": "anonymous"
+    },
+    {
+      "sub": "",
+      "declared": "some-unregistered-thing",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "",
+      "declared": "operator@example.com",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "",
+      "declared": "auth0|abc123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "",
+      "declared": "a/b",
+      "out": "a/b"
+    },
+    {
+      "sub": "",
+      "declared": "/",
+      "out": "/"
+    },
+    {
+      "sub": "",
+      "declared": ":",
+      "out": ":"
+    },
+    {
+      "sub": "",
+      "declared": "a//b",
+      "out": "a//b"
+    },
+    {
+      "sub": "",
+      "declared": "x:y",
+      "out": "x:y"
+    },
+    {
+      "sub": "",
+      "declared": "::",
+      "out": "::"
+    },
+    {
+      "sub": "",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "",
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "",
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "",
+      "declared": "someone-else/coordinator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "",
+      "declared": "UPPER/Operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "",
+      "declared": "/leading",
+      "out": "/leading"
+    },
+    {
+      "sub": "",
+      "declared": "trailing/",
+      "out": "trailing/"
+    },
+    {
+      "sub": "",
+      "declared": "a/b/c",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "",
+      "declared": "has space",
+      "out": "has space"
+    },
+    {
+      "sub": "",
+      "declared": "Builder  --  ABC123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "",
+      "declared": "--edges--",
+      "out": "--edges--"
+    },
+    {
+      "sub": "",
+      "declared": "a-b",
+      "out": "a-b"
+    },
+    {
+      "sub": "   ",
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": "   ",
+      "declared": null,
+      "out": null
+    },
+    {
+      "sub": "   ",
+      "declared": "",
+      "out": null
+    },
+    {
+      "sub": "   ",
+      "declared": "   ",
+      "out": null
+    },
+    {
+      "sub": "   ",
+      "declared": "operator",
+      "out": "operator"
+    },
+    {
+      "sub": "   ",
+      "declared": "  operator  ",
+      "out": "operator"
+    },
+    {
+      "sub": "   ",
+      "declared": "Operator",
+      "out": "Operator"
+    },
+    {
+      "sub": "   ",
+      "declared": "coordinator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "   ",
+      "declared": "tick",
+      "out": "tick"
+    },
+    {
+      "sub": "   ",
+      "declared": "deploy-smoke",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "   ",
+      "declared": "cron",
+      "out": "cron"
+    },
+    {
+      "sub": "   ",
+      "declared": "builder-0803a2d0",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "   ",
+      "declared": "reviewer-abc123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "   ",
+      "declared": "anonymous",
+      "out": "anonymous"
+    },
+    {
+      "sub": "   ",
+      "declared": "some-unregistered-thing",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "   ",
+      "declared": "operator@example.com",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "   ",
+      "declared": "auth0|abc123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "   ",
+      "declared": "a/b",
+      "out": "a/b"
+    },
+    {
+      "sub": "   ",
+      "declared": "/",
+      "out": "/"
+    },
+    {
+      "sub": "   ",
+      "declared": ":",
+      "out": ":"
+    },
+    {
+      "sub": "   ",
+      "declared": "a//b",
+      "out": "a//b"
+    },
+    {
+      "sub": "   ",
+      "declared": "x:y",
+      "out": "x:y"
+    },
+    {
+      "sub": "   ",
+      "declared": "::",
+      "out": "::"
+    },
+    {
+      "sub": "   ",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "   ",
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "   ",
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "   ",
+      "declared": "someone-else/coordinator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "   ",
+      "declared": "UPPER/Operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "   ",
+      "declared": "/leading",
+      "out": "/leading"
+    },
+    {
+      "sub": "   ",
+      "declared": "trailing/",
+      "out": "trailing/"
+    },
+    {
+      "sub": "   ",
+      "declared": "a/b/c",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "   ",
+      "declared": "has space",
+      "out": "has space"
+    },
+    {
+      "sub": "   ",
+      "declared": "Builder  --  ABC123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "   ",
+      "declared": "--edges--",
+      "out": "--edges--"
+    },
+    {
+      "sub": "   ",
+      "declared": "a-b",
+      "out": "a-b"
+    },
+    {
+      "sub": "operator",
+      "declared": null,
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": null,
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "   ",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "operator",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "  operator  ",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "Operator",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "coordinator",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "tick",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "deploy-smoke",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "cron",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "builder-0803a2d0",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "reviewer-abc123",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "anonymous",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "some-unregistered-thing",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "operator@example.com",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "auth0|abc123",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "a/b",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "/",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": ":",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "a//b",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "x:y",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "::",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "operator@example.com/tick",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "operator@example.com/operator",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "someone-else/coordinator",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "UPPER/Operator",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "/leading",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "trailing/",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "a/b/c",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "has space",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "Builder  --  ABC123",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "--edges--",
+      "out": "operator"
+    },
+    {
+      "sub": "operator",
+      "declared": "a-b",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": null,
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": null,
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "   ",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "operator",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "  operator  ",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "Operator",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "coordinator",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "tick",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "deploy-smoke",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "cron",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "builder-0803a2d0",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "reviewer-abc123",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "anonymous",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "some-unregistered-thing",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "operator@example.com",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "auth0|abc123",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "a/b",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "/",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": ":",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "a//b",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "x:y",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "::",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "operator@example.com/tick",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "operator@example.com/operator",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "someone-else/coordinator",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "UPPER/Operator",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "/leading",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "trailing/",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "a/b/c",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "has space",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "Builder  --  ABC123",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "--edges--",
+      "out": "operator"
+    },
+    {
+      "sub": "  operator  ",
+      "declared": "a-b",
+      "out": "operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": null,
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": null,
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "   ",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "operator",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "  operator  ",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "Operator",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "coordinator",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "tick",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "deploy-smoke",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "cron",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "builder-0803a2d0",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "reviewer-abc123",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "anonymous",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "some-unregistered-thing",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "operator@example.com",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "auth0|abc123",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "a/b",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "/",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": ":",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "a//b",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "x:y",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "::",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "operator@example.com/builder-abc",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "operator@example.com/tick",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "operator@example.com/operator",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "someone-else/coordinator",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "UPPER/Operator",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "/leading",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "trailing/",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "a/b/c",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "has space",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "Builder  --  ABC123",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "--edges--",
+      "out": "Operator"
+    },
+    {
+      "sub": "Operator",
+      "declared": "a-b",
+      "out": "Operator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": null,
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": null,
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "   ",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "operator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "  operator  ",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "Operator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "coordinator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "tick",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "deploy-smoke",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "cron",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "builder-0803a2d0",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "reviewer-abc123",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "anonymous",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "some-unregistered-thing",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "operator@example.com",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "auth0|abc123",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "a/b",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "/",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": ":",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "a//b",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "x:y",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "::",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "operator@example.com/builder-abc",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "operator@example.com/tick",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "operator@example.com/operator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "someone-else/coordinator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "UPPER/Operator",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "/leading",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "trailing/",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "a/b/c",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "has space",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "Builder  --  ABC123",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "--edges--",
+      "out": "coordinator"
+    },
+    {
+      "sub": "coordinator",
+      "declared": "a-b",
+      "out": "coordinator"
+    },
+    {
+      "sub": "tick",
+      "declared": null,
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": null,
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "   ",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "operator",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "  operator  ",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "Operator",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "coordinator",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "tick",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "deploy-smoke",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "cron",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "builder-0803a2d0",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "reviewer-abc123",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "anonymous",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "some-unregistered-thing",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "operator@example.com",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "auth0|abc123",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "a/b",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "/",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": ":",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "a//b",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "x:y",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "::",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "operator@example.com/builder-abc",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "operator@example.com/tick",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "operator@example.com/operator",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "someone-else/coordinator",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "UPPER/Operator",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "/leading",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "trailing/",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "a/b/c",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "has space",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "Builder  --  ABC123",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "--edges--",
+      "out": "tick"
+    },
+    {
+      "sub": "tick",
+      "declared": "a-b",
+      "out": "tick"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": null,
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": null,
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "   ",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "operator",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "  operator  ",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "Operator",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "coordinator",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "tick",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "deploy-smoke",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "cron",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "builder-0803a2d0",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "reviewer-abc123",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "anonymous",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "some-unregistered-thing",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "operator@example.com",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "auth0|abc123",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "a/b",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "/",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": ":",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "a//b",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "x:y",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "::",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "operator@example.com/builder-abc",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "operator@example.com/tick",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "operator@example.com/operator",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "someone-else/coordinator",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "UPPER/Operator",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "/leading",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "trailing/",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "a/b/c",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "has space",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "Builder  --  ABC123",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "--edges--",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "deploy-smoke",
+      "declared": "a-b",
+      "out": "deploy-smoke"
+    },
+    {
+      "sub": "cron",
+      "declared": null,
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": null,
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "   ",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "operator",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "  operator  ",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "Operator",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "coordinator",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "tick",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "deploy-smoke",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "cron",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "builder-0803a2d0",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "reviewer-abc123",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "anonymous",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "some-unregistered-thing",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "operator@example.com",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "auth0|abc123",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "a/b",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "/",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": ":",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "a//b",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "x:y",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "::",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "operator@example.com/builder-abc",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "operator@example.com/tick",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "operator@example.com/operator",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "someone-else/coordinator",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "UPPER/Operator",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "/leading",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "trailing/",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "a/b/c",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "has space",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "Builder  --  ABC123",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "--edges--",
+      "out": "cron"
+    },
+    {
+      "sub": "cron",
+      "declared": "a-b",
+      "out": "cron"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": null,
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": null,
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "   ",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "operator",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "  operator  ",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "Operator",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "coordinator",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "tick",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "deploy-smoke",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "cron",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "builder-0803a2d0",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "reviewer-abc123",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "anonymous",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "some-unregistered-thing",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "operator@example.com",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "auth0|abc123",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "a/b",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "/",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": ":",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "a//b",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "x:y",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "::",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "operator@example.com/builder-abc",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "operator@example.com/tick",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "operator@example.com/operator",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "someone-else/coordinator",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "UPPER/Operator",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "/leading",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "trailing/",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "a/b/c",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "has space",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "Builder  --  ABC123",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "--edges--",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "builder-0803a2d0",
+      "declared": "a-b",
+      "out": "builder-0803a2d0"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": null,
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": null,
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "   ",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "operator",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "  operator  ",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "Operator",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "coordinator",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "tick",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "deploy-smoke",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "cron",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "builder-0803a2d0",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "reviewer-abc123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "anonymous",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "some-unregistered-thing",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "operator@example.com",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "auth0|abc123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "a/b",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "/",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": ":",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "a//b",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "x:y",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "::",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "operator@example.com/builder-abc",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "operator@example.com/tick",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "operator@example.com/operator",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "someone-else/coordinator",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "UPPER/Operator",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "/leading",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "trailing/",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "a/b/c",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "has space",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "Builder  --  ABC123",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "--edges--",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "reviewer-abc123",
+      "declared": "a-b",
+      "out": "reviewer-abc123"
+    },
+    {
+      "sub": "anonymous",
+      "declared": null,
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": null,
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "   ",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "operator",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "  operator  ",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "Operator",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "coordinator",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "tick",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "deploy-smoke",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "cron",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "builder-0803a2d0",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "reviewer-abc123",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "anonymous",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "some-unregistered-thing",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "operator@example.com",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "auth0|abc123",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "a/b",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "/",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": ":",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "a//b",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "x:y",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "::",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "operator@example.com/builder-abc",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "operator@example.com/tick",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "operator@example.com/operator",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "someone-else/coordinator",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "UPPER/Operator",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "/leading",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "trailing/",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "a/b/c",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "has space",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "Builder  --  ABC123",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "--edges--",
+      "out": "anonymous"
+    },
+    {
+      "sub": "anonymous",
+      "declared": "a-b",
+      "out": "anonymous"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": null,
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": null,
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "   ",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "operator",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "  operator  ",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "Operator",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "coordinator",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "tick",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "deploy-smoke",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "cron",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "builder-0803a2d0",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "reviewer-abc123",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "anonymous",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "some-unregistered-thing",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "operator@example.com",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "auth0|abc123",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "a/b",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "/",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": ":",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "a//b",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "x:y",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "::",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "operator@example.com/builder-abc",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "operator@example.com/tick",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "operator@example.com/operator",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "someone-else/coordinator",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "UPPER/Operator",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "/leading",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "trailing/",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "a/b/c",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "has space",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "Builder  --  ABC123",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "--edges--",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "some-unregistered-thing",
+      "declared": "a-b",
+      "out": "some-unregistered-thing"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": null,
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": null,
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "   ",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "operator",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "  operator  ",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "Operator",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "coordinator",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "tick",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "deploy-smoke",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "cron",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "builder-0803a2d0",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "reviewer-abc123",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "anonymous",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "some-unregistered-thing",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "operator@example.com",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "auth0|abc123",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "a/b",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "/",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": ":",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "a//b",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "x:y",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "::",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "someone-else/coordinator",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "UPPER/Operator",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "/leading",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "trailing/",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "a/b/c",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "has space",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "Builder  --  ABC123",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "--edges--",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "operator@example.com",
+      "declared": "a-b",
+      "out": "operator@example.com"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": null,
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": null,
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "   ",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "operator",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "  operator  ",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "Operator",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "coordinator",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "tick",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "deploy-smoke",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "cron",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "builder-0803a2d0",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "reviewer-abc123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "anonymous",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "some-unregistered-thing",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "operator@example.com",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "auth0|abc123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "a/b",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "/",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": ":",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "a//b",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "x:y",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "::",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "operator@example.com/builder-abc",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "operator@example.com/tick",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "operator@example.com/operator",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "someone-else/coordinator",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "UPPER/Operator",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "/leading",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "trailing/",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "a/b/c",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "has space",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "Builder  --  ABC123",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "--edges--",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "auth0|abc123",
+      "declared": "a-b",
+      "out": "auth0|abc123"
+    },
+    {
+      "sub": "a/b",
+      "declared": null,
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": null,
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "   ",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "operator",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "  operator  ",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "Operator",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "coordinator",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "tick",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "deploy-smoke",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "cron",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "builder-0803a2d0",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "reviewer-abc123",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "anonymous",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "some-unregistered-thing",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "operator@example.com",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "auth0|abc123",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "a/b",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "/",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": ":",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "a//b",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "x:y",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "::",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "operator@example.com/builder-abc",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "operator@example.com/tick",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "operator@example.com/operator",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "someone-else/coordinator",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "UPPER/Operator",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "/leading",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "trailing/",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "a/b/c",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "has space",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "Builder  --  ABC123",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "--edges--",
+      "out": "a/b"
+    },
+    {
+      "sub": "a/b",
+      "declared": "a-b",
+      "out": "a/b"
+    },
+    {
+      "sub": "/",
+      "declared": null,
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": null,
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "   ",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "operator",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "  operator  ",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "Operator",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "coordinator",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "tick",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "deploy-smoke",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "cron",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "builder-0803a2d0",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "reviewer-abc123",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "anonymous",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "some-unregistered-thing",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "operator@example.com",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "auth0|abc123",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "a/b",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "/",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": ":",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "a//b",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "x:y",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "::",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "operator@example.com/builder-abc",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "operator@example.com/tick",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "operator@example.com/operator",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "someone-else/coordinator",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "UPPER/Operator",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "/leading",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "trailing/",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "a/b/c",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "has space",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "Builder  --  ABC123",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "--edges--",
+      "out": "/"
+    },
+    {
+      "sub": "/",
+      "declared": "a-b",
+      "out": "/"
+    },
+    {
+      "sub": ":",
+      "declared": null,
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": null,
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "   ",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "operator",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "  operator  ",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "Operator",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "coordinator",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "tick",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "deploy-smoke",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "cron",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "builder-0803a2d0",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "reviewer-abc123",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "anonymous",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "some-unregistered-thing",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "operator@example.com",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "auth0|abc123",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "a/b",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "/",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": ":",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "a//b",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "x:y",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "::",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "operator@example.com/builder-abc",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "operator@example.com/tick",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "operator@example.com/operator",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "someone-else/coordinator",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "UPPER/Operator",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "/leading",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "trailing/",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "a/b/c",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "has space",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "Builder  --  ABC123",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "--edges--",
+      "out": ":"
+    },
+    {
+      "sub": ":",
+      "declared": "a-b",
+      "out": ":"
+    },
+    {
+      "sub": "a//b",
+      "declared": null,
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": null,
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "   ",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "operator",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "  operator  ",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "Operator",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "coordinator",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "tick",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "deploy-smoke",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "cron",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "builder-0803a2d0",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "reviewer-abc123",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "anonymous",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "some-unregistered-thing",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "operator@example.com",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "auth0|abc123",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "a/b",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "/",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": ":",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "a//b",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "x:y",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "::",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "operator@example.com/builder-abc",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "operator@example.com/tick",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "operator@example.com/operator",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "someone-else/coordinator",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "UPPER/Operator",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "/leading",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "trailing/",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "a/b/c",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "has space",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "Builder  --  ABC123",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "--edges--",
+      "out": "a//b"
+    },
+    {
+      "sub": "a//b",
+      "declared": "a-b",
+      "out": "a//b"
+    },
+    {
+      "sub": "x:y",
+      "declared": null,
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": null,
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "   ",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "operator",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "  operator  ",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "Operator",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "coordinator",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "tick",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "deploy-smoke",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "cron",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "builder-0803a2d0",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "reviewer-abc123",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "anonymous",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "some-unregistered-thing",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "operator@example.com",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "auth0|abc123",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "a/b",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "/",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": ":",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "a//b",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "x:y",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "::",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "operator@example.com/builder-abc",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "operator@example.com/tick",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "operator@example.com/operator",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "someone-else/coordinator",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "UPPER/Operator",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "/leading",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "trailing/",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "a/b/c",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "has space",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "Builder  --  ABC123",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "--edges--",
+      "out": "x:y"
+    },
+    {
+      "sub": "x:y",
+      "declared": "a-b",
+      "out": "x:y"
+    },
+    {
+      "sub": "::",
+      "declared": null,
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": null,
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "   ",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "operator",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "  operator  ",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "Operator",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "coordinator",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "tick",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "deploy-smoke",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "cron",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "builder-0803a2d0",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "reviewer-abc123",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "anonymous",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "some-unregistered-thing",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "operator@example.com",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "auth0|abc123",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "a/b",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "/",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": ":",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "a//b",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "x:y",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "::",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "operator@example.com/builder-abc",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "operator@example.com/tick",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "operator@example.com/operator",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "someone-else/coordinator",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "UPPER/Operator",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "/leading",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "trailing/",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "a/b/c",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "has space",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "Builder  --  ABC123",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "--edges--",
+      "out": "::"
+    },
+    {
+      "sub": "::",
+      "declared": "a-b",
+      "out": "::"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": null,
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": null,
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "   ",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "operator",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "  operator  ",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "Operator",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "coordinator",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "tick",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "deploy-smoke",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "cron",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "builder-0803a2d0",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "reviewer-abc123",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "anonymous",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "some-unregistered-thing",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "operator@example.com",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "auth0|abc123",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "a/b",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "/",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": ":",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "a//b",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "x:y",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "::",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "someone-else/coordinator",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "UPPER/Operator",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "/leading",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "trailing/",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "a/b/c",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "has space",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "Builder  --  ABC123",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "--edges--",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/builder-abc",
+      "declared": "a-b",
+      "out": "operator@example.com/builder-abc"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": null,
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": null,
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "   ",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "operator",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "  operator  ",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "Operator",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "coordinator",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "tick",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "deploy-smoke",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "cron",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "builder-0803a2d0",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "reviewer-abc123",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "anonymous",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "some-unregistered-thing",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "operator@example.com",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "auth0|abc123",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "a/b",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "/",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": ":",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "a//b",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "x:y",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "::",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "someone-else/coordinator",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "UPPER/Operator",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "/leading",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "trailing/",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "a/b/c",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "has space",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "Builder  --  ABC123",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "--edges--",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/tick",
+      "declared": "a-b",
+      "out": "operator@example.com/tick"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": null,
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": null,
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "   ",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "  operator  ",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "Operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "coordinator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "tick",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "deploy-smoke",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "cron",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "builder-0803a2d0",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "reviewer-abc123",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "anonymous",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "some-unregistered-thing",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "operator@example.com",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "auth0|abc123",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "a/b",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "/",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": ":",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "a//b",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "x:y",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "::",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "operator@example.com/builder-abc",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "operator@example.com/tick",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "operator@example.com/operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "someone-else/coordinator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "UPPER/Operator",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "/leading",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "trailing/",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "a/b/c",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "has space",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "Builder  --  ABC123",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "--edges--",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "operator@example.com/operator",
+      "declared": "a-b",
+      "out": "operator@example.com/operator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": null,
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": null,
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "   ",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "operator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "  operator  ",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "Operator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "coordinator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "tick",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "deploy-smoke",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "cron",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "builder-0803a2d0",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "reviewer-abc123",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "anonymous",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "some-unregistered-thing",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "operator@example.com",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "auth0|abc123",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "a/b",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "/",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": ":",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "a//b",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "x:y",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "::",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "operator@example.com/builder-abc",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "operator@example.com/tick",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "operator@example.com/operator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "someone-else/coordinator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "UPPER/Operator",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "/leading",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "trailing/",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "a/b/c",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "has space",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "Builder  --  ABC123",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "--edges--",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "someone-else/coordinator",
+      "declared": "a-b",
+      "out": "someone-else/coordinator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": null,
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": null,
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "   ",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "  operator  ",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "Operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "coordinator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "tick",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "deploy-smoke",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "cron",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "builder-0803a2d0",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "reviewer-abc123",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "anonymous",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "some-unregistered-thing",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "operator@example.com",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "auth0|abc123",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "a/b",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "/",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": ":",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "a//b",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "x:y",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "::",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "operator@example.com/builder-abc",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "operator@example.com/tick",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "operator@example.com/operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "someone-else/coordinator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "UPPER/Operator",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "/leading",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "trailing/",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "a/b/c",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "has space",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "Builder  --  ABC123",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "--edges--",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "UPPER/Operator",
+      "declared": "a-b",
+      "out": "UPPER/Operator"
+    },
+    {
+      "sub": "/leading",
+      "declared": null,
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": null,
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "   ",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "operator",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "  operator  ",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "Operator",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "coordinator",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "tick",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "deploy-smoke",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "cron",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "builder-0803a2d0",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "reviewer-abc123",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "anonymous",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "some-unregistered-thing",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "operator@example.com",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "auth0|abc123",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "a/b",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "/",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": ":",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "a//b",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "x:y",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "::",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "operator@example.com/builder-abc",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "operator@example.com/tick",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "operator@example.com/operator",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "someone-else/coordinator",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "UPPER/Operator",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "/leading",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "trailing/",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "a/b/c",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "has space",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "Builder  --  ABC123",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "--edges--",
+      "out": "/leading"
+    },
+    {
+      "sub": "/leading",
+      "declared": "a-b",
+      "out": "/leading"
+    },
+    {
+      "sub": "trailing/",
+      "declared": null,
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": null,
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "   ",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "operator",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "  operator  ",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "Operator",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "coordinator",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "tick",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "deploy-smoke",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "cron",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "builder-0803a2d0",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "reviewer-abc123",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "anonymous",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "some-unregistered-thing",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "operator@example.com",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "auth0|abc123",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "a/b",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "/",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": ":",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "a//b",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "x:y",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "::",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "operator@example.com/builder-abc",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "operator@example.com/tick",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "operator@example.com/operator",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "someone-else/coordinator",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "UPPER/Operator",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "/leading",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "trailing/",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "a/b/c",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "has space",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "Builder  --  ABC123",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "--edges--",
+      "out": "trailing/"
+    },
+    {
+      "sub": "trailing/",
+      "declared": "a-b",
+      "out": "trailing/"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": null,
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": null,
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "   ",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "operator",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "  operator  ",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "Operator",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "coordinator",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "tick",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "deploy-smoke",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "cron",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "builder-0803a2d0",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "reviewer-abc123",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "anonymous",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "some-unregistered-thing",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "operator@example.com",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "auth0|abc123",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "a/b",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "/",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": ":",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "a//b",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "x:y",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "::",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "operator@example.com/builder-abc",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "operator@example.com/tick",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "operator@example.com/operator",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "someone-else/coordinator",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "UPPER/Operator",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "/leading",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "trailing/",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "a/b/c",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "has space",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "Builder  --  ABC123",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "--edges--",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "a/b/c",
+      "declared": "a-b",
+      "out": "a/b/c"
+    },
+    {
+      "sub": "has space",
+      "declared": null,
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": null,
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "   ",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "operator",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "  operator  ",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "Operator",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "coordinator",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "tick",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "deploy-smoke",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "cron",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "builder-0803a2d0",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "reviewer-abc123",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "anonymous",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "some-unregistered-thing",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "operator@example.com",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "auth0|abc123",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "a/b",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "/",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": ":",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "a//b",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "x:y",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "::",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "operator@example.com/builder-abc",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "operator@example.com/tick",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "operator@example.com/operator",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "someone-else/coordinator",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "UPPER/Operator",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "/leading",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "trailing/",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "a/b/c",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "has space",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "Builder  --  ABC123",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "--edges--",
+      "out": "has space"
+    },
+    {
+      "sub": "has space",
+      "declared": "a-b",
+      "out": "has space"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": null,
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": null,
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "   ",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "operator",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "  operator  ",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "Operator",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "coordinator",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "tick",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "deploy-smoke",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "cron",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "builder-0803a2d0",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "reviewer-abc123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "anonymous",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "some-unregistered-thing",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "operator@example.com",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "auth0|abc123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "a/b",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "/",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": ":",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "a//b",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "x:y",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "::",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "operator@example.com/builder-abc",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "operator@example.com/tick",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "operator@example.com/operator",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "someone-else/coordinator",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "UPPER/Operator",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "/leading",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "trailing/",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "a/b/c",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "has space",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "Builder  --  ABC123",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "--edges--",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "Builder  --  ABC123",
+      "declared": "a-b",
+      "out": "Builder  --  ABC123"
+    },
+    {
+      "sub": "--edges--",
+      "declared": null,
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": null,
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "   ",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "operator",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "  operator  ",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "Operator",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "coordinator",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "tick",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "deploy-smoke",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "cron",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "builder-0803a2d0",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "reviewer-abc123",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "anonymous",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "some-unregistered-thing",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "operator@example.com",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "auth0|abc123",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "a/b",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "/",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": ":",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "a//b",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "x:y",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "::",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "operator@example.com/builder-abc",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "operator@example.com/tick",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "operator@example.com/operator",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "someone-else/coordinator",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "UPPER/Operator",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "/leading",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "trailing/",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "a/b/c",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "has space",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "Builder  --  ABC123",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "--edges--",
+      "out": "--edges--"
+    },
+    {
+      "sub": "--edges--",
+      "declared": "a-b",
+      "out": "--edges--"
+    },
+    {
+      "sub": "a-b",
+      "declared": null,
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": null,
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "   ",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "operator",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "  operator  ",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "Operator",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "coordinator",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "tick",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "deploy-smoke",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "cron",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "builder-0803a2d0",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "reviewer-abc123",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "anonymous",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "some-unregistered-thing",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "operator@example.com",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "auth0|abc123",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "a/b",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "/",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": ":",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "a//b",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "x:y",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "::",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "operator@example.com/builder-abc",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "operator@example.com/tick",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "operator@example.com/operator",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "someone-else/coordinator",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "UPPER/Operator",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "/leading",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "trailing/",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "a/b/c",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "has space",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "Builder  --  ABC123",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "--edges--",
+      "out": "a-b"
+    },
+    {
+      "sub": "a-b",
+      "declared": "a-b",
+      "out": "a-b"
+    }
+  ],
+  "unary": [
+    {
+      "in": null,
+      "normalize": null,
+      "classify": "agent"
+    },
+    {
+      "in": "",
+      "normalize": null,
+      "classify": "agent"
+    },
+    {
+      "in": "   ",
+      "normalize": null,
+      "classify": "agent"
+    },
+    {
+      "in": "operator",
+      "normalize": "operator",
+      "classify": "human"
+    },
+    {
+      "in": "  operator  ",
+      "normalize": "operator",
+      "classify": "human"
+    },
+    {
+      "in": "Operator",
+      "normalize": "operator",
+      "classify": "human"
+    },
+    {
+      "in": "coordinator",
+      "normalize": "coordinator",
+      "classify": "agent"
+    },
+    {
+      "in": "tick",
+      "normalize": "tick",
+      "classify": "automation"
+    },
+    {
+      "in": "deploy-smoke",
+      "normalize": "deploy-smoke",
+      "classify": "automation"
+    },
+    {
+      "in": "cron",
+      "normalize": "cron",
+      "classify": "automation"
+    },
+    {
+      "in": "builder-0803a2d0",
+      "normalize": "builder-0803a2d0",
+      "classify": "agent"
+    },
+    {
+      "in": "reviewer-abc123",
+      "normalize": "reviewer-abc123",
+      "classify": "agent"
+    },
+    {
+      "in": "anonymous",
+      "normalize": "anonymous",
+      "classify": "agent"
+    },
+    {
+      "in": "some-unregistered-thing",
+      "normalize": "some-unregistered-thing",
+      "classify": "agent"
+    },
+    {
+      "in": "operator@example.com",
+      "normalize": "operator@example.com",
+      "classify": "agent"
+    },
+    {
+      "in": "auth0|abc123",
+      "normalize": "auth0|abc123",
+      "classify": "agent"
+    },
+    {
+      "in": "a/b",
+      "normalize": "a/b",
+      "classify": "agent"
+    },
+    {
+      "in": "/",
+      "normalize": "/",
+      "classify": "agent"
+    },
+    {
+      "in": ":",
+      "normalize": ":",
+      "classify": "agent"
+    },
+    {
+      "in": "a//b",
+      "normalize": "a//b",
+      "classify": "agent"
+    },
+    {
+      "in": "x:y",
+      "normalize": "x:y",
+      "classify": "agent"
+    },
+    {
+      "in": "::",
+      "normalize": "::",
+      "classify": "agent"
+    },
+    {
+      "in": "operator@example.com/builder-abc",
+      "normalize": "operator@example.com/builder-abc",
+      "classify": "agent"
+    },
+    {
+      "in": "operator@example.com/tick",
+      "normalize": "operator@example.com/tick",
+      "classify": "agent"
+    },
+    {
+      "in": "operator@example.com/operator",
+      "normalize": "operator@example.com/operator",
+      "classify": "agent"
+    },
+    {
+      "in": "someone-else/coordinator",
+      "normalize": "someone-else/coordinator",
+      "classify": "agent"
+    },
+    {
+      "in": "UPPER/Operator",
+      "normalize": "upper/operator",
+      "classify": "agent"
+    },
+    {
+      "in": "/leading",
+      "normalize": "/leading",
+      "classify": "agent"
+    },
+    {
+      "in": "trailing/",
+      "normalize": "trailing/",
+      "classify": "agent"
+    },
+    {
+      "in": "a/b/c",
+      "normalize": "a/b/c",
+      "classify": "agent"
+    },
+    {
+      "in": "has space",
+      "normalize": "has-space",
+      "classify": "agent"
+    },
+    {
+      "in": "Builder  --  ABC123",
+      "normalize": "builder-abc123",
+      "classify": "agent"
+    },
+    {
+      "in": "--edges--",
+      "normalize": "edges",
+      "classify": "agent"
+    },
+    {
+      "in": "a-b",
+      "normalize": "a-b",
+      "classify": "agent"
+    }
+  ]
+}

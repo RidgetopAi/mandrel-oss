@@ -1,0 +1,56 @@
+/* Card / Panel — surface + hairline + radius, all from tokens. */
+
+.card {
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  min-width: 0;
+}
+
+.surface1 {
+  background: var(--s1);
+}
+.surface2 {
+  background: var(--s2);
+}
+
+.padded {
+  padding: var(--sp-4);
+}
+
+.interactive {
+  cursor: pointer;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease;
+}
+.interactive:hover {
+  background: var(--s-hover);
+  border-color: var(--line-2);
+}
+.interactive:focus-visible {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 2px var(--teal-glow);
+}
+
+/* ── Sections ─────────────────────────────────────────────────────────────── */
+.header {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.body {
+  padding: var(--sp-4);
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}

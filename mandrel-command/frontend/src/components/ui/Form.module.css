@@ -1,0 +1,24 @@
+/* Form — vertical field stack + actions row. Spacing/type via tokens. */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  /* gap is applied inline as var(--sp-N) from the `gap` prop. */
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-top: var(--sp-2);
+}
+
+.alignStart {
+  justify-content: flex-start;
+}
+.alignEnd {
+  justify-content: flex-end;
+}
+.alignBetween {
+  justify-content: space-between;
+}

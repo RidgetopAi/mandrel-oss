@@ -1,0 +1,834 @@
+/* TreeWalker — the work/thread map, rebuilt from the locked mock (command-treewalker-mock.html)
+   on the P0.2 tokens. Colour is 100% token-driven (no hex literals — TreeWalker.wiring.test);
+   residual px/rem are structural geometry (grid tracks, dot/ring sizes, fine type ramp). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.headIco {
+  color: var(--teal);
+}
+.title {
+  font-size: 1.18rem;
+  font-weight: 640;
+  letter-spacing: -0.02em;
+  color: var(--tx);
+}
+.headNote {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--tx-4);
+}
+.sub {
+  color: var(--tx-3);
+  font-size: 0.79rem;
+}
+
+/* ---- roots → tree → trunk → branch spine strip ---- */
+.spine {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+.snode {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 5px 11px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--s1);
+  color: var(--tx-2);
+  white-space: nowrap;
+}
+.snodePlaceholder {
+  color: var(--tx-4);
+  font-style: italic;
+}
+.sd {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--tx-4);
+  flex: none;
+}
+.sRoot .sd {
+  background: var(--violet);
+  box-shadow: 0 0 7px var(--violet);
+}
+.sTree .sd {
+  background: var(--tx-2);
+}
+.sTrunk .sd {
+  background: var(--tx-2);
+}
+.sBranch {
+  border-color: var(--teal-dim);
+  background: linear-gradient(90deg, var(--teal-glow), var(--s1));
+  color: var(--tx);
+}
+.sBranch .sd {
+  background: var(--teal);
+  box-shadow: 0 0 8px var(--teal);
+}
+.spineLink {
+  width: 20px;
+  height: 1.5px;
+  background: var(--line-2);
+  margin: 0 3px;
+  flex: none;
+}
+.spineLinkGrow {
+  width: 26px;
+  background: linear-gradient(90deg, var(--line-2), var(--teal-dim));
+}
+
+/* ---- toolbar ---- */
+.twbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.anchor {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 0.76rem;
+  color: var(--tx-2);
+  padding: 6px 12px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--s1);
+}
+.anchorDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 7px var(--teal);
+  flex: none;
+}
+.anchor b {
+  color: var(--tx);
+  font-weight: 600;
+}
+.anchorMeta {
+  font-family: var(--mono);
+  color: var(--tx-4);
+}
+.btn {
+  font-size: 0.78rem;
+  font-weight: 560;
+  padding: 7px 12px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  border: 1px solid var(--line-2);
+  background: var(--s2);
+  color: var(--tx-2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.btn:hover:not(:disabled) {
+  color: var(--tx);
+  border-color: var(--tx-4);
+}
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.btnActive {
+  background: var(--teal-glow);
+  border-color: var(--teal-dim);
+  color: var(--teal);
+}
+.vtoggle {
+  display: flex;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 2px;
+  margin-left: auto;
+}
+.vtoggleItem {
+  font-size: 0.74rem;
+  color: var(--tx-3);
+  padding: 5px 11px;
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  background: transparent;
+  border: none;
+}
+.vtoggleItem:hover {
+  color: var(--tx-2);
+}
+.vtoggleOn {
+  background: var(--s3);
+  color: var(--tx);
+  font-weight: 550;
+}
+
+/* ---- layout: canvas + story rail ---- */
+.tw {
+  display: grid;
+  grid-template-columns: 1fr 336px;
+  gap: var(--sp-4);
+  align-items: start;
+  min-height: 0;
+}
+.twStory {
+  grid-template-columns: 1fr;
+}
+
+/* ---- graph canvas ---- */
+.canvasWrap {
+  position: relative;
+  border-radius: var(--r);
+  overflow: hidden;
+  min-width: 0;
+}
+.canvasOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-6);
+  pointer-events: none;
+}
+
+/* xyflow custom node — the mock's node chip */
+.gn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-2);
+  background: var(--s1);
+  box-shadow: 0 4px 12px -6px var(--bg);
+  white-space: nowrap;
+}
+.gnDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2.5px;
+  flex: none;
+  background: var(--tx-3);
+}
+.gnLabel {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--tx);
+}
+.gnKind {
+  font-family: var(--mono);
+  font-size: 0.57rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--tx-4);
+}
+.gnId {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--tx-4);
+}
+.spineNode {
+  padding: 9px 13px;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 1px var(--teal), 0 0 26px -4px var(--teal-glow);
+  background: linear-gradient(180deg, var(--teal-glow), var(--s1));
+}
+.spineNode .gnLabel {
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+.currentNode {
+  border-style: dashed;
+  border-color: var(--teal-dim);
+}
+.gnStale {
+  opacity: 0.5;
+}
+.gnStale .gnLabel {
+  text-decoration: line-through;
+  color: var(--tx-3);
+}
+/* trust ring dot on the node corner */
+.trust {
+  position: absolute;
+  top: -5px;
+  right: -5px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-2);
+}
+.handle {
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  border: none;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* record-kind body dots (fixed categorical palette) */
+.dot-decision {
+  background: var(--blue);
+}
+.dot-task {
+  background: var(--teal);
+}
+.dot-context {
+  background: var(--violet);
+}
+.dot-handoff {
+  background: var(--teal);
+}
+/* kind class hooks on the node (dot carries the colour; hover accent per kind) */
+.kind-decision:hover {
+  border-color: var(--blue);
+}
+.kind-task:hover {
+  border-color: var(--teal);
+}
+.kind-context:hover {
+  border-color: var(--violet);
+}
+.kind-handoff:hover {
+  border-color: var(--teal);
+}
+
+/* trust rings + pills + legend swatches (one colour source per CANONICAL band) */
+.trust-trusted {
+  background: var(--green);
+  box-shadow: 0 0 7px var(--green);
+}
+.trust-ok {
+  background: var(--teal);
+  box-shadow: 0 0 7px var(--teal);
+}
+.trust-unproven {
+  background: var(--amber);
+  box-shadow: 0 0 7px var(--amber);
+}
+.trust-stale {
+  background: var(--tx-4);
+}
+.trust-superseded {
+  background: var(--rose);
+  box-shadow: 0 0 7px var(--rose);
+}
+.trust-contradicted {
+  background: var(--rose);
+}
+
+/* ---- xyflow edges: typed + labelled ---- */
+.edge {
+  stroke-width: 1.5;
+  fill: none;
+}
+.edge-informs {
+  stroke: var(--teal);
+  opacity: 0.5;
+}
+.edge-decided {
+  stroke: var(--blue);
+  opacity: 0.85;
+  stroke-width: 1.8;
+}
+.edge-caused {
+  stroke: var(--violet);
+  opacity: 0.75;
+}
+.edge-supersedes {
+  stroke: var(--rose);
+  opacity: 0.7;
+  stroke-dasharray: 4 4;
+}
+.elab {
+  position: absolute;
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  letter-spacing: 0.02em;
+  padding: 1px 6px;
+  border-radius: 5px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  color: var(--tx-3);
+  white-space: nowrap;
+  pointer-events: all;
+}
+.elab-informs {
+  color: var(--teal);
+  border-color: var(--teal-dim);
+}
+.elab-decided {
+  color: var(--blue);
+  border-color: var(--blue);
+}
+.elab-caused {
+  color: var(--violet);
+  border-color: var(--violet);
+}
+.elab-supersedes {
+  color: var(--rose);
+  border-color: var(--rose);
+}
+
+/* ---- legend (inside the canvas) ---- */
+.legend {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 9px 11px;
+  z-index: 7;
+}
+.legrow {
+  display: flex;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  align-items: center;
+}
+.lt {
+  font-size: 0.56rem;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--tx-4);
+  width: 42px;
+  flex: none;
+}
+.li {
+  font-size: 0.63rem;
+  color: var(--tx-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.ld {
+  width: 8px;
+  height: 8px;
+  border-radius: 2.5px;
+}
+.le {
+  width: 14px;
+  height: 0;
+  border-top: 2px solid var(--tx-4);
+}
+.le-decided {
+  border-top-color: var(--blue);
+}
+.le-informs {
+  border-top-color: var(--teal);
+}
+.le-caused {
+  border-top-color: var(--violet);
+}
+.le-supersedes {
+  border-top-color: var(--rose);
+  border-top-style: dashed;
+}
+.lr {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  border: 2px solid var(--bg-2);
+}
+
+/* ---- STORY rail — the recall_thread walk ---- */
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+.card {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+  overflow: hidden;
+}
+.storyHead {
+  padding: 14px 15px 13px;
+  border-bottom: 1px solid var(--line-soft);
+  background: linear-gradient(180deg, var(--teal-glow), transparent);
+}
+.storyH1 {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.storyHeadIco {
+  color: var(--teal);
+}
+.storyH1 b {
+  font-size: 0.86rem;
+  font-weight: 640;
+  color: var(--tx);
+}
+.storyCount {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--tx-4);
+}
+.storySub {
+  font-size: 0.72rem;
+  color: var(--tx-3);
+  margin-top: 5px;
+  line-height: 1.5;
+}
+.trustbar {
+  display: flex;
+  gap: 5px;
+  margin-top: 11px;
+}
+.seg {
+  height: 5px;
+  border-radius: 3px;
+  flex-basis: 0;
+}
+.seg-trusted {
+  background: var(--green);
+}
+.seg-ok {
+  background: var(--teal);
+}
+.seg-unproven {
+  background: var(--amber);
+}
+.seg-stale {
+  background: var(--tx-4);
+}
+.seg-superseded {
+  background: var(--rose);
+}
+.seg-contradicted {
+  background: var(--rose);
+}
+.trustkey {
+  display: flex;
+  gap: var(--sp-3);
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.trustkey span {
+  font-size: 0.62rem;
+  color: var(--tx-3);
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.trustKeyDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.walkbtn {
+  margin: 12px 15px 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  font-size: 0.8rem;
+  font-weight: 620;
+  padding: 9px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  color: var(--on-accent);
+  background: linear-gradient(150deg, var(--teal), var(--teal-dim));
+  box-shadow: 0 0 18px -4px var(--teal-glow);
+  border: none;
+  width: calc(100% - 30px);
+}
+.walkIco {
+  stroke: var(--on-accent);
+}
+
+.steps {
+  padding: 6px 6px 10px;
+  position: relative;
+  overflow-y: auto;
+  max-height: 420px;
+}
+.step {
+  display: flex;
+  gap: 11px;
+  padding: 9px 10px;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  position: relative;
+  background: transparent;
+  border: none;
+  text-align: left;
+  width: 100%;
+}
+.step:hover {
+  background: var(--s2);
+}
+.stepOn {
+  background: var(--s2);
+}
+/* thread rail spindle line */
+.spindle {
+  position: relative;
+  flex: none;
+  width: 14px;
+  display: flex;
+  justify-content: center;
+}
+.spindle::before {
+  content: '';
+  position: absolute;
+  top: 16px;
+  bottom: -13px;
+  width: 1.5px;
+  background: var(--line-2);
+}
+.step:last-child .spindle::before {
+  display: none;
+}
+.sq {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  margin-top: 2px;
+  z-index: 1;
+  background: var(--s3);
+  border: 1.5px solid var(--tx-4);
+}
+.step-decided .sq {
+  background: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 0 0 7px var(--blue);
+}
+.step-informs .sq {
+  background: var(--teal);
+  border-color: var(--teal);
+  box-shadow: 0 0 7px var(--teal);
+}
+.step-now .sq {
+  background: var(--amber);
+  border-color: var(--amber);
+  box-shadow: 0 0 8px var(--amber);
+}
+.step-next .sq {
+  background: transparent;
+  border-style: dashed;
+  border-color: var(--teal-dim);
+}
+.sbody {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+.srel {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--tx-4);
+  margin-bottom: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.rt {
+  color: var(--tx-2);
+}
+.step-decided .rt {
+  color: var(--blue);
+}
+.step-informs .rt {
+  color: var(--teal);
+}
+.stitle {
+  font-size: 0.79rem;
+  color: var(--tx);
+  line-height: 1.4;
+}
+.smeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: 5px;
+  flex-wrap: wrap;
+}
+.sid {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--tx-4);
+}
+.kindtag {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 1px 6px;
+  border-radius: 5px;
+  color: var(--tx-3);
+  background: var(--s3);
+}
+.kindtag-decision {
+  color: var(--blue);
+  background: var(--blue-glow);
+}
+.kindtag-task {
+  color: var(--teal);
+  background: var(--teal-glow);
+}
+.kindtag-context {
+  color: var(--violet);
+  background: var(--violet-glow);
+}
+.kindtag-handoff {
+  color: var(--teal);
+  background: var(--teal-glow);
+}
+.pill {
+  font-size: 0.6rem;
+  font-weight: 600;
+  padding: 1.5px 7px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.pillDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+.pill-trusted {
+  color: var(--ok);
+  background: var(--green-glow);
+}
+.pill-ok {
+  color: var(--teal);
+  background: var(--teal-glow);
+}
+.pill-unproven {
+  color: var(--warn);
+  background: var(--s3);
+}
+.pill-superseded {
+  color: var(--rose);
+  background: var(--s3);
+}
+.pill-contradicted {
+  color: var(--rose);
+  background: var(--s3);
+}
+.pill-stale {
+  color: var(--tx-3);
+  background: var(--s3);
+}
+
+.storyEmpty {
+  padding: var(--sp-6) var(--sp-4);
+}
+
+.railfoot {
+  padding: 11px 15px;
+  border-top: 1px solid var(--line-soft);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: 0.72rem;
+  color: var(--tx-3);
+  cursor: pointer;
+}
+.railfoot:hover {
+  color: var(--tx-2);
+}
+.railfootIco {
+  color: var(--tx-4);
+}
+
+@media (max-width: 940px) {
+  .tw {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- BranchRail: the resume surface (PHASE 2 item c) ---- */
+.branches {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  margin-top: 6px;
+}
+.branchesNote {
+  color: var(--tx-3);
+}
+.branchItem {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 4px 10px;
+  border: 1px solid var(--s3);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--tx-2);
+  cursor: pointer;
+  font: inherit;
+}
+.branchItem:hover {
+  border-color: var(--teal);
+  color: var(--tx-1);
+}
+.branchItemActive {
+  border-color: var(--teal);
+  color: var(--teal);
+}
+.branchOpenDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 5px var(--green);
+}
+.branchName {
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.branchMeta {
+  color: var(--tx-4);
+}

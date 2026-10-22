@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "mandrel-http-adapter": {
+      "command": "npx",
+      "args": ["tsx", "adapters/mcp-http-adapter.ts"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "MANDREL_URL": "http://localhost:8080",
+        "MANDREL_TIMEOUT": "30000",
+        "MANDREL_RETRIES": "3",
+        "MANDREL_DEBUG": "false"
+      }
+    }
+  }
+}

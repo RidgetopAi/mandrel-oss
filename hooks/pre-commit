@@ -1,0 +1,87 @@
+#!/usr/bin/env bash
+# =============================================================================
+# hooks/pre-commit — secret-leak gate (the REAL prevention: blocks BEFORE history)
+# =============================================================================
+# Runs gitleaks against the STAGED changes only. Any finding => non-zero exit =>
+# the commit is BLOCKED. This is what stops a secret from ever entering a commit
+# (and therefore history) in the first place.
+#
+# Repo-tracked + reproducible: enabled via `git config core.hooksPath hooks`
+# (wired automatically by the npm `prepare` script on `npm install`, or manually
+# — see one-liner below). Because it lives under hooks/ in the repo, every clone
+# gets the same gate; nothing lives only in a dev's local .git/hooks.
+#
+#   Manual enable (one-time, from repo root):
+#       git config core.hooksPath hooks
+#
+# FAIL-LOUD on a missing tool: if gitleaks isn't installed we WARN loudly and
+# BLOCK the commit (fail closed), rather than silently letting it through.
+# Override for a single emergency commit (use sparingly, you own the risk):
+#       SKIP_GITLEAKS=1 git commit ...
+# =============================================================================
+set -euo pipefail
+
+RED=$'\033[31m'; YLW=$'\033[33m'; GRN=$'\033[32m'; BLD=$'\033[1m'; RST=$'\033[0m'
+
+# Repo root (this hook may be invoked from a subdir).
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+CONFIG="$REPO_ROOT/.gitleaks.toml"
+
+# Escape hatch (explicit, opt-in, never the default).
+if [[ "${SKIP_GITLEAKS:-0}" == "1" ]]; then
+  printf '%s[pre-commit] SKIP_GITLEAKS=1 set — secret scan BYPASSED for this commit.%s\n' "$YLW" "$RST" >&2
+  exit 0
+fi
+
+# Fail CLOSED if gitleaks is missing — do NOT silently no-op.
+if ! command -v gitleaks >/dev/null 2>&1; then
+  printf '%s%s[pre-commit] gitleaks is NOT installed — cannot scan staged changes.%s\n' "$BLD" "$RED" "$RST" >&2
+  printf '%s  This hook BLOCKS the commit (fail-closed) rather than letting a secret through.%s\n' "$RED" "$RST" >&2
+  printf '%s  Install gitleaks (https://github.com/gitleaks/gitleaks) then retry, or bypass\n' "$YLW" >&2
+  printf '  this ONE commit with: SKIP_GITLEAKS=1 git commit ...%s\n' "$RST" >&2
+  exit 1
+fi
+
+if [[ ! -f "$CONFIG" ]]; then
+  printf '%s[pre-commit] .gitleaks.toml not found at repo root — refusing to scan with an unknown config.%s\n' "$RED" "$RST" >&2
+  exit 1
+fi
+
+# `protect --staged` scans ONLY what is staged for this commit (the diff that is
+# about to become history) — fast and exactly the right surface. --redact keeps
+# any matched secret out of the terminal/logs.
+if gitleaks protect --staged --redact --no-banner --config "$CONFIG"; then
+  printf '%s[pre-commit] gitleaks: no secrets in staged changes — OK to commit.%s\n' "$GRN" "$RST"
+  # ── NUL-byte gate (folded in from lane M-7) ────────
+  # A NUL inside a text file makes git render it as `Binary files ... differ`,
+  # so the change reaches review with its contents HIDDEN. That already
+  # happened once, to a script containing a live UPDATE statement.
+  #
+  # It runs HERE, after gitleaks, for the same reason gitleaks runs here: this
+  # is the last moment before the bytes become history, and a diff that is
+  # unreviewable in the commit is unreviewable forever after.
+  #
+  # The predicate is NOT duplicated — scripts/check-no-nul-bytes.sh is the one
+  # copy of this rule, and the gate's vitest stage runs the same file over the
+  # whole repo (mcp-server/src/tests/noNulBytesInTrackedText.contract.test.ts).
+  # The hook is the fast local block; the test is the one that cannot be
+  # bypassed with --no-verify or a clone that never ran `npm install`.
+  #
+  # Fail CLOSED: exit 2 from the script means it could not measure, and this
+  # blocks on that too rather than treating "did not run" as "clean".
+  NUL_CHECK="$REPO_ROOT/scripts/check-no-nul-bytes.sh"
+  if [[ ! -x "$NUL_CHECK" && ! -f "$NUL_CHECK" ]]; then
+    printf '%s[pre-commit] BLOCKED: scripts/check-no-nul-bytes.sh is missing.%s\n' "$RED" "$RST" >&2
+    exit 1
+  fi
+  bash "$NUL_CHECK" --staged || exit 1
+  exit 0
+else
+  printf '\n%s%s[pre-commit] BLOCKED: gitleaks found a potential secret in your STAGED changes.%s\n' "$BLD" "$RED" "$RST" >&2
+  printf '%s  The commit was stopped before anything entered history.%s\n' "$RED" "$RST" >&2
+  printf '%s  - Remove/rotate the secret, unstage the file, then re-commit.\n' "$YLW" >&2
+  printf '  - If this is a CONFIRMED false positive, add a documented allowlist\n' >&2
+  printf '    entry to .gitleaks.toml (path/regex + one-line reason) — never\n' >&2
+  printf '    allowlist a real secret shape.%s\n' "$RST" >&2
+  exit 1
+fi

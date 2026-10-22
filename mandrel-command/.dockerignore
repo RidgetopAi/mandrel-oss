@@ -1,0 +1,151 @@
+# .dockerignore for the mandrel-command workspace-root build context.
+#
+# Both command images (backend + frontend) build from this directory as context
+# (docker-compose.yml: context: ./mandrel-command). Keep the context TIGHT: the
+# Dockerfiles COPY manifests + the relevant member source explicitly, so everything
+# heavy or irrelevant should be excluded to keep the build fast and the daemon
+# transfer small. node_modules in particular is ~1GB+ and must never be sent.
+
+# Dependencies — always reinstalled deterministically from the root lockfile.
+node_modules
+*/node_modules
+**/node_modules
+.npm
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs — regenerated inside the image.
+*/dist
+*/build
+**/dist
+**/build
+
+# Logs / runtime data
+logs/
+*/logs/
+*.log
+pids/
+*.pid
+*.seed
+*.pid.lock
+*/uploads/
+
+# Tests & coverage (not needed to build the runtime artifact)
+**/*.test.ts
+**/*.test.tsx
+**/*.spec.ts
+**/*.spec.tsx
+coverage/
+*/coverage/
+.nyc_output
+.jest-cache
+
+# Git / VCS
+.git
+.gitignore
+.gitattributes
+
+# Editor / OS cruft
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db
+
+# Docs & misc (markdown, demos, helper scripts) — not part of the build.
+*.md
+!frontend/src/**/*.md
+!backend/src/**/*.md
+demo-*.js
+demo-*.md
+create-admin.js
+*/cookies.txt
+docs/
+*/docs/
+
+# Environment files — secrets must never enter the image (.env.example is allowlisted
+# below because dotenv-safe validates against it at runtime).
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+*/.env
+*/.env.local
+*/.env.development
+*/.env.test
+*/.env.production
+# `*.local` — THE PER-MACHINE OVERRIDES. This was the hole (measured 2026-07-30):
+# every `.env.<mode>` variant above was excluded but NONE of the `.local` ones were,
+# and `mandrel-command/frontend/.env.production.local` exists untracked on the build
+# host. It is gitignored, so it never shows in a diff or a `git status`; the build
+# context is THIS directory, so `COPY frontend/ ./frontend/` pulled it into the image;
+# and Vite loads `.env.production.local` at the HIGHEST precedence during
+# `npm run build`, above `.env.production` and above the shell environment. The file
+# on disk today is inert only by luck — it sets VITE_MCP_BASE_URL while the code reads
+# VITE_MCP_URL — so ONE rename would have baked our prod hostname into every tenant's
+# bundle with nothing to see in review.
+#
+# `**` as well as the two literal levels: a .dockerignore pattern matches path
+# segments, so a bare `*.local` covers only the context root and `*/.env*.local` only
+# one level down. The frontend's own .dockerignore already carried `*.local` — but it
+# is NEVER CONSULTED, because Docker reads only the .dockerignore at the CONTEXT root,
+# which is this file. Same class as the whole workstream: the rule was written, in the
+# wrong place, and looked done.
+#
+# ⚠️ THIS RULE HAS NOT BEEN PROVEN BY A REAL BUILD. It rests on documented
+# .dockerignore semantics and on file inspection, NOT on an observed image. The the control host
+# control box where this branch was written has no docker (`which docker` -> nothing),
+# so no build could be run. Stated here rather than glossed, because an unverified fix
+# that READS as verified is the failure mode.
+#
+# TO CLOSE THE LOOP, on any host that has docker AND the untracked file present
+# (it exists today at mandrel-command/frontend/.env.production.local on the mandrel
+# dev tree). From the REPO ROOT:
+#
+#   # 0. precondition — the hazard must actually be present, or the test proves nothing
+#   test -f mandrel-command/frontend/.env.production.local || echo "NO HAZARD PRESENT"
+#
+#   # 1. build the frontend image from the same context compose uses
+#   docker build -f mandrel-command/frontend/Dockerfile -t dockerignore-probe \
+#       --target builder mandrel-command
+#
+#   # 2. THE ASSERTION: the file must NOT be in the build stage's context copy.
+#   #    Expect NO output. Any line printed = the exclusion FAILED.
+#   docker run --rm dockerignore-probe \
+#       sh -c 'ls -la /app/frontend/.env.production.local 2>/dev/null'
+#
+#   # 3. MUTATION CONTROL — prove step 2 can fail. Comment out the three *.local lines
+#   #    below, rebuild, re-run step 2: it MUST print the file. Then restore them.
+#   #    Without this control a green step 2 could just mean the probe never looked.
+#
+#   # 4. cleanup
+#   docker image rm dockerignore-probe
+#
+.env*.local
+*/.env*.local
+**/*.local
+!.env.example
+!*/.env.example
+
+# Docker / compose files (no need to ship build configs into the image)
+docker-compose.yml
+docker-compose.*.yml
+Dockerfile*
+
+# OpenAPI generated dev files
+.openapi/
+*/.openapi/
+
+# Temp
+tmp/
+temp/
+*.tgz
+*.backup
+backups/

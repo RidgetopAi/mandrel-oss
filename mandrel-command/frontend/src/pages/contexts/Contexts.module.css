@@ -1,0 +1,677 @@
+/* Contexts "wide reader" — the locked mock (command-contexts-mock.html) rebuilt on the
+   P0.2 tokens. Colour + type + spacing are 100% token-driven (no literals).
+
+   LAYOUT GEOMETRY IS TOKENISED TOO: the rail track, the reader measure,
+   and the rail scroll cap come from --rail-width / --reader-width / --rail-max-h, because
+   this screen and Decisions must line up and a per-page literal is exactly how they drifted
+   apart (300px/68ch here vs 320px/70ch there — and the scroll cap had drifted too, 640px
+   here vs 660px there). Do NOT restate any of them as a literal — change the token in
+   styles/tokens.ts (a guard in styles/tokens.test.ts fails if you do).
+
+   Residual px that REMAIN legitimate: purely local ornament with no cross-page contract
+   (dot sizes, this screen's own inner tracks).
+   The TEST for "local ornament" is NOT "it looks incidental" — it is "no other screen has
+   to match it." The scroll cap read as ornament and was a contract; that assumption is how
+   these drift. If Decisions has to match it, it is a token. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-height: 0;
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ---- filter bar ---- */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.searchIco {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--tx-4);
+  pointer-events: none;
+  z-index: 1;
+}
+.searchInput {
+  padding-left: var(--sp-8);
+  padding-right: 74px;
+  min-width: 230px;
+}
+.semantic {
+  position: absolute;
+  right: var(--sp-2);
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--teal);
+  background: var(--teal-glow);
+  padding: 1px var(--sp-2);
+  border-radius: var(--r-xs);
+  pointer-events: none;
+}
+
+.facets {
+  display: flex;
+  gap: var(--sp-1);
+  flex-wrap: wrap;
+}
+.facet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--s1);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.facet:hover,
+.facet:focus-visible {
+  border-color: var(--line-2);
+  color: var(--tx);
+  outline: none;
+}
+.facetOn {
+  background: var(--s3);
+  border-color: var(--line-2);
+  color: var(--tx);
+  font-weight: 550;
+}
+.facetDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.facetCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+
+.sortWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+.sortIco {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--tx-4);
+  pointer-events: none;
+  z-index: 1;
+}
+.sortSelect {
+  min-width: 140px;
+}
+.sortSelect > button {
+  padding-left: var(--sp-8);
+}
+
+/* ============ LIST + READER LAYOUT ============ */
+/* The rail track is the SHARED token — never a literal (see the header note). */
+.layout {
+  display: grid;
+  grid-template-columns: var(--rail-width) 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- list (left column) ---- */
+/* The rail column: the optional select-all header over the scrolling list. */
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.listHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-2);
+  padding: 0 var(--sp-3);
+  min-height: 28px;
+}
+.listHeadCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: var(--rail-max-h);
+  overflow: auto;
+  padding-right: 2px;
+}
+.listState {
+  padding: var(--sp-8) var(--sp-4);
+  display: flex;
+  justify-content: center;
+}
+/* A row = [checkbox] + the row BUTTON (.itemMain). The card chrome (padding, radius,
+   hover/active surfaces) lives on the row so the checkbox sits inside the same card. */
+.item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  transition: background 0.12s ease;
+}
+.item:hover,
+.item:focus-within {
+  background: var(--s1);
+}
+.itemOn {
+  background: var(--s2);
+  border-color: var(--line);
+}
+.itemChecked {
+  border-color: var(--line-soft);
+}
+.itemCheck {
+  margin-top: 2px;
+}
+.itemMain {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: 0;
+  cursor: pointer;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+.itemMain:focus-visible {
+  outline: none;
+}
+.itemR1 {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.itemTime {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.itemTitle {
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.itemOn .itemTitle {
+  color: var(--tx);
+}
+.itemTags {
+  display: flex;
+  gap: var(--sp-1);
+  flex-wrap: wrap;
+  margin-top: var(--sp-1);
+}
+.itemTag {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  background: var(--s3);
+  border: 1px solid var(--line-soft);
+  padding: 0 var(--sp-2);
+  border-radius: var(--r-xs);
+  white-space: nowrap;
+}
+
+/* ---- reader (right column) ---- */
+.reader {
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: var(--sp-6) var(--sp-8);
+  min-width: 0;
+  position: relative;
+}
+.readerState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+.rhead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+.actorChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-data);
+  color: var(--teal);
+  background: var(--teal-glow);
+  padding: 2px var(--sp-2);
+  border-radius: 999px;
+}
+.actorDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+.rmeta {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+.idlink {
+  font-family: var(--mono);
+  color: var(--tx-2);
+  border-bottom: 1px dashed var(--tx-4);
+  text-decoration: none;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.idlink:hover {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+}
+.ricon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  color: var(--tx-3);
+  border: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+}
+.ricon:hover,
+.ricon:focus-visible {
+  background: var(--s2);
+  color: var(--tx);
+  outline: none;
+}
+.riconDanger:hover,
+.riconDanger:focus-visible {
+  color: var(--rose);
+  border-color: var(--rose);
+}
+
+/* ---- share / export menu ---- */
+.shareWrap {
+  position: relative;
+  display: inline-flex;
+}
+.shareMenu {
+  position: absolute;
+  top: calc(100% + var(--sp-1));
+  right: 0;
+  z-index: 20;
+  min-width: 168px;
+  display: flex;
+  flex-direction: column;
+  padding: var(--sp-1);
+  background: var(--s1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+}
+.shareItem {
+  text-align: left;
+  font: inherit;
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  background: transparent;
+  border: none;
+  border-radius: var(--r-xs);
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+}
+.shareItem:hover,
+.shareItem:focus-visible {
+  background: var(--s2);
+  color: var(--tx);
+  outline: none;
+}
+
+/* The reader measure is the SHARED token — never a literal (see the header note). */
+.readerBody {
+  max-width: var(--reader-width);
+}
+
+/* ---- footer: tags + thread box (the moat) ---- */
+.rfoot {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}
+.tagRow {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  margin-bottom: var(--sp-4);
+}
+.tag {
+  font-size: var(--fs-label);
+  color: var(--tx-2);
+  background: var(--s3);
+  border: 1px solid var(--line);
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-xs);
+  font-family: var(--mono);
+}
+.tagRef {
+  color: var(--teal);
+  border-color: var(--teal-dim);
+  background: var(--teal-glow);
+}
+
+.threadBox {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+.threadHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx-2);
+  margin-bottom: var(--sp-3);
+}
+.threadIco {
+  color: var(--teal);
+}
+.threadCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.walk {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-data);
+  color: var(--teal);
+  font-weight: 500;
+  cursor: default;
+}
+.walkDisabled {
+  color: var(--tx-4);
+}
+.threadState {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-3);
+}
+.threadEmpty {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  line-height: 1.5;
+}
+.links {
+  display: flex;
+  flex-direction: column;
+}
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.edge {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  width: 108px;
+  flex: none;
+}
+.linkKind {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.linkTitle {
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.link:hover .linkTitle {
+  color: var(--teal);
+}
+.linkId {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  margin-left: auto;
+  flex: none;
+}
+
+/* ============ DETAIL (the right column: reader + its edit mode) ============ */
+/* The reader/edit card carries its own chrome (.reader), so this is a bare stack. */
+.detail {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-width: 0;
+}
+.editForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.editActions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-2);
+  width: 100%;
+}
+.confirmText {
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  line-height: 1.5;
+  margin-bottom: var(--sp-3);
+}
+
+/* ---- collapsible sections (Related / Metadata) ---- */
+.section {
+  border-top: 1px solid var(--line-soft);
+  padding-top: var(--sp-3);
+}
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  width: 100%;
+  font: inherit;
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx-2);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+}
+.sectionHead:hover,
+.sectionHead:focus-visible {
+  color: var(--tx);
+  outline: none;
+}
+.sectionCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.sectionBody {
+  margin-top: var(--sp-3);
+}
+.sectionState {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-3);
+}
+.sectionEmpty {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  line-height: 1.5;
+}
+
+/* ---- related list ---- */
+.relatedList {
+  display: flex;
+  flex-direction: column;
+}
+.relatedRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) 0;
+  text-decoration: none;
+}
+.relatedDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.relatedTitle {
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.relatedRow:hover .relatedTitle {
+  color: var(--teal);
+}
+.relatedId {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  margin-left: auto;
+  flex: none;
+}
+
+/* ---- metadata list ---- */
+.metaList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+}
+.metaRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: var(--sp-3);
+  align-items: baseline;
+}
+.metaKey {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.metaVal {
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  word-break: break-word;
+  margin: 0;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .list {
+    max-height: none;
+  }
+}
+
+/* ---- bulk toolbar: shown only while >=1 row is selected ---- */
+.bulkBar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+}
+.bulkCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-2);
+  margin-right: var(--sp-2);
+}
+.bulkSpacer {
+  flex: 1;
+}
+.bulkForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+/* The page's own project selector, first in the filter row (epic 41293984). */
+.projectSelect {
+  min-width: 170px;
+}

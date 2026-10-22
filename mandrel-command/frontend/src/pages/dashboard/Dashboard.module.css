@@ -1,0 +1,307 @@
+/* Dashboard layout — the locked mock (command-dashboard-mock.html) rebuilt on
+   the P0.2 tokens. Colour + type + spacing are 100% token-driven (no literals);
+   residual px are structural geometry (grid tracks, icon chips, dot sizes). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ---- KPI row ---- */
+.kpis {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+
+/* Tinted icon chip inside a StatTile (color encodes the KPI, per the mock). */
+.kpiIcon {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+}
+.toneTeal {
+  color: var(--teal);
+  background: var(--teal-glow);
+}
+.toneGreen {
+  color: var(--green);
+  background: var(--green-glow);
+}
+.toneViolet {
+  color: var(--violet);
+  background: var(--violet-glow);
+}
+.toneBlue {
+  color: var(--blue);
+  background: var(--blue-glow);
+}
+
+/* ---- body: single full-width column stack (Workspace activity → Recent projects
+   → Sessions by actor → Recent sessions), each spanning the full canvas ---- */
+.stack {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+}
+
+/* ---- section head (uppercase label + optional "more" link) ---- */
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+  color: var(--tx-3);
+}
+.sectionHead .more {
+  margin-left: auto;
+}
+
+/* ---- recent-sessions rows ---- */
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  transition: background 0.12s ease;
+}
+.row:last-child {
+  border-bottom: none;
+}
+.row:hover,
+.row:focus-visible {
+  background: var(--s2);
+  outline: none;
+}
+.rowMain {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.rowTitle {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.rowMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  background: var(--teal);
+}
+.rowRight {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--sp-1);
+  flex: none;
+}
+
+/* ---- recent-projects rail rows ---- */
+.prow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+  text-align: left;
+  width: 100%;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+  transition: background 0.12s ease;
+}
+.prow:last-child {
+  border-bottom: none;
+}
+.prow:hover,
+.prow:focus-visible {
+  background: var(--s2);
+  outline: none;
+}
+.pmid {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.pname {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+/* ---- sessions-by-actor rows ---- */
+.actorRows {
+  display: flex;
+  flex-direction: column;
+}
+.actorRow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-4);
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.actorRow:last-child {
+  border-bottom: none;
+}
+/* The row is a <button> when it links to the actor's most recent session. Reset the UA
+   button chrome so it renders identically to the inert <div>
+   form, then add the affordances a control owes the user: a pointer, a hover tint, and
+   a REAL focus ring. (.prow above suppresses its outline and leans on the background
+   tint alone; a keyboard user gets a much weaker signal that way, so this one keeps
+   both.) */
+.actorRowLink {
+  width: 100%;
+  text-align: left;
+  background: transparent;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.actorRowLink:hover {
+  background: var(--s2);
+}
+.actorRowLink:focus-visible {
+  background: var(--s2);
+  outline: 2px solid var(--teal);
+  outline-offset: -2px;
+}
+.actorWho {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+.actorDot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  flex: none;
+}
+.actorMetrics {
+  grid-column: 1;
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-4);
+  flex-wrap: wrap;
+}
+.actorMetric {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+}
+.actorMetricV,
+.actorMetricVTeal {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+}
+.actorMetricVTeal {
+  color: var(--teal);
+}
+.actorMetricK {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+}
+.actorProjects {
+  grid-column: 1;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+}
+.actorProjChip {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  background: var(--s3);
+  border: 1px solid var(--line);
+  padding: 1px var(--sp-2);
+  border-radius: 999px;
+}
+.actorSeen {
+  grid-column: 2;
+  grid-row: 1 / span 3;
+  align-self: center;
+  justify-self: end;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  white-space: nowrap;
+}
+
+/* Panel wrapper with no inner padding — rows own their padding. */
+.panelFlush {
+  overflow: hidden;
+}
+
+.stateWrap {
+  padding: var(--sp-6);
+}
+
+@media (max-width: 960px) {
+  .kpis {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 560px) {
+  .kpis {
+    grid-template-columns: 1fr;
+  }
+}

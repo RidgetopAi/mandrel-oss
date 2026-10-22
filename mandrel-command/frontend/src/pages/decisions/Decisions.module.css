@@ -1,0 +1,547 @@
+/* Decisions "why ledger" — the locked mock (command-decisions-mock.html) rebuilt on the
+   P0.2 tokens. Colour + type + spacing are 100% token-driven (no literals).
+
+   LAYOUT GEOMETRY IS TOKENISED TOO: the rail track, the reader measure,
+   and the rail scroll cap come from --rail-width / --reader-width / --rail-max-h, because
+   this screen and Contexts must line up and a per-page literal is exactly how they drifted
+   apart (300px/68ch there vs 320px/70ch here — and the scroll cap had drifted too, 640px
+   there vs 660px here). Do NOT restate any of them as a literal — change the token in
+   styles/tokens.ts (a guard in styles/tokens.test.ts fails if you do).
+
+   Residual px that REMAIN legitimate: purely local ornament with no cross-page contract
+   (dot sizes, this screen's own inner tracks).
+   The TEST for "local ornament" is NOT "it looks incidental" — it is "no other screen has
+   to match it." The scroll cap read as ornament and was a contract; that assumption is how
+   these drift. If Contexts has to match it, it is a token. */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-height: 0;
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ---- filter bar ---- */
+.filters {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.searchIco {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--tx-4);
+  pointer-events: none;
+  z-index: 1;
+}
+.searchInput {
+  padding-left: var(--sp-8);
+  min-width: 220px;
+}
+
+.facets {
+  display: flex;
+  gap: var(--sp-1);
+  flex-wrap: wrap;
+}
+.facet {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--s1);
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 0.12s ease, color 0.12s ease;
+}
+.facet:hover,
+.facet:focus-visible {
+  border-color: var(--line-2);
+  color: var(--tx);
+  outline: none;
+}
+.facetOn {
+  background: var(--s3);
+  border-color: var(--line-2);
+  color: var(--tx);
+  font-weight: 550;
+}
+.facetDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.facetCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+
+.outcomeWrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+.outcomeIco {
+  position: absolute;
+  left: var(--sp-3);
+  color: var(--tx-4);
+  pointer-events: none;
+  z-index: 1;
+}
+.outcomeSelect {
+  min-width: 160px;
+}
+.outcomeSelect > button {
+  padding-left: var(--sp-8);
+}
+
+/* ============ LIST + READER LAYOUT ============ */
+.layout {
+  display: grid;
+  grid-template-columns: var(--rail-width) 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ---- list (left column) ---- */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  max-height: var(--rail-max-h);
+  overflow: auto;
+  padding-right: 2px;
+}
+.listState {
+  padding: var(--sp-8) var(--sp-4);
+  display: flex;
+  justify-content: center;
+}
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  padding: var(--sp-3);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: background 0.12s ease;
+}
+.item:hover,
+.item:focus-visible {
+  background: var(--s1);
+  outline: none;
+}
+.itemOn {
+  background: var(--s2);
+  border-color: var(--line);
+}
+.itemR1 {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.impact {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+}
+.impactDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.outcomeChip {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.outcomeDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.itemTitle {
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+.itemOn .itemTitle {
+  color: var(--tx);
+}
+
+/* ---- reader (right column) ---- */
+.reader {
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: var(--sp-6) var(--sp-8);
+  min-width: 0;
+  position: relative;
+}
+.readerState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 320px;
+}
+.rhead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+  flex-wrap: wrap;
+}
+.outcome {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx-2);
+  background: var(--s3);
+  padding: 2px var(--sp-3);
+  border-radius: 999px;
+}
+.rmeta {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  display: flex;
+  gap: var(--sp-2);
+  align-items: center;
+}
+.idlink {
+  font-family: var(--mono);
+  color: var(--tx-2);
+  border-bottom: 1px dashed var(--tx-4);
+  text-decoration: none;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.idlink:hover {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+}
+.ricon {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  color: var(--tx-3);
+  border: 1px solid var(--line);
+  background: transparent;
+  cursor: pointer;
+}
+.ricon:hover,
+.ricon:focus-visible {
+  background: var(--s2);
+  color: var(--tx);
+  outline: none;
+}
+
+/* ---- reader body ---- */
+.rbody {
+  max-width: var(--reader-width);
+}
+.rtitle {
+  font-size: var(--fs-title, 1.4rem);
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  line-height: 1.22;
+  margin: var(--sp-1) 0 var(--sp-5);
+  color: var(--tx);
+  text-wrap: balance;
+}
+.sec {
+  margin-bottom: var(--sp-5);
+}
+.secH {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-label);
+  font-weight: 640;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tx-3);
+  margin-bottom: var(--sp-2);
+}
+.secHi {
+  display: inline-flex;
+  color: var(--tx-4);
+}
+.secP {
+  font-size: var(--fs-body);
+  line-height: 1.65;
+  color: var(--tx-2);
+  white-space: pre-wrap;
+}
+.secEmpty {
+  color: var(--tx-4);
+  font-style: italic;
+}
+
+/* alternatives */
+.alt {
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  padding: var(--sp-3) var(--sp-4);
+  margin-bottom: var(--sp-2);
+}
+.altN {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-2);
+  font-size: var(--fs-body);
+  color: var(--tx);
+  line-height: 1.5;
+}
+.altX {
+  width: 16px;
+  height: 16px;
+  border-radius: var(--r-xs);
+  background: var(--s3);
+  color: var(--rose);
+  display: grid;
+  place-items: center;
+  flex: none;
+  margin-top: 2px;
+}
+
+/* success criteria box */
+.critBox {
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--teal);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  padding: var(--sp-3) var(--sp-4);
+}
+.critBox p {
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  color: var(--tx-2);
+  white-space: pre-wrap;
+}
+
+/* outcome / learning loop */
+.loopBox {
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  background: var(--blue-glow);
+  padding: var(--sp-3) var(--sp-4);
+}
+.loopRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-body);
+  color: var(--tx);
+  font-weight: 600;
+  margin-bottom: var(--sp-2);
+  text-transform: capitalize;
+}
+.loopDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.loopImpl {
+  font-weight: 500;
+  color: var(--tx-3);
+  text-transform: capitalize;
+}
+
+/* ---- footer: affects + tags + thread box (the moat) ---- */
+.rfoot {
+  margin-top: var(--sp-6);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}
+.chipRow {
+  display: flex;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: var(--sp-3);
+}
+.chipLbl {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tx-4);
+  margin-right: var(--sp-1);
+}
+.achip {
+  font-size: var(--fs-label);
+  color: var(--tx-2);
+  background: var(--s3);
+  border: 1px solid var(--line);
+  padding: 2px var(--sp-2);
+  border-radius: var(--r-xs);
+  font-family: var(--mono);
+}
+.achipRef {
+  color: var(--teal);
+  border-color: var(--teal-dim);
+  background: var(--teal-glow);
+}
+
+.threadBox {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-2);
+  padding: var(--sp-3) var(--sp-4);
+  margin-top: var(--sp-2);
+}
+.threadHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx-2);
+  margin-bottom: var(--sp-3);
+}
+.threadIco {
+  color: var(--teal);
+}
+.threadCount {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.walk {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-data);
+  color: var(--teal);
+  font-weight: 500;
+  cursor: default;
+}
+.walkDisabled {
+  color: var(--tx-4);
+}
+.threadState {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-3);
+}
+.threadEmpty {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  line-height: 1.5;
+}
+.links {
+  display: flex;
+  flex-direction: column;
+}
+.link {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-1) 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+.edge {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  width: 116px;
+  flex: none;
+}
+.linkKind {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.linkTitle {
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.link:hover .linkTitle {
+  color: var(--teal);
+}
+.linkId {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  margin-left: auto;
+  flex: none;
+}
+
+@media (max-width: 960px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .list {
+    max-height: none;
+  }
+}
+
+/* The page's own project selector, first in the filter row (epic 41293984). */
+.projectSelect {
+  min-width: 170px;
+}

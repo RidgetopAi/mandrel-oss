@@ -1,0 +1,230 @@
+/* App-shell Topbar (P0.4) — token-driven chrome. Zero hardcoded colour. */
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  height: 56px;
+  padding: 0 16px;
+  background: var(--bg-2);
+  border-bottom: 1px solid var(--line-soft);
+  flex: none;
+}
+.left,
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.right {
+  gap: 12px;
+}
+
+/* generic icon button (collapse toggle, hamburger, theme toggle) */
+.iconBtn {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tx-2);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
+  flex: none;
+}
+.iconBtn:hover {
+  background: var(--s-hover);
+  color: var(--tx);
+}
+.iconBtn:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+/* ── SSE indicator ── */
+.sse {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--tx-3);
+  white-space: nowrap;
+}
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 0 8px -1px currentColor;
+}
+.dotOk {
+  background: var(--ok);
+  color: var(--ok);
+}
+.dotWarn {
+  background: var(--warn);
+  color: var(--warn);
+}
+.dotCrit {
+  background: var(--crit);
+  color: var(--crit);
+}
+.sseLabel {
+  font-family: var(--mono);
+  letter-spacing: 0.02em;
+}
+/* A degraded state is not decoration: give it a chip so it reads as a warning even
+   at a glance, and so the hidden-label media rule below has something to key on.
+   (an earlier task — the disconnected state was a single unlabelled dot.) */
+.sse[data-degraded='true'] {
+  padding: 2px 8px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-soft);
+  background: var(--s-hover);
+  color: var(--tx);
+  font-weight: 600;
+}
+
+/* ── user menu ── */
+.userMenu {
+  position: relative;
+}
+.userTrigger {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 8px 4px 4px;
+  border-radius: var(--r-sm);
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--tx-2);
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+  max-width: 200px;
+}
+.userTrigger:hover {
+  background: var(--s-hover);
+  color: var(--tx);
+}
+.userTrigger:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--s3);
+  color: var(--tx-2);
+  flex: none;
+}
+.username {
+  font-size: 0.84rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.chevron {
+  color: var(--tx-4);
+  flex: none;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  min-width: 180px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.55);
+  padding: 6px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--r-sm);
+  background: transparent;
+  color: var(--tx-2);
+  font-size: 0.86rem;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s, color 0.12s;
+}
+.menuItem:hover {
+  background: var(--s-hover);
+  color: var(--tx);
+}
+.menuItem:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: -2px;
+}
+.menuIcon {
+  color: var(--tx-3);
+  flex: none;
+}
+.menuItemDanger {
+  color: var(--crit);
+}
+.menuItemDanger .menuIcon {
+  color: var(--crit);
+}
+.menuSep {
+  height: 1px;
+  background: var(--line-soft);
+  margin: 4px 2px;
+}
+
+/* ── THE project switch ── */
+.projectSwitch {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+.projectSwitchSelect {
+  width: 200px;
+  max-width: 40vw;
+  min-width: 0;
+}
+/* the "default" marker — shown only while the selection IS the Settings default */
+.projectSwitchDefault {
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tx-4);
+  flex: none;
+}
+
+/* hide secondary topbar text on narrow topbars */
+@media (max-width: 600px) {
+  .username {
+    display: none;
+  }
+  /* Hide the label to save topbar width ONLY while everything is healthy. When the
+     state is degraded the word is the whole signal on touch — `title=` tooltips do
+     not exist there — so it stays (an earlier task cause 2). */
+  .sse[data-degraded='false'] .sseLabel {
+    display: none;
+  }
+  .projectSwitchDefault {
+    display: none;
+  }
+  .projectSwitchSelect {
+    width: 140px;
+  }
+}

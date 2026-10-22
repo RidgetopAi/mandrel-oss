@@ -1,0 +1,14 @@
+# MANDREL_* names that docs under docs/ may mention although docs/reference/configuration.md (the
+# SERVER's settings) does not list them. One exact name per line, each with the reason it is not a
+# server setting. Read by docs-check.mjs. Do not list a server setting here: add it to the
+# reference (npm run docs:config in mcp-server/) instead.
+# install.sh / validate-install.sh (read by the shell scripts, never by the server)
+MANDREL_ACTOR_ID
+MANDREL_INSTALL_TIMEOUT
+MANDREL_MCP_URL
+MANDREL_RUNTIME
+# the Punch List loop CLI (loop/) and its client of the server — separate program, own docs/loop/
+MANDREL_LOOP_CLAUDE_BIN
+MANDREL_LOOP_EVIDENCE_DIR
+MANDREL_LOOP_GH_BIN
+MANDREL_TOKEN

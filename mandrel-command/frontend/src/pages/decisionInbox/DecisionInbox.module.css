@@ -1,0 +1,95 @@
+/* Decision Inbox — token-driven, no hardcoded
+   hex colours (Decisions rebuild convention). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-6);
+  padding: var(--sp-6);
+  max-width: 880px;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.confirmations {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.cardHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex: none;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.option {
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+  background: var(--s2);
+}
+
+.optionHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-2);
+}
+
+.prosCons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  margin-left: calc(var(--sp-6) + 2px);
+}
+
+.prosConsCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.prosConsCol ul {
+  margin: 0;
+  padding-left: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+}

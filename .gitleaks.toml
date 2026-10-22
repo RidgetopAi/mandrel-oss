@@ -1,0 +1,383 @@
+# =============================================================================
+# .gitleaks.toml — secret-leak gate config for mandrel (PUBLIC repo)
+# =============================================================================
+# Used by BOTH the pre-commit hook (`gitleaks protect --staged`) and the CI
+# backstops (`gitleaks detect` in the CI gate + .github/workflows/secrets.yml).
+#
+# Design goals:
+#   - FAIL CLOSED: any real-secret shape in staged changes blocks the commit;
+#     any in the tree/history fails CI. No "warn and continue".
+#   - LOW NOISE / TRUSTWORTHY: a conservative allowlist suppresses ONLY confirmed
+#     noise so the gate stays believable and devs don't learn to ignore it.
+#
+# Allowlist policy (NON-NEGOTIABLE):
+#   - We allowlist by PATH (legacy cruft that is now .gitignore'd, and doc-example
+#     files) or by FILE+REGEX for a specific known-expired doc token.
+#   - We NEVER allowlist a real secret SHAPE globally (no blanket jwt / sk- / AKIA
+#     / ghp_ / square / private-key regex in the global allowlist). Suppressing a
+#     shape would blind the gate to that entire class of real secret.
+#   - Every entry below carries a one-line reason. If a reason can't be written,
+#     the entry doesn't belong here.
+#
+# All allowlisted paths were triaged DEAD / false-positive in the 2026-06-17
+# code-health audit (raw findings: reports/code-health/2026-06-17/raw/
+# gitleaks-history.json + gitleaks-worktree.json). They are forward-looking
+# guards, not a license to commit secrets.
+# =============================================================================
+
+# Inherit gitleaks' full built-in ruleset (AWS, GitHub, Stripe, JWT, private
+# keys, generic-api-key, square, etc.). We ADD an allowlist on top; we do NOT
+# replace or weaken any rule.
+[extend]
+useDefault = true
+
+# -----------------------------------------------------------------------------
+# Global allowlist — applies to every rule. Conservative on purpose.
+# NOTE: gitleaks 8.18.x uses the SINGULAR [allowlist] table (the plural
+# [[allowlists]] array form is 8.19+). Keep this as [allowlist].
+# -----------------------------------------------------------------------------
+[allowlist]
+description = "mandrel confirmed-noise allowlist (2026-06-17 audit, all DEAD)"
+
+# --- HISTORY-ONLY: one exact published example JWT ---------------------------
+# 2026-09-03, batch 13. credentialHygiene.unit.test.ts asserts, as a
+# PASSING control, that a bare JWT is an ACCEPTED MISS of our credential detector —
+# the trade the operator's ruling bought (high-precision only). That
+# fixture was written as a LITERAL while every positive fixture in the same file is
+# assembled at runtime, so the vendor `jwt` rule flagged it and the authoritative
+# gate went RED on the release ref. Correct behaviour by the scanner.
+#
+# The literal is now assembled at runtime like its neighbours, so the WORKTREE is
+# clean. This entry exists only because the history-aware scan
+# (`gitleaks detect --log-opts=HEAD`) still reaches and rewriting
+# pushed history is not on the table.
+#
+# WHY THIS IS SAFE, stated so nobody has to re-derive it: the value below is the
+# canonical example JWT published in the jwt.io documentation (HS256 header,
+# `{"sub":"1234567890"}` payload, EMPTY signature segment). It authenticates
+# nothing, anywhere. It is allowlisted as ONE EXACT STRING, not as a shape and not
+# as a path — so a NEW jwt, in this file or any other, is still caught. That is the
+# distinction this file's header draws, and it is why there is no `paths` entry for
+# credentialHygiene.unit.test.ts: that file exists to hold synthetic credential
+# shapes, and silencing every rule on it is exactly the hole we would regret.
+# regexTarget pinned to "match" per this file's own Lesson-028 note above: with the
+# DEFAULT target 8.16.0 evaluates against the MATCH and 8.18.4/8.30.1 against the
+# SECRET, so an unpinned entry suppresses on one binary and not another — which is
+# precisely the divergence that produced this RED (the control host gate binary reported 0
+# findings on the same ref where the production host's 8.18.4 reported 1). No anchors, so the
+# entry holds under either evaluation target; it is still ONE exact literal.
+regexTarget = "match"
+regexes = [
+  # loop/test/doctor.test.ts (history): the fixture token, exact literal. Built from
+  # 'tok','fixture','123' today; the generic-api-key rule saw it as one literal once.
+  '''TOKEN = 'tok-fixture-123'$''',
+  '''eyJhbGciOiJIUzI1NiJ9\.eyJzdWIiOiIxMjM0NTY3ODkwIn0\.''',
+]
+
+# Only suppress a finding when BOTH the path/regex AND nothing else matches; we
+# use path/regex allowlists so a NEW real secret in a NEW file is never hidden.
+paths = [
+  # --- Doc-example tokens (expired, illustrative) --------------------------
+  # AUTHENTICATION.md ships sample login responses containing EXPIRED example
+  # JWTs purely to document the API response shape. Allowlisting the *.md doc
+  # file (any depth) suppresses these without touching real JWTs elsewhere.
+  # Audit: generic-api-key on **/AUTHENTICATION.md, triaged DEAD (expired demo).
+  '''(^|/)AUTHENTICATION\.md$''',
+
+  # test-session-code-api.ts ships SHORT STUB authTokens (8-char, not real
+  # credentials) hardcoded in a manual API test. Triaged DEAD (test stubs;
+  # generic-api-key false-positive). The proper fix is fixture/env replacement
+  #; remove this entry once that lands.
+  '''(^|/)test-session-code-api\.ts$''',
+
+  # --- Legacy cruft paths, now .gitignore'd so they can't re-enter ---------
+  # Each path below leaked in HISTORY only (not the current worktree, not
+  # tracked). They are now blocked by .gitignore; these entries stop them
+  # re-flagging on a history-aware scan. None is a current/live source path.
+
+  # DB dumps / backups — full table dumps that captured app rows (e.g. Square
+  # idempotency keys, hashed tokens). Dead data; *.sql + *backup* now ignored.
+  '''(^|/)backups/''',
+  '''aidis_production_384d_backup\.sql$''',
+  '''aidis_backup_cascade_fix_\d+_\d+\.sql$''',
+
+  # Surveyor scan cache — local code-scan JSON that captured snippets verbatim.
+  # `.surveyor/` is already gitignored; this guards the history matches.
+  '''(^|/)\.surveyor/''',
+
+  # ai-context / debug-context scratch — local AI scratch dumps, now ignored.
+  '''(^|/)ai-context/''',
+  '''(^|/)debug-context.*''',
+
+  # auth_response*.json — a captured login response (local probe artifact),
+  # already ignored as auth_response.json; widen to the *.json variants.
+  '''(^|/)auth_response.*\.json$''',
+
+  # Legacy pre-rename tree `aidis-command*/` (now `mandrel-command/`). These
+  # paths no longer exist in the worktree; the matches are old commits. Anchored
+  # to `aidis-command` so the CURRENT `mandrel-command/` tree is NOT allowlisted.
+  '''(^|/)aidis-command(-dev)?/''',
+
+  # Personal, non-product project tree (`projects/dc-viz`, a Spotify demo) —
+  # `projects/` is already gitignored (not part of the Mandrel product). The
+  # leaked values were a public Spotify client-id, triaged DEAD.
+  '''(^|/)projects/''',
+]
+
+# =============================================================================
+# ADDED RULES — credential-shaped ENV assignments + connection URIs
+# (2026-07-27)
+# =============================================================================
+# WHY THESE EXIST. On 2026-07-27 GitGuardian emailed the founder about a
+# `DATABASE_PASSWORD=<literal>` in a pushed commit that BOTH our pre-commit hook and
+# the CI gate STAGE S had reported clean. MEASURED, not assumed: the exact line
+#     DATABASE_PASSWORD=throwaway_0633d03240dbd725
+# scans clean under gitleaks 8.16.0 (this box's package), 8.18.4 (the version
+# .github/workflows/secrets.yml pins) AND 8.30.1 (current upstream) with
+# `useDefault = true`. It is NOT a version gap and NOT an allowlist gap.
+#
+# WHY IT SLIPPED THROUGH — CORRECTED 2026-07-27 AFTER REVIEW. An earlier version of
+# this comment said "the default ruleset has no rule for this shape" and blamed the
+# entropy floor. BOTH were wrong, and being wrong here is expensive: this paragraph
+# is what the next person reads before touching the rules. The measurements:
+#   * `generic-api-key` DOES cover `NAME=value`. `DATABASE_PASSWORD=qKw8Lm2Rt9Zx4Vb7Nc3Jf6Hd`
+#     fires it (entropy 4.585).
+#   * The offending value's entropy is 3.921 — ABOVE the 3.5 floor, not under it.
+#   * The actual discriminator is gitleaks' STOPWORD list. Controlled pair, one word
+#     changed and nothing else:
+#         DATABASE_PASSWORD=throwaway_0633d03240dbd725   entropy 3.921  -> MISSED
+#         DATABASE_PASSWORD=zzqqvvww_0633d03240dbd725    entropy 3.673  -> CAUGHT
+#     The LOWER-entropy value is the one that is caught. "throwaway" is a stopword,
+#     so the finding is discarded no matter how strong the secret next to it is.
+#
+# The entropy floor is a SECOND, independent suppressor, and it is why this rule
+# carries no floor of its own: with no stopword in play,
+#     DATABASE_PASSWORD=0633d03240dbd725        entropy 2.983 -> MISSED
+#     DATABASE_PASSWORD=hunter2hunter2hunter2   entropy 2.807 -> MISSED
+# Both heuristics are sensible anti-false-positive measures for an API KEY rule and
+# both are exactly backwards for a PASSWORD: a human-memorable or obviously-throwaway
+# password is a worse secret to commit, not a safer one.
+#
+# THE SURFACE ACTUALLY COVERED, measured carrier by carrier with one low-entropy
+# credential (`rotate_me_now_88213`, entropy 3.577) planted in each:
+#     shell `NAME=v`                     CAUGHT      .env file `NAME=v`      CAUGHT
+#     Dockerfile `ENV NAME=v`            CAUGHT      systemd `Environment=NAME=v`  CAUGHT
+#     compose `  NAME: v`                CAUGHT      DB_PASS= / DB_PWD= / ADMIN_PW=  CAUGHT
+#     k8s `- name: NAME` + `  value: v`  NOT COVERED — the credential's NAME and its
+#         VALUE are on different lines, which a per-line rule cannot connect. Left
+#         uncovered deliberately rather than claimed.
+#     SQL `... PASSWORD '<literal>'`     CAUGHT since 2026-09-08 (rule
+#         mandrel-credential-sql-password, below). MEASURED MISS before that: commit
+#         8cb7b7e6 (2025-12-01) carried the LIVE postgres superuser password as
+#         `ALTER USER postgres PASSWORD '<12 chars>'` in scripts/prod-host-setup.sh, and
+#         `gitleaks 8.18.4 detect --log-opts='8cb7b7e6^..8cb7b7e6' -c .gitleaks.toml`
+#         reported "no leaks found" with all three rules above in force (the auditor record
+#         86f5887a E4). The name/value separator there is a SPACE and a
+#         quote, not `=` or `:`, so neither assignment rule could see it. The name
+#         alternation also gained PRIVATE_KEY and AUTH the same day (0 new findings on
+#         HEAD, `gitleaks detect --no-git` over `git archive HEAD`).
+# Negative controls that must stay clean: `BYPASS=v` (the short PASS/PWD/PW forms
+# must follow `_` or be the whole name) and `{ password: 'v' }` in TS/JS. A variant
+# that also matched lower-case object keys produced 375 findings on this repo —
+# unusable, and therefore not shipped.
+#
+# ALLOWLIST FORM — `regexTarget = "match"`, VERSION-INDEPENDENT.
+# Measured across all three binaries above: with the DEFAULT target, 8.16.0
+# evaluates allowlist regexes against the whole MATCH while 8.18.4/8.30.1 evaluate
+# them against the SECRET — so the same config suppresses a finding in CI and not
+# on a dev box (or vice versa). Pinning the target to "match" makes all three agree
+# byte for byte. Every regex below therefore anchors on `=` + the value.
+#
+# DENY BY DEFAULT. Each exception is an enumerated LITERAL with a reason, so a NEW
+# credential-shaped literal is RED and someone has to make a decision. The
+# per-occurrence escape hatch for a file you own is gitleaks' own co-located
+# `gitleaks:allow` end-of-line comment — prefer it over widening this list.
+
+[[rules]]
+id = "mandrel-credential-env-assignment"
+description = "Credential-shaped ENV assignment with a bare literal value (DATABASE_PASSWORD=…, *_SECRET=…, *_TOKEN=…, *_API_KEY=…)"
+# name must END with the credential word (so MANDREL_..._API_KEY_ENV=XAI_API_KEY —
+# a var NAME used as a value — is not a match), then `=`, then a literal that is
+# NOT a shell/template expansion ($VAR, ${VAR}, {{x}}, <x>) and does not BEGIN with
+# `* [ ] (` — so the redaction markers `***REDACTED***` and `[REDACTED …]` are not
+# literals (2026-09-08; the same charset the Mandrel detector's env-assignment-literal
+# signature uses, so a line the hook passes is a line Mandrel stores, and vice versa).
+regex = '''(?:^|[\s'"({;&|=])(?:[A-Z][A-Z0-9_]*(?:PASSWORD|PASSWD|SECRET|TOKEN|API_?KEY|PRIVATE_KEY|AUTH)|(?:[A-Z][A-Z0-9_]*_)?(?:PASS|PWD|PW))=["']?([^\s"'`$<>{}[\]()*,;\\]{6,200})'''
+secretGroup = 1
+keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd","_pw","private_key","auth"]
+
+  [rules.allowlist]
+  description = "credential-shaped literals triaged as placeholders / published dev defaults / test fixtures (2026-07-27)"
+  regexTarget = "match"
+  # The DECLARED placeholder surface: `.env*.example` files exist to publish key
+  # NAMES with fake values (gate-env.sh consumes exactly this surface). The default
+  # gitleaks rules still scan these files; only THIS rule is scoped off them.
+  paths = [
+    '''\.example$''',
+    # KNOWN PRE-EXISTING EXPOSURE, deliberately not silently swept: an archived
+    # 2025 migration plan carries postgresql://mandrel:<pw>@localhost/keymaker_production.
+    # Un-blinding this rule surfaced it; rotating/history-rewriting is the operator's call
+    # (an earlier task "Deliberately NOT done"), so it is scoped out BY PATH with this
+    # note rather than left to red every deploy. A NEW doc with a credential is RED.
+    # HISTORY-ONLY legacy cruft (none exists in the worktree today — verified
+    # 2026-07-27 with `git ls-files`). Same policy as the global allowlist above:
+    # suppress dead history paths so a history-aware scan is not permanently RED.
+    '''(^|/)config/environments/\.env\.development$''',
+    '''(^|/)\.env\.logging$''',
+    '''(^|/)ORACLE_REFRACTOR\.md$''',
+    # HISTORY-ONLY pasted gate logs (2026-09-22): a lane committed four
+    # ci-clean-gate transcripts under evidence/task-f2c8cf5c/; one line quoted a fleet
+    # posture guard's placeholder `ANTHROPIC_API_KEY=<8-char word>` (entropy 2.75, not a
+    # key). The files are DELETED from the worktree in the same commit as this line;
+    # this scopes the dead history so the fleet roll's history scan is not permanently
+    # RED. Raw gate logs never belong in evidence/ — the receipt lives in the commit body.
+    '''^evidence/task-f2c8cf5c/''',
+  ]
+  regexes = [
+    # --- documentation placeholders ---------------------------------------
+    '''(?i)=['"]?(your|my)[-_.]''',            # your-secure-password, YOUR_TOKEN, your_password
+    '''(?i)=['"]?replace[-_]with''',           # REPLACE_WITH_SECURE_RANDOM_VALUE
+    '''(?i)=['"]?required$''',                 # config/environments/.env.{staging,production}
+    '''(?i)=['"]?generate[-_]a[-_]secure''',   # docs/DEPLOYMENT.md
+    '''(?i)=['"]?generated-secret$''',         # mcp-server/.env.example seed placeholder
+    '''(?i)change[-_]in[-_]production''',      # …-change-in-production sample secrets
+    '''(?i)=['"]?changeme\b''',                # the canonical "change me" doc placeholder
+    # A SCREAMING_SNAKE value is a placeholder or an env-var NAME used as a value
+    # (`=REPLACE_WITH_YOUR_TOKEN`, `=MCP_AUTH_TOKEN`) — no issuer emits an all-caps,
+    # digit-free token. Letters and underscores ONLY, at least one underscore: a hex or
+    # base32 secret (digits) never satisfies it, and neither does a single bare word.
+    '''=['"]?[A-Z]+(?:_[A-Z]+)+['"]?(?:\s|$)''',
+    # DELIBERATELY NOT EXEMPT, so nobody adds them: `throwaway_*` (that prefix IS the
+    # 2026-07-27 miss — gitleaks' stopword list is why it slipped; exempting it here
+    # re-opens the exact hole) and `DUMMY_*` (the hook's acceptance probe plants
+    # `DB_PASSWORD=DUMMY_ShouldBeCaught_…` and requires a REFUSAL; a fixture that must
+    # be committable is written DISARMED — see scripts/test/gitleaks-credential-shapes.test.sh).
+    '''\.\.\.$''',                             # sk-..., sk-ant-..., SG.... (elided examples)
+    '''=['"]?user_pw\b''',                      # README.md quick-start compose sample
+    # --- the PUBLISHED dev default (documented in every .env.example) ------
+    '''=['"]?mandrel_dev_password\b''',
+    # --- test fixtures (enumerated; these files are the gate's own fixtures) -
+    '''=['"]?spine_test_pw\b''',               # mandrel-command/backend/src/__tests__/resolve*.route.db.test.ts
+    '''=['"]?sk-do-not-print\b''',             # scripts/test/clean-gate.test.sh (leak-probe canary)
+    '''=['"]?canarypass\b''',                  # scripts/test/authed-probe.test.sh (stub login)
+    '''=['"]?OldWeakPw123\b''',                # scripts/test/db-rotate.test.sh (rotation before/after fixture)
+    '''=['"]?RotatedStr0ngPw456\b''',          # scripts/test/db-rotate.test.sh (rotation before/after fixture)
+    # --- the REDACTION MARKER itself (2026-08-27) --------------------------
+    # Our own probe/gate logs print SCRUBBED assignments, e.g.
+    #   [PASS] guard went RED - 'POSTGRES_PASSWORD=***REDACTED***' is gone
+    # The rule sees `POSTGRES_PASSWORD=` + a 6-char literal and fires. But
+    # `***REDACTED***` is the OUTPUT of redaction: it is the one value that is
+    # provably NOT a secret, because a scrubber already replaced the secret with
+    # it. Anchored to the exact 3-star literal on BOTH sides, so it suppresses the
+    # marker and nothing else - it cannot widen to a real value.
+    # Without this, committing our own evidence logs is blocked, and the pressure
+    # is then to stop keeping evidence - the worse outcome.
+    '''=['"]?\*{3}REDACTED\*{3}['"]?$''',
+    # --- placeholder / fixture VALUES, enumerated -----------
+    # Each is an exact literal (value shape, not a path, not the whole rule), so a
+    # real-looking token in the same file is still RED. Found by the history-wide
+    # scan; every value is a documented example or a test fixture, none authenticates.
+    '''=['"]?example-(?:token|key|gh)\b''',    # loop/README.md quick-start examples
+    '''=['"]?smoketest-fixture-token-[0-9a-f]{8}\b''',  # scripts/test/deep-smoke-auth.test.sh (history)
+    '''=['"]?with=equals=kept\b''',            # scripts/test/deep-smoke-auth.test.sh (history)
+    '''=['"]?wrong-session-token-value\b''',   # scripts/test/deep-smoke-auth.test.sh (history)
+    '''=['"]?compose_flag_test_dummy\b''',     # scripts/test/compose-flag-declarations.test.sh (history)
+    '''=['"]?list_form_p@ss\b''',              # scripts/test/preflight-db-password.test.sh (history)
+    # HISTORY-ONLY: the supersession tests once assigned these two FAKE fixture
+    # values as literals; they are now assembled at runtime. Two exact
+    # literals, not a path and not a shape, so a new literal in those files is still RED.
+    '''=['"]?subq-secret-VALUE-0001['"]?$''',  # scripts/test/supersession-{docs-install,mode-report}.test.sh (history)
+    '''=['"]?anth-secret-VALUE-0002['"]?$''',  # same
+  ]
+
+[[rules]]
+id = "mandrel-credential-mapping-key"
+description = "Credential-shaped UPPER_SNAKE mapping key with a literal value (docker-compose `environment:`, systemd-style YAML)"
+regex = '''(?m)^[ \t-]*(?:[A-Z][A-Z0-9_]*(?:PASSWORD|PASSWD|SECRET|TOKEN|API_?KEY|PRIVATE_KEY|AUTH)|(?:[A-Z][A-Z0-9_]*_)?(?:PASS|PWD|PW)):[ \t]+["']?([^\s"'`$<>{},;#]{6,200})'''
+secretGroup = 1
+# YAML/COMPOSE ONLY, and that restriction is load-bearing. Without it this rule
+# matches UPPER_SNAKE keys in TypeScript object literals — measured: 25 findings
+# across mcp-server/src/tests, nearly all of them REFERENCES rather than secrets
+# (`DATABASE_PASSWORD: process.env.DATABASE_PASSWORD`, `MCP_AUTH_TOKEN: TEST_TOKEN`).
+# The carrier this rule exists for is the compose `environment:` mapping, whose
+# `KEY: value` form the `=`-assignment rule structurally cannot see.
+path = '''(?i)\.ya?ml$'''
+keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd","private_key","auth"]
+
+  [rules.allowlist]
+  description = "compose/YAML mapping literals triaged as throwaways (2026-07-27)"
+  regexTarget = "match"
+  regexes = [
+    # .github/workflows/ci.yml — the password of the EPHEMERAL postgres service
+    # container a GHA job creates and destroys. It has to be written in the
+    # workflow, and it is reachable only from inside that job.
+    '''(?i):[ \t]*ci_throwaway_pw\b''',
+  ]
+
+[[rules]]
+id = "mandrel-credential-sql-password"
+description = "SQL role password literal (CREATE/ALTER ROLE|USER … PASSWORD '…') — the 8cb7b7e6 carrier"
+# Structural, not entropy: the keyword PASSWORD, whitespace, an opening quote, then a
+# literal of >= 12 chars that does NOT begin with `$` (shell expansion: '$PW', "${PW}"),
+# `<` (a <placeholder>) or `{` ({{ template }}). Every `psql -c "ALTER ROLE … PASSWORD
+# '$NEW_PW'"` in scripts/ and mcp-server/scripts/ today is a `$` expansion and stays
+# clean (0 findings on HEAD, measured 2026-09-08). Case-insensitive because SQL is.
+regex = '''(?i)\b(?:PASSWORD|PASSWD)\s+['"]([^'"$<{ ][^'" ]{11,199})['"]'''
+secretGroup = 1
+keywords = ["password","passwd"]
+
+  [rules.allowlist]
+  description = "SQL password literals that are provably not secrets (2026-09-08)"
+  regexTarget = "match"
+  paths = [
+    '''\.example$''',
+  ]
+  regexes = [
+    # The redaction marker — the OUTPUT of a scrubber, the one value that cannot be a
+    # secret. Same reasoning and same exact-literal anchoring as the env rule above.
+    '''\*{3}REDACTED\*{3}''',
+    # Documentation placeholders (parity with the JS detector, the reviewer F1, and
+    # with the env rule's `=['"]?(your|my)[-_.]` above). NOT `^`-anchored: regexTarget is
+    # the whole match, which begins with `PASSWORD `, so the previous `^['"]?(?:your|my)-`
+    # could never match anything — measured 2026-09-08 on a --no-git tree:
+    # `PASSWORD 'your-password-here-xx'` scanned RED under it. The quote is the anchor.
+    '''(?i)['"](?:your|my)[-_.]''',
+    # SCREAMING_SNAKE placeholder (letters + underscores only, >= 1 underscore).
+    '''['"][A-Z]+(?:_[A-Z]+)+['"]''',
+    '''(?i)['"]changeme['"]''',
+  ]
+  # HISTORICAL carriers of this shape, rule-scoped (not the global allowlist), one reason
+  # each. Every one is dead at HEAD: the file is gone or the line is gone (measured
+  # 2026-09-08: `gitleaks detect --log-opts=HEAD` attributed all 6 findings to these two
+  # commits + the two below; none of the four files carries a `PASSWORD '…'` line today).
+  # scripts/test/gitleaks-credential-shapes.test.sh 5d strips THIS line and proves
+  # 8cb7b7e6 still scans RED without it — the allowlist is the only thing silencing it.
+  #   e9a864f7 (2026-01-25) README.md:242 + docs/DEPLOYMENT.md:121 — deployment-guide
+  #            example passwords (lowercase snake_case words, no entropy), removed since.
+  #   8cb7b7e6 (2025-12-02) scripts/prod-host-setup.sh:50,53 — the REAL postgres superuser
+  #            password, the miss this rule was written for. ROTATED 2026-09-08
+  #           ; the file no longer exists at HEAD.
+  # 70de338f / c6888058 (TS015 guide, `your_…` placeholders) need no row: the placeholder
+  # regex above covers them once it actually matches.
+  commits = ["e9a864f74cbfaa35c3e428497275581d238cc7fa", "8cb7b7e608583c7dc8729fdfd085abab7809532b"]
+
+[[rules]]
+id = "mandrel-credential-in-uri"
+description = "Credential embedded in a connection URI (postgres://user:pass@…, mysql://, redis://, mongodb://, amqp://)"
+regex = '''(?i)\b(?:postgres(?:ql)?|mysql|mongodb(?:\+srv)?|redis|amqp|ftp)://[^\s:/@'"]{1,64}:([^\s:/@'"]{3,200})@'''
+secretGroup = 1
+keywords = ["postgres://","postgresql://","mysql://","mongodb://","redis://","amqp://","ftp://"]
+
+  [rules.allowlist]
+  description = "connection-URI literals triaged as documentation placeholders (2026-07-27)"
+  regexTarget = "match"
+  paths = [
+    '''\.example$''',
+    # Same known pre-existing exposure as above — see that note.
+  ]
+  regexes = [
+    '''(?i)://[^\s:/@'"]{1,64}:(your|my)[-_.]''',   # postgresql://mandrel:your_password@
+    '''(?i)://user:pass@''',                        # the canonical doc placeholder
+    '''(?i)://mandrel:password@''',                 # .env.example DATABASE_URL sample
+    '''(?i)://mandrel:s3cr3t@''',                   # mcp-server/src/tests/strictModeActionableErrors.contract.test.ts
+  ]

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIDIS LocalStorage Project Selection Fix</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .success { color: #52c41a; }
+        .error { color: #ff4d4f; }
+        .warning { color: #faad14; }
+        .info { color: #1890ff; }
+        button { padding: 10px 15px; margin: 5px; border: none; border-radius: 4px; cursor: pointer; }
+        .primary { background: #1890ff; color: white; }
+        .danger { background: #ff4d4f; color: white; }
+        .success-btn { background: #52c41a; color: white; }
+        pre { background: #f5f5f5; padding: 10px; border-radius: 4px; overflow-x: auto; }
+        .status-box { border: 1px solid #d9d9d9; border-radius: 4px; padding: 15px; margin: 10px 0; }
+    </style>
+</head>
+<body>
+    <h1>🔧 AIDIS LocalStorage Project Selection Fix</h1>
+    
+    <div class="info">
+        <h3>Problem Summary:</h3>
+        <p>The frontend was storing entire project objects in localStorage instead of just project IDs, causing API URLs with URL-encoded JSON objects instead of clean UUIDs.</p>
+    </div>
+
+    <div class="status-box">
+        <h3>Current LocalStorage Status:</h3>
+        <div id="status"></div>
+        <button class="primary" onclick="checkStatus()">🔍 Check Status</button>
+    </div>
+
+    <div class="status-box">
+        <h3>Fix Actions:</h3>
+        <button class="danger" onclick="clearOldEntries()">🧹 Clear Old Project Storage</button>
+        <button class="danger" onclick="clearAllProjectStorage()">🗑️ Clear All Project Storage</button>
+        <button class="success-btn" onclick="testNewFormat()">✅ Test New Format</button>
+    </div>
+
+    <div class="status-box">
+        <h3>Test Results:</h3>
+        <div id="results"></div>
+    </div>
+
+    <div class="status-box">
+        <h3>What Was Fixed:</h3>
+        <ul>
+            <li>✅ ProjectContext now stores only <code>project.id</code> instead of full project object</li>
+            <li>✅ Unified localStorage key to <code>aidis_selected_project</code></li>
+            <li>✅ API service correctly reads project ID from localStorage</li>
+            <li>✅ Tasks page uses consistent project ID storage</li>
+            <li>✅ Automatic cleanup of old localStorage format</li>
+        </ul>
+    </div>
+
+    <script>
+        function log(message, type = 'info') {
+            const colors = {
+                success: '#52c41a',
+                error: '#ff4d4f', 
+                warning: '#faad14',
+                info: '#1890ff'
+            };
+            console.log(`%c${message}`, `color: ${colors[type]}`);
+        }
+
+        function updateResults(html) {
+            document.getElementById('results').innerHTML = html;
+        }
+
+        function updateStatus(html) {
+            document.getElementById('status').innerHTML = html;
+        }
+
+        function checkStatus() {
+            log('🔍 Checking localStorage status...', 'info');
+            
+            const oldProject = localStorage.getItem('aidis_current_project');
+            const newProject = localStorage.getItem('aidis_selected_project');
+            
+            let html = '<h4>LocalStorage Analysis:</h4>';
+            
+            if (oldProject) {
+                try {
+                    const parsed = JSON.parse(oldProject);
+                    html += `<div class="error">❌ Old format found: aidis_current_project (${JSON.stringify(parsed).length} chars)</div>`;
+                } catch (e) {
+                    html += `<div class="error">❌ Corrupted old format: aidis_current_project</div>`;
+                }
+            } else {
+                html += `<div class="success">✅ No old format found: aidis_current_project</div>`;
+            }
+            
+            if (newProject) {
+                if (newProject.startsWith('{') || newProject.includes('"')) {
+                    html += `<div class="error">❌ New format corrupted: aidis_selected_project contains JSON object</div>`;
+                    html += `<pre>${newProject}</pre>`;
+                } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(newProject)) {
+                    html += `<div class="success">✅ New format correct: aidis_selected_project contains valid UUID</div>`;
+                    html += `<pre>${newProject}</pre>`;
+                } else {
+                    html += `<div class="warning">⚠️ New format unexpected: aidis_selected_project</div>`;
+                    html += `<pre>${newProject}</pre>`;
+                }
+            } else {
+                html += `<div class="info">ℹ️ No project selected: aidis_selected_project is empty</div>`;
+            }
+            
+            updateStatus(html);
+        }
+
+        function clearOldEntries() {
+            log('🧹 Clearing old localStorage entries...', 'warning');
+            
+            const removed = [];
+            if (localStorage.getItem('aidis_current_project')) {
+                localStorage.removeItem('aidis_current_project');
+                removed.push('aidis_current_project');
+            }
+            
+            let html = '<h4>Cleanup Results:</h4>';
+            if (removed.length > 0) {
+                html += `<div class="success">✅ Removed old entries: ${removed.join(', ')}</div>`;
+                log(`✅ Removed: ${removed.join(', ')}`, 'success');
+            } else {
+                html += `<div class="info">ℹ️ No old entries found to remove</div>`;
+                log('ℹ️ No old entries found', 'info');
+            }
+            
+            updateResults(html);
+            setTimeout(checkStatus, 100);
+        }
+
+        function clearAllProjectStorage() {
+            if (!confirm('This will clear ALL project selection data. Are you sure?')) {
+                return;
+            }
+            
+            log('🗑️ Clearing all project storage...', 'warning');
+            
+            const keys = ['aidis_current_project', 'aidis_selected_project'];
+            const removed = [];
+            
+            keys.forEach(key => {
+                if (localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                    removed.push(key);
+                }
+            });
+            
+            let html = '<h4>Full Reset Results:</h4>';
+            if (removed.length > 0) {
+                html += `<div class="success">✅ Cleared all project storage: ${removed.join(', ')}</div>`;
+                html += `<div class="info">ℹ️ You will need to select a project again in the UI</div>`;
+                log(`✅ Cleared: ${removed.join(', ')}`, 'success');
+            } else {
+                html += `<div class="info">ℹ️ No project storage found to clear</div>`;
+            }
+            
+            updateResults(html);
+            setTimeout(checkStatus, 100);
+        }
+
+        function testNewFormat() {
+            log('✅ Testing new localStorage format...', 'info');
+            
+            // Simulate setting a project ID
+            const testProjectId = 'a1b2c3d4-e5f6-7890-abcd-1234567890ab';
+            localStorage.setItem('aidis_selected_project', testProjectId);
+            
+            // Test retrieval
+            const retrieved = localStorage.getItem('aidis_selected_project');
+            
+            let html = '<h4>New Format Test:</h4>';
+            if (retrieved === testProjectId) {
+                html += `<div class="success">✅ New format working correctly!</div>`;
+                html += `<div class="info">✓ Stored: ${testProjectId}</div>`;
+                html += `<div class="info">✓ Retrieved: ${retrieved}</div>`;
+                html += `<div class="info">✓ API calls will use clean UUID: /api/tasks?project_id=${retrieved}</div>`;
+                log('✅ New format test passed', 'success');
+            } else {
+                html += `<div class="error">❌ New format test failed!</div>`;
+                html += `<div class="error">Expected: ${testProjectId}</div>`;
+                html += `<div class="error">Got: ${retrieved}</div>`;
+                log('❌ New format test failed', 'error');
+            }
+            
+            updateResults(html);
+            setTimeout(checkStatus, 100);
+        }
+
+        // Auto-check on page load
+        window.onload = checkStatus;
+    </script>
+</body>
+</html>

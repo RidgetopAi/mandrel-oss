@@ -1,0 +1,71 @@
+/* Tabs — underline bar. Active tab: teal underline + primary text; rest muted.
+   All colour/spacing via tokens; underline thickness is structural px. */
+
+.tabs {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tablist {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.tab {
+  position: relative;
+  appearance: none;
+  background: transparent;
+  border: none;
+  padding: var(--sp-3) 0;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  font-weight: 560;
+  color: var(--tx-3);
+  cursor: pointer;
+  transition: color 0.14s ease;
+}
+
+.tab:hover:not(:disabled) {
+  color: var(--tx-2);
+}
+
+.tab:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tab:focus-visible {
+  outline: none;
+  color: var(--tx);
+  box-shadow: 0 0 0 2px var(--teal-glow);
+  border-radius: var(--r-xs);
+}
+
+.tabActive {
+  color: var(--tx);
+}
+
+/* teal underline for the active tab (sits on the tablist's bottom hairline) */
+.tabActive::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--teal);
+  box-shadow: 0 0 10px var(--teal-glow);
+}
+
+.panel {
+  padding-top: var(--sp-4);
+}
+.panel:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--teal-glow);
+  border-radius: var(--r-sm);
+}

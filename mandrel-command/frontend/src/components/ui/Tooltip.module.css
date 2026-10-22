@@ -1,0 +1,65 @@
+/* Tooltip — token-styled popover, revealed on hover/focus-within. Colours from
+   tokens; offsets/arrow are structural px (geometry, no token). */
+
+.wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.tooltip {
+  position: absolute;
+  z-index: 50;
+  max-width: 260px;
+  width: max-content;
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  background: var(--s3);
+  border: 1px solid var(--line-2);
+  color: var(--tx);
+  font-family: var(--font);
+  font-size: var(--fs-label);
+  line-height: 1.4;
+  box-shadow: 0 8px 24px -8px var(--bg);
+  opacity: 0;
+  visibility: hidden;
+  transform: scale(0.96);
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease,
+    visibility 0.12s;
+  pointer-events: none;
+}
+
+/* Reveal on hover of the wrapper OR keyboard focus of the trigger inside it. */
+.wrapper:hover .tooltip,
+.wrapper:focus-within .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+}
+
+/* ── Placement (structural offsets) ───────────────────────────────────────── */
+.top {
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform-origin: bottom center;
+  translate: -50% 0;
+}
+.bottom {
+  top: calc(100% + 8px);
+  left: 50%;
+  transform-origin: top center;
+  translate: -50% 0;
+}
+.left {
+  right: calc(100% + 8px);
+  top: 50%;
+  transform-origin: center right;
+  translate: 0 -50%;
+}
+.right {
+  left: calc(100% + 8px);
+  top: 50%;
+  transform-origin: center left;
+  translate: 0 -50%;
+}

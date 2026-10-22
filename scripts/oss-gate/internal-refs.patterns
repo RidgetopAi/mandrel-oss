@@ -1,0 +1,50 @@
+# Internal-references ban for scripts/oss-gate.sh (STAGE R).
+#
+# Format, one per line ('#' lines and blank lines are ignored):
+#   <class><TAB><PCRE><TAB><probe>   matched with git grep -P against every tracked text file. The
+#                                    probe is a synthetic hit: scripts/test/internal-refs-ban.test.sh
+#                                    plants it in a scratch repo and requires RED naming the class.
+#   <class><TAB>word:<word>          a whole TOKEN. A token is a maximal [a-z0-9] run after
+#                                    percent-escapes are removed and camelCase is split, lowercased:
+#                                    `sessRidge`, `P_RIDGE`, `x%2Fridge` all yield the token `ridge`.
+#   <class><TAB>sha256:<hex>         a token whose sha256 is listed. Used for personal and customer
+#                                    names, so this public file does not spell them out. Obscured,
+#                                    not secret: a dictionary reverses a common name. Check a word
+#                                    with  printf '%s' word | sha256sum
+# Each regex is also tested across every pair of consecutive lines (the second line's comment
+# marker stripped), so a reference wrapped onto the next comment line is still caught.
+# A hit is RED unless an entry in scripts/oss-gate/internal-refs.allow covers it.
+#
+# This file and the allow-list are the only paths the scan skips: they necessarily contain the
+# patterns, the probes and the allowed literals.
+#
+# The classes are what a public release of this repository must not carry: the names of the people
+# and agents of the team that built it and of its customers, its company brand outside the public
+# repository URL, its private repositories, its hosts, addresses and host paths, its private
+# notification channel, and references into its private task tracker.
+person	sha256:f3fe5a51a2be8c6dc715028858fcba82ee021be7687e4f95b45086b8ffb1a23f
+agent	word:ridge
+agent	word:foreman
+agent	word:foremen
+agent	word:inspector
+agent	word:inspectors
+agent	word:tesla
+agent	word:squire
+agent	word:librarian
+agent	word:fable
+tenant	sha256:de7ee76e7373c19bf7418e69cadecba96107bbb6d99524c516e1d37605dca829
+tenant	sha256:6743628ed9b8c62438923bda3d0bb7d34955b3bc67cf92ef5cf0387233cbe7e8
+tenant	sha256:9cdb47c559417464c6ee37cf19787d92e12728456e547f73cb981708bbc17532
+tenant	sha256:2f224e17f67d8c3d107843855362863f4ff5b715a0d4d61cf49a6607b7731598
+tenant	sha256:7fad6a9089ae4c73919d9d58c200a4cf6c08dcf9a6d9e4da864dcdd08d37b81d
+tenant	sha256:6a41a1f75332aa1e3552c8ed6a5c0061c1cdc9864dd8830e0b72eb7ac1123723
+tenant	sha256:7d0bcb4304d3635db25b3cc87c8583830db337cac39c437da80c7642d3d3e127
+tenant	sha256:1a53487175600651e6c612a0b919a08b3cdcb3b522017d82eeaf6e9879039481
+brand	(?i)ridgetop	https://mandrel.ridgetopai.net/
+repo	(?i)\bra-(?:mandrel|runtime|omarchy|cockpit|site|daisy|builder)\b	see ra-mandrel main
+host	(?i)hetzner|\bovh\b	ssh hetzner
+ip	\b(?:100\.122|100\.74\.187|178\.156|135\.148)\.\d	curl http://100.122.0.1:8080
+path	/opt/mandrel|/etc/mandrel|/etc/ridge|\.mandrel-bridge\.env|(?<![\w.~$}-])/root/	cd /opt/mandrel/app
+service	(?i)telegram	page via Telegram
+id	(?i)\b(?:task|decision|context|punch|milestone|spine)s?(?:[ \t]+|[ \t]*`)(?=[0-9a-f]{0,7}[0-9])[0-9a-f]{8}\b	fixed in task 1a2b3c4d
+lesson	(?i)\blessons?[ \t]+\d{3}\b	per Lesson 027

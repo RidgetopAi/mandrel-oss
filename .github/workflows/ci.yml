@@ -1,0 +1,42 @@
+name: CI
+
+# One job, one command: scripts/oss-gate.sh is the repository's authoritative gate
+# (deps, type-check, lint, unit tests, shell tests, secret scan, internal-refs ban).
+# Its exit code is the verdict: 0 GREEN, 1 RED, 2 COULD-NOT-MEASURE (all fail the job).
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  oss-gate:
+    name: OSS gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node (version pinned by .nvmrc)
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # The gate's secret-scan stage needs gitleaks on PATH; without it the gate
+      # reports COULD-NOT-MEASURE.
+      - name: Install gitleaks 8.18.4
+        run: |
+          set -euo pipefail
+          VERSION=8.18.4
+          curl -sSfL -o /tmp/gitleaks.tar.gz \
+            "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz"
+          tar -xzf /tmp/gitleaks.tar.gz -C /tmp gitleaks
+          sudo install -m 0755 /tmp/gitleaks /usr/local/bin/gitleaks
+          gitleaks version
+
+      - name: OSS gate
+        run: bash scripts/oss-gate.sh

@@ -1,0 +1,56 @@
+{
+  "name": "@mandrel/mcp-adapter-http",
+  "version": "1.0.0",
+  "description": "HTTP protocol adapter for Mandrel Core Service - bridges Claude Code MCP to Mandrel HTTP API",
+  "main": "mcp-http-adapter.js",
+  "bin": {
+    "mandrel-mcp-http-adapter": "./mcp-http-adapter.js"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "npx tsx mcp-http-adapter.ts",
+    "start": "node mcp-http-adapter.js",
+    "dev": "npx tsx mcp-http-adapter.ts",
+    "test": "node ../test-adapters.js",
+    "lint": "eslint mcp-http-adapter.ts",
+    "type-check": "tsc -p tsconfig.json"
+  },
+  "keywords": [
+    "mandrel",
+    "mcp",
+    "adapter",
+    "http",
+    "bridge",
+    "claude-code",
+    "protocol"
+  ],
+  "author": "Mandrel Development Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RidgetopAi/mandrel-oss.git",
+    "directory": "adapters"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^0.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0",
+    "eslint": "^8.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0"
+  },
+  "files": [
+    "mcp-http-adapter.ts",
+    "mcp-http-adapter.js",
+    "README.md"
+  ],
+  "publishConfig": {
+    "access": "public"
+  }
+}

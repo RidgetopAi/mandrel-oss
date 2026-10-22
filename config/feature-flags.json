@@ -1,0 +1,30 @@
+{
+  "version": 3,
+  "updatedAt": "2025-10-30T21:00:00.000Z",
+  "flags": {
+    "phase1.featureFlags": false,
+    "phase1.contractTests": false,
+    "phase1.reactErrorBoundaries": false,
+    "phase4.sessionManagementV2": false,
+    "phase4.legacySessionFallback": true,
+    "phase4.sessionTrafficSplit": 0,
+    "phase4.sessionMigration": true,
+    "phase4.dualWriteEnabled": true,
+    "phase4.readFromPrimary": false,
+    "realtime.sse.enabled": true,
+    "realtime.websockets.enabled": false
+  },
+  "overrides": {
+    "phase4.sessionManagementV2": false,
+    "phase4.legacySessionFallback": true,
+    "phase4.sessionMigration": true,
+    "phase4.dualWriteEnabled": true
+  },
+  "trafficSplits": {
+    "sessionManagement": {
+      "enabled": false,
+      "percentage": 0,
+      "rolloutGroups": ["dev", "staging"]
+    }
+  }
+}

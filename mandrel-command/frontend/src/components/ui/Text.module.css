@@ -1,0 +1,102 @@
+/* Typography primitive — every value is a design token (var(--…)). No hardcoded
+   colours; sizes/weights/tracking come from the P0.2 type-scale tokens. */
+
+.text {
+  font-family: var(--font);
+  margin: 0;
+}
+
+/* ── Type scale (from the doc's Type reference) ───────────────────────────── */
+.display {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-display);
+  line-height: 1.2;
+}
+
+.title {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-title);
+  letter-spacing: var(--tracking-title);
+  line-height: 1.3;
+}
+
+.body {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+}
+
+.label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+}
+
+.data {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+
+/* ── Tone (colour ramp + accents) ─────────────────────────────────────────── */
+.toneDefault {
+  color: var(--tx);
+}
+.toneMuted {
+  color: var(--tx-2);
+}
+.toneFaint {
+  color: var(--tx-3);
+}
+.toneFaintest {
+  color: var(--tx-4);
+}
+.toneTeal {
+  color: var(--teal);
+}
+.toneViolet {
+  color: var(--violet);
+}
+.toneBlue {
+  color: var(--blue);
+}
+.toneGreen {
+  color: var(--green);
+}
+.toneAmber {
+  color: var(--amber);
+}
+.toneRose {
+  color: var(--rose);
+}
+.toneOk {
+  color: var(--ok);
+}
+.toneWarn {
+  color: var(--warn);
+}
+.toneCrit {
+  color: var(--crit);
+}
+
+/* ── Modifiers ────────────────────────────────────────────────────────────── */
+.mono {
+  font-family: var(--mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.truncate {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.alignCenter {
+  text-align: center;
+}
+.alignRight {
+  text-align: right;
+}

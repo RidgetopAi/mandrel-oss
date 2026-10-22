@@ -1,0 +1,70 @@
+{
+  "_doc": "P0 embedder bake-off (coverage-only) config. Reconstructed from RUN_CONFIG.md (2026-06-18 LongMemEval A/B, Arm A flat_dense). ONE variable = the encoder (+ its correct query/doc prefix). No answerer, no judge, no OpenAI, no Mandrel.",
+  "dataset_path": "./data/longmemeval_s_cleaned.json",
+  "dataset_note": "official LongMemEval-S, 500 questions (470 answerable + 30 abstention). Abstention qids end in '_abs'. Coverage denominator = 470 answerable. Corpus was cleaned upstream; MUST be the same longmemeval_s_cleaned.json used on 2026-06-18 for the MiniLM floor to reproduce (~85-93% coverage@8).",
+  "chunk_size_chars": 6000,
+  "recall_ks": [1, 3, 5, 8],
+  "headline_k": 8,
+  "session_format": {
+    "date_line": "[Session date: {date}]",
+    "turn_line": "{role}: {content}",
+    "join": "\n",
+    "strip_c0_controls": true,
+    "note": "Exact Arm A / Mandrel-ingest formatting from run_eval_m2 (recovered via moat_pilot.py lines 89-100)."
+  },
+  "ollama_endpoint": "http://127.0.0.1:11434",
+  "minilm_endpoint": "http://127.0.0.1:8390",
+  "batch_size": 64,
+  "models": [
+    {
+      "key": "minilm",
+      "label": "MiniLM-L6 (incumbent floor)",
+      "backend": "minilm_server",
+      "model": "Xenova/all-MiniLM-L6-v2",
+      "dim": 384,
+      "query_prefix": "",
+      "doc_prefix": "",
+      "prefix_note": "Symmetric encoder, no prefix. Same model file + {pooling:'mean',normalize:true} as Mandrel localModel.ts."
+    },
+    {
+      "key": "nomic",
+      "label": "nomic-embed-text (control)",
+      "backend": "ollama",
+      "model": "nomic-embed-text",
+      "dim": 768,
+      "query_prefix": "search_query: ",
+      "doc_prefix": "search_document: ",
+      "prefix_note": "Nomic model card: search_query: / search_document: task prefixes (mandatory)."
+    },
+    {
+      "key": "qwen3",
+      "label": "Qwen3-Embedding-0.6B",
+      "backend": "ollama",
+      "model": "qwen3-embedding:0.6b",
+      "dim": 1024,
+      "query_prefix": "Instruct: Given a question, retrieve the conversation session that contains its answer\nQuery: ",
+      "doc_prefix": "",
+      "prefix_note": "Qwen3-Embedding card: queries get 'Instruct: {task}\\nQuery: {q}', documents raw. Task tuned to the LME retrieve-session objective."
+    },
+    {
+      "key": "embeddinggemma",
+      "label": "EmbeddingGemma-300m",
+      "backend": "ollama",
+      "model": "embeddinggemma",
+      "dim": 768,
+      "query_prefix": "task: search result | query: ",
+      "doc_prefix": "title: none | text: ",
+      "prefix_note": "EmbeddingGemma documented prompt templates: Retrieval-query = 'task: search result | query: {c}', Retrieval-document = 'title: none | text: {c}'."
+    },
+    {
+      "key": "arctic",
+      "label": "Snowflake arctic-embed-l-v2.0",
+      "backend": "ollama",
+      "model": "snowflake-arctic-embed2",
+      "dim": 1024,
+      "query_prefix": "query: ",
+      "doc_prefix": "",
+      "prefix_note": "arctic-embed v2.0 card: queries prefixed 'query: ', documents raw."
+    }
+  ]
+}

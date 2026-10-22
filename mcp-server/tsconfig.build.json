@@ -1,0 +1,8 @@
+{
+  // PRODUCTION BUILD config: compiles src/ to plain ESM JavaScript in dist/ so the
+  // image can run operator tools (e.g. dist/cli/beliefCostMain.js) with `node` alone — no tsx/npx.
+  // Tests are not shipped. Type-checking of everything else stays with tsconfig.typecheck.json.
+  "extends": "./tsconfig.json",
+  "compilerOptions": { "declaration": false, "declarationMap": false },
+  "exclude": ["node_modules", "dist", "src/tests"]
+}

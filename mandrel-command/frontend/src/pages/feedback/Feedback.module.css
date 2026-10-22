@@ -1,0 +1,74 @@
+/* Feedback screen — the antd form retired onto the P0.2 tokens + P0.3 primitives
+  . Colour and type are 100% token-driven (no hex/rgb/font-size-px
+   literals); residual px are STRUCTURAL geometry only (column width, hairline). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-height: 0;
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ---- form column ---- */
+.formCol {
+  width: 100%;
+  max-width: 720px;
+}
+
+/* type + severity sit side by side, stacking on narrow viewports */
+.pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--sp-4);
+}
+@media (max-width: 640px) {
+  .pair {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---- auto-captured page ---- */
+.capture {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--s1);
+}
+.capturePath {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx);
+}
+
+/* ---- footer row: counter left, submit right ---- */
+.actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+.counter {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+}
+.counterWarn {
+  color: var(--warn);
+}

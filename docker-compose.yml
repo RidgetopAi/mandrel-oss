@@ -1,0 +1,755 @@
+# Mandrel Docker Compose Configuration — ONE file for a single instance and for several
+# instances side by side on one host.
+#
+# Install (the supported path): ./install.sh — it writes .env and runs this file.
+# By hand:                       docker compose up -d
+# A second instance on the same host: give it its own env file and project name, e.g.
+#                                docker compose --env-file ./instance-b.env -p mandrel-b up -d
+#
+# TENANT_* interpolation contract (values live in the instance's env file):
+#   TENANT_HANDLE            e.g. team-a       → container names mandrel-<h>-…,
+#                            Traefik router names, network label.
+#                            UNSET (single instance) → container names fall back to the
+#                            classic mandrel-postgres/… via ${VAR:+…} (see below).
+#   TENANT_DOMAIN            e.g. team-a.mandrel.example.com → Traefik Host() rules.
+#   TENANT_PG_PORT / TENANT_REDIS_PORT / TENANT_MCP_PORT /
+#   TENANT_BACKEND_PORT / TENANT_FRONTEND_PORT
+#                            host ports (defaults = the classic 5432/6379/8080/
+#                            5000/3000). All host ports bind 127.0.0.1 ONLY.
+#   TENANT_OAUTH_ROUTER_HOST set to the instance's domain ONLY for an OAuth-enabled
+#                            instance (see the OAuth router labels below). Unset → the
+#                            router matches an unmatchable host and is INERT.
+# The Traefik labels are inert unless you run Traefik on the host and join it to the
+# instance network; a single instance behind your own reverse proxy can ignore them.
+#
+# MANDREL_IMAGE_TAG (REQUIRED to render): the release image tag the
+# three code services run — see the mcp-server service note. Build config is NOT in
+# this file; it lives in docker-compose.build.yml.
+
+# Health check configuration template
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 30s
+  timeout: 10s
+  retries: 3
+  start_period: 15s
+
+# LOG ROTATION IS BOUNDED HERE, PER SERVICE (the tenant half of the
+# prod stanzas in docker-compose.prod file). Without a `logging:` stanza the json-file
+# driver is UNBOUNDED — measured on the box 2026-08-05: 43/43 running fleet containers
+# reported json-file with EMPTY options, largest tenant log dir 185M, two more >100M.
+# Same budgets as prod: mcp-server 100m x 5; every other service 50m x 3 (prod runs
+# postgres/redis on the host, so those two have no prod stanza to mirror — they take
+# the smaller budget). Deliberately NOT /etc/docker/daemon.json: daemon defaults apply
+# only at container CREATION, so they would need a dockerd restart (CN1) to reach
+# anything existing, while these stanzas take effect on the next roll for free.
+x-logging-mcp: &logging-mcp
+  driver: json-file
+  options:
+    max-size: 100m
+    max-file: "5"
+x-logging-svc: &logging-svc
+  driver: json-file
+  options:
+    max-size: 50m
+    max-file: "3"
+
+services:
+  # PostgreSQL with pgvector extension (required for Mandrel)
+  postgres:
+    image: ankane/pgvector:v0.5.1
+    # ${TENANT_HANDLE:+…} → "mandrel-<h>-postgres" when TENANT_HANDLE is set (fleet),
+    # "mandrel-postgres" when unset (dev) — one declaration, both worlds, no override file.
+    container_name: "mandrel-${TENANT_HANDLE:+${TENANT_HANDLE}-}postgres"
+    restart: unless-stopped
+    logging: *logging-svc
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-mandrel}
+      POSTGRES_USER: ${POSTGRES_USER:-mandrel}
+      # SECURITY: NO weak shared default. Every tenant MUST set a
+      # strong unique POSTGRES_PASSWORD in its env-file (scripts/rotate-*-db-password.sh
+      # populate it). Fail LOUD if missing rather than silently seeding the old
+      # `mandrel_dev_password`. ⚠️ This line only becomes safe once EVERY tenant's
+      # env-file carries POSTGRES_PASSWORD — see this commit's message (merge LAST).
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set a strong unique value in the tenant env-file}
+    ports:
+      - "127.0.0.1:${TENANT_PG_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      # Auto-provision required extensions on first init of a fresh data volume.
+      # BIND-FILE-MOUNT-OK: /docker-entrypoint-initdb.d is read ONLY during the
+      # first init of a fresh data volume, which only ever happens in a
+      # just-created container — and a just-created container resolves its mounts
+      # fresh. The inode a long-lived container has pinned is therefore never the
+      # inode that runs, so the staleness measured in an earlier task has no
+      # consumer here. A directory mount is not available: the whole init dir is
+      # not what we want to hand postgres.
+      - ./mcp-server/database/init/00-extensions.sql:/docker-entrypoint-initdb.d/00-extensions.sql:ro
+      # Tighten pg_hba loopback-TCP trust → scram on first init. Runs
+      # after 00-extensions (lexical order); NEW tenants provision already-hardened.
+      # Existing tenants are tightened at runtime by the DB-password rotation tooling.
+      # BIND-FILE-MOUNT-OK: same reason as 00-extensions.sql above — initdb-only,
+      # so the pinned inode has no reader in a long-lived container.
+      - ./mcp-server/database/init/01-harden-pg-hba.sh:/docker-entrypoint-initdb.d/01-harden-pg-hba.sh:ro
+    networks:
+      - mandrel-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-mandrel}"]
+
+  # Redis for BullMQ queue system
+  redis:
+    image: redis:7-alpine
+    container_name: "mandrel-${TENANT_HANDLE:+${TENANT_HANDLE}-}redis"
+    restart: unless-stopped
+    logging: *logging-svc
+    ports:
+      - "127.0.0.1:${TENANT_REDIS_PORT:-6379}:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - mandrel-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "redis-cli", "ping"]
+
+  # MCP Server - Core Mandrel context management service
+  #
+  # Every application service BUILDS FROM ITS LOCAL DOCKERFILE — no registry is
+  # needed, so `cp .env.example .env && docker compose up -d --build` works from a
+  # fresh clone. The built image is tagged mandrel/<svc>:${MANDREL_IMAGE_TAG:-local};
+  # set MANDREL_IMAGE_TAG only to pin or roll back to a differently tagged image.
+  # docker-compose.build.yml is an optional overlay that adds the release-revision
+  # build arg and label (needs MANDREL_IMAGE_REVISION).
+  mcp-server:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+      # The git revision the image was built from; install.sh exports it from the checkout so
+      # /health reads <semver>+<sha12>. Empty (no git checkout) reads <semver>+unknown.
+      args:
+        MANDREL_IMAGE_REVISION: "${MANDREL_IMAGE_REVISION:-}"
+    image: "mandrel/mcp-server:${MANDREL_IMAGE_TAG:-local}"
+    container_name: "mandrel-${TENANT_HANDLE:+${TENANT_HANDLE}-}mcp-server"
+    restart: unless-stopped
+    logging: *logging-mcp
+    ports:
+      - "127.0.0.1:${TENANT_MCP_PORT:-8080}:8080"
+    # Give tenant containers a name for the HOST (gemma flip): the
+    # host's Ollama daemon is what serves embeddings once a tenant sets
+    # MANDREL_OLLAMA_ENDPOINT=http://host.docker.internal:11434 in its env file. On
+    # Linux `host.docker.internal` does not exist unless mapped; `host-gateway`
+    # resolves it to the bridge gateway at container start. Inert for any instance
+    # that never uses the name.
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      NODE_ENV: production
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${POSTGRES_DB:-mandrel}
+      DATABASE_USER: ${POSTGRES_USER:-mandrel}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set a strong unique value in the tenant env-file}
+      DATABASE_SSL: ${DATABASE_SSL:-false}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      # REDIS_URL is required by dotenv-safe (mcp-server/.env.example) — absent, the
+      # container exits 1 at boot. The two log levels below were required on the same
+      # grounds until an earlier task de-required them (2026-08-26); they are kept here
+      # as ordinary declared config, and are now free to be removed without killing a
+      # boot. Do not re-add them to mcp-server/.env.example to "document" them.
+      REDIS_URL: redis://redis:6379
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      DB_LOG_LEVEL: ${DB_LOG_LEVEL:-info}
+      MCP_HTTP_PORT: 8080
+      # Command UI origin for the `/r/<id8>` record permalinks this server emits in tool
+      # results. MUST be THIS instance's own Command UI — a tenant that inherits someone
+      # else's origin sends its users to a foreign login page for an id that only exists in
+      # its own database (customer-reported, 2026-07-30). Declared here in the TRACKED base
+      # compose so it can never silently drift back to UNSET on a new provision;
+      # the real per-tenant value lives in that tenant's env file, written by
+      # the hosted provisioner as https://<domain>. Empty default is deliberate and SAFE:
+      # commandUrlConfig.ts then derives the origin from this instance's own
+      # MCP_ALLOWED_HOSTS, so the fallback is always self-scoped, never another tenant's.
+      COMMAND_BASE_URL: "${COMMAND_BASE_URL:-}"
+      # On-box transport auth gate. Fleet-wide DEFAULT is ENFORCE (=true): every
+      # tenant mcp-server requires a bearer credential (its MCP_AUTH_TOKEN, injected
+      # by the per-tenant overlay, or a command-login JWT). Declared here in the
+      # TRACKED base compose so it can never silently drift back to UNSET on a new
+      # provision — the gap that made an earlier task's fail-closed flip
+      # a fleet hazard. Per-tenant override: set MCP_BRIDGE_AUTH_ENABLED in that
+      # tenant's env file.
+      MCP_BRIDGE_AUTH_ENABLED: "${MCP_BRIDGE_AUTH_ENABLED:-true}"
+      # Atomic task-claim KILL SWITCH.
+      # DEFAULT is ON (=true): the reference loop (mandrel-loop) claims every task it
+      # works and `mandrel-loop doctor` fails when claims are off. Set it to false in
+      # .env to restore the legacy last-write-wins task_update. Declared here in the TRACKED base
+      # compose so it can never silently drift back to UNSET on a new provision
+      # and so enabling is a tracked, reviewable env change rather than
+      # a live edit on the box — fleet_sync() in the deploy script
+      # does `git reset --hard origin/main`, which would clobber any live edit here.
+      # Per-tenant flip: set MANDREL_TASK_CLAIM_ENABLED in that tenant's env file.
+      # Read by mcp-server/src/config/claimConfig.ts.
+      MANDREL_TASK_CLAIM_ENABLED: "${MANDREL_TASK_CLAIM_ENABLED:-true}"
+      # Sessions Foundation posture flags. Same declaration
+      # contract as the two above, and for the same reason — MEASURED 2026-07-25:
+      # these were declared ONLY in the gitignored per-tenant overrides (operator,
+      # staging, contoso, globex), so on every OTHER tenant compose had nothing
+      # to interpolate into and the var reached the container UNSET. Setting it in
+      # the tenant env file was a SILENT NO-OP there (`docker exec app
+      # printenv` -> empty after a clean recreate). A past incident exactly: an undeclared
+      # fleet flag comes up unset on a new provision, and flipping it needs a live
+      # edit the next `git reset --hard` clobbers. The two flags are
+      # ORTHOGONAL — requireActor gates the incoming X-Actor-ID header and enforces
+      # even in legacy mode; resolverMode gates which resolver runs.
+      #   resolverMode:  legacy (DEFAULT, resolver never consulted) | shadow | actor
+      #   requireActor:  false  (DEFAULT, actorless writes fall to `anonymous`)
+      # Both defaults MIRROR the code defaults in mcp-server/src/config/
+      # sessionConfig.ts:208,210, so a tenant that sets nothing keeps today's exact
+      # behaviour — this change ships the WIRE, not a flip. Per-tenant flip: set the
+      # var in that tenant's env file.
+      MANDREL_SESSION_RESOLVER_MODE: "${MANDREL_SESSION_RESOLVER_MODE:-legacy}"
+      MANDREL_SESSION_REQUIRE_ACTOR: "${MANDREL_SESSION_REQUIRE_ACTOR:-false}"
+      # EDGE-PROVENANCE ALARM: explicitly DISABLED on tenants — per-tenant
+      # alerting is future work, not silently off. The code default is NODE_ENV==production
+      # (true here), and a quiet tenant (<floor declared edges/window) would page the operator
+      # daily through prod's channel. Declared per audit 42dca388 finding 6: alarm state
+      # must be readable off the compose. Per-tenant flip: set it in that tenant's env file
+      # (delivery would also need the notify mounts docker-compose.prod file carries).
+      MANDREL_PROVENANCE_ALARM_ENABLED: "${MANDREL_PROVENANCE_ALARM_ENABLED:-false}"
+      # BRANCH-SCOPED BRIEFING SELECTION (SK5) — the operator's ruling 2026-08-16:
+      # riverbend-first, behind a flag, DEFAULT OFF, because a flag can be flipped on but a
+      # new briefing section cannot be un-shown to a paying tenant.
+      #
+      # WIRE ONLY — the default MIRRORS the code default exactly
+      # (mcp-server/src/config/briefingConfig.ts BRIEFING_BRANCH_SCOPE_ENABLED -> false), so
+      # every tenant keeps the behaviour it has today and this line ships no flip.
+      #
+      # DECLARED HERE FOR THE REASON THIS FILE DOCUMENTS FIVE TIMES ABOVE: the deploy script
+      # passes `--env-file`, which is INTERPOLATION ONLY and not container env, so a name
+      # nothing declares here is a SILENT NO-OP in the tenant env file.
+      # Default-off is safe with or without this line; without it the flag could never be
+      # turned ON for a tenant that asked for it.
+      MANDREL_BRIEFING_BRANCH_SCOPE_ENABLED: "${MANDREL_BRIEFING_BRANCH_SCOPE_ENABLED:-false}"
+      # P5.1 BRIEFING RENDER ALTITUDE — the kill switch for the two render altitudes, the
+      # reserved full-prose slots, and the selection quotas (config/briefingAltitudeConfig.ts).
+      #
+      # DEFAULT TRUE, matching the code default, and this is the one briefing flag that ships
+      # ON — see the asymmetry argument at READ_BRIEFING_ALTITUDE_ENABLED. Which is exactly
+      # why it needs the WIRE more than the others do: a tenant who wants the pre-P5.1
+      # document must be able to turn it off, and the deploy script passes `--env-file`, which
+      # is INTERPOLATION ONLY — a name nothing declares here is a SILENT NO-OP
+      # in the tenant env file, so without this line "off" would be unreachable.
+      MANDREL_BRIEFING_ALTITUDE_ENABLED: "${MANDREL_BRIEFING_ALTITUDE_ENABLED:-true}"
+      # UNIDENTIFIED-CALLER PROJECT SCOPE GUARD — off | shadow | enforce.
+      #
+      # THE SOAK IS OVER. This line used to materialise `shadow`, overwriting the code's
+      # fail-closed default at the container boundary to buy the fleet a measurement
+      # window. The operator approved enforcing (2026-07-30), so the declaration becomes a
+      # PASSTHROUGH — and deliberately NOT the literal `enforce`.
+      #
+      # WHY A PASSTHROUGH AND NOT `:-enforce`: swapping one hardcoded literal for another
+      # leaves the same defect in place. A per-deployment value baked into a tracked file
+      # is what this whole branch exists to remove, and the moment the code default moved
+      # again the two would drift apart exactly as they just did. An empty default means
+      # "no opinion here" — the code's own default is reached, and there is only ONE place
+      # the fleet-wide posture is written down. Same idiom as COMMAND_BASE_URL,
+      # MCP_AUTH_TOKEN and the OAuth passthroughs above; the declaration still EXISTS, so
+      # a tenant can still pin a value in its env file and nothing comes up unset on a new
+      # provision.
+      #
+      # THE SAFETY OF THAT RESTS ON ONE FACT, WHICH IS MEASURED, NOT ASSUMED: a passthrough
+      # renders an EMPTY STRING, not an unset variable — the key IS set in the container,
+      # to ''. callerIdentityConfig.ts:87 folds undefined/empty/whitespace/unrecognised
+      # into PROJECT_SCOPE_GUARD_DEFAULT, which is `enforce`. Proved at the surface the
+      # guard actually reads (the module-load-memoized CALLER_IDENTITY_CONFIG, not just
+      # the parse function) in mcp-server/src/tests/projectScopeGuardPassthrough.contract.test.ts,
+      # with `off`/`shadow` controls so `enforce` cannot be a stuck constant.
+      #
+      # NOTE FOR WHOEVER DEPLOYS THIS: an env file that still carries an explicit
+      # MANDREL_PROJECT_SCOPE_GUARD=shadow WINS over this declaration and the flip will
+      # silently not happen for that instance. Those files are not in this repo — they
+      # have to be checked on the box, per instance.
+      MANDREL_PROJECT_SCOPE_GUARD: "${MANDREL_PROJECT_SCOPE_GUARD:-}"
+      # EMBEDDER SELECTION — which embedding model this instance uses, and therefore which
+      # `contexts` vector column it reads+writes. Same declaration gap as every flag above:
+      # an operator setting MANDREL_EMBEDDER in the tenant env file got a SILENT
+      # NO-OP, because the deploy script passes `--env-file` (interpolation only, NOT container
+      # env) and nothing here declared the name for it to interpolate into.
+      #
+      # The default MIRRORS the code default exactly (pinned from both ends by
+      # scripts/test/compose-code-default-agreement.test.sh). Both are `gemma` since
+      # 2026-08-19: the fleet cutover happened on 2026-08-13 and all 8
+      # instances run gemma via a hand-typed env line, so a `minilm` code default meant the
+      # correct behaviour was one deleted line away from silently repointing at the empty
+      # legacy column. `minilm` remains selectable per-instance for rollback.
+      # An UNRECOGNIZED value now THROWS in both readers rather than falling back.
+      #
+      # DECLARED ON BOTH SERVICES ON PURPOSE. The two processes pick the vector column
+      # INDEPENDENTLY from this one name. Declaring it here only would make the flip
+      # ACTIVELY WORSE than the no-op it replaces: mcp-server would write embedding_gemma
+      # while the Command backend kept querying `embedding`, i.e. a split-brain where new
+      # rows are invisible to the UI's search. Keep the two declarations in lockstep.
+      MANDREL_EMBEDDER: "${MANDREL_EMBEDDER:-minilm}"
+      # OLLAMA ENDPOINT — where the gemma embedder's Ollama daemon lives. The SAME
+      # declaration gap as MANDREL_EMBEDDER above, found by the gemma-flip recon
+      #: a tenant env file setting MANDREL_OLLAMA_ENDPOINT was a
+      # SILENT NO-OP, because nothing here declared the name for `--env-file`
+      # interpolation to land in. That no-op is the P0 silent-degrade enabler — a
+      # flipped tenant that cannot reach Ollama stays healthy while every store
+      # falls back to an unembedded row and semantic recall quietly dies.
+      #
+      # WIRE ONLY — the default MIRRORS the code default exactly
+      # (mcp-server/src/config/embeddingConfig.ts OLLAMA_ENDPOINT,
+      # envStr('MANDREL_OLLAMA_ENDPOINT','http://127.0.0.1:11434'), pinned by the
+      # sibling agreement gate), so nothing changes for any instance until its own
+      # env file overrides it — tenants set http://host.docker.internal:11434
+      # (mapped by extra_hosts above); prod's host-netns container keeps loopback.
+      #
+      # mcp-server ONLY, deliberately: the Command backend never embeds (zero
+      # ollama/generateEmbedding references in its src) — it only selects the
+      # vector COLUMN via MANDREL_EMBEDDER above.
+      MANDREL_OLLAMA_ENDPOINT: "${MANDREL_OLLAMA_ENDPOINT:-http://127.0.0.1:11434}"
+      # OAuth 2.1 authorization server (better-auth, BA-1 / an earlier decision) — the
+      # SAME declaration gap, measured the same day: declared only in the gitignored
+      # docker-compose.operator.yml, so on every other tenant `MANDREL_OAUTH_ENABLED=true`
+      # in the env file would have been a SILENT NO-OP. Fix the class, not the instance
+      #. Defaults mirror mcp-server/src/config/betterAuthConfig.ts:136-142
+      # and the hosted provisioner, so OAuth stays OFF everywhere and
+      # nothing changes for a tenant that sets nothing.
+      #
+      # An EMPTY default is behaviourally identical to UNSET here, not a new value:
+      # betterAuthConfig.ts's envStr/envBool/envList all treat `''` as missing
+      # (`raw === undefined || raw.trim() === '' -> fallback`, lines 23-25/31-32/37-38),
+      # so the code's own richer defaults (issuer http://localhost:8080, resource
+      # <issuer>/mcp, the dev secret) still apply. The passthroughs exist so a tenant
+      # CAN set them; they do not pre-empt the code.
+      #
+      # MANDREL_OAUTH_SECRET is a real credential: interpolated passthrough ONLY, never
+      # a literal here (this file is tracked and public; the value lives in the tenant
+      # env file).
+      #
+      # BASE_PATH is /api/oauth, NOT better-auth's own /api/auth: /api/auth belongs to
+      # the Command UI dashboard backend (login/logout/profile/refresh/register) and the
+      # OAuth router would steal the dashboard login -> "Login failed: Not Found" (an earlier task
+      # , betterAuthConfig.ts:77-86). (The gitignored docker-compose.operator.yml
+      # that used to carry a stale, inert `:-/api/auth` default was folded into THIS file
+      # by one-compose, an earlier task — this /api/oauth default is now the only copy.)
+      MANDREL_OAUTH_ENABLED: "${MANDREL_OAUTH_ENABLED:-false}"
+      MANDREL_OAUTH_ISSUER: "${MANDREL_OAUTH_ISSUER:-}"
+      MANDREL_OAUTH_RESOURCE: "${MANDREL_OAUTH_RESOURCE:-}"
+      MANDREL_OAUTH_SECRET: "${MANDREL_OAUTH_SECRET:-}"
+      MANDREL_OAUTH_BASE_PATH: "${MANDREL_OAUTH_BASE_PATH:-/api/oauth}"
+      # --- ROUND 2 of the same sweep (task <oauth-flag-declaration-sweep>) -------------
+      # The five above were declared first; a full enumeration of every `process.env`
+      # read in mcp-server/src (212 files, via the same choke-point classifier
+      # scripts/test/clean-gate.test.sh uses) found ELEVEN more OAuth-family flags with
+      # the identical no-wire defect. Same class, same fix (fix the class,
+      # and then check the class actually got swept — round 1 declared 5 of 16).
+      #
+      # SECURITY-RELEVANT, and the reason this round exists: MANDREL_OAUTH_ALLOW_SIGNUP
+      # governs OPEN, UNAUTHENTICATED self-registration at `<basePath>/sign-up/email`
+      # (betterAuthConfig.ts:116-129). Each tenant is a per-tenant dashboard on a public
+      # subdomain, so with sign-up open ANYONE reaching that subdomain can self-register
+      # INTO that tenant. An operator who set MANDREL_OAUTH_ALLOW_SIGNUP=false in a
+      # tenant env file to lock that down got a SILENT NO-OP: nothing to interpolate
+      # into, var arrives UNSET, code default applies. The code default is ALSO false, so
+      # nothing was actually open — but the operator's control was inert, and setting it
+      # to `true` would have been equally inert. A posture knob that does nothing either
+      # way is the a past incident shape: a claim, not a mechanism.
+      #
+      # EVERY default below MIRRORS the code default EXACTLY (file:line cited per line),
+      # so this is WIRE ONLY. MEASURED on the production host 2026-07-25 across all 7 live tenants
+      # (app, operator, contoso, initech, staging, globex, fabrikam): not one of these
+      # 11 keys appears in ANY tenant env file, in ANY per-tenant override compose, or in
+      # ANY running container's environment — so unlike round 1 (where fabrikam carried
+      # dormant session keys that the declaration made LIVE) there is no dormant value
+      # for this commit to activate anywhere. See the commit body for the per-tenant table.
+      #
+      #   MANDREL_OAUTH_ALLOW_SIGNUP  false  <- betterAuthConfig.ts:146
+      #   MANDREL_OAUTH_CORS_ORIGINS  https://claude.ai <- betterAuthConfig.ts:133
+      #     A LITERAL default here, not an empty passthrough like ISSUER/RESOURCE/SECRET
+      #     above: those three fall back to a DERIVED or DEV-ONLY value the compose file
+      #     has no business freezing (`${issuer}/mcp`, http://localhost:8080, the dev
+      #     secret), whereas ['https://claude.ai'] is a fixed, production-correct fleet
+      #     default. envList('https://claude.ai') == ['https://claude.ai'], so the render
+      #     is byte-identical to leaving it unset — and an operator reading this file can
+      #     now SEE what the fleet allows instead of having to read the TypeScript.
+      #   MANDREL_OAUTH_TRUSTED_ORIGINS  <empty passthrough> <- betterAuthConfig.ts:144
+      #     Its code default is DERIVED ([issuer, ...corsOrigins]), so there is no static
+      #     value to mirror. An empty default is behaviourally identical to unset (envList
+      #     folds '' into the fallback, betterAuthConfig.ts:38-39), so the derivation still
+      #     runs — the declaration only ships the WIRE that lets a tenant override it.
+      #   BETTER_AUTH_SECRET  <empty passthrough> <- betterAuthConfig.ts:142
+      #     better-auth's NATIVE secret name, which the code explicitly honours as a
+      #     fallback behind MANDREL_OAUTH_SECRET ("so an operator who set the native one
+      #     still works"). Undeclared, that promise was false on every tenant. Real
+      #     credential -> interpolated passthrough ONLY, never a literal;
+      #     MANDREL_OAUTH_SECRET still WINS when both are set (that precedence is the
+      #     code's, and is unchanged).
+      MANDREL_OAUTH_ALLOW_SIGNUP: "${MANDREL_OAUTH_ALLOW_SIGNUP:-false}"
+      MANDREL_OAUTH_CORS_ORIGINS: "${MANDREL_OAUTH_CORS_ORIGINS:-https://claude.ai}"
+      MANDREL_OAUTH_TRUSTED_ORIGINS: "${MANDREL_OAUTH_TRUSTED_ORIGINS:-}"
+      BETTER_AUTH_SECRET: "${BETTER_AUTH_SECRET:-}"
+      # DCR (dynamic-client-registration) ABUSE CONTROLS — the three controls that ARM the
+      # public `<basePath>/oauth2/register` endpoint for a broad fleet rollout: a register
+      # rate limit, a hard per-tenant client cap, and a TTL sweep of abandoned clients
+      # (oauthClientConfig.ts:1-30, BA-3 arming). `auth.ts` keeps
+      # `allowUnauthenticatedClientRegistration: true` because Claude.ai's connector needs
+      # public DCR (RFC 7591), so these ARE the only thing bounding that surface — and
+      # every one of them was unflippable per-tenant until now. Raising the cap for a
+      # tenant with many legitimate integrations, or widening the rate window under a
+      # noisy client, required a live edit that `fleet_sync`'s `git reset --hard`
+      # clobbers on the next deploy.
+      # All seven defaults mirror mcp-server/src/config/oauthClientConfig.ts:106-114.
+      MANDREL_OAUTH_RATELIMIT_ENABLED: "${MANDREL_OAUTH_RATELIMIT_ENABLED:-true}"
+      MANDREL_OAUTH_DCR_RATE_WINDOW_SEC: "${MANDREL_OAUTH_DCR_RATE_WINDOW_SEC:-60}"
+      MANDREL_OAUTH_DCR_RATE_MAX: "${MANDREL_OAUTH_DCR_RATE_MAX:-5}"
+      MANDREL_OAUTH_DCR_CLIENT_CAP: "${MANDREL_OAUTH_DCR_CLIENT_CAP:-100}"
+      MANDREL_OAUTH_DCR_SWEEP_ENABLED: "${MANDREL_OAUTH_DCR_SWEEP_ENABLED:-true}"
+      MANDREL_OAUTH_DCR_TTL_DAYS: "${MANDREL_OAUTH_DCR_TTL_DAYS:-30}"
+      MANDREL_OAUTH_DCR_SWEEP_INTERVAL_MINUTES: "${MANDREL_OAUTH_DCR_SWEEP_INTERVAL_MINUTES:-360}"
+      # NOT declared here, deliberately: MANDREL_OAUTH_SEED_{EMAIL,PASSWORD,NAME,ROTATE}
+      # (seed-first-oauth-user.ts:136-141). They are NOT container config — they are CLI
+      # inputs that a provisioning wrapper passes with `docker exec -e`
+      # at seed time, precisely so the password is never argv (`ps`) and never persists.
+      # Declaring them here would bake an operator password into every container's
+      # environment where `docker inspect` reads it back. Out of class on purpose.
+      # Keep the singleton lock on tmpfs so a container restart always starts
+      # lock-free (mirrors the image default; see mcp-server/Dockerfile and the
+      # start-time disambiguation in processLock.ts — outage 2026-06-27, c316494d).
+      AIDIS_LOCK_FILE: ${AIDIS_LOCK_FILE:-/dev/shm/aidis.pid}
+      # ---------------------------------------------------------------------------
+      # FOLDED IN from the per-tenant overrides. These keys used to
+      # live only in the 7 gitignored docker-compose.<h>.yml files; they are now
+      # declared ONCE here. Per-tenant VALUES live in the tenant env file. The
+      # fail-loud "VAR is required" escalation the overrides carried for MCP_AUTH_TOKEN /
+      # JWT_SECRET moved to script-level preflights (the deploy script /
+      # the hosted provisioner assert non-empty values in the env file) so plain dev
+      # `docker compose config` still renders without a tenant env.
+      # ---------------------------------------------------------------------------
+      # Static bridge bearer credential (value: tenant env file, never a literal).
+      MCP_AUTH_TOKEN: "${MCP_AUTH_TOKEN:-}"
+      # OPTION-1 SHARED SECRET RETIRED (an earlier task — supersedes ed33c89e/3f5615b9).
+      # MANDREL_JWT_SECRET is deliberately NO LONGER delivered to the mcp-server: the
+      # browser's tool calls now ride the authenticated command backend (/api/mcp/*),
+      # which attaches MCP_AUTH_TOKEN internally, so bridgeAuth()'s login-JWT credential
+      # path has no legitimate caller left. With the secret absent that path is simply
+      # UNAVAILABLE (bridgeAuthConfig.commandJwtSecret() → null; never verified against
+      # a guessable key). The JWT secret stays a BACKEND-only secret (${JWT_SECRET}
+      # below, command-backend environment) — one signer, no sharing across the trust
+      # boundary. Do not re-add this line; that re-opens "any logged-in user gets full
+      # tool access" (the Option-1 posture the auditor flagged under F-01/F-04).
+      # Host allow-list. Every tenant env file sets this explicitly (measured across
+      # all 7 on 2026-08-03) and the hosted provisioner mints it for new tenants; the
+      # empty passthrough keeps dev renders working and can never carry another
+      # tenant's hosts.
+      MCP_ALLOWED_HOSTS: "${MCP_ALLOWED_HOSTS:-}"
+      # MCP-rebuild tool-surface canary flags. Defaults mirror the
+      # values every override declared: legacy surface, lazy tools/list.
+      MANDREL_TOOL_SURFACE: "${MANDREL_TOOL_SURFACE:-gateway}"
+      MANDREL_TOOLLIST_MODE: "${MANDREL_TOOLLIST_MODE:-lazy}"
+      # Identity-state flags — previously declared ONLY in the gitignored operator
+      # override (the exact Lesson-009 no-wire defect the comments above document):
+      # on every other tenant a value in the env file was a SILENT NO-OP. Declared
+      # fleet-wide now; every default MIRRORS the code default:
+      #   MANDREL_ACTOR_COMPOSITE_ENABLED      false  <- actorIdentityConfig.ts:104
+      #   MANDREL_ANCHOR_STRICT_SESSION_KEYING false  <- reliableThreadingConfig.ts:181
+      #   MANDREL_ACTOR_PROJECT_STATE_ENABLED  false  <- actorProjectStateConfig.ts:41
+      MANDREL_ACTOR_COMPOSITE_ENABLED: "${MANDREL_ACTOR_COMPOSITE_ENABLED:-false}"
+      MANDREL_ANCHOR_STRICT_SESSION_KEYING: "${MANDREL_ANCHOR_STRICT_SESSION_KEYING:-false}"
+      MANDREL_ACTOR_PROJECT_STATE_ENABLED: "${MANDREL_ACTOR_PROJECT_STATE_ENABLED:-false}"
+      # UNATTRIBUTED-WRITE NOTICE (config/attributionNoticeConfig.ts). DECLARED HERE FOR THE
+      # REASON THE BLOCK ABOVE DOCUMENTS: a knob a container never receives is a silent
+      # no-op, and an operator setting it in a tenant env file would see nothing happen.
+      # This one matters per-TENANT specifically — a single-user tenant sets
+      # SUGGESTED_ACTOR to the one name that is correct there, turning the message into
+      # copy-paste instructions; our multi-user instances must leave it unset.
+      # Every default MIRRORS the code default (attributionNoticeConfig.ts), and the empty
+      # passthroughs are read as "unset" by envStr/envInt, not as an empty value.
+      MANDREL_ATTRIBUTION_NOTICE_ENABLED: "${MANDREL_ATTRIBUTION_NOTICE_ENABLED:-true}"
+      MANDREL_ATTRIBUTION_SUGGESTED_ACTOR: "${MANDREL_ATTRIBUTION_SUGGESTED_ACTOR:-}"
+      MANDREL_ATTRIBUTION_NOTICE_SETUP_URL: "${MANDREL_ATTRIBUTION_NOTICE_SETUP_URL:-}"
+      MANDREL_ATTRIBUTION_NOTICE_DEADLINE: "${MANDREL_ATTRIBUTION_NOTICE_DEADLINE:-}"
+      MANDREL_ATTRIBUTION_NOTICE_TTL_MS: "${MANDREL_ATTRIBUTION_NOTICE_TTL_MS:-}"
+      MANDREL_ATTRIBUTION_NOTICE_MAX_KEYS: "${MANDREL_ATTRIBUTION_NOTICE_MAX_KEYS:-}"
+      # ---------------------------------------------------------------------------
+      # BRANCH MODEL — declared limbs (BRANCH-1) + recall_thread
+      # terminality (BRANCH-2), both under whose
+      # "FLAG + INSTANT REVERT" is a NON-NEGOTIABLE guard.
+      #
+      # WHY THESE ARE HERE AT ALL, and it is the same Lesson-009/022 defect as every
+      # block above: undeclared, these come up UNSET on a new provision and the only
+      # way to flip one is a live edit on the box — which fleet_sync()'s
+      # `git reset --hard origin/main` (the deploy script) CLOBBERS on the next
+      # deploy. So the kill switch reverts itself, silently. A revert you cannot
+      # PERSIST does not satisfy "instant revert" any more than one you cannot read
+      # back does. BRANCH-1's flags shipped without a wire and are fixed here too:
+      # the class is "a kill switch with no fleet declaration", not one instance.
+      #
+      # WIRE ONLY, NOT A FLIP. Every default below MIRRORS the code default, so
+      # declaring them changes NO behaviour on any instance:
+      #   MANDREL_LIMBS_WRITE_TIME_ENABLED             true   <- declaredLimbsConfig.ts
+      #   MANDREL_LIMBS_BACKFILL_BATCH                 500    <- declaredLimbsConfig.ts
+      #   MANDREL_THREAD_TERMINALITY                   off    <- threadTerminalityConfig.ts
+      #   MANDREL_THREAD_TERMINALITY_TRANSIT_THETA     0.01   <- threadTerminalityConfig.ts
+      #   MANDREL_THREAD_TERMINALITY_UNASSIGNABLE_TERMINAL true   <- threadTerminalityConfig.ts
+      #   MANDREL_THREAD_TERMINALITY_NOT_DERIVED_TERMINAL  false  <- threadTerminalityConfig.ts
+      # scripts/test/compose-code-default-agreement.test.sh holds each of those
+      # pairings against the SOURCE, so the mirroring is checked rather than asserted.
+      #
+      # READ THE MODE BACK, don't infer it: `mandrel_status` reports
+      # featureFlags.threadTerminality (+ .threadTerminalitySource, which distinguishes
+      # "off because unset" from "off because your value was rejected"), and the same
+      # string is logged once at startup.
+      MANDREL_LIMBS_WRITE_TIME_ENABLED: "${MANDREL_LIMBS_WRITE_TIME_ENABLED:-true}"
+      MANDREL_LIMBS_BACKFILL_BATCH: "${MANDREL_LIMBS_BACKFILL_BATCH:-500}"
+      MANDREL_THREAD_TERMINALITY: "${MANDREL_THREAD_TERMINALITY:-off}"
+      MANDREL_THREAD_TERMINALITY_TRANSIT_THETA: "${MANDREL_THREAD_TERMINALITY_TRANSIT_THETA:-0.01}"
+      MANDREL_THREAD_TERMINALITY_UNASSIGNABLE_TERMINAL: "${MANDREL_THREAD_TERMINALITY_UNASSIGNABLE_TERMINAL:-true}"
+      MANDREL_THREAD_TERMINALITY_NOT_DERIVED_TERMINAL: "${MANDREL_THREAD_TERMINALITY_NOT_DERIVED_TERMINAL:-false}"
+      # === BELIEF ADJUDICATION (Batch 8 lane L1) ==================
+      # The operator's ruling 2026-08-28: belief adjudication ON for prod and the `operator`
+      # tenant, HONESTLY OFF for every other instance. "Honestly off" = a real disable
+      # at the hook, not an absent key.
+      #
+      # WHY THIS BLOCK EXISTS AT ALL — the same a past incident declaration gap this file
+      # documents a dozen times above, with a worse payload. MEASURED on the live fleet
+      # 2026-08-29 (`docker exec mandrel-<h>-mcp-server env | grep ^MANDREL_BELIEF`):
+      # SIX of seven instances carried ZERO belief env. That is not "off" — the code
+      # default is beliefEnabled=true (mcp-server/src/config/beliefConfig.ts:246,
+      # envBool('MANDREL_BELIEF_ENABLED', true)) and the adjudicator provider defaults
+      # to 'anthropic' (:446), so every one of those six ran the hook on every store,
+      # built a provider with no API key, and threw. The log line it produced, on all
+      # six, repeatedly:
+      #   WARN 🧪 belief hook: background adjudication for context <id> failed — skipping
+      # An absent key was therefore the LOUDEST possible state, not the quietest.
+      #
+      # THE SWITCH IS DELIBERATELY NOT DECLARED WITH A LITERAL. It used to be forced to
+      # `false` here, which defeated the credential-derived default in beliefConfig.ts
+      # (MANDREL_BELIEF_ENABLED unset -> ON exactly when the configured provider's key is
+      # present): following docs/manual/supersession.md (keys in .env,
+      # nothing else) left supersession OFF with no log line (stranger test #3). A null
+      # value is compose's pass-through: the variable is set in the container only when the
+      # user sets MANDREL_BELIEF_ENABLED in .env / the shell, and is absent otherwise, so
+      # the key-derived default governs. An explicit false still forces it off.
+      MANDREL_BELIEF_ENABLED:
+      # Passthrough, no literal: the provider only means anything on an instance that is
+      # ON, and there is exactly one place that posture is written down (that instance's
+      # env file). Empty renders as '' and beliefConfig's envStr folds '' into the code
+      # default, so this line changes nothing by itself.
+      MANDREL_BELIEF_ADJUDICATOR_PROVIDER: "${MANDREL_BELIEF_ADJUDICATOR_PROVIDER:-}"
+      # THE ADJUDICATOR CREDENTIALS AND THE DAILY SPEND CAP. The container-side names are the
+      # ones the code reads (BELIEF_TIERED_CONFIG tier1.apiKeyEnvVar=SUBQ_API_KEY,
+      # tier2.apiKeyEnvVar=ANTHROPIC_API_KEY, beliefConfig.ts; MANDREL_BELIEF_DAILY_SPEND_CAP_USD,
+      # beliefCostConfig.ts), and they are the SAME names docs/manual/supersession.md tells the
+      # user to put in .env, so what the user writes is what the server receives. Empty renders
+      # as '' and the server folds '' into its default (no key / cap of 2 USD per UTC day).
+      # Values live ONLY in .env (mode 600, gitignored) — never here.
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      GROQ_API_KEY: "${MANDREL_BELIEF_GROQ_API_KEY:-}"
+      # SubQ Snap: the tier-1 default and the `subq` single-tier key.
+      SUBQ_API_KEY: "${SUBQ_API_KEY:-}"
+      MANDREL_BELIEF_DAILY_SPEND_CAP_USD: "${MANDREL_BELIEF_DAILY_SPEND_CAP_USD:-}"
+    # --- Traefik fleet routing (labels-only, plain HTTP behind nginx wildcard) ---
+    # Exact /mcp and PathPrefix /healthz on ${TENANT_DOMAIN} -> this mcp-server:8080,
+    # higher priority than the catch-all frontend router so path matches win. NO tls
+    # here (nginx terminates the wildcard cert). In dev (no TENANT_* set) these render
+    # with placeholder values and are inert — no Traefik runs against the dev stack.
+    #
+    # /mcp is Path(), NOT PathPrefix() — the streamable MCP transport
+    # is a single-endpoint protocol (GET/POST/DELETE on exactly /mcp), while the
+    # /mcp/tools/* bridge subpaths are a tool-execution surface no public caller may
+    # reach anymore (the tenant UI's tool calls ride /api -> the authed command
+    # backend via the frontend container's /api proxy). With Path(), /mcp/tools/*
+    # matches NO router and falls to the priority-1 frontend catch-all, which serves
+    # the SPA shell — no route to :8080 exists for it.
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=mandrel-${TENANT_HANDLE:-dev}_mandrel-network"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-mcp.rule=Host(`${TENANT_DOMAIN:-localhost}`) && Path(`/mcp`)"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-mcp.entrypoints=web"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-mcp.priority=100"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-mcp.service=${TENANT_HANDLE:-dev}-mcp-svc"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-healthz.rule=Host(`${TENANT_DOMAIN:-localhost}`) && PathPrefix(`/healthz`)"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-healthz.entrypoints=web"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-healthz.priority=100"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-healthz.service=${TENANT_HANDLE:-dev}-mcp-svc"
+      - "traefik.http.services.${TENANT_HANDLE:-dev}-mcp-svc.loadbalancer.server.port=8080"
+      # --- BA-1 OAuth router: discovery + better-auth API + sign-in/consent -> mcp-server ---
+      # CONDITIONAL BY VALUE, not by file (an earlier task kept this per-tenant): an
+      # OAuth-OFF tenant must NOT have /sign-in, /consent and /.well-known/oauth*
+      # pulled off the frontend catch-all. TENANT_OAUTH_ROUTER_HOST is set to the
+      # tenant's domain ONLY for OAuth-enabled tenants (the hosted provisioner
+      # --oauth); unset, the rule matches an unmatchable .invalid host (RFC 2606)
+      # and the router is INERT, so those paths keep falling through to the
+      # frontend catch-all exactly as before. /api/oauth, NEVER /api/auth — the
+      # dashboard owns /api/auth.
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-oauth.rule=Host(`${TENANT_OAUTH_ROUTER_HOST:-oauth-router-disabled.invalid}`) && (PathPrefix(`/.well-known/oauth`) || PathPrefix(`/.well-known/openid`) || PathPrefix(`/api/oauth`) || PathPrefix(`/sign-in`) || PathPrefix(`/consent`))"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-oauth.entrypoints=web"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-oauth.priority=100"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-oauth.service=${TENANT_HANDLE:-dev}-mcp-svc"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - mandrel-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:8080/health"]
+    volumes:
+      - mcp_data:/app/data
+      - mcp_logs:/app/logs
+
+  # Mandrel Command Backend - REST API server
+  # Builds from its local Dockerfile (see the note above the mcp-server service).
+  mandrel-command-backend:
+    build:
+      context: ./mandrel-command
+      dockerfile: backend/Dockerfile
+    image: "mandrel/command-backend:${MANDREL_IMAGE_TAG:-local}"
+    container_name: "mandrel-${TENANT_HANDLE:+${TENANT_HANDLE}-}command-backend"
+    restart: unless-stopped
+    logging: *logging-svc
+    ports:
+      - "127.0.0.1:${TENANT_BACKEND_PORT:-5000}:5000"
+    environment:
+      NODE_ENV: production
+      PORT: 5000
+      LOG_DIR: /app/logs
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${POSTGRES_DB:-mandrel}
+      DATABASE_USER: ${POSTGRES_USER:-mandrel}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required — set a strong unique value in the tenant env-file}
+      DATABASE_SSL: ${DATABASE_SSL:-false}
+      MCP_SERVER_URL: http://mcp-server:8080
+      MANDREL_MCP_URL: http://mcp-server:8080
+      # The backend proxies decision_* (and other tool calls) to the mcp-server bridge,
+      # which fail-closed REQUIRES this bearer credential (MCP_BRIDGE_AUTH_ENABLED default
+      # true). Without it every bridge-backed page (Decisions) 401s. Same per-tenant token
+      # the mcp-server uses; empty default so non-secret envs still `compose config`.
+      MCP_AUTH_TOKEN: "${MCP_AUTH_TOKEN:-}"
+      JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      # SOME keys below are required to EXIST by the backend's dotenv-safe validation
+      # (mandrel-command/backend/.env.example); a missing one is process.exit(1) in
+      # production. As of an earlier task (2026-08-26) that set is DATABASE_USER/HOST/
+      # NAME/PASSWORD/PORT, MANDREL_JWT_SECRET, MANDREL_AGENT_TOKEN and NODE_ENV — not
+      # every key here. Do not read this block as "all of these are load-bearing"; the
+      # authoritative answer is the uncommented lines of that .env.example, and STAGE
+      # 0a4c derives it there rather than from any list written in prose.
+      # INBOUND machine credential for POST /api/git/push-stats.
+      # MUST be declared here even though it is optional: the backend validates with
+      # dotenv-safe against .env.example, which treats every documented key as REQUIRED
+      # TO EXIST. Documented-but-undeclared crash-looped every instance at boot with
+      # process.exit(1) and NO log line (console logging is off in production) — caught
+      # by the staging bake on 2026-08-26 before any customer was touched.
+      # Empty default is SAFE: empty means the agent path is CLOSED, and the route falls
+      # back to user-JWT auth, which 401s an anonymous caller.
+      MANDREL_AGENT_TOKEN: "${MANDREL_AGENT_TOKEN:-}"
+      MANDREL_JWT_SECRET: ${JWT_SECRET:-change-me-in-production}
+      JWT_EXPIRES_IN: 24h
+      BCRYPT_ROUNDS: "12"
+      MANDREL_HTTP_PORT: 5000
+      MANDREL_MCP_PORT: 8080
+      # Per-tenant VALUE from the tenant env file (folded from the overrides,
+      # an earlier task); the default keeps the classic dev origins.
+      CORS_ORIGIN: "${CORS_ORIGIN:-http://localhost:13000,http://localhost:3000}"
+      LOG_LEVEL: ${LOG_LEVEL:-info}
+      # `warn`, mirroring the code default at
+      # mandrel-command/backend/src/config/logger.ts:131 (and environment.ts:153).
+      # This read `info` until 2026-07-30, which nobody had chosen: the fleet logged
+      # every DB query at info while bare-prod/systemd — which has no compose file and
+      # so falls through to the code — stayed at warn. Found by the compose/code default
+      # agreement gate (scripts/test/compose-code-default-agreement.test.sh) on its first
+      # run. Aligned toward the CODE default, i.e. toward LESS query logging on customer
+      # instances: a query log is a place values end up that should not have been there.
+      DB_LOG_LEVEL: ${DB_LOG_LEVEL:-warn}
+      # Embedder selection — MUST stay in lockstep with the mcp-server declaration above.
+      # This backend picks the `contexts` vector column from the SAME env name, via its own
+      # copy of the key→column map (embeddingColumn.ts, which cannot import the core's
+      # module across the workspace/tsconfig boundary). If only one of the two services is
+      # handed this value, the flip splits the brain: one writes embedding_gemma while the
+      # other queries `embedding`. Code default mirrored:
+      #   mandrel-command/backend/src/config/embeddingColumn.ts -> 'gemma'
+      # (gemma since 2026-08-19; it is what the fleet has run since the 08-13 cutover,
+      # an earlier decision. `minilm` stays selectable per instance for rollback, and an
+      # unrecognized value throws instead of silently selecting the wrong column.)
+      MANDREL_EMBEDDER: "${MANDREL_EMBEDDER:-minilm}"
+      ENABLE_LOG_ROTATION: "true"
+      LOG_MAX_FILE_SIZE: 20m
+      LOG_MAX_FILES: 14d
+      FEATURE_FLAG_PHASE1_FEATURE_FLAGS: "false"
+      FEATURE_FLAG_PHASE1_CONTRACT_TESTS: "false"
+      FEATURE_FLAG_PHASE1_REACT_ERROR_BOUNDARIES: "false"
+      # Per-tenant VALUE from the tenant env file (folded).
+      FRONTEND_URL: "${FRONTEND_URL:-http://localhost:13000}"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    networks:
+      - mandrel-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      # Backend mounts routes under /api, so health lives at /api/health (not /health).
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:5000/api/health"]
+    volumes:
+      - command_logs:/app/logs
+      - command_uploads:/app/uploads
+
+  # Mandrel Command Frontend - React UI served via nginx
+  # Builds from its local Dockerfile (see the note above the mcp-server service).
+  mandrel-command-frontend:
+    build:
+      context: ./mandrel-command
+      dockerfile: frontend/Dockerfile
+    image: "mandrel/command-frontend:${MANDREL_IMAGE_TAG:-local}"
+    container_name: "mandrel-${TENANT_HANDLE:+${TENANT_HANDLE}-}command-frontend"
+    restart: unless-stopped
+    logging: *logging-svc
+    ports:
+      - "127.0.0.1:${TENANT_FRONTEND_PORT:-3000}:3000"
+    environment:
+      REACT_APP_API_URL: /api
+    # --- Traefik fleet routing (labels-only) ---
+    # Catch-all for ${TENANT_DOMAIN} -> the Command UI frontend:3000. priority=1
+    # (lowest) so the /mcp + /healthz path routers above always win. No tls (nginx
+    # terminates). Inert in dev — no Traefik runs against the dev stack.
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=mandrel-${TENANT_HANDLE:-dev}_mandrel-network"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-frontend.rule=Host(`${TENANT_DOMAIN:-localhost}`)"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-frontend.entrypoints=web"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-frontend.priority=1"
+      - "traefik.http.routers.${TENANT_HANDLE:-dev}-frontend.service=${TENANT_HANDLE:-dev}-frontend-svc"
+      - "traefik.http.services.${TENANT_HANDLE:-dev}-frontend-svc.loadbalancer.server.port=3000"
+    depends_on:
+      mandrel-command-backend:
+        condition: service_healthy
+    networks:
+      - mandrel-network
+    healthcheck:
+      <<: *healthcheck-defaults
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:3000"]
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  mcp_data:
+    driver: local
+  mcp_logs:
+    driver: local
+  command_logs:
+    driver: local
+  command_uploads:
+    driver: local
+
+networks:
+  mandrel-network:
+    driver: bridge

@@ -1,0 +1,559 @@
+/* Calendar "time axis of work" — full-screen Month/Week/Day activity views on the
+   P0.2 tokens. Colour + type + spacing are 100% token-driven (no hex literals);
+   residual px are structural geometry (grid tracks, dot/stripe sizes, min-heights). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ---- toolbar (calbar) ---- */
+.calbar {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+/* view switcher (segmented control) */
+.viewSwitch {
+  display: inline-flex;
+  padding: 2px;
+  gap: 2px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--s1);
+}
+.viewBtn {
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--tx-3);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  letter-spacing: -0.01em;
+}
+.viewBtn:hover {
+  color: var(--tx);
+}
+.viewBtnOn {
+  background: var(--s2);
+  color: var(--tx);
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+
+.navwk {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.arw {
+  width: 30px;
+  height: 30px;
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--s1);
+  color: var(--tx-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+.arw:hover {
+  color: var(--tx);
+  border-color: var(--line-2);
+}
+.weekLabel {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tx);
+  padding: 0 var(--sp-2);
+  letter-spacing: -0.01em;
+  min-width: 150px;
+  text-align: center;
+}
+
+/* jump-to-date */
+.jump {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.jumpLabel {
+  white-space: nowrap;
+}
+.jumpInput {
+  width: 150px;
+}
+
+.calbarRight {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.pvLabel {
+  margin-right: var(--sp-1);
+}
+.pvProject {
+  min-width: 170px;
+}
+
+/* ---- page-level states ---- */
+.pageState {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 320px;
+}
+
+/* ---- layout: active view fills, optional day-summary card on the right ---- */
+.cal {
+  display: flex;
+  gap: var(--sp-4);
+  align-items: stretch;
+  min-width: 0;
+}
+
+/* ---- shared: a clickable day cell (button reset) + selected highlight ---- */
+.dayClickable {
+  appearance: none;
+  margin: 0;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.dayClickable:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: -2px;
+}
+.daySelected {
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
+
+/* ---- week view ---- */
+.week {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.wkHead {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+.dh {
+  padding: var(--sp-2) var(--sp-3);
+  border-right: 1px solid var(--line-soft);
+}
+.dh:last-child {
+  border-right: none;
+}
+.dhName {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tx-4);
+}
+.dhNum {
+  font-family: var(--mono);
+  font-size: 1.02rem;
+  font-weight: 600;
+  color: var(--tx-2);
+  margin-top: 1px;
+}
+.dhToday {
+  background: linear-gradient(180deg, var(--teal-glow), transparent);
+}
+.dhToday .dhName {
+  color: var(--teal);
+}
+.dhToday .dhNum {
+  color: var(--tx);
+}
+.dhPast .dhNum {
+  color: var(--tx-4);
+}
+.todayTag {
+  font-family: var(--font);
+  font-size: 0.62rem;
+  color: var(--teal);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.wkBody {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+.day {
+  border-right: 1px solid var(--line-soft);
+  border-top: 0;
+  border-bottom: 0;
+  border-left: 0;
+  background: none;
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-height: 300px;
+  width: 100%;
+}
+.day:last-child {
+  border-right: none;
+}
+.dayPast {
+  background: var(--line-soft);
+}
+.dayToday {
+  box-shadow: inset 0 0 0 1.5px var(--teal-glow);
+}
+.dcount {
+  font-family: var(--mono);
+  font-size: 0.58rem;
+  color: var(--tx-3);
+  margin-bottom: 1px;
+}
+.dayEmpty {
+  margin: auto;
+  opacity: 0.5;
+}
+
+/* ---- per-cell momentum treatment ----
+   Layout only — every colour is applied INLINE from the momentumCells.ts band config
+   (the palette is iterated there), so this stylesheet stays 100% token-driven. */
+.moRingSvg {
+  display: block;
+}
+/* Month cell: absolute overlay (ring centered, number bottom-left, counts top-right). */
+.moRing {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -54%);
+  pointer-events: none;
+}
+.moMo {
+  position: absolute;
+  left: var(--sp-2);
+  bottom: var(--sp-1);
+  display: flex;
+  align-items: baseline;
+  gap: 3px;
+  pointer-events: none;
+}
+.moVal {
+  font-size: 1.15rem;
+  font-weight: 680;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+.moCap {
+  font-family: var(--mono);
+  font-size: 0.5rem;
+  letter-spacing: 0.1em;
+  color: var(--tx-4);
+  text-transform: uppercase;
+}
+.moCounts {
+  position: absolute;
+  right: var(--sp-2);
+  top: var(--sp-1);
+  font-family: var(--mono);
+  font-size: 0.56rem;
+  color: var(--tx-4);
+  text-align: right;
+  line-height: 1.3;
+  pointer-events: none;
+}
+.moEdge {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  pointer-events: none;
+}
+/* Week / Day columns: a compact inline momentum row (ring + number + counts). */
+.stackMomentum {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.stackMomentum .moCounts {
+  position: static;
+  margin-left: auto;
+}
+.stackMomentum .moVal {
+  font-size: 1.05rem;
+}
+
+/* ---- month view ---- */
+.month {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-2);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.moHead {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  border-bottom: 1px solid var(--line);
+}
+.moHeadCell {
+  padding: var(--sp-2) var(--sp-3);
+  border-right: 1px solid var(--line-soft);
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--tx-4);
+}
+.moHeadCell:last-child {
+  border-right: none;
+}
+.moBody {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  flex: 1;
+  min-height: 520px;
+}
+.moDay {
+  position: relative;
+  border-right: 1px solid var(--line-soft);
+  border-bottom: 1px solid var(--line-soft);
+  border-top: 0;
+  border-left: 0;
+  background: none;
+  padding: var(--sp-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+  min-height: 92px;
+}
+.moDay:nth-child(7n) {
+  border-right: none;
+}
+.moDay:hover {
+  background: var(--s1);
+}
+.moDayNum {
+  font-family: var(--mono);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--tx-2);
+}
+.moDayOut .moDayNum {
+  color: var(--tx-4);
+}
+.moDayOut {
+  background: var(--line-soft);
+}
+.moDayToday .moDayNum {
+  color: var(--teal);
+}
+.moDayToday {
+  box-shadow: inset 0 0 0 1.5px var(--teal-glow);
+}
+.moDensity {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.moDens1 {
+  background: color-mix(in srgb, var(--teal) 25%, transparent);
+}
+.moDens2 {
+  background: color-mix(in srgb, var(--teal) 50%, transparent);
+}
+.moDens3 {
+  background: color-mix(in srgb, var(--teal) 75%, transparent);
+}
+.moDens4 {
+  background: var(--teal);
+}
+.moTasks {
+  margin-top: auto;
+  align-self: flex-end;
+  font-size: 0.6rem;
+  color: var(--tx-3);
+  font-family: var(--mono);
+  position: relative;
+  z-index: 1;
+}
+
+/* ---- day view ---- */
+.dayView {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--bg-2);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-height: 300px;
+  width: 100%;
+}
+.dayViewHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+.dayViewTitle {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--tx);
+  letter-spacing: -0.01em;
+}
+.dayViewCards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  max-width: 420px;
+}
+.dayViewEmpty {
+  margin-top: var(--sp-4);
+}
+
+/* ---- task card on a day (mock .tk) ---- */
+.card {
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line-2);
+  background: var(--s1);
+  padding: var(--sp-2);
+  border-left-width: 2.5px;
+  border-left-style: solid;
+}
+.card:hover {
+  border-color: var(--tx-4);
+}
+.cardDone {
+  opacity: 0.6;
+}
+.cardTitle {
+  font-size: 0.73rem;
+  color: var(--tx);
+  line-height: 1.3;
+}
+.cardDone .cardTitle {
+  color: var(--tx-2);
+}
+.cardMeta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+}
+.cardCheck {
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: var(--green);
+  color: var(--on-accent);
+  display: grid;
+  place-items: center;
+  flex: none;
+}
+.cardPrio {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.cardId {
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  color: var(--tx-4);
+}
+.cardPriTxt {
+  font-size: 0.6rem;
+  color: var(--tx-3);
+  text-transform: capitalize;
+  margin-left: auto;
+}
+
+/* ---- day-summary card boundary (placeholder; real card = an earlier task) ---- */
+.daySummary {
+  flex: none;
+  width: 320px;
+  align-self: flex-start;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.daySummaryHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-3);
+  border-bottom: 1px solid var(--line-soft);
+}
+.daySummaryClose {
+  margin-left: auto;
+  appearance: none;
+  border: 0;
+  background: none;
+  color: var(--tx-3);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 var(--sp-1);
+}
+.daySummaryClose:hover {
+  color: var(--tx);
+}
+.daySummaryBody {
+  padding: var(--sp-4);
+  min-height: 120px;
+}
+
+@media (max-width: 960px) {
+  .cal {
+    flex-direction: column;
+  }
+  .daySummary {
+    width: 100%;
+  }
+}
+@media (max-width: 720px) {
+  .wkBody,
+  .wkHead {
+    overflow-x: auto;
+  }
+}

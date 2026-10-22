@@ -1,0 +1,11 @@
+/* Stack — flex container. Direction/align/justify/gap come from props (gap is a
+   var(--sp-N) token via inline style); this module holds the invariant bits. */
+
+.stack {
+  display: flex;
+  min-width: 0;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}

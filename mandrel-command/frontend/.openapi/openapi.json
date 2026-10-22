@@ -1,0 +1,6747 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AIDIS Command Backend API",
+    "version": "1.0.0",
+    "description": "RESTful API for AIDIS Command Backend with MCP Bridge Integration",
+    "contact": {
+      "name": "AIDIS Development Team",
+      "email": "dev@aidis.local"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Same-origin API (relative base; the app overrides OpenAPI.BASE at runtime)"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "BearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      },
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    },
+    "schemas": {
+      "ApiSuccessResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "object",
+            "description": "Response data payload"
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Request correlation ID for tracking"
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "timestamp": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "version": {
+                "type": "string",
+                "example": "1.0.0"
+              }
+            }
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "ApiErrorResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "enum": [
+                  "validation",
+                  "authentication",
+                  "authorization",
+                  "not_found",
+                  "internal",
+                  "business"
+                ],
+                "description": "Error type for client handling"
+              },
+              "message": {
+                "type": "string",
+                "description": "Human-readable error message"
+              },
+              "details": {
+                "type": "object",
+                "description": "Additional error details (e.g., validation errors)"
+              },
+              "code": {
+                "type": "string",
+                "description": "Machine-readable error code"
+              }
+            },
+            "required": [
+              "type",
+              "message"
+            ]
+          },
+          "correlationId": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "success",
+          "error"
+        ]
+      },
+      "BaseEntity": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique identifier"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          }
+        },
+        "required": [
+          "id",
+          "created_at",
+          "updated_at"
+        ]
+      },
+      "PaginationQuery": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "minimum": 1,
+            "default": 1,
+            "description": "Page number"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 100,
+            "default": 20,
+            "description": "Items per page"
+          },
+          "sortBy": {
+            "type": "string",
+            "description": "Field to sort by"
+          },
+          "sortOrder": {
+            "type": "string",
+            "enum": [
+              "asc",
+              "desc"
+            ],
+            "default": "asc",
+            "description": "Sort order"
+          }
+        }
+      },
+      "PaginatedResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Array of items"
+          },
+          "pagination": {
+            "type": "object",
+            "properties": {
+              "page": {
+                "type": "integer",
+                "description": "Current page number"
+              },
+              "limit": {
+                "type": "integer",
+                "description": "Items per page"
+              },
+              "total": {
+                "type": "integer",
+                "description": "Total number of items"
+              },
+              "totalPages": {
+                "type": "integer",
+                "description": "Total number of pages"
+              },
+              "hasNext": {
+                "type": "boolean",
+                "description": "Whether there is a next page"
+              },
+              "hasPrev": {
+                "type": "boolean",
+                "description": "Whether there is a previous page"
+              }
+            },
+            "required": [
+              "page",
+              "limit",
+              "total",
+              "totalPages",
+              "hasNext",
+              "hasPrev"
+            ]
+          }
+        },
+        "required": [
+          "items",
+          "pagination"
+        ]
+      },
+      "ProjectEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 100,
+                "description": "Project name"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 500,
+                "description": "Project description"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "inactive",
+                  "archived"
+                ],
+                "description": "Project status"
+              },
+              "git_repo_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "Git repository URL"
+              },
+              "root_directory": {
+                "type": "string",
+                "maxLength": 255,
+                "description": "Project root directory path"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Additional project metadata"
+              },
+              "context_count": {
+                "type": "integer",
+                "description": "Number of contexts associated with the project"
+              },
+              "session_count": {
+                "type": "integer",
+                "description": "Number of sessions associated with the project"
+              },
+              "last_activity": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Timestamp of the last recorded activity"
+              }
+            },
+            "required": [
+              "name",
+              "status"
+            ]
+          }
+        ]
+      },
+      "CreateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Project description"
+          },
+          "git_repo_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Git repository URL"
+          },
+          "root_directory": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Project root directory path"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Additional project metadata"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "UpdateProjectRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100,
+            "description": "Project name"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 500,
+            "description": "Project description"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "archived"
+            ],
+            "description": "Project status"
+          },
+          "git_repo_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Git repository URL"
+          },
+          "root_directory": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Project root directory path"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Additional project metadata"
+          }
+        }
+      },
+      "ProjectListResponse": {
+        "type": "object",
+        "properties": {
+          "projects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProjectEntity"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "projects",
+          "total"
+        ]
+      },
+      "ProjectDetailResponse": {
+        "type": "object",
+        "properties": {
+          "project": {
+            "$ref": "#/components/schemas/ProjectEntity"
+          }
+        },
+        "required": [
+          "project"
+        ]
+      },
+      "ProjectSessionsResponse": {
+        "type": "object",
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionEntity"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "sessions",
+          "total"
+        ]
+      },
+      "ProjectStats": {
+        "type": "object",
+        "properties": {
+          "total_projects": {
+            "type": "integer"
+          },
+          "active_projects": {
+            "type": "integer"
+          },
+          "total_contexts": {
+            "type": "integer"
+          },
+          "total_sessions": {
+            "type": "integer"
+          },
+          "contexts_by_type": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "recent_activity": {
+            "type": "object",
+            "properties": {
+              "contexts_last_week": {
+                "type": "integer"
+              },
+              "sessions_last_week": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "TaskEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Associated project ID"
+              },
+              "title": {
+                "type": "string",
+                "minLength": 2,
+                "maxLength": 500,
+                "description": "Task title"
+              },
+              "description": {
+                "type": "string",
+                "maxLength": 2000,
+                "description": "Task description"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "general",
+                  "feature",
+                  "bug",
+                  "refactor",
+                  "test",
+                  "docs",
+                  "devops"
+                ],
+                "description": "Task type"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "pending",
+                  "in_progress",
+                  "completed",
+                  "blocked",
+                  "cancelled"
+                ],
+                "description": "Task status"
+              },
+              "stage": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "draft",
+                  "ready",
+                  "claimed",
+                  "verifying",
+                  "evidence",
+                  "merged",
+                  "deployed"
+                ],
+                "description": "The Punch List lane (migration 101). SOURCE OF TRUTH over `status`, which is derived from it automatically. Null on a cancelled task or a legacy row."
+              },
+              "priority": {
+                "type": "string",
+                "enum": [
+                  "low",
+                  "medium",
+                  "high",
+                  "urgent"
+                ],
+                "description": "Task priority"
+              },
+              "assigned_to": {
+                "type": "string",
+                "maxLength": 100,
+                "description": "Assignee"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 50
+                },
+                "maxItems": 10,
+                "description": "Task tags"
+              },
+              "due_date": {
+                "type": "string",
+                "format": "date-time",
+                "description": "Task due date"
+              },
+              "estimated_hours": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Estimated hours to complete"
+              },
+              "actual_hours": {
+                "type": "number",
+                "minimum": 0,
+                "description": "Actual hours spent"
+              }
+            },
+            "required": [
+              "project_id",
+              "title",
+              "type",
+              "status",
+              "priority"
+            ]
+          }
+        ]
+      },
+      "CreateTaskRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 500,
+            "description": "Task title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Task description"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "general",
+              "feature",
+              "bug",
+              "refactor",
+              "test",
+              "docs",
+              "devops"
+            ],
+            "default": "general",
+            "description": "Task type"
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ],
+            "description": "Task priority"
+          },
+          "assigned_to": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Assignee"
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Associated project ID"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "maxItems": 10,
+            "description": "Task tags"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "ready",
+              "claimed",
+              "verifying",
+              "evidence",
+              "merged",
+              "deployed"
+            ],
+            "description": "The Punch List lane (migration 101). Setting stage:\"ready\" REQUIRES title + punch.doneWhen + punch.proofKind + a resolved project, or the write is refused (400, code PUNCH_INCOMPLETE)."
+          },
+          "punch": {
+            "type": "object",
+            "description": "Shallow-merged into metadata.punch.",
+            "properties": {
+              "doneWhen": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "proofKind": {
+                "type": "string",
+                "enum": [
+                  "test",
+                  "browser",
+                  "look"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "enum": [
+                  "form",
+                  "chat",
+                  "machine"
+                ]
+              }
+            }
+          }
+        },
+        "required": [
+          "title",
+          "priority",
+          "project_id"
+        ]
+      },
+      "UpdateTaskRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 500,
+            "description": "Task title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Task description"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "general",
+              "feature",
+              "bug",
+              "refactor",
+              "test",
+              "docs",
+              "devops"
+            ],
+            "description": "Task type"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "in_progress",
+              "completed",
+              "blocked",
+              "cancelled"
+            ],
+            "description": "Task status"
+          },
+          "stage": {
+            "type": "string",
+            "enum": [
+              "draft",
+              "ready",
+              "claimed",
+              "verifying",
+              "evidence",
+              "merged",
+              "deployed"
+            ],
+            "description": "The Punch List lane (migration 101). Setting stage:\"ready\" REQUIRES title + punch.doneWhen + punch.proofKind + a resolved project (evaluated against the MERGED existing+incoming state), or the write is refused (400, code PUNCH_INCOMPLETE)."
+          },
+          "punch": {
+            "type": "object",
+            "description": "Shallow-merged into metadata.punch — an omitted field is untouched, an explicit null deletes it.",
+            "properties": {
+              "doneWhen": {
+                "type": "string",
+                "nullable": true,
+                "minLength": 1,
+                "maxLength": 2000
+              },
+              "proofKind": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "test",
+                  "browser",
+                  "look"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "nullable": true,
+                "enum": [
+                  "form",
+                  "chat",
+                  "machine"
+                ]
+              }
+            }
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high",
+              "urgent"
+            ],
+            "description": "Task priority"
+          },
+          "assigned_to": {
+            "type": "string",
+            "maxLength": 100,
+            "description": "Assignee"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 50
+            },
+            "maxItems": 10,
+            "description": "Task tags"
+          }
+        }
+      },
+      "McpToolCall": {
+        "type": "object",
+        "properties": {
+          "toolName": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 100,
+            "description": "Name of the MCP tool to call"
+          },
+          "arguments": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Arguments to pass to the MCP tool"
+          }
+        },
+        "required": [
+          "toolName"
+        ]
+      },
+      "McpToolResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "description": "Whether the tool call succeeded"
+          },
+          "result": {
+            "type": "object",
+            "description": "Tool execution result"
+          },
+          "error": {
+            "type": "string",
+            "description": "Error message if call failed"
+          }
+        },
+        "required": [
+          "success"
+        ]
+      },
+      "ContextEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "Context body content"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "code",
+                  "decision",
+                  "research",
+                  "issue",
+                  "note",
+                  "error",
+                  "test"
+                ],
+                "description": "Context classification"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Associated tags"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true,
+                "description": "Arbitrary metadata payload"
+              },
+              "session_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Linked session identifier"
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Associated project identifier"
+              },
+              "relevance_score": {
+                "type": "number",
+                "description": "Semantic similarity score when applicable"
+              }
+            },
+            "required": [
+              "content",
+              "type"
+            ]
+          }
+        ]
+      },
+      "UpdateContext": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 10000,
+            "description": "Updated context content"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Updated tag list"
+          },
+          "metadata": {
+            "type": "object",
+            "additionalProperties": true,
+            "description": "Updated metadata payload"
+          },
+          "relevance_score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "Updated relevance score"
+          }
+        }
+      },
+      "ContextSearchResponse": {
+        "type": "object",
+        "properties": {
+          "contexts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ContextEntity"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "offset": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "contexts",
+          "total"
+        ]
+      },
+      "ContextStats": {
+        "type": "object",
+        "properties": {
+          "total_contexts": {
+            "type": "integer"
+          },
+          "contexts_last_24h": {
+            "type": "integer"
+          },
+          "contexts_by_type": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          }
+        }
+      },
+      "ContextBulkDelete": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1
+          }
+        },
+        "required": [
+          "ids"
+        ]
+      },
+      "ContextBulkUpdate": {
+        "type": "object",
+        "properties": {
+          "ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "description": "Context IDs to update"
+          },
+          "updates": {
+            "type": "object",
+            "description": "Fields to apply to every matched context (at least one required)",
+            "properties": {
+              "project_id": {
+                "type": "string",
+                "format": "uuid",
+                "description": "Reassign contexts to this project"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "maxLength": 50
+                },
+                "maxItems": 10,
+                "description": "Replacement tag list (max 10 tags)"
+              },
+              "relevance_score": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 10,
+                "description": "Updated relevance score"
+              }
+            }
+          }
+        },
+        "required": [
+          "ids",
+          "updates"
+        ]
+      },
+      "DecisionEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "problem": {
+                "type": "string"
+              },
+              "decision": {
+                "type": "string"
+              },
+              "rationale": {
+                "type": "string"
+              },
+              "alternatives": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "under_review",
+                  "superseded",
+                  "deprecated"
+                ]
+              },
+              "outcomeStatus": {
+                "type": "string",
+                "enum": [
+                  "unknown",
+                  "successful",
+                  "failed",
+                  "mixed",
+                  "too_early"
+                ],
+                "description": "Lifecycle outcome assessment"
+              },
+              "outcomeNotes": {
+                "type": "string"
+              },
+              "lessonsLearned": {
+                "type": "string"
+              },
+              "supersededBy": {
+                "type": "string"
+              },
+              "supersededReason": {
+                "type": "string"
+              },
+              "outcome": {
+                "type": "string"
+              },
+              "lessons": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "project_name": {
+                "type": "string"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "updated_by": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "title",
+              "problem",
+              "decision",
+              "status"
+            ]
+          }
+        ]
+      },
+      "DecisionSearchResponse": {
+        "type": "object",
+        "properties": {
+          "decisions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DecisionEntity"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "decisions",
+          "total"
+        ]
+      },
+      "DecisionStats": {
+        "type": "object",
+        "properties": {
+          "total_decisions": {
+            "type": "integer"
+          },
+          "by_status": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "by_project": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "recent_decisions": {
+            "type": "integer"
+          },
+          "total_projects": {
+            "type": "integer"
+          }
+        }
+      },
+      "CreateDecisionRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "minLength": 5,
+            "maxLength": 200
+          },
+          "problem": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000
+          },
+          "decision": {
+            "type": "string",
+            "minLength": 10,
+            "maxLength": 5000
+          },
+          "rationale": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "under_review",
+              "superseded",
+              "deprecated"
+            ],
+            "default": "active"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "title",
+          "problem",
+          "decision"
+        ]
+      },
+      "UpdateDecisionRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "problem": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string"
+          },
+          "rationale": {
+            "type": "string"
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "under_review",
+              "superseded",
+              "deprecated"
+            ]
+          },
+          "outcomeStatus": {
+            "type": "string",
+            "enum": [
+              "unknown",
+              "successful",
+              "failed",
+              "mixed",
+              "too_early"
+            ]
+          },
+          "outcomeNotes": {
+            "type": "string"
+          },
+          "lessonsLearned": {
+            "type": "string"
+          },
+          "supersededReason": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "NamingEntry": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "variable",
+                  "function",
+                  "component",
+                  "class",
+                  "interface",
+                  "module",
+                  "file"
+                ]
+              },
+              "context": {
+                "type": "string"
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "project_name": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string",
+                "enum": [
+                  "active",
+                  "deprecated",
+                  "conflicted",
+                  "pending"
+                ]
+              },
+              "compliance_score": {
+                "type": "number"
+              },
+              "usage_count": {
+                "type": "number"
+              },
+              "created_by": {
+                "type": "string"
+              },
+              "updated_by": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "name",
+              "type",
+              "status",
+              "compliance_score",
+              "usage_count"
+            ]
+          }
+        ]
+      },
+      "NamingSearchResponse": {
+        "type": "object",
+        "properties": {
+          "entries": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NamingEntry"
+            }
+          },
+          "total": {
+            "type": "integer"
+          },
+          "limit": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "entries",
+          "total"
+        ]
+      },
+      "RegisterNamingRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 2,
+            "maxLength": 100
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "variable",
+              "function",
+              "component",
+              "class",
+              "interface",
+              "module",
+              "file"
+            ]
+          },
+          "context": {
+            "type": "string",
+            "maxLength": 1000
+          },
+          "project_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "UpdateNamingRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "deprecated",
+              "conflicted",
+              "pending"
+            ]
+          },
+          "context": {
+            "type": "string"
+          }
+        }
+      },
+      "NamingStats": {
+        "type": "object",
+        "properties": {
+          "total_names": {
+            "type": "integer"
+          },
+          "compliance": {
+            "type": "number"
+          },
+          "deprecated": {
+            "type": "integer"
+          },
+          "recent_activity": {
+            "type": "integer"
+          },
+          "by_type": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "by_status": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "by_project": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            }
+          },
+          "total_projects": {
+            "type": "integer"
+          }
+        }
+      },
+      "NamingSuggestion": {
+        "type": "object",
+        "properties": {
+          "suggested_name": {
+            "type": "string"
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "alternatives": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "suggested_name",
+          "confidence"
+        ]
+      },
+      "NamingAvailabilityResponse": {
+        "type": "object",
+        "properties": {
+          "available": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "conflicts": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NamingEntry"
+            }
+          }
+        },
+        "required": [
+          "available"
+        ]
+      },
+      "SessionEntity": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/BaseEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "display_id": {
+                "type": "string",
+                "description": "Human-readable session ID"
+              },
+              "project_id": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "project_name": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "session_goal": {
+                "type": "string"
+              },
+              "tags": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "started_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "ended_at": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true,
+                "description": "Session end time - null means active"
+              },
+              "duration_minutes": {
+                "type": "string",
+                "description": "Decimal string of duration in minutes"
+              },
+              "last_activity_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "last_context_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "status": {
+                "type": "string",
+                "description": "Session status indicator"
+              },
+              "session_type": {
+                "type": "string"
+              },
+              "agent_type": {
+                "type": "string",
+                "description": "Type of AI agent"
+              },
+              "ai_model": {
+                "type": "string",
+                "description": "AI model used"
+              },
+              "actor": {
+                "type": "string",
+                "nullable": true,
+                "description": "The stable principal that owns the session — the \"who\" dimension (operator, coordinator, builder-<id8>, tick, deploy-smoke, anonymous…). Null for pre-actor / header-less sessions. Attribution, not an authz boundary."
+              },
+              "lines_added": {
+                "type": "integer"
+              },
+              "lines_deleted": {
+                "type": "integer"
+              },
+              "lines_net": {
+                "type": "integer"
+              },
+              "files_modified_count": {
+                "type": "integer"
+              },
+              "tasks_created": {
+                "type": "integer",
+                "description": "Derived from tasks.session_id (not the denormalized counter)"
+              },
+              "task_count": {
+                "type": "integer",
+                "description": "Alias of tasks_created — same derived source"
+              },
+              "tasks_updated": {
+                "type": "integer",
+                "description": "Counter column: an update leaves no per-session child row, so this one is not derivable"
+              },
+              "tasks_completed": {
+                "type": "integer",
+                "description": "Derived from tasks.session_id WHERE status = completed"
+              },
+              "task_completion_rate": {
+                "type": "string",
+                "description": "Decimal string percentage"
+              },
+              "contexts_created": {
+                "type": "integer",
+                "description": "Derived from contexts.session_id (not the denormalized counter)"
+              },
+              "context_count": {
+                "type": "integer",
+                "description": "Alias of contexts_created — same derived source"
+              },
+              "decisions_created": {
+                "type": "integer",
+                "description": "Derived from technical_decisions.session_id. The sessions.decisions_created column has no runtime writer and is permanently 0"
+              },
+              "decision_count": {
+                "type": "integer",
+                "description": "Alias of decisions_created — same derived source"
+              },
+              "input_tokens": {
+                "type": "string",
+                "description": "Input tokens consumed"
+              },
+              "output_tokens": {
+                "type": "string",
+                "description": "Output tokens generated"
+              },
+              "total_tokens": {
+                "type": "string",
+                "description": "Total tokens (input + output)"
+              },
+              "productivity_score": {
+                "type": "string",
+                "description": "Decimal productivity score 0-100"
+              },
+              "activity_count": {
+                "type": "integer"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        ]
+      },
+      "UpdateSession": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "maxLength": 255,
+            "description": "Session title"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 2000,
+            "description": "Session description"
+          }
+        }
+      },
+      "SessionStats": {
+        "type": "object",
+        "properties": {
+          "total_sessions": {
+            "type": "integer"
+          },
+          "active_sessions": {
+            "type": "integer"
+          },
+          "sessions_last_24h": {
+            "type": "integer"
+          }
+        }
+      },
+      "SessionListResponse": {
+        "type": "object",
+        "properties": {
+          "sessions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SessionEntity"
+            }
+          },
+          "total": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "sessions",
+          "total"
+        ]
+      },
+      "SessionDetail": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/SessionEntity"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "contexts": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "format": "uuid"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "tags": {
+                      "type": "array",
+                      "items": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "duration": {
+                "type": "number"
+              },
+              "metadata": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        ]
+      },
+      "SessionDetailResponse": {
+        "type": "object",
+        "properties": {
+          "session": {
+            "$ref": "#/components/schemas/SessionDetail"
+          }
+        },
+        "required": [
+          "session"
+        ]
+      },
+      "SessionCurrentResponse": {
+        "type": "object",
+        "properties": {
+          "session": {
+            "oneOf": [
+              {
+                "$ref": "#/components/schemas/SessionDetail"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "required": [
+          "session"
+        ]
+      },
+      "MonitoringHealth": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "healthy",
+              "degraded",
+              "unhealthy"
+            ]
+          },
+          "timestamp": {
+            "type": "number"
+          },
+          "checks": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "healthy",
+                    "degraded",
+                    "unhealthy"
+                  ]
+                },
+                "message": {
+                  "type": "string"
+                },
+                "responseTime": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "status",
+                "message"
+              ]
+            }
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "totalChecks": {
+                "type": "integer"
+              },
+              "healthyChecks": {
+                "type": "integer"
+              }
+            }
+          }
+        },
+        "required": [
+          "status",
+          "timestamp",
+          "checks"
+        ]
+      },
+      "MonitoringMetrics": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "number"
+          },
+          "system": {
+            "type": "object",
+            "properties": {
+              "uptime": {
+                "type": "number"
+              },
+              "memory": {
+                "type": "object",
+                "properties": {
+                  "used": {
+                    "type": "number"
+                  },
+                  "free": {
+                    "type": "number"
+                  },
+                  "total": {
+                    "type": "number"
+                  },
+                  "percentage": {
+                    "type": "number"
+                  }
+                }
+              },
+              "cpu": {
+                "type": "object",
+                "properties": {
+                  "usage": {
+                    "type": "number"
+                  }
+                }
+              },
+              "process": {
+                "type": "object",
+                "properties": {
+                  "pid": {
+                    "type": "integer"
+                  },
+                  "uptime": {
+                    "type": "number"
+                  },
+                  "memoryUsage": {
+                    "type": "object",
+                    "properties": {
+                      "rss": {
+                        "type": "number"
+                      },
+                      "heapUsed": {
+                        "type": "number"
+                      },
+                      "heapTotal": {
+                        "type": "number"
+                      },
+                      "external": {
+                        "type": "number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "database": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string",
+                "enum": [
+                  "healthy",
+                  "degraded",
+                  "unhealthy"
+                ]
+              },
+              "responseTime": {
+                "type": "number"
+              },
+              "activeConnections": {
+                "type": "number"
+              }
+            }
+          },
+          "api": {
+            "type": "object",
+            "properties": {
+              "requestCount": {
+                "type": "integer"
+              },
+              "errorRate": {
+                "type": "number"
+              },
+              "averageResponseTime": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": [
+          "timestamp",
+          "system",
+          "database",
+          "api"
+        ]
+      },
+      "MonitoringTrends": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "number"
+          },
+          "windowMinutes": {
+            "type": "number"
+          },
+          "trends": {
+            "type": "object",
+            "properties": {
+              "responseTime": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "errorRate": {
+                "type": "number"
+              },
+              "requestVolume": {
+                "type": "number"
+              }
+            }
+          }
+        },
+        "required": [
+          "timestamp",
+          "windowMinutes",
+          "trends"
+        ]
+      },
+      "MonitoringServiceStatus": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "port": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "healthy",
+              "degraded",
+              "down"
+            ]
+          },
+          "responseTime": {
+            "type": "number"
+          },
+          "lastCheck": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string"
+          },
+          "slaTarget": {
+            "type": "number"
+          },
+          "uptime": {
+            "type": "number"
+          },
+          "error": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "port",
+          "status",
+          "responseTime",
+          "lastCheck",
+          "url",
+          "slaTarget"
+        ]
+      },
+      "MonitoringServicesHealth": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MonitoringServiceStatus"
+            }
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "healthy": {
+                "type": "integer"
+              },
+              "degraded": {
+                "type": "integer"
+              },
+              "down": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "total",
+              "healthy",
+              "degraded",
+              "down"
+            ]
+          }
+        },
+        "required": [
+          "timestamp",
+          "services",
+          "summary"
+        ]
+      },
+      "MonitoringStats": {
+        "type": "object",
+        "properties": {
+          "totalServices": {
+            "type": "integer"
+          },
+          "healthyServices": {
+            "type": "integer"
+          },
+          "degradedServices": {
+            "type": "integer"
+          },
+          "downServices": {
+            "type": "integer"
+          },
+          "averageResponseTime": {
+            "type": "number"
+          },
+          "slaCompliance": {
+            "type": "number"
+          },
+          "lastUpdate": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MonitoringAlertRule": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "service": {
+            "type": "string"
+          },
+          "metric": {
+            "type": "string"
+          },
+          "threshold": {
+            "type": "number"
+          },
+          "operator": {
+            "type": "string",
+            "enum": [
+              "gt",
+              "lt",
+              "eq"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "critical",
+              "warning",
+              "info"
+            ]
+          },
+          "enabled": {
+            "type": "boolean"
+          },
+          "cooldown": {
+            "type": "number"
+          },
+          "lastTriggered": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "service",
+          "metric",
+          "threshold",
+          "operator",
+          "severity",
+          "enabled",
+          "cooldown"
+        ]
+      },
+      "MonitoringAlert": {
+        "type": "object",
+        "properties": {
+          "rule": {
+            "$ref": "#/components/schemas/MonitoringAlertRule"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "value": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "rule",
+          "timestamp",
+          "value"
+        ]
+      },
+      "EmbeddingDataset": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "dimensions": {
+            "type": "integer"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "count"
+        ]
+      },
+      "EmbeddingProjectionPoint": {
+        "type": "object",
+        "properties": {
+          "x": {
+            "type": "number"
+          },
+          "y": {
+            "type": "number"
+          },
+          "z": {
+            "type": "number"
+          },
+          "label": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "x",
+          "y",
+          "label",
+          "content",
+          "id"
+        ]
+      },
+      "EmbeddingSimilarityMatrix": {
+        "type": "object",
+        "properties": {
+          "matrix": {
+            "type": "array",
+            "items": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              }
+            }
+          },
+          "labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "metadata": {
+            "type": "object",
+            "properties": {
+              "rows": {
+                "type": "integer"
+              },
+              "cols": {
+                "type": "integer"
+              },
+              "datasetId": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "rows",
+              "cols",
+              "datasetId"
+            ]
+          }
+        },
+        "required": [
+          "matrix",
+          "labels",
+          "metadata"
+        ]
+      },
+      "EmbeddingProjection": {
+        "type": "object",
+        "properties": {
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingProjectionPoint"
+            }
+          },
+          "algorithm": {
+            "type": "string"
+          },
+          "varianceExplained": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "required": [
+          "points",
+          "algorithm"
+        ]
+      },
+      "EmbeddingClusterPoint": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/EmbeddingProjectionPoint"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "cluster": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "cluster"
+            ]
+          }
+        ]
+      },
+      "EmbeddingClusterResult": {
+        "type": "object",
+        "properties": {
+          "points": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingClusterPoint"
+            }
+          },
+          "centroids": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number"
+                },
+                "y": {
+                  "type": "number"
+                },
+                "cluster": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "x",
+                "y",
+                "cluster"
+              ]
+            }
+          },
+          "k": {
+            "type": "integer"
+          },
+          "inertia": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "points",
+          "centroids",
+          "k",
+          "inertia"
+        ]
+      },
+      "EmbeddingQualityMetrics": {
+        "type": "object",
+        "properties": {
+          "totalEmbeddings": {
+            "type": "integer"
+          },
+          "averageNorm": {
+            "type": "number"
+          },
+          "dimensionality": {
+            "type": "integer"
+          },
+          "densityMetrics": {
+            "type": "object",
+            "properties": {
+              "avgDistance": {
+                "type": "number"
+              },
+              "minDistance": {
+                "type": "number"
+              },
+              "maxDistance": {
+                "type": "number"
+              },
+              "stdDistance": {
+                "type": "number"
+              }
+            },
+            "required": [
+              "avgDistance",
+              "minDistance",
+              "maxDistance",
+              "stdDistance"
+            ]
+          },
+          "distributionStats": {
+            "type": "object",
+            "properties": {
+              "mean": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "std": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "min": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              },
+              "max": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                }
+              }
+            },
+            "required": [
+              "mean",
+              "std",
+              "min",
+              "max"
+            ]
+          }
+        },
+        "required": [
+          "totalEmbeddings",
+          "averageNorm",
+          "dimensionality",
+          "densityMetrics",
+          "distributionStats"
+        ]
+      },
+      "EmbeddingRelevanceDistributionBucket": {
+        "type": "object",
+        "properties": {
+          "range": {
+            "type": "string"
+          },
+          "count": {
+            "type": "integer"
+          },
+          "percentage": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "range",
+          "count",
+          "percentage"
+        ]
+      },
+      "EmbeddingRelevanceTrendPoint": {
+        "type": "object",
+        "properties": {
+          "date": {
+            "type": "string",
+            "format": "date"
+          },
+          "averageScore": {
+            "type": "number"
+          },
+          "sampleSize": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "date",
+          "averageScore",
+          "sampleSize"
+        ]
+      },
+      "EmbeddingRelevanceTopTag": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string"
+          },
+          "averageScore": {
+            "type": "number"
+          },
+          "count": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tag",
+          "averageScore",
+          "count"
+        ]
+      },
+      "EmbeddingProjectNode": {
+        "type": "object",
+        "properties": {
+          "projectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "projectName": {
+            "type": "string"
+          },
+          "contextCount": {
+            "type": "integer"
+          },
+          "tagCount": {
+            "type": "integer"
+          },
+          "sharedTagCount": {
+            "type": "integer"
+          },
+          "sharedTagStrength": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "projectId",
+          "projectName",
+          "contextCount",
+          "tagCount"
+        ]
+      },
+      "EmbeddingProjectEdge": {
+        "type": "object",
+        "properties": {
+          "sourceProjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "targetProjectId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "sharedTagCount": {
+            "type": "integer"
+          },
+          "sharedTagStrength": {
+            "type": "number"
+          },
+          "topTags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "sourceProjectId",
+          "targetProjectId",
+          "sharedTagCount",
+          "sharedTagStrength",
+          "topTags"
+        ]
+      },
+      "EmbeddingProjectSummary": {
+        "type": "object",
+        "properties": {
+          "totalRelatedProjects": {
+            "type": "integer"
+          },
+          "totalSharedTagStrength": {
+            "type": "number"
+          },
+          "totalSharedTagCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "totalRelatedProjects",
+          "totalSharedTagStrength",
+          "totalSharedTagCount"
+        ]
+      },
+      "EmbeddingProjectRelationships": {
+        "type": "object",
+        "properties": {
+          "focusProject": {
+            "$ref": "#/components/schemas/EmbeddingProjectNode"
+          },
+          "relatedProjects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingProjectNode"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingProjectEdge"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/EmbeddingProjectSummary"
+          }
+        },
+        "required": [
+          "focusProject",
+          "relatedProjects",
+          "edges",
+          "summary"
+        ]
+      },
+      "EmbeddingKnowledgeGapMissingTag": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string"
+          },
+          "totalCount": {
+            "type": "integer"
+          },
+          "projectCount": {
+            "type": "integer"
+          },
+          "lastUsed": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "topProjects": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "projectId": {
+                  "type": "string",
+                  "format": "uuid",
+                  "nullable": true
+                },
+                "projectName": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "projectName",
+                "count"
+              ]
+            }
+          }
+        },
+        "required": [
+          "tag",
+          "totalCount",
+          "projectCount",
+          "topProjects"
+        ]
+      },
+      "EmbeddingKnowledgeGapStaleTag": {
+        "type": "object",
+        "properties": {
+          "tag": {
+            "type": "string"
+          },
+          "lastUsed": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "daysSinceLastUsed": {
+            "type": "number"
+          },
+          "totalCount": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "tag",
+          "daysSinceLastUsed",
+          "totalCount"
+        ]
+      },
+      "EmbeddingKnowledgeGapTypeInsight": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string"
+          },
+          "totalCount": {
+            "type": "number"
+          },
+          "globalProjectCount": {
+            "type": "number"
+          },
+          "averagePerProject": {
+            "type": "number"
+          },
+          "projectCount": {
+            "type": "number"
+          },
+          "gap": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "type",
+          "totalCount",
+          "globalProjectCount",
+          "averagePerProject",
+          "projectCount",
+          "gap"
+        ]
+      },
+      "EmbeddingKnowledgeGapSummary": {
+        "type": "object",
+        "properties": {
+          "projectContextCount": {
+            "type": "integer"
+          },
+          "projectTagCount": {
+            "type": "integer"
+          },
+          "missingTagCount": {
+            "type": "integer"
+          },
+          "staleTagCount": {
+            "type": "integer"
+          },
+          "lastContextAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        },
+        "required": [
+          "projectContextCount",
+          "projectTagCount",
+          "missingTagCount",
+          "staleTagCount"
+        ]
+      },
+      "EmbeddingKnowledgeGaps": {
+        "type": "object",
+        "properties": {
+          "missingTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingKnowledgeGapMissingTag"
+            }
+          },
+          "staleTags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingKnowledgeGapStaleTag"
+            }
+          },
+          "underrepresentedTypes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingKnowledgeGapTypeInsight"
+            }
+          },
+          "summary": {
+            "$ref": "#/components/schemas/EmbeddingKnowledgeGapSummary"
+          }
+        },
+        "required": [
+          "missingTags",
+          "staleTags",
+          "underrepresentedTypes",
+          "summary"
+        ]
+      },
+      "EmbeddingUsagePatterns": {
+        "type": "object",
+        "properties": {
+          "dailyActivity": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "date": {
+                  "type": "string",
+                  "format": "date"
+                },
+                "contexts": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "date",
+                "contexts"
+              ]
+            }
+          },
+          "contextsByType": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                },
+                "percentage": {
+                  "type": "number"
+                }
+              },
+              "required": [
+                "type",
+                "count",
+                "percentage"
+              ]
+            }
+          },
+          "topTags": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "tag": {
+                  "type": "string"
+                },
+                "count": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "tag",
+                "count"
+              ]
+            }
+          },
+          "hourlyDistribution": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "hour": {
+                  "type": "integer"
+                },
+                "contexts": {
+                  "type": "integer"
+                }
+              },
+              "required": [
+                "hour",
+                "contexts"
+              ]
+            }
+          },
+          "summary": {
+            "type": "object",
+            "properties": {
+              "contextsLast7Days": {
+                "type": "integer"
+              },
+              "contextsLast30Days": {
+                "type": "integer"
+              },
+              "uniqueTags": {
+                "type": "integer"
+              },
+              "totalContexts": {
+                "type": "integer"
+              },
+              "lastContextAt": {
+                "type": "string",
+                "format": "date-time",
+                "nullable": true
+              }
+            },
+            "required": [
+              "contextsLast7Days",
+              "contextsLast30Days",
+              "uniqueTags",
+              "totalContexts"
+            ]
+          }
+        },
+        "required": [
+          "dailyActivity",
+          "contextsByType",
+          "topTags",
+          "hourlyDistribution",
+          "summary"
+        ]
+      },
+      "TaskAttachment": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "taskId": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "before",
+              "evidence"
+            ]
+          },
+          "filename": {
+            "type": "string",
+            "maxLength": 255
+          },
+          "mime": {
+            "type": "string",
+            "maxLength": 100
+          },
+          "byteSize": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5242880
+          },
+          "createdBy": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "url": {
+            "type": "string",
+            "description": "Path to GET the raw bytes"
+          }
+        },
+        "required": [
+          "id",
+          "taskId",
+          "kind",
+          "filename",
+          "mime",
+          "byteSize",
+          "createdAt",
+          "url"
+        ]
+      },
+      "TaskAttachmentTooLargeError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "ATTACHMENT_TOO_LARGE"
+            ]
+          },
+          "maxBytes": {
+            "type": "integer"
+          }
+        }
+      },
+      "TaskAttachmentTypeRejectedError": {
+        "type": "object",
+        "properties": {
+          "code": {
+            "type": "string",
+            "enum": [
+              "ATTACHMENT_TYPE_REJECTED"
+            ]
+          },
+          "allowed": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "required": [
+          "id",
+          "username",
+          "email",
+          "role",
+          "is_active",
+          "created_at",
+          "updated_at"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid",
+            "description": "Unique user identifier"
+          },
+          "username": {
+            "type": "string",
+            "description": "Unique username"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "user"
+            ],
+            "description": "User role"
+          },
+          "is_active": {
+            "type": "boolean",
+            "description": "Whether the user account is active"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Account creation timestamp"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last update timestamp"
+          },
+          "last_login": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last login timestamp"
+          },
+          "must_change_password": {
+            "type": "boolean",
+            "description": "When true, the user must set a new password on first login before using the app"
+          }
+        }
+      },
+      "LoginRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "description": "Username",
+            "example": "admin"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "description": "Password",
+            "example": "password123"
+          }
+        }
+      },
+      "LoginResponse": {
+        "type": "object",
+        "required": [
+          "user",
+          "token",
+          "expires"
+        ],
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          },
+          "token": {
+            "type": "string",
+            "description": "JWT authentication token"
+          },
+          "expires": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Token expiration timestamp"
+          }
+        }
+      },
+      "RegisterRequest": {
+        "type": "object",
+        "required": [
+          "username",
+          "email",
+          "password"
+        ],
+        "properties": {
+          "username": {
+            "type": "string",
+            "minLength": 3,
+            "description": "Unique username"
+          },
+          "email": {
+            "type": "string",
+            "format": "email",
+            "description": "User email address"
+          },
+          "password": {
+            "type": "string",
+            "format": "password",
+            "minLength": 6,
+            "description": "Password (minimum 6 characters)"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "admin",
+              "user"
+            ],
+            "default": "admin",
+            "description": "User role"
+          }
+        }
+      },
+      "ProfileResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "user": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        }
+      },
+      "RefreshTokenResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "data": {
+            "type": "object",
+            "properties": {
+              "token": {
+                "type": "string",
+                "description": "New JWT token"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time",
+                "description": "New token expiration timestamp"
+              }
+            }
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "description": "Error type"
+          },
+          "message": {
+            "type": "string",
+            "description": "Human-readable error message"
+          }
+        }
+      },
+      "Project": {
+        "$ref": "#/components/schemas/ProjectEntity"
+      },
+      "CreateProject": {
+        "$ref": "#/components/schemas/CreateProjectRequest"
+      },
+      "UpdateProject": {
+        "$ref": "#/components/schemas/UpdateProjectRequest"
+      }
+    }
+  },
+  "security": [
+    {
+      "BearerAuth": []
+    }
+  ],
+  "tags": [
+    {
+      "name": "Projects",
+      "description": "Project management operations"
+    },
+    {
+      "name": "Tasks",
+      "description": "Task management operations"
+    },
+    {
+      "name": "MCP Bridge",
+      "description": "Model Context Protocol bridge operations"
+    },
+    {
+      "name": "Health",
+      "description": "System health and monitoring"
+    },
+    {
+      "name": "Validation",
+      "description": "Schema validation and testing"
+    },
+    {
+      "name": "Contexts",
+      "description": "Knowledge context management"
+    },
+    {
+      "name": "Decisions",
+      "description": "Technical decision tracking"
+    },
+    {
+      "name": "Naming",
+      "description": "Naming registry and governance"
+    },
+    {
+      "name": "Sessions",
+      "description": "Session analytics and history"
+    },
+    {
+      "name": "Monitoring",
+      "description": "Operational monitoring endpoints"
+    },
+    {
+      "name": "Embeddings",
+      "description": "Embedding analytics endpoints"
+    },
+    {
+      "name": "Task Attachments",
+      "description": "Punch List task attachments — before screenshots and evidence images"
+    },
+    {
+      "name": "Authentication",
+      "description": "User authentication and authorization endpoints"
+    }
+  ],
+  "paths": {
+    "/auth/login": {
+      "post": {
+        "summary": "User login",
+        "description": "Authenticate a user with username and password",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Login successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LoginResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid credentials",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many login attempts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "summary": "User logout",
+        "description": "Logout the authenticated user and invalidate their token",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Logout successful",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/profile": {
+      "get": {
+        "summary": "Get user profile",
+        "description": "Get the profile of the authenticated user",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProfileResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "summary": "Refresh authentication token",
+        "description": "Refresh the JWT token for the authenticated user",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Token refreshed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "summary": "Register new user (Admin only)",
+        "description": "Register a new user account. Requires admin privileges.",
+        "tags": [
+          "Authentication"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "user": {
+                          "$ref": "#/components/schemas/User"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - invalid or missing token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Forbidden - admin privileges required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict - username or email already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many registration attempts",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contexts": {
+      "get": {
+        "summary": "Search contexts with filters",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Free-text search query"
+          },
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Filter by project ID (falls back to X-Project-ID header)"
+          },
+          {
+            "in": "query",
+            "name": "session_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "code",
+                "decision",
+                "research",
+                "issue",
+                "note",
+                "error",
+                "test"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "tags",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated tags filter"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contexts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ContextSearchResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new context",
+        "tags": [
+          "Contexts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "content"
+                ],
+                "properties": {
+                  "content": {
+                    "type": "string",
+                    "description": "The context content"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "code",
+                      "decision",
+                      "error",
+                      "discussion",
+                      "planning",
+                      "completion",
+                      "milestone",
+                      "reflections",
+                      "handoff",
+                      "lessons",
+                      "note"
+                    ],
+                    "default": "discussion"
+                  },
+                  "tags": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "metadata": {
+                    "type": "object"
+                  },
+                  "projectId": {
+                    "type": "string",
+                    "format": "uuid"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Context created successfully"
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/contexts/stats": {
+      "get": {
+        "summary": "Retrieve context statistics for the current project",
+        "tags": [
+          "Contexts"
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ContextStats"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contexts/{id}": {
+      "get": {
+        "summary": "Get a context by ID",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Context retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ContextEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Context not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update an existing context",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Context updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ContextEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Context not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a context",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Context deleted successfully"
+          },
+          "404": {
+            "description": "Context not found"
+          }
+        }
+      }
+    },
+    "/contexts/{id}/restore": {
+      "post": {
+        "summary": "Restore (un-archive) a soft-deleted context",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Context restored successfully"
+          },
+          "404": {
+            "description": "Context not found"
+          }
+        }
+      }
+    },
+    "/contexts/bulk/delete": {
+      "delete": {
+        "summary": "Bulk delete contexts by ID",
+        "tags": [
+          "Contexts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContextBulkDelete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contexts deleted successfully"
+          }
+        }
+      }
+    },
+    "/contexts/bulk/update": {
+      "post": {
+        "summary": "Bulk update contexts by ID",
+        "tags": [
+          "Contexts"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ContextBulkUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Contexts updated successfully"
+          }
+        }
+      }
+    },
+    "/contexts/{id}/related": {
+      "get": {
+        "summary": "Get contexts related to the supplied context",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Related contexts returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ContextEntity"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/contexts/{id}/links": {
+      "get": {
+        "summary": "Get the typed graph edges (thread) touching a context",
+        "tags": [
+          "Contexts"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Typed edges returned (both directions), resolved to each target's title/kind",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "edgeType": {
+                                "type": "string"
+                              },
+                              "direction": {
+                                "type": "string",
+                                "enum": [
+                                  "outgoing",
+                                  "incoming"
+                                ]
+                              },
+                              "otherId": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "otherType": {
+                                "type": "string",
+                                "enum": [
+                                  "context",
+                                  "decision",
+                                  "task"
+                                ]
+                              },
+                              "otherTitle": {
+                                "type": "string"
+                              },
+                              "otherKind": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/dashboard/stats": {
+      "get": {
+        "summary": "Get dashboard statistics",
+        "description": "Returns aggregated statistics for the dashboard including contexts, tasks, and projects",
+        "tags": [
+          "Dashboard"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dashboard statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "contexts": {
+                          "type": "number",
+                          "description": "Total number of contexts"
+                        },
+                        "activeTasks": {
+                          "type": "number",
+                          "description": "Number of active tasks"
+                        },
+                        "totalTasks": {
+                          "type": "number",
+                          "description": "Total number of tasks"
+                        },
+                        "projects": {
+                          "type": "number",
+                          "description": "Total number of projects"
+                        },
+                        "recentActivity": {
+                          "type": "object",
+                          "properties": {
+                            "contextsThisWeek": {
+                              "type": "number",
+                              "description": "Number of contexts created this week"
+                            },
+                            "tasksCompletedThisWeek": {
+                              "type": "number",
+                              "description": "Number of tasks completed this week"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/decisions": {
+      "get": {
+        "summary": "Search technical decisions",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Free-text search term to locate decisions"
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "under_review",
+                "superseded",
+                "deprecated"
+              ]
+            },
+            "description": "Filter decisions by lifecycle status"
+          },
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Scope search to a specific project"
+          },
+          {
+            "in": "query",
+            "name": "created_by",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filter by author username"
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Inclusive lower bound for creation date"
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "description": "Inclusive upper bound for creation date"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Decisions retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DecisionSearchResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Record a new technical decision",
+        "tags": [
+          "Decisions"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Decision recorded successfully"
+          }
+        }
+      }
+    },
+    "/decisions/stats": {
+      "get": {
+        "summary": "Retrieve decision statistics",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Optional project scope for statistics"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DecisionStats"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/decisions/{id}": {
+      "get": {
+        "summary": "Get a decision by ID",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Decision retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/DecisionEntity"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Decision not found"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update a decision",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateDecisionRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decision updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete a decision",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Decision deleted successfully"
+          }
+        }
+      }
+    },
+    "/decisions/{id}/restore": {
+      "post": {
+        "summary": "Restore (un-archive) a soft-deleted decision",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Decision restored successfully"
+          },
+          "404": {
+            "description": "Decision not found"
+          }
+        }
+      }
+    },
+    "/decisions/{id}/answer": {
+      "post": {
+        "summary": "Answer an open/discussing decision by picking an option",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "option"
+                ],
+                "properties": {
+                  "option": {
+                    "type": "string"
+                  },
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decision answered successfully"
+          },
+          "409": {
+            "description": "The decision is already decided"
+          }
+        }
+      }
+    },
+    "/decisions/{id}/discuss": {
+      "post": {
+        "summary": "Send an open decision back for more discussion (stays open)",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Decision sent back for discussion"
+          },
+          "409": {
+            "description": "The decision is already decided"
+          }
+        }
+      }
+    },
+    "/decisions/{id}/links": {
+      "get": {
+        "summary": "Get the typed graph edges (thread box) touching a decision",
+        "description": "Returns the real `links`-table edges in BOTH directions, resolved to each other endpoint's title + kind. This is the TreeWalker moat surface — structure, not the semantic related list.\n",
+        "tags": [
+          "Decisions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Typed edges retrieved"
+          }
+        }
+      }
+    },
+    "/embedding/list": {
+      "get": {
+        "summary": "Retrieve available embedding datasets",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": false,
+            "description": "Optional project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Dataset list returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/EmbeddingDataset"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/similarity": {
+      "get": {
+        "summary": "Retrieve similarity matrix for an embedding dataset",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "rows",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            }
+          },
+          {
+            "in": "query",
+            "name": "cols",
+            "schema": {
+              "type": "integer",
+              "default": 100
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Similarity matrix returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingSimilarityMatrix"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/projection": {
+      "get": {
+        "summary": "Retrieve 2D/3D projection of embeddings",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "algo",
+            "schema": {
+              "type": "string",
+              "default": "pca"
+            }
+          },
+          {
+            "in": "query",
+            "name": "n",
+            "schema": {
+              "type": "integer",
+              "default": 1000
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projection data returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingProjection"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/cluster": {
+      "get": {
+        "summary": "Retrieve clustering results for an embedding dataset",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "k",
+            "schema": {
+              "type": "integer",
+              "default": 8
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clustering data returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingClusterResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/metrics": {
+      "get": {
+        "summary": "Retrieve embedding quality metrics",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Quality metrics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingQualityMetrics"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/relationships": {
+      "get": {
+        "summary": "Retrieve project relationship network for the active project",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project relationship network returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingProjectRelationships"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/knowledge-gaps": {
+      "get": {
+        "summary": "Retrieve knowledge gap analytics for the active project",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Knowledge gap metrics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingKnowledgeGaps"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/embedding/usage": {
+      "get": {
+        "summary": "Retrieve usage pattern analytics for the active project",
+        "tags": [
+          "Embeddings"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "X-Project-ID",
+            "required": true,
+            "description": "Project context (UUID), authorized per-caller.",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usage pattern metrics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EmbeddingUsagePatterns"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/drift-fixture-ping": {
+      "get": {
+        "summary": "THROWAWAY FIXTURE — proves STAGE 5o catches undocumented drift",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "pong"
+          }
+        }
+      }
+    },
+    "/monitoring/health": {
+      "get": {
+        "summary": "Retrieve system health snapshot",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Health payload returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/MonitoringHealth"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/metrics": {
+      "get": {
+        "summary": "Retrieve system metrics snapshot",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Metrics payload returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/MonitoringMetrics"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/trends": {
+      "get": {
+        "summary": "Retrieve performance trends",
+        "tags": [
+          "Monitoring"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "minutes",
+            "schema": {
+              "type": "integer",
+              "default": 5
+            },
+            "description": "Size of the sliding window (in minutes)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trend data returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/MonitoringTrends"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/errors": {
+      "post": {
+        "summary": "Record UI error event",
+        "tags": [
+          "Monitoring"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Error captured"
+          }
+        }
+      }
+    },
+    "/monitoring/services": {
+      "get": {
+        "summary": "Retrieve status for all monitored services",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Service status list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MonitoringServiceStatus"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/services/{serviceName}": {
+      "get": {
+        "summary": "Retrieve status for a specific service",
+        "tags": [
+          "Monitoring"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "serviceName",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Service health returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/MonitoringServiceStatus"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Service not found"
+          }
+        }
+      }
+    },
+    "/monitoring/stats": {
+      "get": {
+        "summary": "Retrieve monitoring statistics and SLA compliance",
+        "tags": [
+          "Monitoring"
+        ],
+        "responses": {
+          "200": {
+            "description": "Monitoring statistics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/MonitoringStats"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/monitoring/alerts": {
+      "get": {
+        "summary": "Retrieve recent monitoring alerts",
+        "tags": [
+          "Monitoring"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Alerts returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/MonitoringAlert"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/naming": {
+      "get": {
+        "summary": "Search naming registry entries",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "variable",
+                "function",
+                "component",
+                "class",
+                "interface",
+                "module",
+                "file"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "active",
+                "deprecated",
+                "conflicted",
+                "pending"
+              ]
+            }
+          },
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "created_by",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_from",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "in": "query",
+            "name": "date_to",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "default": 20
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entries retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NamingSearchResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/naming/stats": {
+      "get": {
+        "summary": "Retrieve naming registry statistics",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NamingStats"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/naming/check/{name}": {
+      "get": {
+        "summary": "Check naming entry availability",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "type",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "variable",
+                "function",
+                "component",
+                "class",
+                "interface",
+                "module",
+                "file"
+              ]
+            },
+            "description": "Optional type hint for the suggestion engine"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Availability result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NamingAvailabilityResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/naming/suggest/{name}": {
+      "get": {
+        "summary": "Provide naming suggestions",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "name",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Suggestions returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/NamingSuggestion"
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/naming/register": {
+      "post": {
+        "summary": "Register a new naming entry",
+        "tags": [
+          "Naming"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterNamingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Naming entry registered",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NamingEntry"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/naming/{id}": {
+      "get": {
+        "summary": "Get naming entry by ID",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/NamingEntry"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update naming entry",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateNamingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Entry updated"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete naming entry",
+        "tags": [
+          "Naming"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Entry deleted"
+          }
+        }
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "summary": "Get OpenAPI specification",
+        "tags": [
+          "Documentation"
+        ],
+        "responses": {
+          "200": {
+            "description": "OpenAPI specification in JSON format",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/watchable": {
+      "get": {
+        "summary": "Get projects with root_directory for mandrel-watcher",
+        "description": "Returns projects that have a local path configured. Used by the mandrel-watcher daemon, which must authenticate: the response carries project names and absolute host filesystem paths.\n",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Watchable projects retrieved successfully"
+          },
+          "401": {
+            "description": "Authentication required",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects": {
+      "get": {
+        "summary": "Get all projects",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 1
+            },
+            "description": "Page number"
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 20
+            },
+            "description": "Items per page"
+          },
+          {
+            "in": "query",
+            "name": "sortBy",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Field to sort by"
+          },
+          {
+            "in": "query",
+            "name": "sortOrder",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "asc",
+                "desc"
+              ],
+              "default": "asc"
+            },
+            "description": "Sort order"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Projects retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectListResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create a new project",
+        "tags": [
+          "Projects"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Project created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectDetailResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid project data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/stats": {
+      "get": {
+        "summary": "Get project statistics",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Project statistics retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectStats"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/sessions/all": {
+      "get": {
+        "summary": "Get all sessions across projects",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "required": false,
+            "description": "Filter sessions to a single project (UUID). Ignored if not a valid UUID."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": false,
+            "description": "Maximum number of sessions to return (most recent first)."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectSessionsResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/set-primary": {
+      "post": {
+        "summary": "Set project as primary/default",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project set as primary successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/clear-primary": {
+      "post": {
+        "summary": "Clear the primary/default flag from all projects",
+        "tags": [
+          "Projects"
+        ],
+        "responses": {
+          "200": {
+            "description": "Primary flag cleared successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}": {
+      "get": {
+        "summary": "Get project by ID",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectDetailResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "summary": "Update project",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateProjectRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Project updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectDetailResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid project data",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete project (irreversible — cascades into every project-owned table)",
+        "description": "Gated by the mcp-server `project_delete` safety survey. Without `confirm=true` a project with owned rows — or one whose blast radius cannot be measured — is REFUSED with 409 and the impact counts, and nothing is destroyed.\n",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Project ID"
+          },
+          {
+            "in": "query",
+            "name": "confirm",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "true"
+              ]
+            },
+            "description": "Explicit confirmation. Only the exact string `true` confirms; anything else (absent, `false`, empty) leaves the delete gated.\n"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/ProjectSessionsResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Project not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Refused — confirmation required. Nothing was deleted. `error` carries the gate's blast-radius sentence; `data.impact` carries the measured counts (`byTable`, `total`, `unmeasurable`) and `data.requiresConfirmation` is true.\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/insights": {
+      "get": {
+        "summary": "Get project insights",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project insights retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/projects/{id}/sessions": {
+      "get": {
+        "summary": "Get project sessions",
+        "tags": [
+          "Projects"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "description": "Project ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Project sessions retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ApiSuccessResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/current": {
+      "get": {
+        "summary": "Retrieve the currently active session from MCP",
+        "tags": [
+          "Sessions"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current session information or null",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SessionCurrentResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/stats": {
+      "get": {
+        "summary": "Retrieve session statistics",
+        "tags": [
+          "Sessions"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Statistics returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SessionStats"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions": {
+      "get": {
+        "summary": "List sessions with optional filters",
+        "tags": [
+          "Sessions"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "project_id",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          {
+            "in": "query",
+            "name": "status",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "actor",
+            "description": "Slice by the owning principal (the \"who\" dimension) — e.g. coordinator, tick, builder-<id8>",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "Max number of sessions to return (end-to-end pagination)",
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "in": "query",
+            "name": "offset",
+            "description": "Number of sessions to skip",
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sessions returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SessionListResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/sessions/assign": {
+      "post": {
+        "summary": "(REMOVED) Assign session to project - use project_switch MCP tool instead",
+        "tags": [
+          "Sessions"
+        ],
+        "deprecated": true,
+        "responses": {
+          "410": {
+            "description": "Endpoint removed - sessions auto-inherit project from project_switch"
+          }
+        }
+      }
+    },
+    "/sessions/{id}": {
+      "put": {
+        "summary": "Update session metadata",
+        "tags": [
+          "Sessions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateSession"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Session updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "type": "object",
+                          "properties": {
+                            "session": {
+                              "$ref": "#/components/schemas/SessionEntity"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid session data"
+          },
+          "404": {
+            "description": "Session not found"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get detailed session information",
+        "tags": [
+          "Sessions"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detailed session returned",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "allOf": [
+                    {
+                      "$ref": "#/components/schemas/ApiSuccessResponse"
+                    },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "data": {
+                          "$ref": "#/components/schemas/SessionDetailResponse"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Session not found"
+          }
+        }
+      }
+    },
+    "/attachments": {
+      "get": {
+        "summary": "Bulk-by-task-ids read of task attachment metadata (board fan-out fix)",
+        "description": "Replaces a per-card `GET /tasks/:id/attachments` fan-out. Task ids outside the caller's resolved project scope are silently OMITTED from the result, not 403'd, so one foreign id cannot fail the whole board fetch.\n",
+        "tags": [
+          "Task Attachments"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "taskIds",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Comma-separated task UUIDs, max 100"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachment metadata (no bytes) for the requested task ids, grouped flat and ordered by task_id then created_at",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "attachments": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/TaskAttachment"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed taskIds, or more than 100 ids"
+          }
+        }
+      }
+    },
+    "/tasks/{id}/attachments": {
+      "post": {
+        "summary": "Upload an attachment for a task (before screenshot or evidence image)",
+        "tags": [
+          "Task Attachments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "before",
+                      "evidence"
+                    ],
+                    "default": "before"
+                  }
+                },
+                "required": [
+                  "file"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Attachment stored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "$ref": "#/components/schemas/TaskAttachment"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Task not found"
+          },
+          "413": {
+            "description": "File exceeds the 5 MiB cap",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskAttachmentTooLargeError"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Mime type not in the allowlist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TaskAttachmentTypeRejectedError"
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "List attachments for a task",
+        "tags": [
+          "Task Attachments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Attachments for the task, no bytes included",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "attachments": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/TaskAttachment"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/attachments/{attachmentId}": {
+      "get": {
+        "summary": "Get an attachment's raw bytes",
+        "tags": [
+          "Task Attachments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The attachment bytes, Content-Type set to the stored mime",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Attachment not found"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete an attachment",
+        "tags": [
+          "Task Attachments"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "attachmentId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Deleted"
+          },
+          "404": {
+            "description": "Attachment not found"
+          }
+        }
+      }
+    },
+    "/treewalker/thread": {
+      "get": {
+        "summary": "Walk the LIVE resume-anchor thread (whole-thread graph + recall_thread story + trust)",
+        "description": "Resolves the newest `ref:resume`-tagged context in the active project (X-Project-ID scoped), walks its typed-edge thread ~2 hops over the `links` graph (migration 049), and returns the ThreadGraph the TreeWalker screen renders: spine lineage, nodes (kind + trust), typed edges, and the ordered story. A genuinely-empty thread returns an honest empty graph (never fabricated).\n",
+        "tags": [
+          "TreeWalker"
+        ],
+        "responses": {
+          "200": {
+            "description": "Thread graph retrieved"
+          }
+        }
+      }
+    },
+    "/treewalker/trunk": {
+      "get": {
+        "summary": "The project's handoff TIMELINE (the trunk) — time-ordered, supersession as corroboration only",
+        "description": "PHASE 2 item a: the trunk tier resolved from DATA — the scoped project's handoff contexts newest-first (full count + bounded entries + the trunk head id). Ordering is created_at ALWAYS; a declared supersedes edge appears only as per-entry corroboration metadata. No recursive supersedes walk exists on this path.\n",
+        "tags": [
+          "TreeWalker"
+        ],
+        "responses": {
+          "200": {
+            "description": "Trunk timeline retrieved"
+          }
+        }
+      }
+    },
+    "/treewalker/branches": {
+      "get": {
+        "summary": "The branch list (resume surface) — spines with DECLARED members, newest-active first",
+        "description": "PHASE 2 item c: branches enumerated from declared `informs` membership edges (the link_provenance view — P1 positional + tag/links-arg provenance), named by their once-on-the-spine `branch:` tag else spine title, with open branch positions marked. TOP-LEVEL DRAWERS ONLY (P2): a spine that is itself a member of another branch (a SECTION) is filtered out BEFORE the cap, not merely flagged, so it can never consume a page slot a genuine drawer needed. Each branch reports sectionCount (how many of its own members are themselves branch spines); the envelope carries the honest `total` DRAWER count (post-filter, pre-cap) and the `cap` applied, so a caller can never mistake a truncated list for the whole set.\n",
+        "tags": [
+          "TreeWalker"
+        ],
+        "responses": {
+          "200": {
+            "description": "Branch list retrieved"
+          }
+        }
+      }
+    },
+    "/treewalker/{anchorId}/thread": {
+      "get": {
+        "summary": "Walk an EXPLICIT anchor's thread (whole-thread graph + recall_thread story + trust)",
+        "tags": [
+          "TreeWalker"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "anchorId",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Thread graph retrieved"
+          },
+          "404": {
+            "description": "Anchor not found"
+          }
+        }
+      }
+    }
+  }
+}

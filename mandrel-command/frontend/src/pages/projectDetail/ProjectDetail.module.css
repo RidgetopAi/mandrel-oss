@@ -1,0 +1,370 @@
+/* Project-detail "dashboard" — the locked mock (command-project-detail-mock.html) rebuilt
+   on the P0.2 tokens. Colour + type are 100% token-driven (no hex literals); residual px
+   are structural geometry (grid tracks, icon boxes, dot sizes, bar heights). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+.pageState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-4);
+  padding: var(--sp-10) var(--sp-4);
+}
+
+/* ---- back link ---- */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  align-self: flex-start;
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  text-decoration: none;
+  padding: 4px 6px;
+  border-radius: var(--r-xs);
+}
+.back:hover {
+  color: var(--teal);
+}
+
+/* ---- hero ---- */
+.hero {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-4);
+}
+.picon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--r);
+  background: radial-gradient(circle at 35% 30%, var(--teal), var(--teal-dim));
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--on-accent);
+  box-shadow: 0 0 0 1px var(--line-2), 0 0 24px -3px var(--teal-glow);
+}
+.hbody {
+  min-width: 0;
+  flex: 1;
+}
+.h1r {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.hname {
+  font-size: 1.4rem;
+  font-weight: 660;
+  letter-spacing: -0.025em;
+  color: var(--tx);
+}
+.hdesc {
+  color: var(--tx-2);
+  font-size: var(--fs-data);
+  margin-top: var(--sp-1);
+  max-width: 70ch;
+  line-height: 1.55;
+}
+.hactions {
+  flex: none;
+  display: flex;
+  gap: var(--sp-2);
+}
+
+/* ---- vital tiles ---- */
+.vitals {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: var(--sp-3);
+}
+.vt {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+  padding: var(--sp-3) var(--sp-4);
+  position: relative;
+  overflow: hidden;
+  min-width: 0;
+}
+.vtAccent {
+  border-color: var(--teal-dim);
+}
+.vk {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+}
+.vkIco {
+  color: var(--tx-4);
+  flex: none;
+}
+.vv {
+  font-family: var(--mono);
+  font-size: 1.5rem;
+  font-weight: 650;
+  margin-top: var(--sp-2);
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  min-height: 1.5rem;
+}
+.vDash {
+  color: var(--tx-4);
+}
+.vd {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  margin-top: 2px;
+  min-height: 1em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ---- section grid ---- */
+.cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+/* card header (layered over the primitive .header) */
+.ch {
+  font-size: var(--fs-label);
+  font-weight: 640;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--tx-3);
+}
+.chIco {
+  color: var(--tx-4);
+  flex: none;
+}
+.chCt {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.chNote {
+  margin-left: auto;
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  letter-spacing: 0;
+  text-transform: none;
+  font-weight: 500;
+  cursor: help;
+}
+
+/* per-section loading/empty/error */
+.sectionState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-3);
+  padding: var(--sp-6) var(--sp-4);
+}
+.boardEmpty {
+  padding: var(--sp-6) var(--sp-4);
+  color: var(--tx-3);
+  font-size: var(--fs-label);
+  text-align: center;
+}
+
+/* ---- task mini-board ---- */
+.miniboard {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line-soft);
+}
+.mb {
+  background: var(--s1);
+  padding: var(--sp-3);
+  text-align: center;
+}
+.mv {
+  font-family: var(--mono);
+  font-size: 1.3rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+  min-height: 1.3rem;
+}
+.mk {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+}
+.mbar {
+  height: 3px;
+  border-radius: 2px;
+  margin: var(--sp-2) auto 0;
+  transition: width 0.24s ease;
+}
+
+/* ---- session rows ---- */
+.srows {
+  display: flex;
+  flex-direction: column;
+}
+.srow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.srow:last-child {
+  border-bottom: none;
+}
+.sav {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--r-xs);
+  display: grid;
+  place-items: center;
+  color: var(--tx-3);
+  background: var(--s3);
+  flex: none;
+}
+.sbody {
+  min-width: 0;
+  flex: 1;
+}
+.sn {
+  font-size: var(--fs-data);
+  color: var(--tx);
+}
+.sm {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  margin-top: 1px;
+}
+.st {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  flex: none;
+}
+
+/* ---- decision rows ---- */
+.drows {
+  display: flex;
+  flex-direction: column;
+}
+.drow {
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.drow:last-child {
+  border-bottom: none;
+}
+.dt {
+  font-size: var(--fs-data);
+  color: var(--tx);
+  line-height: 1.4;
+}
+.dm {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-1);
+}
+.kindtag {
+  text-transform: uppercase;
+}
+.did {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  text-decoration: none;
+}
+.did:hover {
+  color: var(--teal);
+}
+.dtime {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+
+/* ---- repository activity ---- */
+.repoBody {
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+.repoStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--sp-3);
+}
+.repoStat {
+  min-width: 0;
+}
+.repoV {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-weight: 650;
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.repoK {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-top: 3px;
+}
+.repoLatest {
+  border-top: 1px solid var(--line-soft);
+  padding-top: var(--sp-3);
+}
+.repoLatestMsg {
+  font-size: var(--fs-label);
+  color: var(--tx-2);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.repoLatestMeta {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  margin-top: var(--sp-1);
+}
+
+@media (max-width: 900px) {
+  .vitals {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .cols {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,27 @@
+/*
+ * The record deep-link on an activity-timeline row.
+ *
+ * ONE rule styles every one of them, so the Sessions stream card and the Session
+ * detail Timeline tab cannot drift apart. The descendant selector is deliberate:
+ * the link wraps a <Code>, which carries its own single-class tone, and a bare
+ * `.ra-record-link { color }` would be a specificity tie decided by stylesheet
+ * order. `.ra-record-link *` outranks it deterministically.
+ */
+.ra-record-link {
+  text-decoration: none;
+  border-radius: var(--r-1, 3px);
+}
+.ra-record-link,
+.ra-record-link * {
+  color: var(--teal);
+}
+.ra-record-link:hover,
+.ra-record-link:hover * {
+  color: var(--teal-dim);
+  text-decoration: underline;
+}
+.ra-record-link:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--teal-glow);
+  text-decoration: underline;
+}

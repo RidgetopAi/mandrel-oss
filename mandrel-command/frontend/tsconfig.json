@@ -1,0 +1,112 @@
+{
+  // BUILD **and** TYPECHECK config for the frontend. an earlier Task.
+  //
+  // WHY THIS FILE CHANGED: it used to `exclude` `src/**/*.test.ts`,
+  // `src/**/*.test.tsx` and `src/setupTests.ts`. The authoritative gate's
+  // frontend typecheck is `tsc --noEmit` against THIS file (the CI gate
+  // STAGE 5t, and the `tsc --noEmit &&` half of `npm run build` in STAGE 5),
+  // so every one of the 147 frontend test files was typechecked by NOTHING.
+  // vitest does not typecheck either — it transpiles with esbuild — so those
+  // files had no type coverage from any surface.
+  //
+  // MEASURED, not assumed: appending `export const l4FeProbe: number = "nope";`
+  // to src/config/tagLimits.drift.test.ts left `tsc --noEmit` at rc=0.
+  //
+  // This is the same hole, and the same fix, that an earlier task closed for
+  // mcp-server and an earlier task closed for mandrel-command/backend. The
+  // difference is that here the BUILD config's own `exclude` was the hole, so
+  // the fix is a DELETION of those three globs rather than a second config.
+  //
+  // WHY `types` IS NOW PINNED: with the test files in the program, the suite's
+  // globals must be declared. `vitest/globals` matches what vite.config.ts
+  // actually configures (`test.globals: true`); `node` is what src/setupTests.ts
+  // and the guard tests read. Pinning `types` also STOPS the implicit
+  // auto-inclusion of every @types/* package hoisted into the workspace root
+  // (which silently included @types/jest — a runner this app does not use).
+  // Measured: app source (src + ../shared, non-test) is rc=0 under this pin.
+  "compilerOptions": {
+    "target": "es2022",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es6",
+      "es2022"
+    ],
+    "types": [
+      "vitest/globals",
+      "node"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx",
+    "baseUrl": "src",
+    "paths": {
+      "@shared/*": ["../shared/*"],
+      "@/*": ["*"]
+    }
+  },
+
+  "include": [
+    "src",
+    "../shared"
+  ],
+
+  // THE RULES ARE NOT LOOSENED, AND THE DEBT IS NAMED.
+  //
+  // 17 of the 147 test files do not typecheck today (88 diagnostics). They are
+  // listed here BY NAME so the debt is countable and payable, per the rule
+  // written in ../backend/tsconfig.typecheck.json: exclude a file by name with
+  // a reason, never relax a compilerOption and never re-exclude a directory or
+  // a glob. A glob would have re-opened this hole for every test file written
+  // after today; a named list cannot — a new test file is covered by default,
+  // and adding a name here is a visible diff.
+  //
+  // COUNTS CARRY THEIR COMMANDS (run in this directory, 2026-08-29):
+  //   population   find src -name '*.test.ts' -o -name '*.test.tsx' | wc -l   -> 147
+  //   failing      tsc -p <this config with "exclude": []>                    -> 88 diagnostics
+  //                                                                              across 17 files
+  //
+  // Reason codes, from the TS numbers those 88 diagnostics actually carry:
+  //   [jest-ns]    TS2708 — uses the `jest` namespace as a VALUE. It exists at
+  //                runtime only (src/setupTests.ts sets globalThis.jest = vi),
+  //                so it has no type under the vitest globals.
+  //   [mock-type]  TS2322/TS2345/TS2493 — vitest 1.x `Mock<[], T>` variance
+  //                against `typeof fetch` / hook-callback return positions.
+  //   [mock-shape] TS2339 — reads a property the hand-written mock object does
+  //                not declare.
+  //   [dom-arg]    TS2345 — passes a `Document`, or a possibly-`undefined`
+  //                element, where the helper's signature wants an `Element`.
+  //   [prop-gap]   TS2741 — renders a component without a required prop.
+  //   [no-types]   TS7016 (+ the TS7006 implicit-anys that follow) — imports
+  //                `eslint`, which has no bundled types and no @types/* in the
+  //                workspace.
+  "exclude": [
+    "src/api/domains/projects.delete.test.ts",                // [mock-type]
+    "src/api/instanceofErrorBan.guard.test.ts",               // [no-types]
+    "src/api/mandrelApiClient.auth.test.ts",                  // [mock-type]
+    "src/api/resolveClient.test.ts",                          // [jest-ns]
+    "src/components/common/HighlightRegion.test.tsx",         // [jest-ns]
+    "src/components/ui/ui.forms.test.tsx",                    // [dom-arg]
+    "src/config/envAccessBan.guard.test.ts",                  // [no-types]
+    "src/hooks/authSameTabNav.test.tsx",                      // [jest-ns]
+    "src/hooks/authSplitState.test.ts",                       // [jest-ns]
+    "src/hooks/pageProjectDegraded.test.tsx",                 // [mock-type]
+    "src/hooks/usePageProject.test.tsx",                      // [mock-type]
+    "src/lib/sse.test.ts",                                    // [jest-ns]
+    "src/lib/sseErrorRecovery.test.ts",                       // [jest-ns]
+    "src/pages/TreeWalker.test.tsx",                          // [mock-shape]
+    "src/pages/calendar/DaySummary.watermark.test.tsx",       // [dom-arg]
+    "src/pages/sessions/StreamCard.counters.test.tsx",        // [prop-gap]
+    "src/pages/settings/DangerZoneSection.errorText.test.tsx" // [mock-type]
+  ]
+}

@@ -1,0 +1,354 @@
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Logs
+*.log
+logs/
+debug-logs/
+backend.log
+frontend.log
+backend_*.log
+frontend_*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+run/
+# Anchor to the repo root: this ignores a root-level runtime session-data dir,
+# NOT source directories named `sessions/` (e.g. frontend src/pages/sessions,
+# src/components/sessions) which are tracked. An unanchored `sessions/` silently
+# swallowed any nested source `sessions/` dir.
+/sessions/
+
+# Database
+*.db
+*.sqlite
+*_dump.sql
+*_backup.sql
+# Keep migrations tracked
+!mcp-server/database/migrations/*.sql
+
+# Backups
+backups/
+archive/
+*.backup
+*.tar.gz
+
+# Archive directories (keep local, exclude from repo)
+mcp-server-archive/
+docs/*
+!docs/DEPLOYMENT.md
+# Mandrel Core Redesign — anchor product artifact, versioned WITH the code it specifies (2026-06-21)
+!docs/MANDREL_CORE_REDESIGN.md
+# D3 (2026-06-09): organized doc homes — tracked, not scratch
+!docs/guides/
+!docs/archive/
+# Anchor to repo root: ignore only a top-level scratch tests/ dir, NOT nested
+# source test dirs like mcp-server/src/tests/ (where the tracked *.contract.test.ts
+# regression guards live and must run in CI). Unanchored `tests/` matched ANY depth
+# and silently excluded new test files from CI. See 2026-06-15 test-hygiene fix.
+/tests/
+coordinator-parser-tui/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Build outputs
+build/
+dist/
+*/build/
+*/dist/
+
+# Test coverage
+coverage/
+
+# Temporary files
+tmp/
+temp/
+
+# Debug and test artifacts
+debug-images/
+debug-tests/
+*.png
+*.jpg
+*.jpeg
+test-*.js
+test-*.ts
+docs/tests/test-sse-integration.js
+
+# AIDIS specific - runtime
+aidis.service
+aidis-user.service
+aidis_restart.log
+create_admin.sql
+fresh_login.json
+auth_response.json
+server-*.pid
+*.pid
+
+# AIDIS specific - development artifacts
+*_INVESTIGATION_REPORT.md
+*_IMPLEMENTATION_COMPLETE.md
+*_IMPLEMENTATION_PLAN.md
+*_IMPLEMENTATION_SUMMARY.md
+*_FIX_COMPLETE.md
+*_FIX_SUMMARY.md
+*_PLAN.md
+*_SUMMARY.md
+*_QUICK_REFERENCE.md
+*_QUICK_SUMMARY.md
+*_FLOW_DIAGRAM.md
+*_FEATURE_MATRIX.md
+*_ARCHITECTURE_DIAGRAM.md
+*_VISUAL.txt
+*_INDEX.md
+*_EXECUTIVE_SUMMARY.md
+*_STRATEGY.md
+*_CHECKLIST.md
+*_VALIDATION_*.md
+PHASE*.md
+ORACLE*.md
+SESSION*.md
+TS006*.md
+TS007*.md
+TT009*.md
+TR001*.md
+T011_*.json
+P2_*.md
+MCP_*.md
+BRIDGE_*.md
+CONTEXT*.md
+DECISION_*.md
+MANUAL_*.md
+REFRACTOR_*.md
+REFRESH_*.md
+SECURITY_*.md
+TASK_*.md
+TASK-*.md
+TOKEN_*.txt
+TOOL_*.md
+Workflow_*.md
+*-specs.md
+baseline-*.md
+baseline-*.ts
+aidis-rebuild-*.ts
+agent*.txt
+*.svg
+playwright-*.json
+sample.py
+
+# AIDIS specific - development scripts
+aidis-stdio-mock*.js
+claude-http-mcp-bridge*.js
+compare-mcp-servers.js
+debug-mcp-protocol.js
+emergency-rollback.sh
+health-check.sh
+monitor-health.sh
+rollback-*.sh
+# ...but scripts/test/ holds TRACKED suites, and `rollback-*.sh` above swallowed
+# rollback-service-scope.test script SILENTLY on 2026-09-02: `git add -A`
+# reported nothing, the commit went through, and the suite would have shipped
+# untracked — invisible to `git archive`, to CI, and to the next clone. The block
+# above is legacy throwaway-script hygiene for the REPO ROOT; it was never meant
+# to reach a test directory. Re-include the whole of scripts/test/ so no future
+# suite can be lost to a root-level pattern it never knew about.
+!scripts/test/**
+mcp-*.js
+*-wrapper.js
+verify-*.ts
+measure-*.ts
+performance-*.ts
+dep-viewer.html
+deps.json
+fixed-tool-list.js
+logging-config.env
+
+# Personal projects - not part of AIDIS
+# Anchored to the repo root: an unanchored `projects/` also matches nested dirs like
+# `src/pages/projects/` (a real UI module), silently un-committing them. Only ignore a
+# TOP-LEVEL personal projects dir here.
+/projects/
+forge-web/
+logo/
+
+# Configuration backups
+.backup-*/
+.mcp-mock.json
+.mcp-original.json
+.claude.json
+.playwright-mcp/
+
+# Zone identifier files
+*:Zone.Identifier
+
+# Sensitive files
+Assets/
+
+# Spindles proxy (contains sensitive data)
+spindles-proxy/
+# Test 1768445603
+# Test 1768445968
+
+# Surveyor cache
+.surveyor/
+
+# Secret hardening (added by inspection 2026-06-07) — leaked file removed from tracking
+.env.logging
+*.env.logging
+
+# Concrete dev env holds a dev DB password — recreate from .env.example
+config/environments/.env.development
+
+# Playwright CLI session artifacts (local)
+.playwright-cli/
+
+# Schematic — versioned with the code it maps (overrides the docs/ ignore)
+!docs/schematic/
+!docs/schematic/**
+
+# Onboarding docs — versioned product artifact (overrides docs/ ignore)
+!docs/onboarding/
+!docs/onboarding/**
+
+# Deploy runbooks — versioned with the config they operate (overrides docs/ ignore).
+# These are OPERATIONAL: a runbook that is not in the repo cannot be cited by the
+# files it operates. b3cf883b's runbook was written here, silently swallowed by the
+# docs/* rule above, and had to be rescued to another repo — while five files kept
+# citing the dead path.
+!docs/deploy/
+!docs/deploy/**
+!docs/runbooks/
+!docs/runbooks/**
+
+# Loop guides — linked from loop/README.md, so they ship with it (overrides docs/ ignore)
+!docs/loop/
+!docs/loop/**
+
+# Command UI frontend logo assets — versioned brand artifact (overrides *.png/*.svg ignore)
+!mandrel-command/frontend/public/assets/
+!mandrel-command/frontend/public/assets/**
+
+# Per-tenant compose overrides NO LONGER EXIST (one-compose): the
+# tracked docker-compose.yml is the ONE file for every tenant, and per-tenant
+# differences are values in the tenant env file. This wildcard stays so any STALE
+# gitignored docker-compose.<handle>.yml still on a fleet box (pre-cutover leftovers,
+# removed at T1.4) can never be committed — and so a customer handle can never leak
+# into the public repo. The tracked composes are negated back in below.
+# Only docker-compose.yml and the build overlay are tracked.
+docker-compose.*.yml
+!docker-compose.yml
+# The build-only overlay: single, tracked, tenant-agnostic —
+# the ONLY place build: stanzas live. Not a per-tenant override (those stay
+# ignored above).
+!docker-compose.build.yml
+
+# =============================================================================
+# Secret-leak hardening (added 2026-06-17 alongside the gitleaks gate)
+# =============================================================================
+# These are the categories that ACTUALLY leaked into this repo's history (see
+# the 2026-06-17 code-health audit). Belt-and-suspenders with the gitleaks gate:
+# the gate catches secret SHAPES; .gitignore stops the leak-prone FILE TYPES from
+# ever being staged in the first place. ADD-only — nothing above is removed.
+
+# SQL dumps / backups in general (history leaked full table dumps with app rows).
+# The migrations stay tracked via the negation that follows.
+*.sql
+*backup*
+!mcp-server/database/migrations/*.sql
+# Manual down-migrations (e.g. rollback/046_*_ROLLBACK.sql) live in a subdir so the
+# forward-migration runner (which scans migrations/ non-recursively) never auto-runs
+# them; they are documented code, not data dumps — keep them tracked.
+!mcp-server/database/migrations/rollback/*.sql
+# (The better-auth OAuth schema is now standard migration 052 under
+# mcp-server/database/migrations/, already un-ignored above by the migrations/*.sql
+# negation — no separate un-ignore needed. The old database/better-auth/ path was
+# removed when the schema was promoted into the migration runner.)
+# Operator runbook SQL (gated, operator-run): parameterized DDL/DML, no table dumps /
+# no app rows / no secrets — it's documented code that must ship.
+# ...but the backup/offsite SCRIPTS are code, not data dumps — keep them tracked
+# (they read secrets at runtime, never embed them; the gitleaks gate enforces that).
+# THE NEGATION MUST BE RECURSIVE. The flat `!scripts/backup-*.sh` form covered only
+# scripts/ itself, so `*backup*` silently swallowed backup-retention script
+# and backup-retention-anchor.test script — the shared retention rule and
+# the guard for it — exactly the way it once left the three backup scripts untracked.
+# A file git cannot see is a file that does not deploy and that no gate can scan, and
+# NOTHING in the tree reports it. backup-retention-anchor.test script
+# section F is the check that now does.
+# Scoped to *.sh: shell files are code. SQL dumps and archives with "backup" in the
+# name stay ignored by the rule above, which is the leak this section is for.
+!scripts/**/*backup*.sh
+!scripts/**/*offsite*.sh
+!scripts/backup-*.sh
+!scripts/offsite-*.sh
+
+# Env files — block every variant, but ALWAYS keep the committed example.
+.env
+.env.*
+!.env.example
+
+# Logs (broaden beyond the specific names already ignored above).
+*.log
+logs/
+
+# Local AI / scan scratch that captured secrets verbatim in history.
+.surveyor/
+ai-context/
+debug-context*
+
+# Captured auth/login responses (probe artifacts) — all variants.
+auth_response*.json
+
+# A Traefik runtime config dir at the repo root. It can carry dashboard auth and
+# cert-resolver tokens, so it belongs OUTSIDE git. Anchored to the repo root.
+/traefik/
+
+
+# Local backup snapshots (deploy/cutover .bak files) — disposable, never tracked.
+*.bak
+*.bak-*
+
+# R&D scratch: p0 embedder bake-off. Track the harness SCRIPTS (version-controlled
+# after a GC loss); ignore only the disposable heavy artifacts.
+# Corpus storage (277MB data/) is DEFERRED to a durable off-tree backup, NOT plain git.
+evals/p0-embedder-bakeoff/data/
+evals/p0-embedder-bakeoff/out/
+evals/p0-embedder-bakeoff/**/__pycache__/
+evals/p0-embedder-bakeoff/*.log
+# belief-eval's scorers now share decision-run/adjvocab.py, so importing it writes bytecode.
+evals/belief-eval/**/__pycache__/
+
+# Settings reference — generated from src/config by `npm run docs:config` and drift-tested (overrides docs/ ignore)
+!docs/reference/
+!docs/reference/**
+
+# User manual — linked from README.md (overrides docs/ ignore)
+!docs/manual/
+!docs/manual/**
+
+# Packed npm tarballs (docs: `npm pack` in loop/)
+*.tgz
+evals/p0-embedder-bakeoff/data/
+evals/p0-embedder-bakeoff/out/
+evals/p0-embedder-bakeoff/out_embed_server.log

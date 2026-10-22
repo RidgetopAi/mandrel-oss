@@ -1,0 +1,23 @@
+/*
+ * Feature B — search-term highlight styling.
+ *
+ * ONE rule styles EVERY highlight `<mark>` in the app (markdown content marks are
+ * bare <mark>; LinkifiedText + list-card excerpt marks add the .ra-search-highlight
+ * class — both are covered here), so the look never drifts between surfaces.
+ *
+ * Accessibility: an amber fill with near-black text is a high-contrast pairing that
+ * reads clearly on BOTH the light and dark app themes (the mark supplies its own
+ * dark foreground rather than inheriting a theme's light text onto a light fill,
+ * which would wash out). Colors are CSS custom properties with fallbacks so a theme
+ * can retune them without a rebuild (configs-not-hardcoded, presentation layer).
+ */
+mark,
+.ra-search-highlight {
+  background-color: var(--ra-highlight-bg, #ffe58f);
+  color: var(--ra-highlight-fg, #1f1f1f);
+  padding: 0 2px;
+  border-radius: 2px;
+  /* Keep it inline so it never disturbs surrounding text flow. */
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}

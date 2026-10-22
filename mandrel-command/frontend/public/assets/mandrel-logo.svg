@@ -1,0 +1,10 @@
+<!-- Mandrel product mark. Product-neutral by design: the previous
+     favicon was company art shipped in every tenant image. A simple geometric "M"
+     — no company branding, renders cleanly at 16px favicon size.
+     NOTE: SVG comments are NOT stripped by the build; this file ships verbatim, so
+     keep the company name out of the prose here too. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <rect width="64" height="64" rx="14" fill="#0f1115"/>
+  <path d="M16 46 V20 l16 15 16-15 v26" fill="none" stroke="#e8e8ea"
+        stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

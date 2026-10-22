@@ -1,0 +1,65 @@
+/* App-shell frame (P0.4) — the token-driven layout that replaces the antd
+   AppLayout. Sidebar (inline, desktop) + Topbar + scrollable content Outlet. */
+
+.shell {
+  display: flex;
+  height: 100vh;
+  width: 100%;
+  background: var(--bg);
+  color: var(--tx);
+  overflow: hidden;
+}
+
+/* inline sidebar column — desktop only (mobile uses the overlay Drawer) */
+.sideCol {
+  flex: none;
+  height: 100vh;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100vh;
+}
+
+.content {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 24px;
+}
+
+/* skip-to-content link — visually hidden until focused (a11y) */
+.skipLink {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  padding: 8px 14px;
+  border-radius: var(--r-sm);
+  background: var(--teal);
+  color: var(--on-accent);
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skipLink:focus {
+  top: 12px;
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+/* mobile drawer nav wrapper — the Sidebar fills it via its `fullWidth` variant */
+.drawerNav {
+  height: 100%;
+}
+
+@media (max-width: 860px) {
+  .content {
+    padding: 16px;
+  }
+}

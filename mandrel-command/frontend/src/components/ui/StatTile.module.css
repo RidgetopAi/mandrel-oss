@@ -1,0 +1,76 @@
+/* StatTile — KPI tile. Panel surface + display-scale number + trend chip.
+   All colour/size via tokens; trend tint via color-mix. */
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tx-3);
+}
+
+.label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--tx-3);
+}
+
+.valueRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+}
+
+.value {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-display);
+  color: var(--tx);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.trend {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-xs);
+  color: var(--trend-accent, var(--tx-2));
+  background: color-mix(in srgb, var(--trend-accent, var(--tx-3)) 14%, transparent);
+}
+
+.trendUp {
+  --trend-accent: var(--ok);
+}
+.trendDown {
+  --trend-accent: var(--crit);
+}
+.trendFlat {
+  --trend-accent: var(--tx-3);
+}
+
+.caption {
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}

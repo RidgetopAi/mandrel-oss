@@ -1,0 +1,142 @@
+/* Button — treatments from the design-language doc (.btn / .primary / .ghost /
+   .subtle). All colour/spacing/radius via tokens. The only literal px are the
+   1px hairline border-widths + focus-ring width (no border-width token exists in
+   the P0.2 set); every colour is a var(--token). */
+
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font);
+  font-weight: 560;
+  border: 1px solid transparent;
+  border-radius: var(--r-sm);
+  cursor: pointer;
+  white-space: nowrap;
+  user-select: none;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    color 0.14s ease,
+    box-shadow 0.14s ease,
+    opacity 0.14s ease,
+    transform 0.06s ease;
+}
+
+.btn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--bg-2), 0 0 0 4px var(--teal-glow);
+}
+
+.btn:active {
+  transform: translateY(0.5px);
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+  transform: none;
+}
+
+.inner {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.label {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* ── Sizes ────────────────────────────────────────────────────────────────── */
+.sm {
+  font-size: var(--fs-label);
+  padding: var(--sp-1) var(--sp-3);
+}
+.md {
+  font-size: var(--fs-body);
+  padding: var(--sp-2) var(--sp-4);
+}
+.lg {
+  font-size: var(--fs-title);
+  padding: var(--sp-3) var(--sp-5);
+}
+
+.fullWidth {
+  width: 100%;
+}
+
+/* ── Variants ─────────────────────────────────────────────────────────────── */
+.primary {
+  background: linear-gradient(150deg, var(--teal), var(--teal-dim));
+  /* Ink on the bright teal. --on-accent is the doc's teal-tinted near-black
+     (#04110f) in dark mode and a near-white in light mode — a PURPOSE-BUILT ink
+     token, no longer piggy-backing on --bg (which only coincidentally matched and
+     would drift if the ground or teal moved). Zero hardcoded hex. */
+  color: var(--on-accent);
+  font-weight: 620;
+  box-shadow: 0 0 18px -4px var(--teal-glow);
+}
+.primary:hover:not(:disabled) {
+  box-shadow: 0 0 22px -2px var(--teal-glow);
+  filter: brightness(1.05);
+}
+
+.ghost {
+  background: var(--s2);
+  color: var(--tx);
+  border-color: var(--line-2);
+}
+.ghost:hover:not(:disabled) {
+  background: var(--s-hover);
+}
+
+.subtle {
+  background: transparent;
+  color: var(--tx-2);
+}
+.subtle:hover:not(:disabled) {
+  background: var(--s2);
+  color: var(--tx);
+}
+
+.danger {
+  background: var(--crit);
+  /* Ink on the danger/rose fill. The doc uses white on danger, so --on-crit is
+     near-white in both themes (purpose-built ink token, not --bg). Zero hardcoded
+     hex. */
+  color: var(--on-crit);
+  font-weight: 620;
+}
+.danger:hover:not(:disabled) {
+  filter: brightness(1.06);
+}
+
+/* ── Loading ──────────────────────────────────────────────────────────────── */
+.loading .inner {
+  opacity: 0;
+}
+
+.spinner {
+  position: absolute;
+  width: 1em;
+  height: 1em;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: btn-spin 0.6s linear infinite;
+}
+
+@keyframes btn-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

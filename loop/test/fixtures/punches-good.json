@@ -1,0 +1,36 @@
+[
+  {
+    "title": "Add the parser module",
+    "description": "Parse the config file into typed records.",
+    "size": "s",
+    "repo": "mandrel-oss",
+    "dependsOnIndex": [],
+    "doneWhen": [
+      { "text": "parse() returns typed records for a valid config", "owner": "lane", "proof": "loop/test/parser.test.ts" },
+      { "text": "the design reads well to the maintainer", "owner": "human" }
+    ],
+    "proofKind": "test"
+  },
+  {
+    "title": "Wire the parser into the CLI",
+    "description": "Expose parse via a CLI subcommand.",
+    "size": "s",
+    "repo": "mandrel-oss",
+    "dependsOnIndex": [0],
+    "doneWhen": [
+      { "text": "the subcommand exits 0 on a valid config", "owner": "lane", "proof": "loop/test/cli-parse.test.ts" }
+    ],
+    "proofKind": "test"
+  },
+  {
+    "title": "Document the subcommand",
+    "description": "Describe usage in the README.",
+    "size": "xs",
+    "repo": "mandrel-oss",
+    "dependsOnIndex": [0, 1],
+    "doneWhen": [
+      { "text": "the README lists the subcommand and its flags", "owner": "lane", "proof": "walkthrough evidence (not committed to the repo)" }
+    ],
+    "proofKind": "look"
+  }
+]

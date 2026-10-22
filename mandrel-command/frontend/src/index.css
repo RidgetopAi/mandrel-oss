@@ -1,0 +1,53 @@
+/* Light theme CSS variables (default) */
+:root {
+  --bg-primary: #ffffff;
+  --bg-secondary: #f5f5f5;
+  --text-primary: rgba(0, 0, 0, 0.85);
+  --text-secondary: rgba(0, 0, 0, 0.65);
+  --text-tertiary: rgba(0, 0, 0, 0.45);
+  --border-color: #d9d9d9;
+  --hover-bg: #f0f0f0;
+}
+
+/* Dark theme CSS variables */
+[data-theme='dark'] {
+  --bg-primary: #1f1f1f;
+  --bg-secondary: #141414;
+  --text-primary: rgba(255, 255, 255, 0.85);
+  --text-secondary: rgba(255, 255, 255, 0.65);
+  --text-tertiary: rgba(255, 255, 255, 0.45);
+  --border-color: #434343;
+  --hover-bg: #262626;
+}
+
+/*
+ * App root now renders on the CANONICAL design tokens (P0.2). The ground, text
+ * and font come from the token layer (src/styles/tokens.css, generated from
+ * tokens.ts) — `--bg` / `--tx` are theme-aware, so the old dark-only body
+ * override is gone (token-driven now). The legacy `--*-primary` vars above are
+ * kept ONLY for backward-compat with existing antd screens (App.css) until the
+ * primitive/screen phases (P0.3+) migrate them; new work reads the tokens.
+ */
+body {
+  margin: 0;
+  font-family: var(--font);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  letter-spacing: -0.006em;
+  background: var(--bg);
+  color: var(--tx);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+}

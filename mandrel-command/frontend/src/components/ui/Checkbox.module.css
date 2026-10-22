@@ -1,0 +1,83 @@
+/* Checkbox — from the settings mock `.chk`. The check ink is --on-accent (the
+   doc's #04110f), matching the primary button. Colour/type via tokens; literal px
+   are box geometry + border/ring widths (no size/border-width token). */
+
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Real input, visually hidden but focusable + in the a11y tree. */
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.box {
+  display: grid;
+  place-items: center;
+  width: 17px;
+  height: 17px;
+  border-radius: var(--r-xs);
+  border: 1.5px solid var(--line-2);
+  background: transparent;
+  transition:
+    background 0.14s ease,
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+
+.mark {
+  stroke: var(--on-accent);
+  color: var(--on-accent);
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+/* Checked OR indeterminate → filled teal box + visible mark. */
+.input:checked + .box,
+.input[aria-checked='mixed'] + .box {
+  background: linear-gradient(150deg, var(--teal), var(--teal-dim));
+  border-color: transparent;
+}
+.input:checked + .box .mark,
+.input[aria-checked='mixed'] + .box .mark {
+  opacity: 1;
+}
+
+.input:focus-visible + .box {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--teal-glow);
+  border-color: var(--teal);
+}
+
+.wrap:hover .input:not(:disabled):not(:checked) + .box {
+  border-color: var(--tx-4);
+}
+
+.input:checked ~ .label,
+.input[aria-checked='mixed'] ~ .label {
+  color: var(--tx);
+}
+
+.label {
+  line-height: 1.3;
+}

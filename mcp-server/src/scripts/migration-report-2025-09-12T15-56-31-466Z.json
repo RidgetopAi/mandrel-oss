@@ -1,0 +1,705 @@
+{
+  "timestamp": "2025-09-12T15-56-31-466Z",
+  "migrationPlan": {
+    "migrationId": "37d29d4a-756d-4677-894d-078b9f152011",
+    "analysisDate": "2025-09-12T15:56:31.465Z",
+    "sessions": [
+      {
+        "session": {
+          "id": "2ab18be0-61a1-44b1-a34d-48215686d5ef",
+          "project_id": null,
+          "started_at": "2025-09-11T00:13:28.201Z",
+          "agent_type": "claude-code-agent",
+          "title": null,
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "eb13e561-28af-48c7-b793-10215074abdf",
+              "session_id": "2ab18be0-61a1-44b1-a34d-48215686d5ef",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-11T00:13:28.203Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "89b187f5-bab9-4af0-a692-c0db50a172ec",
+          "project_id": null,
+          "started_at": "2025-09-10T21:30:11.355Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 21:30",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "ae675aa4-9064-4aed-8a59-869dac78de39",
+              "session_id": "89b187f5-bab9-4af0-a692-c0db50a172ec",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T21:30:11.358Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "5157dd19-6daa-4a13-833d-c76bce34a1f7",
+          "project_id": null,
+          "started_at": "2025-09-10T21:27:49.376Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 21:27",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "7a85df07-f089-4c21-a1f3-aac3386efd05",
+              "session_id": "5157dd19-6daa-4a13-833d-c76bce34a1f7",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T21:27:49.379Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "4c4e9ef7-b2ab-4173-8938-886609a9cf9d",
+          "project_id": null,
+          "started_at": "2025-09-10T21:26:58.854Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 21:26",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "2792bd89-14f9-4523-8290-eba428306e94",
+              "session_id": "4c4e9ef7-b2ab-4173-8938-886609a9cf9d",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T21:26:58.859Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "9a564571-7b3b-4fb0-a78d-8acfc238c35f",
+          "project_id": null,
+          "started_at": "2025-09-10T17:21:16.788Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 17:21",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "49b6e182-1bd3-4139-886e-7190e7c88436",
+              "session_id": "9a564571-7b3b-4fb0-a78d-8acfc238c35f",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T17:21:16.792Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "4f56335a-6a33-4ea8-bbd9-b15c3ee19ce0",
+          "project_id": null,
+          "started_at": "2025-09-10T17:20:24.758Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 17:20",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "8765977a-29d1-4972-804a-23e9c22f2ef4",
+              "session_id": "4f56335a-6a33-4ea8-bbd9-b15c3ee19ce0",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T17:20:24.762Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "b64db9af-8453-4eca-8644-a744fc9baeba",
+          "project_id": null,
+          "started_at": "2025-09-10T17:18:54.745Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 17:18",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "184b922c-e0ad-47f5-ae81-7a7ce1ca4cdc",
+              "session_id": "b64db9af-8453-4eca-8644-a744fc9baeba",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T17:18:54.749Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "4a7e67ba-7a56-42fe-88a3-17fb02cb55c0",
+          "project_id": null,
+          "started_at": "2025-09-10T17:17:39.209Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 17:17",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "106a2e38-2bcb-4082-8b98-dddacffa9e16",
+              "session_id": "4a7e67ba-7a56-42fe-88a3-17fb02cb55c0",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T17:17:39.213Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "e6aa8564-72bf-4179-acd4-23e0212ce657",
+          "project_id": null,
+          "started_at": "2025-09-10T17:13:09.920Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 17:13",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "e83bca22-7a2d-4725-899e-93759c9aab6c",
+              "session_id": "e6aa8564-72bf-4179-acd4-23e0212ce657",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T17:13:09.924Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "297ef74a-9393-46b9-a45d-157e8d74b7e7",
+          "project_id": null,
+          "started_at": "2025-09-10T17:04:53.683Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 17:04",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "1308203d-d0a2-46b6-ae06-44af6dd5f88e",
+              "session_id": "297ef74a-9393-46b9-a45d-157e8d74b7e7",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T17:04:53.687Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "2fdda704-1b6f-4c22-be45-7831feb8a72c",
+          "project_id": null,
+          "started_at": "2025-09-10T14:58:41.505Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 14:58",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "ed0c8784-ceb7-4b18-a13e-148456f49e64",
+              "session_id": "2fdda704-1b6f-4c22-be45-7831feb8a72c",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T14:58:41.510Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "0fb73242-bf5e-430b-bf1f-748dc991943e",
+          "project_id": null,
+          "started_at": "2025-09-10T14:57:36.175Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 14:57",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "6e8f4a3e-d1da-4b81-835f-107e25caae65",
+              "session_id": "0fb73242-bf5e-430b-bf1f-748dc991943e",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T14:57:36.179Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "5bb49b85-791a-420f-af58-5c9aadb754c6",
+          "project_id": null,
+          "started_at": "2025-09-10T13:23:53.748Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 13:23",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "114d29c7-820d-45ea-8932-57f7c2384042",
+              "session_id": "5bb49b85-791a-420f-af58-5c9aadb754c6",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T13:23:53.752Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "5d3f7d65-c68c-4c90-9049-599dd554f54d",
+          "project_id": null,
+          "started_at": "2025-09-10T13:12:35.133Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-10 13:12",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "f71507a2-9c80-4664-b08e-fe7be93076ac",
+              "session_id": "5d3f7d65-c68c-4c90-9049-599dd554f54d",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-10T13:12:35.137Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "fbe79013-2902-41d3-8f20-d1127f4dcb11",
+          "project_id": null,
+          "started_at": "2025-09-09T22:24:08.185Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-09 22:24",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "68333b38-607a-452d-bf18-cb0c23a74fea",
+              "session_id": "fbe79013-2902-41d3-8f20-d1127f4dcb11",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-09T22:24:08.191Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "6708ec22-bad6-4401-911f-fe66c5412c20",
+          "project_id": null,
+          "started_at": "2025-09-09T22:23:36.592Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-09 22:23",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "87f61e44-c625-4388-bfd2-25064c4bfbda",
+              "session_id": "6708ec22-bad6-4401-911f-fe66c5412c20",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-09T22:23:36.595Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "e3567881-bef8-4cd5-a8ea-77e69edbb0fa",
+          "project_id": null,
+          "started_at": "2025-09-09T22:23:13.353Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-09 22:23",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "c4a40cd8-eb0f-45ba-bf4d-f1967393a468",
+              "session_id": "e3567881-bef8-4cd5-a8ea-77e69edbb0fa",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-09T22:23:13.357Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      },
+      {
+        "session": {
+          "id": "3de96090-fa33-4622-8f9f-98b7c2ff6393",
+          "project_id": null,
+          "started_at": "2025-09-09T22:21:57.962Z",
+          "agent_type": "claude-code-agent",
+          "title": "Session 2025-09-09 22:21",
+          "description": null,
+          "analyticsEvents": [
+            {
+              "event_id": "d0a19eed-2ad6-4212-83ef-bb1cfbe7a183",
+              "session_id": "3de96090-fa33-4622-8f9f-98b7c2ff6393",
+              "project_id": null,
+              "event_type": "session_start",
+              "timestamp": "2025-09-09T22:21:57.965Z"
+            }
+          ]
+        },
+        "assignmentType": "unassigned",
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "confidence": 1,
+        "reasoning": "No analytics events with project_id found",
+        "warnings": [],
+        "analyticsEventsSummary": {
+          "total": 1,
+          "uniqueProjects": 0,
+          "projectDistribution": {}
+        }
+      }
+    ],
+    "summary": {
+      "total": 18,
+      "confident": 0,
+      "tentative": 0,
+      "manual_review": 0,
+      "unassigned": 18
+    },
+    "risks": [],
+    "recommendations": [
+      "18 sessions will be marked as unassigned - verify this is acceptable",
+      "Create database backup before executing migration",
+      "Run migration during low-traffic period"
+    ]
+  },
+  "migrationReport": {
+    "migrationId": "37d29d4a-756d-4677-894d-078b9f152011",
+    "startTime": "2025-09-12T15:56:31.465Z",
+    "results": [
+      {
+        "success": true,
+        "sessionId": "2ab18be0-61a1-44b1-a34d-48215686d5ef",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "89b187f5-bab9-4af0-a692-c0db50a172ec",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "5157dd19-6daa-4a13-833d-c76bce34a1f7",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "4c4e9ef7-b2ab-4173-8938-886609a9cf9d",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "9a564571-7b3b-4fb0-a78d-8acfc238c35f",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "4f56335a-6a33-4ea8-bbd9-b15c3ee19ce0",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "b64db9af-8453-4eca-8644-a744fc9baeba",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "4a7e67ba-7a56-42fe-88a3-17fb02cb55c0",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "e6aa8564-72bf-4179-acd4-23e0212ce657",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "297ef74a-9393-46b9-a45d-157e8d74b7e7",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "2fdda704-1b6f-4c22-be45-7831feb8a72c",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "0fb73242-bf5e-430b-bf1f-748dc991943e",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "5bb49b85-791a-420f-af58-5c9aadb754c6",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "5d3f7d65-c68c-4c90-9049-599dd554f54d",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "fbe79013-2902-41d3-8f20-d1127f4dcb11",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "6708ec22-bad6-4401-911f-fe66c5412c20",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "e3567881-bef8-4cd5-a8ea-77e69edbb0fa",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      },
+      {
+        "success": true,
+        "sessionId": "3de96090-fa33-4622-8f9f-98b7c2ff6393",
+        "sourceProjectId": null,
+        "targetProjectId": "00000000-0000-0000-0000-000000000000",
+        "migrationMethod": "unassigned",
+        "timestamp": "2025-09-12T15:56:31.465Z"
+      }
+    ],
+    "summary": {
+      "total": 18,
+      "successful": 18,
+      "failed": 0,
+      "skipped": 0
+    },
+    "errors": [],
+    "rollbacksPerformed": 0,
+    "validationErrors": 0,
+    "endTime": "2025-09-12T15:56:31.465Z"
+  },
+  "generatedBy": "TS013 Enhanced Session Migration Script"
+}

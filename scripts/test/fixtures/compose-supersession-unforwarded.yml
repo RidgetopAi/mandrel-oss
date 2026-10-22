@@ -1,0 +1,10 @@
+# Fixture: a compose file shaped like the one stranger test #3 found — the supersession keys are
+# sourced from MANDREL_BELIEF_-prefixed names (so SUBQ_API_KEY / ANTHROPIC_API_KEY in .env never
+# arrive), the cap is not forwarded, and the master switch is forced to false.
+services:
+  mcp-server:
+    environment:
+      MANDREL_BELIEF_ENABLED: "${MANDREL_BELIEF_ENABLED:-false}"
+      MANDREL_BELIEF_ADJUDICATOR_PROVIDER: "${MANDREL_BELIEF_ADJUDICATOR_PROVIDER:-}"
+      ANTHROPIC_API_KEY: "${MANDREL_BELIEF_ANTHROPIC_API_KEY:-}"
+      SUBQ_API_KEY: "${MANDREL_BELIEF_SUBQ_API_KEY:-}"

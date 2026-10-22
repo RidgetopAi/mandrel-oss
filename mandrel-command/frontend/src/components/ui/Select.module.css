@@ -1,0 +1,179 @@
+/* Select — trigger button + popup listbox. From the mocks' `.sel` treatment.
+   Colour/type via tokens; literal px are borders, ring width, popup offset,
+   max-height + the check column width (no size/border-width token). */
+
+.root {
+  /* Popup width cap — decouples the dropdown from the trigger width so full,
+     untruncated option labels always fit. Named custom property
+     (not an inline magic number) per the house tunables rule; local to this
+     module because global tokens.css is code-generated. */
+  --select-popup-max-width: 320px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx);
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-3);
+  cursor: pointer;
+  text-align: left;
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+.trigger:hover:not(:disabled) {
+  border-color: var(--tx-4);
+}
+.trigger:focus-visible,
+.trigger.open {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-glow);
+}
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.trigger.invalid {
+  border-color: var(--crit);
+}
+
+.value {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.placeholder {
+  color: var(--tx-4);
+}
+
+.chevron {
+  display: inline-flex;
+  color: var(--tx-3);
+  transition: transform 0.14s ease;
+}
+.open .chevron {
+  transform: rotate(180deg);
+}
+
+/* Floating popup shell — shared by the bare listbox (non-searchable) and the
+   combobox popup (searchable). Width is decoupled from the trigger: content-
+   driven (`max-content`), floored at the trigger width (`min-width: 100%`) and
+   capped (`max-width`) so full option labels never truncate and a pathological
+   label can't run off-screen. Anchored left (`right: auto`) so it grows rightward. */
+.listbox,
+.popup {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 4px);
+  left: 0;
+  right: auto;
+  width: max-content;
+  min-width: 100%;
+  max-width: var(--select-popup-max-width);
+  background: var(--s1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+}
+
+.listbox {
+  margin: 0;
+  padding: var(--sp-1);
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  outline: none;
+}
+
+/* When nested inside the searchable popup, the `.popup` provides the floating
+   shell; the listbox is just the scroll region beneath the search input. */
+.listboxNested {
+  position: static;
+  top: auto;
+  width: auto;
+  min-width: 0;
+  max-width: none;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+/* Combobox search field at the top of the searchable popup. */
+.search {
+  padding: var(--sp-1);
+  border-bottom: 1px solid var(--line-2);
+}
+.searchInput {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx);
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-xs);
+  padding: var(--sp-2) var(--sp-3);
+  outline: none;
+}
+.searchInput::placeholder {
+  color: var(--tx-4);
+}
+.searchInput:focus-visible {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-glow);
+}
+
+/* "No matches" empty state inside the popup. */
+.empty {
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--tx-3);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-2);
+  border-radius: var(--r-xs);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  cursor: pointer;
+}
+.option[aria-selected='true'] {
+  color: var(--tx);
+}
+.option.active {
+  background: var(--s2);
+  color: var(--tx);
+}
+.optionDisabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.optionCheck {
+  display: inline-flex;
+  width: 16px;
+  flex: none;
+  color: var(--teal);
+}
+.optionLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

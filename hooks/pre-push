@@ -1,0 +1,88 @@
+#!/usr/bin/env bash
+# =============================================================================
+# hooks/pre-push — a release tag may not leave this machine disagreeing with the
+#                  version it names
+# =============================================================================
+# WHAT THIS CLOSES. scripts/lib/release-tag-gate.sh refuses to DEPLOY a ref whose
+# vX.Y.Z tag disagrees with the version manifests at that ref. That gate is real,
+# but it fires at the END of the pipeline: the bad tag already exists, is already
+# pushed, and is already the thing someone reaches for. On 2026-08-30 four
+# consecutive releases (v0.48.0..v0.51.1) were hand-cut without a lockstep bump,
+# and v0.51.1 shipped to 21 containers advertising 0.50.0 in the customer-visible
+# MCP handshake. The deploy gate now stops the SHIP; nothing stopped the TAG.
+#
+# This is that stop, at the last moment the tag is still local and free.
+#
+# WHY A REFUSAL AND NOT AN AUTO-BUMP — the same argument release-tag-gate.sh makes
+# for not auto-cutting: a hook that rewrites a tag you are mid-push on is a hook
+# that surprises you. Refusing costs one `git tag -d` and a re-run of release.sh;
+# guessing costs a handshake that lies about the shape of the change.
+#
+# SCOPE — deliberately narrow. It judges ONLY refs/tags/vX.Y.Z being pushed. A
+# branch push, a non-release tag (archive/*, release-1.2.3, v1.2), and a tag
+# DELETION are all none of this hook's business and pass untouched. Narrow is the
+# point: a hook that blocks pushes for reasons people did not sign up for gets
+# disabled, and then it protects nothing.
+#
+# Enabled by `git config core.hooksPath hooks`, same as hooks/pre-commit.
+#
+# Escape hatch, explicit and opt-in (you own the risk, and it is named in the
+# refusal text so nobody has to go looking):
+#       SKIP_RELEASE_TAG_CHECK=1 git push origin vX.Y.Z
+# =============================================================================
+set -euo pipefail
+
+RED=$'\033[31m'; YLW=$'\033[33m'; GRN=$'\033[32m'; BLD=$'\033[1m'; RST=$'\033[0m'
+
+if [[ "${SKIP_RELEASE_TAG_CHECK:-0}" == "1" ]]; then
+  printf '%s[pre-push] SKIP_RELEASE_TAG_CHECK=1 — release-tag/manifest agreement NOT checked.%s\n' "$YLW" "$RST" >&2
+  exit 0
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+LIB="$REPO_ROOT/scripts/lib/release-tag-gate.sh"
+
+# Fail CLOSED on a missing lib. An old checkout that predates the lib genuinely
+# cannot answer the question, and "cannot measure" must never read as permission
+# (C1). The bypass is named so this is a one-line unblock, not a research task.
+if [[ ! -f "$LIB" ]]; then
+  printf '%s%s[pre-push] %s not found — cannot check release-tag/manifest agreement.%s\n' "$BLD" "$RED" "${LIB#"$REPO_ROOT/"}" "$RST" >&2
+  printf '%s  Refusing the push (fail-closed). Bypass this ONE push with:\n    SKIP_RELEASE_TAG_CHECK=1 git push ...%s\n' "$YLW" "$RST" >&2
+  exit 1
+fi
+# shellcheck source=/dev/null
+source "$LIB"
+
+# git feeds pre-push one line per ref on STDIN:  <local ref> <local sha> <remote ref> <remote sha>
+FAILED=0
+CHECKED=0
+while read -r LOCAL_REF LOCAL_SHA _REMOTE_REF _REMOTE_SHA; do
+  # A deletion pushes the all-zero sha. Deleting a tag is not shipping one.
+  [[ "$LOCAL_SHA" =~ ^0+$ ]] && continue
+  [[ "$LOCAL_REF" == refs/tags/* ]] || continue
+
+  TAG="${LOCAL_REF#refs/tags/}"
+  # ONE definition of "release tag" — the lib's. Not a second glob that will drift
+  # from it (the exact trap release_tag_latest documents).
+  [[ "$TAG" =~ $RELEASE_TAG_REGEX ]] || continue
+
+  CHECKED=$((CHECKED + 1))
+  OUT="$(release_tag_manifest_agreement "$REPO_ROOT" "$LOCAL_SHA" "$TAG")" && RC=0 || RC=$?
+  if [[ "$RC" -eq 0 ]]; then
+    printf '%s[pre-push] %s: %s%s\n' "$GRN" "$TAG" "${OUT#*$'\t'}" "$RST" >&2
+  else
+    FAILED=1
+    printf '\n%s%s[pre-push] REFUSED: %s disagrees with the version it names.%s\n' "$BLD" "$RED" "$TAG" "$RST" >&2
+    printf '%s  %s%s\n' "$RED" "${OUT#*$'\t'}" "$RST" >&2
+    printf '%s  The MCP handshake reports this version to every connecting agent, so a tag that\n' "$YLW" >&2
+    printf '  disagrees with its manifests ships a stale or wrong number to customers.\n' >&2
+    printf '  REMEDY — delete the hand-cut tag and cut it through the script that bumps in lockstep:\n' >&2
+    printf '      git tag -d %s\n' "$TAG" >&2
+    printf '      bash scripts/release.sh <patch|minor|major> --message "..." --yes\n' >&2
+    printf '      git push origin main && git push origin $(git describe --tags --abbrev=0)\n' >&2
+    printf '  Deliberate exception (you own the risk): SKIP_RELEASE_TAG_CHECK=1 git push ...%s\n\n' "$RST" >&2
+  fi
+done
+
+[[ "$FAILED" -eq 0 ]] || exit 1
+exit 0

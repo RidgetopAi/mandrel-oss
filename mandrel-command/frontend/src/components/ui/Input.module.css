@@ -1,0 +1,123 @@
+/* Text controls — Input / Textarea / NumberInput share this treatment.
+   From the mocks' `.inp` / `.sel`: ground = var(--bg), 1px var(--line-2) border,
+   r-sm radius, tokenised padding + type. All colour/type via tokens; the only
+   literal px are the 1px border + focus-ring width (no border-width token). */
+
+.control {
+  width: 100%;
+  box-sizing: border-box;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx);
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  padding: var(--sp-2) var(--sp-3);
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease,
+    background 0.14s ease;
+}
+
+.control::placeholder {
+  color: var(--tx-4);
+}
+
+.control:hover:not(:disabled):not([aria-invalid='true']) {
+  border-color: var(--tx-4);
+}
+
+.control:focus-visible,
+.control:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-glow);
+}
+
+.control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.control[aria-invalid='true'] {
+  border-color: var(--crit);
+}
+.control[aria-invalid='true']:focus-visible,
+.control[aria-invalid='true']:focus {
+  box-shadow: none;
+  border-color: var(--crit);
+}
+
+/* Mono variant — ids, tokens, code-ish values (the mocks use mono for these). */
+.mono {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+}
+
+/* Textarea — same skin, taller, vertical resize only. */
+.textarea {
+  min-height: 84px;
+  line-height: var(--lh-body);
+  resize: vertical;
+}
+
+/* NumberInput — input + stepper buttons in a bordered group. */
+.number {
+  display: inline-flex;
+  align-items: stretch;
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+.number:focus-within {
+  border-color: var(--teal);
+  box-shadow: 0 0 0 3px var(--teal-glow);
+}
+.number[data-invalid='true'] {
+  border-color: var(--crit);
+}
+.number .numberField {
+  width: 100%;
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+}
+.number .numberField:focus-visible,
+.number .numberField:focus {
+  box-shadow: none;
+  border-color: transparent;
+}
+.stepper {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid var(--line);
+}
+.step {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  flex: 1;
+  padding: 0;
+  border: none;
+  background: var(--s2);
+  color: var(--tx-2);
+  cursor: pointer;
+  font-family: var(--mono);
+  line-height: 1;
+}
+.step:first-child {
+  border-bottom: 1px solid var(--line);
+}
+.step:hover:not(:disabled) {
+  background: var(--s-hover);
+  color: var(--tx);
+}
+.step:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

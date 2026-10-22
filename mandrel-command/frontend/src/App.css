@@ -1,0 +1,250 @@
+/* Global App Styles */
+.app {
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* Login page specific styles */
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* ============================================
+   Shared page-header row (title block + action buttons)
+   Used by Contexts, Decisions, Tasks, ProjectDetail, etc.
+
+   The old markup was a non-wrapping flex row:
+   [title block | action buttons]. On phones the buttons kept their
+   natural width and overflowed right, squeezing the title flex-item to
+   ~1 char wide so the title wrapped one letter per line (and the buttons
+   ran off the right edge). This shared class fixes the whole class:
+   - flex-wrap so the buttons drop below the title when there isn't room;
+   - the title block claims a full line (flex-basis 100% under the wrap
+     threshold) and min-width:0 so it can shrink without per-char wrapping;
+   - on wide screens there's room for both so it stays a single row →
+     desktop is visually unchanged.
+   ============================================ */
+.page-header-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+/* Title block: never the thing that gets squeezed. min-width:0 lets it
+   shrink past its content's intrinsic min-width (which is what caused the
+   per-character wrap); flex-basis 320px means once the row is narrower than
+   ~title+buttons it claims a full line and the buttons wrap beneath it. */
+.page-header-row > .page-header-title {
+  flex: 1 1 320px;
+  min-width: 0;
+}
+
+/* On real phones, force the title to its own full-width line and let the
+   action buttons wrap below it, left-aligned and usable. */
+@media (max-width: 575px) {
+  .page-header-row > .page-header-title {
+    flex: 1 1 100%;
+  }
+  .page-header-row > .page-header-actions {
+    flex: 1 1 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}
+
+/* Layout customizations */
+.ant-layout {
+  background: var(--bg-secondary) !important;
+  transition: background-color 0.3s ease;
+}
+
+.ant-layout-header {
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  background: var(--bg-primary);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  transition: background-color 0.3s ease;
+}
+
+[data-theme='dark'] .ant-layout {
+  background: #141414 !important;
+}
+
+[data-theme='dark'] .ant-layout-header {
+  background: #1f1f1f;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.ant-layout-sider {
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Card hover effects */
+.ant-card-hoverable:hover {
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  transform: translateY(-2px);
+  transition: all 0.3s ease;
+}
+
+/* Mobile navigation is now an antd overlay Drawer (see AppLayout.tsx) rather
+   than a position:fixed Sider hack. The old @media (max-width:768px) block that
+   force-fixed .ant-layout-sider was removed here to avoid dead/conflicting CSS. */
+
+/* Legacy styles to maintain compatibility */
+.layout {
+  min-height: 100vh;
+}
+
+.logo {
+  float: left;
+  width: 120px;
+  height: 31px;
+  margin: 16px 24px 16px 0;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.site-layout-content {
+  min-height: 280px;
+  padding: 24px;
+  background: var(--bg-primary);
+  transition: background-color 0.3s ease;
+}
+
+[data-theme='dark'] .site-layout-content {
+  background: #1f1f1f;
+}
+
+/* ============================================
+   NUCLEAR OPTION: Remove ALL blue from navigation menu
+   ============================================ */
+
+/* Target every possible selector combination for menu items */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected,
+[data-theme='dark'] .ant-menu-dark.ant-menu .ant-menu-item-selected,
+[data-theme='dark'] .ant-menu.ant-menu-dark .ant-menu-item-selected,
+[data-theme='dark'] .ant-layout-sider .ant-menu-dark .ant-menu-item-selected,
+[data-theme='dark'] .ant-layout-sider .ant-menu-dark.ant-menu .ant-menu-item-selected,
+[data-theme='dark'] .ant-menu-inline.ant-menu-dark .ant-menu-item-selected,
+[data-theme='dark'] .ant-menu-dark.ant-menu-inline .ant-menu-item-selected {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-image: none !important;
+  color: #fff !important;
+}
+
+/* Kill the background on the inner text container */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected .ant-menu-title-content,
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected > span {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Override the ::after pseudo-element border (keep blue line, just on right edge) */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected::after,
+[data-theme='dark'] .ant-menu-dark.ant-menu .ant-menu-item-selected::after,
+[data-theme='dark'] .ant-menu.ant-menu-dark .ant-menu-item-selected::after {
+  border-right-color: #1890ff !important;
+  border-right-width: 3px !important;
+  opacity: 1 !important;
+}
+
+/* Override hover state - prevent blue */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item:hover,
+[data-theme='dark'] .ant-menu-dark.ant-menu .ant-menu-item:hover,
+[data-theme='dark'] .ant-menu.ant-menu-dark .ant-menu-item:hover,
+[data-theme='dark'] .ant-menu-inline.ant-menu-dark .ant-menu-item:hover {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  background-image: none !important;
+}
+
+/* Override active/focus states - prevent blue */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected:hover,
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected:focus,
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected:active,
+[data-theme='dark'] .ant-menu-dark.ant-menu .ant-menu-item-selected:hover,
+[data-theme='dark'] .ant-menu-dark.ant-menu .ant-menu-item-selected:focus,
+[data-theme='dark'] .ant-menu-dark.ant-menu .ant-menu-item-selected:active {
+  background-color: rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.12) !important;
+  background-image: none !important;
+}
+
+/* Kill any background gradients that might be applied */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item::before,
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected::before {
+  background: transparent !important;
+  background-color: transparent !important;
+  opacity: 0 !important;
+}
+
+/* ABSOLUTE NUCLEAR: Catch-all for any remaining blue */
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected *,
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected span,
+[data-theme='dark'] .ant-menu-dark .ant-menu-item-selected div {
+  background-color: transparent !important;
+}
+
+/* Force override on the specific path */
+[data-theme='dark'] .ant-layout-sider .ant-menu.ant-menu-dark.ant-menu-root.ant-menu-inline .ant-menu-item.ant-menu-item-selected {
+  background: rgba(255, 255, 255, 0.08) !important;
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  background-image: none !important;
+}
+
+/* Dark mode for all Cards - Use !important to override inline styles */
+[data-theme='dark'] .ant-card {
+  background: #1f1f1f !important;
+  background-color: #1f1f1f !important;
+  border-color: #434343 !important;
+}
+
+[data-theme='dark'] .ant-card-head {
+  background: #262626 !important;
+  background-color: #262626 !important;
+  border-bottom-color: #434343 !important;
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+[data-theme='dark'] .ant-card-body {
+  background: #1f1f1f !important;
+  background-color: #1f1f1f !important;
+}
+
+/* Dark mode for task cards specifically */
+[data-theme='dark'] .task-card.ant-card {
+  background: #1f1f1f !important;
+  background-color: #1f1f1f !important;
+}
+
+[data-theme='dark'] .task-card .ant-card-head {
+  background: #262626 !important;
+  background-color: #262626 !important;
+}
+
+[data-theme='dark'] .task-card .ant-card-body {
+  background: #1f1f1f !important;
+  background-color: #1f1f1f !important;
+}
+
+/* Dark mode for action bars and filter panes */
+[data-theme='dark'] .bulk-actions-container {
+  background: #262626 !important;
+  border-color: #434343 !important;
+}
+
+[data-theme='dark'] .context-filters {
+  background: #1f1f1f !important;
+}
+
+/* Dark mode for filter stats */
+[data-theme='dark'] .context-filters .ant-card-body > div > div[style*="background: #f0f8ff"] {
+  background: #262626 !important;
+}

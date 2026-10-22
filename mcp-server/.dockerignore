@@ -1,0 +1,60 @@
+# Node modules
+node_modules
+npm-debug.log*
+
+# Include TypeScript source for tsx runtime
+# src/**/*.ts - commented out to include .ts files
+!src/**/*.js
+
+# Development files
+.env.local
+.env.development
+*.local
+
+# Testing
+test/
+tests/
+**/*.test.ts
+**/*.test.js
+coverage/
+
+# Development tools
+.eslintrc*
+.prettierrc*
+tsconfig.json
+jest.config.*
+
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+docs/
+
+# Logs
+logs/
+*.log
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts (except dist)
+build/
+!dist/
+# Needed by the in-image `tsc` build
+!tsconfig.json
+!tsconfig.build.json

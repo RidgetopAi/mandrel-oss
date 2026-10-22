@@ -1,0 +1,61 @@
+{
+  // TYPECHECK-ONLY config. an earlier Task.
+  //
+  // WHY THIS FILE EXISTS: `tsconfig.json` is the BUILD config — it sets
+  // `rootDir: "src"` and emits to `dist`, so it can only ever cover `src/`.
+  // That meant `scripts/` and `evals/` (in this package AND at the repo root)
+  // were typechecked by NOTHING: the authoritative gate's STAGE 2
+  // (`the CI gate`, `cd mcp-server && npm run type-check`) read the build
+  // config and therefore inherited its blind spot. Operational code that
+  // mutates production data (migrations, backfills) and code that regenerates
+  // gate fixtures (`scripts/regen-tool-surface-golden.ts`) sat outside every
+  // check while authors believed a gate covered it.
+  //
+  // THE RULES ARE NOT LOOSENED. This extends the build config verbatim —
+  // `strict`, `noUnusedLocals`, `noUnusedParameters`, `noImplicitReturns`,
+  // `noFallthroughCasesInSwitch` all still apply to the newly covered files.
+  // The ONLY overrides are `noEmit` (this config never emits) and `rootDir`
+  // (widened so files outside `src/` are legal members of the program at all).
+  //
+  // IF YOU CANNOT MAKE A FILE PASS: exclude it BY NAME below with a written
+  // reason. Do NOT relax a compilerOption and do NOT exclude a directory —
+  // a named exclusion is a debt someone can count and pay down; a loosened
+  // option is invisible forever and removes the incentive to ever fix it.
+  "extends": "./tsconfig.json",
+
+  "compilerOptions": {
+    "noEmit": true,
+    "rootDir": ".."
+  },
+
+  "include": [
+    "src/**/*",
+    // NOTE: the build config lists "tests/**/*" here, but there is NO
+    // `mcp-server/tests/` directory — the 272 test files live at `src/tests/`
+    // and are already covered by "src/**/*". That pattern is dead; it is not
+    // repeated here, because an include that matches nothing reads as coverage.
+    "scripts/**/*",
+    "evals/**/*",
+    "../scripts/**/*",
+    "../evals/**/*"
+  ],
+
+  "exclude": [
+    "node_modules",
+    "dist",
+
+    // ── EXCLUDED BY NAME — enumerated debt, 1 file ──────────────────────────
+    //
+    // ../scripts/backfill-null-embeddings.ts
+    //   `import pkg from 'pg'` is UNRESOLVABLE from the repo root: the root
+    //   `package.json` does not declare `pg`, and there is no `node_modules`
+    //   at or above the repo root (`node -e "require.resolve('pg')"` from the
+    //   repo root throws MODULE_NOT_FOUND). So this is a real runtime break,
+    //   not a typecheck artifact — the script cannot run today either.
+    //   Repairing it means adding a dependency to the ROOT manifest, which is
+    //   outside the type-level configuration this file owns. Reported, not
+    //   silently patched. Delete this line once `pg` is resolvable from the
+    //   repo root; the file typechecks clean otherwise.
+    "../scripts/backfill-null-embeddings.ts"
+  ]
+}

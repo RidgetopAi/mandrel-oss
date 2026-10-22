@@ -1,0 +1,37 @@
+/* Divider — hairline rule, all tokens. The labelled variant matches the doc's
+   `.ref-h` (uppercase label with a rule trailing off to the side). */
+
+.horizontal {
+  height: 1px;
+  width: 100%;
+  background: var(--line-soft);
+  border: none;
+}
+
+.vertical {
+  width: 1px;
+  align-self: stretch;
+  background: var(--line-soft);
+  border: none;
+}
+
+.labelled {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.labelled::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line-soft);
+}
+
+.label {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--tx-3);
+}

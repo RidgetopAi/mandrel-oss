@@ -1,0 +1,7 @@
+/* Grid — CSS grid container. Columns/gap come from props (gap is a var(--sp-N)
+   token via inline style); this module holds the invariant display bit. */
+
+.grid {
+  display: grid;
+  min-width: 0;
+}

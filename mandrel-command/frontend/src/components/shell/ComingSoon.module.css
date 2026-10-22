@@ -1,0 +1,6 @@
+.wrap {
+  display: grid;
+  place-items: center;
+  min-height: 60vh;
+  padding: 32px 16px;
+}

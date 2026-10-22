@@ -1,0 +1,123 @@
+/* AUTO-GENERATED from src/styles/tokens.ts — DO NOT EDIT BY HAND.
+   Edit tokens.ts, then run `npm run tokens:css`. A vitest drift-guard
+   (tokens.test.ts) fails CI if this file and tokens.ts diverge. */
+
+/* Theme-invariant tokens (radii, fonts, type, spacing, layout geometry) */
+:root {
+  /* Radii */
+  --r: 12px;
+  --r-sm: 8px;
+  --r-xs: 6px;
+  /* Fonts */
+  --font: -apple-system,system-ui,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+  --mono: ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+  /* Type scale — from the doc's "Type" reference (Display/Title/Body/Label/Data) */
+  --fs-display: 1.5rem;
+  --fw-display: 660;
+  --tracking-display: -0.025em;
+  --fs-title: 1.05rem;
+  --fw-title: 620;
+  --tracking-title: -0.01em;
+  --fs-body: 0.95rem;
+  --lh-body: 1.6;
+  --fs-label: 0.7rem;
+  --fw-label: 600;
+  --tracking-label: 0.08em;
+  --fs-data: 0.9rem;
+  /* Spacing scale — DERIVED 8pt rhythm (APPROVED 2026-07-14) */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 20px;
+  --sp-6: 24px;
+  --sp-8: 32px;
+  --sp-10: 40px;
+  /* Layout geometry — the shared record-screen skeleton (rail + reader) */
+  --rail-width: 320px;
+  --reader-width: 70ch;
+  --rail-max-h: 660px;
+}
+
+/* DARK — the LOCKED, authoritative theme (default, dark-first) */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  /* Ground & surfaces — the calm dark base */
+  --bg: #0A0C10;
+  --bg-2: #0D1015;
+  --s1: #111419;
+  --s2: #161A21;
+  --s3: #1C222B;
+  --s-hover: #20272F;
+  /* Lines & borders — hairlines over heavy containers */
+  --line: #20262F;
+  --line-2: #2A323D;
+  --line-soft: #181D24;
+  /* Text ramp — primary → faintest */
+  --tx: #E8ECF2;
+  --tx-2: #9AA6B4;
+  --tx-3: #616C7B;
+  --tx-4: #454F5C;
+  /* Brand — teal leads */
+  --teal: #2ED9C6;
+  --teal-dim: #1FA99A;
+  --teal-glow: #2ed9c626;
+  /* Accents — complements carry meaning (color encodes, never decorates) */
+  --violet: #9B87FA;
+  --blue: #4C9DFF;
+  --green: #3ED08A;
+  --amber: #F3B24C;
+  --rose: #F2606A;
+  --violet-glow: #9b87fa22;
+  --blue-glow: #4c9dff22;
+  --green-glow: #3ed08a22;
+  /* Semantic — status mapped onto the accent hues */
+  --ok: #3ED08A;
+  --warn: #F3B24C;
+  --crit: #F2606A;
+  /* Ink-on-accent — legible text/glyph colour on a filled accent surface */
+  --on-accent: #04110f;
+  --on-crit: #FFFFFF;
+}
+
+/* LIGHT — DERIVED, APPROVED 2026-07-14; NOT from the locked doc */
+:root[data-theme="light"] {
+  color-scheme: light;
+  /* Ground & surfaces — the calm dark base */
+  --bg: #F7F8FA;
+  --bg-2: #FFFFFF;
+  --s1: #FFFFFF;
+  --s2: #F1F3F6;
+  --s3: #E8EBEF;
+  --s-hover: #E4E8ED;
+  /* Lines & borders — hairlines over heavy containers */
+  --line: #DCE0E6;
+  --line-2: #C7CDD6;
+  --line-soft: #EAEDF1;
+  /* Text ramp — primary → faintest */
+  --tx: #12151A;
+  --tx-2: #48515D;
+  --tx-3: #6B7480;
+  --tx-4: #98A0AB;
+  /* Brand — teal leads */
+  --teal: #159B8B;
+  --teal-dim: #0E8073;
+  --teal-glow: #159b8b1f;
+  /* Accents — complements carry meaning (color encodes, never decorates) */
+  --violet: #6D4FE0;
+  --blue: #2F7FE6;
+  --green: #1FA968;
+  --amber: #C77F16;
+  --rose: #DB3B47;
+  --violet-glow: #6d4fe01f;
+  --blue-glow: #2f7fe61f;
+  --green-glow: #1fa9681f;
+  /* Semantic — status mapped onto the accent hues */
+  --ok: #1FA968;
+  --warn: #C77F16;
+  --crit: #DB3B47;
+  /* Ink-on-accent — legible text/glyph colour on a filled accent surface */
+  --on-accent: #04110f;
+  --on-crit: #FFFFFF;
+}

@@ -1,0 +1,97 @@
+/* Modal — portal backdrop + centered dialog. Scrim via color-mix on --bg (the
+   established Alert pattern, zero hardcoded hex). Colour/type via tokens; literal
+   px are the border, max-width caps + scrim inset. */
+
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: var(--sp-8) var(--sp-4);
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--bg) 72%, transparent);
+}
+
+.dialog {
+  position: relative;
+  width: 100%;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  background: var(--s1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  outline: none;
+}
+
+.sm {
+  max-width: 420px;
+}
+.md {
+  max-width: 560px;
+}
+.lg {
+  max-width: 760px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--line-soft);
+}
+
+.title {
+  margin: 0;
+  font-family: var(--font);
+  font-size: var(--fs-title);
+  font-weight: var(--fw-title);
+  letter-spacing: var(--tracking-title);
+  color: var(--tx);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-1);
+  border: none;
+  background: transparent;
+  color: var(--tx-3);
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  flex: none;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+.close:hover {
+  background: var(--s2);
+  color: var(--tx);
+}
+.close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--teal-glow);
+}
+
+.body {
+  padding: var(--sp-5);
+  color: var(--tx-2);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  overflow-y: auto;
+}
+
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--sp-3);
+  padding: var(--sp-4) var(--sp-5);
+  border-top: 1px solid var(--line-soft);
+}

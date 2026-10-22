@@ -1,0 +1,105 @@
+/* DataTable — hairline rows over the panel ground. Colour/type via tokens;
+   literal px are the 1px row rules + select-column width. */
+
+.wrap {
+  width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+}
+
+.caption {
+  text-align: left;
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+}
+
+.th {
+  text-align: left;
+  padding: var(--sp-3) var(--sp-4);
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--tx-3);
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+  background: var(--s1);
+}
+
+.sortBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.sortBtn:hover {
+  color: var(--tx);
+}
+.sortBtn:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--teal-glow);
+  border-radius: var(--r-xs);
+}
+
+.sortIcon {
+  color: var(--tx-4);
+  flex: none;
+}
+.sortActive {
+  color: var(--teal);
+}
+
+.td {
+  padding: var(--sp-3) var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--tx-2);
+  vertical-align: middle;
+}
+
+.row {
+  transition: background 0.1s ease;
+}
+.row:hover {
+  background: var(--s2);
+}
+.rowSelected {
+  background: var(--teal-glow);
+}
+
+.selectCol {
+  width: 44px;
+  text-align: center;
+}
+
+.alignLeft {
+  text-align: left;
+}
+.alignRight {
+  text-align: right;
+}
+.alignCenter {
+  text-align: center;
+}
+
+.emptyCell {
+  padding: var(--sp-6);
+  border-bottom: none;
+}

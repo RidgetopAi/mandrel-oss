@@ -1,0 +1,61 @@
+# =============================================================================
+# docker-compose.build.yml — BUILD-ONLY overlay (build-once).
+# =============================================================================
+# The `build:` stanzas for the three CODE services live HERE and nowhere else.
+# The tracked docker-compose.yml carries only `image: mandrel/<svc>:${MANDREL_IMAGE_TAG}`,
+# so a tenant `up -d` physically cannot build — per-tenant `--build` minted a
+# fresh image ID per tenant per roll and recreated all 21 code containers on
+# every deploy even when the ref was unchanged.
+#
+# ONE caller passes this file: the BUILD-ONCE stage in fleet-deploy script,
+#   docker compose -f docker-compose.yml -f docker-compose.build.yml build \
+#     mcp-server mandrel-command-backend mandrel-command-frontend
+# run ONCE per release ref, AFTER fleet_sync pins the tree to that ref. It tags
+# the three images mandrel/<svc>:<git-sha> (MANDREL_IMAGE_TAG = short sha) and
+# labels each with org.opencontainers.image.revision=<full sha>
+# (MANDREL_IMAGE_REVISION), which is how "which ref is this container running"
+# is answered without a registry:
+#   docker inspect <c> --format '{{index .Config.Labels "org.opencontainers.image.revision"}}'
+#
+# Dev: export MANDREL_IMAGE_TAG=dev MANDREL_IMAGE_REVISION=$(git rev-parse HEAD)
+# and run the same two -f build; then plain `docker compose up -d` uses your
+# dev-tagged images.
+#
+# This is NOT a per-tenant override file (those were deleted by one-compose,
+# an earlier task): it is a single tracked, tenant-agnostic overlay, allowlisted
+# by name in one-compose-no-overrides.test script with this reason.
+
+services:
+  mcp-server:
+    build:
+      context: ./mcp-server
+      dockerfile: Dockerfile
+      # ONE variable, TWO consumers: the same MANDREL_IMAGE_REVISION
+      # becomes the image LABEL below and the process's ENV (mcp-server/Dockerfile
+      # ARG->ENV), from which src/version.ts derives the reported `<semver>+<sha12>`.
+      # Because both interpolate the same `${MANDREL_IMAGE_REVISION:?...}`, the label
+      # and the version a client sees are physically incapable of disagreeing — there
+      # is no second path to "what ref is this".
+      args:
+        MANDREL_IMAGE_REVISION: "${MANDREL_IMAGE_REVISION:?MANDREL_IMAGE_REVISION is required at build time — the full git sha of the release ref (fleet-deploy's BUILD stage sets it)}"
+      labels:
+        org.opencontainers.image.revision: "${MANDREL_IMAGE_REVISION:?MANDREL_IMAGE_REVISION is required at build time — the full git sha of the release ref (fleet-deploy's BUILD stage sets it)}"
+
+  mandrel-command-backend:
+    build:
+      # Build from the mandrel-command npm-workspace ROOT so the workspace-root
+      # package-lock.json is the single source of truth (no per-member lockfile).
+      # The Dockerfile installs workspace-scoped (npm ci -w) to avoid frontend bloat.
+      context: ./mandrel-command
+      dockerfile: backend/Dockerfile
+      labels:
+        org.opencontainers.image.revision: "${MANDREL_IMAGE_REVISION:?MANDREL_IMAGE_REVISION is required at build time — the full git sha of the release ref (fleet-deploy's BUILD stage sets it)}"
+
+  mandrel-command-frontend:
+    build:
+      # Build from the mandrel-command npm-workspace ROOT (single-source-of-truth
+      # lockfile). Workspace-scoped install (npm ci -w) keeps backend deps out.
+      context: ./mandrel-command
+      dockerfile: frontend/Dockerfile
+      labels:
+        org.opencontainers.image.revision: "${MANDREL_IMAGE_REVISION:?MANDREL_IMAGE_REVISION is required at build time — the full git sha of the release ref (fleet-deploy's BUILD stage sets it)}"

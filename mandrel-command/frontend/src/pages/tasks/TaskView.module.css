@@ -1,0 +1,120 @@
+/**
+ * TaskView styles — the READ-ONLY task panel the drawer shows before you press Edit
+ *. Token-driven (no hardcoded hex), same vocabulary as the drawer's
+ * edit form so switching modes does not visibly re-flow the panel.
+ */
+
+.view {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* ── Title + the badge row under it ───────────────────────────────────────── */
+.title {
+  margin: 0;
+  color: var(--tx);
+  font-size: var(--fs-title);
+  font-weight: 650;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* The priority chip carries its own dot, matching the board card + list row. */
+.prio {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  color: var(--tx-2);
+  font-size: var(--fs-label);
+}
+.prioDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+
+/* ── A labelled read-only field ───────────────────────────────────────────── */
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.label {
+  color: var(--tx-3);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.value {
+  color: var(--tx);
+  font-size: var(--fs-body);
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+/* An honest empty: say the field is unset rather than render a blank gap. */
+.empty {
+  color: var(--tx-3);
+  font-style: italic;
+}
+/* Description keeps the author's line breaks without becoming a code block. */
+.prose {
+  white-space: pre-wrap;
+}
+
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+@media (max-width: 520px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Tags ─────────────────────────────────────────────────────────────────── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.tagChip {
+  padding: 2px var(--sp-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  color: var(--tx-2);
+  font-size: var(--fs-label);
+}
+
+/* ── Build story + meta, matching the edit form's separators ──────────────── */
+.storyBlock {
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+  color: var(--tx-3);
+  font-size: var(--fs-label);
+}
+.meta b {
+  color: var(--tx-2);
+  font-weight: 600;
+}
+.metaMono {
+  font-family: var(--mono);
+}

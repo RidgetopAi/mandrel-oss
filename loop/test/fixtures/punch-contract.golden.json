@@ -1,0 +1,19 @@
+{
+  "stages": ["draft", "ready", "claimed", "verifying", "evidence", "merged", "deployed"],
+  "proofKinds": ["test", "browser", "look"],
+  "clauseOwners": ["lane", "human"],
+  "claim": {
+    "defaultAllowedStatuses": ["todo"],
+    "claimableStatuses": ["todo", "in_progress", "blocked"]
+  },
+  "topLevelPunchKeys": ["doneWhen", "proofKind", "source", "touches", "dependsOn"],
+  "stageStatus": {
+    "draft": "todo",
+    "ready": "todo",
+    "claimed": "in_progress",
+    "verifying": "in_progress",
+    "evidence": "in_progress",
+    "merged": "completed",
+    "deployed": "completed"
+  }
+}

@@ -1,0 +1,241 @@
+{
+ "config": {
+  "run_id": "armA-wiki",
+  "milestone": "M2",
+  "variant": "longmemeval_s_cleaned.json",
+  "answerer_model": "gpt-4.1-mini",
+  "answerer_backend": "openai",
+  "prompt_variant": "improved",
+  "answerer_provider": "OpenAI https://api.openai.com/v1 (temperature 0)",
+  "arm": "A-wiki-baseline",
+  "retrieval_session_expansion": false,
+  "se_tophits": 8,
+  "se_cap": 36,
+  "recall_ks": [
+   1,
+   3,
+   5,
+   8
+  ],
+  "judge_model": "gpt-4o",
+  "judge_model_id": "gpt-4o-2024-08-06",
+  "judge_backend": "openai",
+  "judge_provider": "OpenAI GPT-4o (api.openai.com, official LongMemEval judge prompts)",
+  "answerer_equals_judge": false,
+  "retrieval_method": "flat_dense",
+  "top_k": 8,
+  "num_questions": 500,
+  "embeddings": "Xenova/all-MiniLM-L6-v2 (384-dim, mean-pool+L2-normalize) via flat_dense baseline embed_server (SAME model file as Mandrel)",
+  "embedder_model": "Xenova/all-MiniLM-L6-v2",
+  "embedder_dims_native": 384,
+  "mandrel_base": "http://localhost:8190",
+  "memory_layer": "flat dense vector search over raw haystack chunks (NO Mandrel, NO session-expansion) -- ARM A wiki baseline",
+  "started_at": "2026-06-18T03:17:25Z"
+ },
+ "status": "complete",
+ "top_k": 8,
+ "recall_ks": [
+  1,
+  3,
+  5,
+  8
+ ],
+ "metric": "recall@k (judge-independent): top-k of the ORDERED ranked retrieved sessions includes a GOLD answer session",
+ "note": "ANSWERABLE-ONLY: computed over the 470 non-abstention questions; abstention questions have no gold session and are excluded from the denominator.",
+ "overall": {
+  "recall": 1.0,
+  "hit": 470,
+  "n": 470
+ },
+ "by_type": {
+  "single-session-user": {
+   "recall": 1.0,
+   "hit": 64,
+   "n": 64
+  },
+  "multi-session": {
+   "recall": 1.0,
+   "hit": 121,
+   "n": 121
+  },
+  "single-session-preference": {
+   "recall": 1.0,
+   "hit": 30,
+   "n": 30
+  },
+  "temporal-reasoning": {
+   "recall": 1.0,
+   "hit": 127,
+   "n": 127
+  },
+  "knowledge-update": {
+   "recall": 1.0,
+   "hit": 72,
+   "n": 72
+  },
+  "single-session-assistant": {
+   "recall": 1.0,
+   "hit": 56,
+   "n": 56
+  }
+ },
+ "recall_at_k": {
+  "overall": {
+   "1": {
+    "recall": 0.8148936170212766,
+    "hit": 383,
+    "n": 470
+   },
+   "3": {
+    "recall": 0.9276595744680851,
+    "hit": 436,
+    "n": 470
+   },
+   "5": {
+    "recall": 0.9553191489361702,
+    "hit": 449,
+    "n": 470
+   },
+   "8": {
+    "recall": 0.9723404255319149,
+    "hit": 457,
+    "n": 470
+   }
+  },
+  "by_type": {
+   "single-session-user": {
+    "1": {
+     "recall": 0.71875,
+     "hit": 46,
+     "n": 64
+    },
+    "3": {
+     "recall": 0.84375,
+     "hit": 54,
+     "n": 64
+    },
+    "5": {
+     "recall": 0.875,
+     "hit": 56,
+     "n": 64
+    },
+    "8": {
+     "recall": 0.921875,
+     "hit": 59,
+     "n": 64
+    }
+   },
+   "multi-session": {
+    "1": {
+     "recall": 0.8181818181818182,
+     "hit": 99,
+     "n": 121
+    },
+    "3": {
+     "recall": 0.9504132231404959,
+     "hit": 115,
+     "n": 121
+    },
+    "5": {
+     "recall": 0.9752066115702479,
+     "hit": 118,
+     "n": 121
+    },
+    "8": {
+     "recall": 0.9834710743801653,
+     "hit": 119,
+     "n": 121
+    }
+   },
+   "single-session-preference": {
+    "1": {
+     "recall": 0.7666666666666667,
+     "hit": 23,
+     "n": 30
+    },
+    "3": {
+     "recall": 0.9666666666666667,
+     "hit": 29,
+     "n": 30
+    },
+    "5": {
+     "recall": 0.9666666666666667,
+     "hit": 29,
+     "n": 30
+    },
+    "8": {
+     "recall": 0.9666666666666667,
+     "hit": 29,
+     "n": 30
+    }
+   },
+   "temporal-reasoning": {
+    "1": {
+     "recall": 0.7637795275590551,
+     "hit": 97,
+     "n": 127
+    },
+    "3": {
+     "recall": 0.889763779527559,
+     "hit": 113,
+     "n": 127
+    },
+    "5": {
+     "recall": 0.9291338582677166,
+     "hit": 118,
+     "n": 127
+    },
+    "8": {
+     "recall": 0.9606299212598425,
+     "hit": 122,
+     "n": 127
+    }
+   },
+   "knowledge-update": {
+    "1": {
+     "recall": 0.875,
+     "hit": 63,
+     "n": 72
+    },
+    "3": {
+     "recall": 0.9583333333333334,
+     "hit": 69,
+     "n": 72
+    },
+    "5": {
+     "recall": 1.0,
+     "hit": 72,
+     "n": 72
+    },
+    "8": {
+     "recall": 1.0,
+     "hit": 72,
+     "n": 72
+    }
+   },
+   "single-session-assistant": {
+    "1": {
+     "recall": 0.9821428571428571,
+     "hit": 55,
+     "n": 56
+    },
+    "3": {
+     "recall": 1.0,
+     "hit": 56,
+     "n": 56
+    },
+    "5": {
+     "recall": 1.0,
+     "hit": 56,
+     "n": 56
+    },
+    "8": {
+     "recall": 1.0,
+     "hit": 56,
+     "n": 56
+    }
+   }
+  }
+ },
+ "updated_at": "2026-06-18T03:51:10Z"
+}

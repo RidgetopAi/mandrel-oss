@@ -1,0 +1,29 @@
+{
+  "name": "mandrel-command-shared",
+  "version": "1.0.0",
+  "description": "Shared TypeScript types and interfaces for Mandrel Command",
+  "main": "index.ts",
+  "types": "index.ts",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "tsc --watch",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint . --ext .ts --fix",
+    "format": "prettier --write **/*.ts"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^6.0.0",
+    "@typescript-eslint/parser": "^6.0.0",
+    "eslint": "^8.0.0",
+    "prettier": "^3.1.0",
+    "typescript": "^5.3.0"
+  },
+  "keywords": [
+    "mandrel",
+    "types",
+    "typescript",
+    "shared"
+  ],
+  "author": "CodeAgent",
+  "license": "MIT"
+}

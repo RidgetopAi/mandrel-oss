@@ -1,0 +1,124 @@
+/**
+ * TaskDrawer styles — the right-side task CRUD drawer (detail/edit + create). Token-driven
+ * (no hardcoded hex), mirroring the Tasks stylesheet's vocabulary. Layout only; the a11y +
+ * slide-in behaviour lives in the Drawer primitive.
+ */
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+/* Two-up rows (status+priority, type+assignee) collapse to one column when narrow. */
+.grid2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+@media (max-width: 520px) {
+  .grid2 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Tag chip input ───────────────────────────────────────────────────────── */
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.tagChip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-1);
+  padding: 2px var(--sp-2);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+  background: var(--bg-2);
+  color: var(--tx-2);
+  font-size: var(--fs-label);
+  line-height: 1.6;
+}
+.tagRemove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 15px;
+  height: 15px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--r-xs);
+  background: transparent;
+  color: var(--tx-3);
+  cursor: pointer;
+}
+.tagRemove:hover {
+  color: var(--rose);
+}
+.tagInputWrap {
+  flex: 1 1 120px;
+  min-width: 120px;
+}
+
+/* ── Build story section inside the drawer ────────────────────────────────── */
+.storyBlock {
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+}
+
+/* ── Meta row (id8, created/updated) ──────────────────────────────────────── */
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line-soft);
+  color: var(--tx-3);
+  font-size: var(--fs-label);
+}
+.meta b {
+  color: var(--tx-2);
+  font-weight: 600;
+}
+.metaMono {
+  font-family: var(--mono);
+}
+
+/* Where a new task lands (create mode). */
+.landHint {
+  color: var(--tx-3);
+  font-size: var(--fs-label);
+}
+.landHint b {
+  color: var(--teal);
+  font-weight: 600;
+}
+
+/* Footer actions: Delete on the left, Cancel/Save on the right. */
+.footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  width: 100%;
+}
+.footerRight {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+
+/* Loading placeholder while the selected task's detail settles. */
+.loadingState {
+  display: flex;
+  justify-content: center;
+  padding: var(--sp-8) 0;
+}
+
+.confirmText {
+  color: var(--tx-2);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}

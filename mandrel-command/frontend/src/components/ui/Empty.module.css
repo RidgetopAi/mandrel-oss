@@ -1,0 +1,38 @@
+/* Empty state — centered, muted, breathing space. All tokens. */
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: var(--sp-3);
+  padding: var(--sp-10) var(--sp-6);
+  color: var(--tx-2);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--tx-3);
+  opacity: 0.9;
+}
+
+.title {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-title);
+  letter-spacing: var(--tracking-title);
+  color: var(--tx);
+}
+
+.description {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--tx-3);
+  max-width: 42ch;
+}
+
+.action {
+  margin-top: var(--sp-2);
+}

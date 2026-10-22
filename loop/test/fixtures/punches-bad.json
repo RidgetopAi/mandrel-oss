@@ -1,0 +1,18 @@
+[
+  {
+    "title": "Seeded offences",
+    "description": "One seeded case per authoring rule.",
+    "size": "m",
+    "repo": "mandrel-oss",
+    "dependsOnIndex": [],
+    "doneWhen": [
+      { "text": "a clean clause that passes every rule", "owner": "lane", "proof": "loop/test/ok.test.ts" },
+      { "text": "the parser handles empty input", "owner": "lane" },
+      { "text": "the service restarts under systemctl without error", "owner": "lane", "proof": "loop/test/restart.test.ts" },
+      { "text": "the log is written to /home/builder/app/out.log", "owner": "lane", "proof": "loop/test/log.test.ts" },
+      { "text": "the server answers in the foreground", "owner": "lane", "proof": "loop/test/serve.test.ts" },
+      { "text": "the report is generated", "owner": "lane", "proof": "/abs/path/report.test.ts" }
+    ],
+    "proofKind": "test"
+  }
+]

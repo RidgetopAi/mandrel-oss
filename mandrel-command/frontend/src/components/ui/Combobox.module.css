@@ -1,0 +1,92 @@
+/* Combobox — a free-text input with a suggestion popup. Same visual treatment as
+   Select's popup (tokens only; literal px are borders, popup offset and max-height,
+   which have no size token). The CONTROL is a real text input, not a trigger button:
+   the value is whatever the user typed, and the list only suggests. */
+
+.root {
+  /* Popup width cap — decoupled from the input width so full option labels fit.
+     Named custom property, not an inline magic number (house tunables rule). */
+  --combobox-popup-max-width: 320px;
+  /* Gap between the input and its popup. A named tunable, and the SINGLE source for it:
+     `popupPlacement.ts` reads this same custom property when it measures whether the popup
+     fits below, so the gap CSS draws and the gap the flip reasons about cannot drift. */
+  --combobox-popup-offset: 4px;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.popup {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + var(--combobox-popup-offset));
+  bottom: auto;
+  left: 0;
+  right: auto;
+  width: max-content;
+  min-width: 100%;
+  max-width: var(--combobox-popup-max-width);
+  background: var(--s1);
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-sm);
+}
+
+/* Flipped placement. The drawer body is `overflow-y: auto` — a CLIPPING container — so a
+   popup on the last form row is sliced off at the body's bottom edge and cannot be
+   rescued by z-index. Opening upward keeps it inside that clip rect. Applied by
+   `usePopupPlacement`, which measures the real available space. */
+.popupAbove {
+  top: auto;
+  bottom: calc(100% + var(--combobox-popup-offset));
+}
+
+.listbox {
+  margin: 0;
+  padding: var(--sp-1);
+  list-style: none;
+  max-height: 240px;
+  overflow-y: auto;
+  outline: none;
+}
+
+.option {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  padding: var(--sp-2);
+  border-radius: var(--r-xs);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  cursor: pointer;
+}
+.option.active {
+  background: var(--s2);
+  color: var(--tx);
+}
+.option[aria-selected='true'] {
+  color: var(--tx);
+}
+
+.optionLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The usage hint beside a suggestion (how many tasks/sessions already use it) — the
+   thing that makes the canonical spelling the path of least resistance. */
+.optionMeta {
+  margin-left: auto;
+  flex: none;
+  color: var(--tx-4);
+  font-size: var(--fs-label);
+}
+
+/* Shown when the typed value matches nothing. NOT an error: free text is legal. */
+.empty {
+  padding: var(--sp-2) var(--sp-3);
+  color: var(--tx-3);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+}

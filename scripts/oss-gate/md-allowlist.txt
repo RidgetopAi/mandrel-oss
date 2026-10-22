@@ -1,0 +1,20 @@
+# scripts/oss-gate/md-allowlist.txt — the ONLY tracked Markdown files this public repo may carry.
+# Read by scripts/test/md-allowlist.test.sh (run by oss-gate.sh stage H). One glob per line; `**`
+# and `*` both match across `/`. Anything else ending in .md fails the gate, naming the file.
+# Internal engineering reports do not belong here: delete them, do not list them.
+README.md
+AGENTS.md
+CLAUDE.md
+CONTRIBUTING.md
+CHANGELOG*
+LICENSE*
+adapters/README.md
+config/README.md
+infra/README.md
+docs/**
+loop/**
+evals/**
+mcp-server/evals/**
+mcp-server/src/tests/README.md
+mcp-server/vendor/**
+scripts/test/**

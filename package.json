@@ -1,0 +1,39 @@
+{
+  "name": "mandrel",
+  "version": "0.66.0",
+  "description": "AI Development Intelligence System - Persistent context management",
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "prepare": "git config core.hooksPath hooks || true",
+    "hooks:install": "git config core.hooksPath hooks && echo 'git hooks enabled (core.hooksPath=hooks): pre-commit secret scan active'",
+    "setup": "npm run install:mcp && npm run install:command",
+    "install:mcp": "cd mcp-server && npm install",
+    "install:command": "cd mandrel-command && npm run install:all",
+    "migrate": "cd mcp-server && npx tsx scripts/migrate.ts",
+    "dev:mcp": "cd mcp-server && npm run dev",
+    "dev:command": "cd mandrel-command && npm run dev:full",
+    "build:mcp": "cd mcp-server && npm run build",
+    "build:command": "cd mandrel-command && npm run build",
+    "test": "npm run test:mcp && npm run test:backend && npm run test:frontend",
+    "test:mcp": "cd mcp-server && npx vitest run",
+    "test:backend": "cd mandrel-command/backend && npx jest --runInBand --forceExit",
+    "test:frontend": "cd mandrel-command/frontend && CI=true npx react-scripts test --watchAll=false"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "1.29.0",
+    "axios": "^1.11.0",
+    "bullmq": "^5.58.7",
+    "cors": "^2.8.5",
+    "eventsource": "^4.0.0",
+    "express": "^5.1.0",
+    "ioredis": "^5.8.0",
+    "node-fetch": "^3.3.2",
+    "playwright": "^1.55.1",
+    "typescript": "^5.9.2",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "madge": "^8.0.0"
+  }
+}

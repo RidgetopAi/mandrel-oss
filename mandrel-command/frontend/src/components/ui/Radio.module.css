@@ -1,0 +1,91 @@
+/* Radio + RadioGroup — circular sibling of Checkbox. Selected = teal ring +
+   teal dot. Colour via tokens; literal px are dot geometry + ring widths. */
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.group.row {
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+}
+
+.wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font);
+  font-size: var(--fs-body);
+  color: var(--tx-2);
+  cursor: pointer;
+  user-select: none;
+}
+
+.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.dot {
+  position: relative;
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 1.5px solid var(--line-2);
+  background: transparent;
+  transition:
+    border-color 0.14s ease,
+    box-shadow 0.14s ease;
+}
+.dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.14s ease;
+}
+
+.input:checked + .dot {
+  border-color: var(--teal);
+}
+.input:checked + .dot::after {
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.input:focus-visible + .dot {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--teal-glow);
+  border-color: var(--teal);
+}
+
+.wrap:hover .input:not(:disabled):not(:checked) + .dot {
+  border-color: var(--tx-4);
+}
+
+.input:checked ~ .label {
+  color: var(--tx);
+}
+
+.label {
+  line-height: 1.3;
+}

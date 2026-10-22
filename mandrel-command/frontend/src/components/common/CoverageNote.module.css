@@ -1,0 +1,59 @@
+/**
+ * CoverageNote — token-driven, no literal colours. Three visual weights, one shape.
+ */
+
+.note {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  font-size: var(--fs-data);
+  line-height: 1.45;
+  margin-bottom: var(--sp-3);
+}
+
+/* PARTIAL — the default: legible, but not louder than the chart it annotates. */
+.partial {
+  color: var(--tx-2);
+}
+
+/* FULL (or near it) — quiet to the point of near-invisible. Nothing to act on. */
+.full {
+  color: var(--tx-4);
+}
+
+/*
+ * NONE — an onboarding prompt, NOT an error. It deliberately does not use --rose or the
+ * Alert primitive: a tenant that has never sent X-Actor-ID has not broken anything, and
+ * painting their first-run state red teaches them they have a fault.
+ */
+.none {
+  display: block;
+  color: var(--tx-2);
+  background: var(--s2);
+  border: 1px solid var(--line);
+  border-left: 2px solid var(--teal);
+  border-radius: var(--r-sm);
+  padding: var(--sp-3);
+}
+
+.headline {
+  color: var(--tx);
+  font-weight: 600;
+}
+
+.detail {
+  color: var(--tx-3);
+}
+
+.none .detail {
+  display: block;
+  margin-top: var(--sp-2);
+}
+
+.code {
+  font-family: var(--mono);
+  color: var(--tx-2);
+  background: var(--s3);
+  border-radius: var(--r-xs);
+  padding: 0 var(--sp-2);
+}

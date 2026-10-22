@@ -1,0 +1,520 @@
+/* Analytics "pivot surface" — the locked mock (command-analytics-mock.html) rebuilt on the
+   P0.2 tokens. Colour + type are 100% token-driven (no hex literals — Analytics.wiring.test
+   enforces it); residual px are structural geometry (grid tracks, bar/dot sizes, heights). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-height: 0;
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ============ PIVOT BAR ============ */
+.pivot {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex-wrap: wrap;
+  padding-bottom: var(--sp-4);
+  border-bottom: 1px solid var(--line-soft);
+}
+.pvLbl {
+  font-size: var(--fs-label);
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--tx-4);
+}
+.pivotSpacer {
+  margin-left: auto;
+}
+
+/* segmented control (range + hero metric toggle) */
+.seg {
+  display: flex;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 2px;
+}
+.segItem {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+.segItem:hover {
+  color: var(--tx);
+}
+.segItem:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 1px;
+}
+.segOn {
+  background: var(--s3);
+  color: var(--tx);
+  font-weight: 550;
+}
+.segSm .segItem {
+  font-size: var(--fs-label);
+  padding: 3px var(--sp-2);
+  font-family: var(--font);
+}
+
+.projectSelect {
+  min-width: 150px;
+}
+
+/* wire (not-yet-available) pivot affordances */
+.fsel {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  border: 1px solid var(--line);
+  background: var(--s1);
+}
+.fselWire {
+  color: var(--tx-3);
+  cursor: not-allowed;
+}
+.fselDashed {
+  border-style: dashed;
+  border-color: var(--amber);
+}
+/* The Actor control is a REAL <select> (item 6), so it needs the icon
+   sitting inside the control's box rather than as a sibling pill like the disabled
+   affordances above. */
+.fselActorWrap {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.fselActorIco {
+  color: var(--tx-4);
+  flex: none;
+}
+.fselActorWrap .fsel {
+  cursor: pointer;
+}
+.fselActorWrap .fsel:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+.fselChevron {
+  color: var(--tx-4);
+}
+.fselWireIco {
+  color: var(--amber);
+}
+.fselGroupIco {
+  color: var(--tx-3);
+}
+
+/* ============ HERO TOTALS (KPI strip) ============ */
+.totals {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--sp-3);
+}
+.tt {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: linear-gradient(180deg, var(--s1), var(--bg-2));
+  padding: var(--sp-3) var(--sp-4);
+}
+.ttK {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  margin-bottom: var(--sp-2);
+}
+.ttV {
+  font-size: var(--fs-display);
+  font-weight: var(--fw-display);
+  letter-spacing: var(--tracking-display);
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--tx);
+}
+.ttD_up,
+.ttD_down,
+.ttD_flat {
+  margin-top: var(--sp-2);
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.ttD_up {
+  color: var(--green);
+}
+.ttD_down {
+  color: var(--rose);
+}
+.ttD_flat {
+  color: var(--tx-3);
+}
+.spk {
+  position: absolute;
+  right: var(--sp-3);
+  top: var(--sp-3);
+  width: 60px;
+  height: 26px;
+  opacity: 0.85;
+}
+
+/* ---- provenance source dot + label ---- */
+.src {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-top: var(--sp-2);
+  min-width: 0;
+}
+.srcDot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex: none;
+}
+.dot_live {
+  background: var(--green);
+}
+
+/* ============ HERO TREND ============ */
+.trend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.trendHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.trendTitle {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--tx);
+}
+.trendVal {
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx-2);
+}
+.trendVal.up {
+  color: var(--green);
+}
+.trendVal.down {
+  color: var(--rose);
+}
+.inlineError {
+  color: var(--rose);
+  font-size: var(--fs-data);
+  padding: var(--sp-4);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+}
+
+/* ============ SECONDARY GRID ============ */
+.pgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+}
+.panel {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+  padding: var(--sp-4);
+  min-width: 0;
+}
+.panelHead {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-4);
+}
+.panelIco {
+  color: var(--tx-4);
+  display: inline-flex;
+}
+.panelTitle {
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx);
+}
+.panelSrc {
+  margin-left: auto;
+}
+.panelSub {
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  margin: calc(-1 * var(--sp-1)) 0 var(--sp-2);
+}
+.panelSrc .src {
+  margin-top: 0;
+}
+
+/* ---- work mix stacked bar ---- */
+.mixbar {
+  height: 12px;
+  border-radius: var(--r-xs);
+  overflow: hidden;
+  display: flex;
+  margin-bottom: var(--sp-4);
+  border: 1px solid var(--line-soft);
+}
+.mixbarSeg {
+  height: 100%;
+}
+.mixleg {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-2) var(--sp-4);
+}
+.mixlegItem {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.mixlegDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-xs);
+  flex: none;
+}
+.mixlegVal {
+  margin-left: auto;
+  font-family: var(--mono);
+  color: var(--tx-2);
+  font-size: var(--fs-label);
+}
+
+/* ---- work mix FLOW block ----
+   A SECOND POPULATION living in the same panel, so it is drawn as a separate section:
+   a rule above it, its own heading, its own provenance. The visual break is load-bearing,
+   not decoration — a rate tucked in with the legend reads as a slice of the bar. */
+.rates {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+.ratesHead {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+  margin-bottom: var(--sp-3);
+}
+.ratesTitle {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+.ratesHead .src {
+  margin-top: 0;
+  margin-left: auto;
+}
+.ratesGrid {
+  display: grid;
+  /* auto-fit keeps five stats readable as the panel narrows: 3-up, then 2-up, then 1-up,
+     rather than five columns crushed to an unreadable width. */
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: var(--sp-3) var(--sp-4);
+}
+.rateStat {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.rateLabel {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+}
+.rateValue {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-title);
+  letter-spacing: var(--tracking-title);
+  /* Tabular figures so the five values line up as the range control changes their width —
+     the same treatment the KPI tiles (.ttV) use. */
+  font-variant-numeric: tabular-nums;
+  color: var(--tx);
+  line-height: 1.15;
+}
+.rateNote {
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  line-height: 1.35;
+}
+.ratesFoot {
+  margin: var(--sp-3) 0 0;
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  line-height: 1.4;
+}
+
+/* ---- session rhythm caption: the current-hour key + the provenance ----
+   A colour with no key is a mystery, so the tint gets a chip in the chart's own caption
+   row, sat beside the endpoint line it already carried. */
+.rhythmCap {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+.rhythmKey {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+}
+.rhythmKeyDot {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--r-xs);
+  flex: none;
+}
+.rhythmCap .src {
+  margin-top: 0;
+}
+
+/* ---- productive sessions ranked ---- */
+.ranks {
+  display: flex;
+  flex-direction: column;
+}
+.rank {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) 0;
+  border-bottom: 1px solid var(--line-soft);
+}
+.rank:last-child {
+  border-bottom: none;
+}
+.rankNo {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  width: 16px;
+  flex: none;
+}
+.rankDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.rankWho {
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+/* Secondary "which project" chip beside the actor — informative only on an
+   all-projects view, muted so it never competes with the who-column. */
+.rankProj {
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 90px;
+}
+.rankSid {
+  font-family: var(--mono);
+  font-size: var(--fs-label);
+  color: var(--tx-4);
+}
+.rankScore {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  flex: none;
+}
+.rankMini {
+  width: 54px;
+  height: 7px;
+  border-radius: var(--r-xs);
+  background: var(--s3);
+  overflow: hidden;
+}
+.rankMini i {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, var(--teal-dim), var(--teal));
+}
+.rankSc {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  color: var(--teal);
+  font-weight: 600;
+}
+
+@media (max-width: 900px) {
+  .totals {
+    grid-template-columns: 1fr 1fr;
+  }
+  .pgrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/*
+ * The two USER-vs-AUTOMATION groups inside the "Activity by actor" panel.
+ * Each group is a labelled section with its own chart. The two charts share ONE value
+ * domain (ActorBars.sharedValueDomain) so a bar's LENGTH means the same thing in both —
+ * this rule only separates the sections; it must never imply separate scales.
+ */
+.actorGroup + .actorGroup {
+  margin-top: var(--sp-4);
+  padding-top: var(--sp-4);
+  border-top: 1px solid var(--line);
+}
+.actorGroupHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-2);
+}

@@ -1,0 +1,250 @@
+/* Settings "calm control panel" — the locked mock (command-settings-mock.html) rebuilt on
+   the P0.2 tokens. Colour + type are 100% token-driven (no hex/rgb/font-size-px literals);
+   residual px are STRUCTURAL geometry only (rail width, hairlines, control/segment sizing,
+   the 999px pill). */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  min-height: 0;
+}
+
+/* ---- page heading ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.headRow {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-3);
+  flex-wrap: wrap;
+}
+
+/* ---- section rail + panel ---- */
+.layout {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  gap: var(--sp-6);
+  align-items: start;
+  flex: 1;
+  min-height: 0;
+}
+
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  position: sticky;
+  top: 0;
+}
+.railItem {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border-radius: var(--r-sm);
+  font-size: var(--fs-data);
+  color: var(--tx-2);
+  cursor: pointer;
+  position: relative;
+  border: 1px solid transparent;
+  background: transparent;
+  text-align: left;
+  font-family: inherit;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+.railItem:hover,
+.railItem:focus-visible {
+  background: var(--s1);
+  color: var(--tx);
+  outline: none;
+}
+.railItemOn {
+  background: var(--s2);
+  color: var(--tx);
+  font-weight: 550;
+}
+.railItemOn::before {
+  content: '';
+  position: absolute;
+  left: -10px;
+  top: 8px;
+  bottom: 8px;
+  width: 2.5px;
+  border-radius: 2px;
+  background: var(--teal);
+  box-shadow: 0 0 9px var(--teal);
+}
+.railIcon {
+  color: var(--tx-3);
+  flex: none;
+}
+.railItemOn .railIcon {
+  color: var(--teal);
+}
+.railItemDanger {
+  color: var(--rose);
+}
+.railItemDanger .railIcon {
+  color: var(--rose);
+}
+.railDivider {
+  height: 1px;
+  background: var(--line-soft);
+  margin: var(--sp-2) var(--sp-2);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+  min-width: 0;
+}
+
+/* ---- group card ---- */
+.group {
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  background: var(--s1);
+  overflow: hidden;
+}
+.groupDanger {
+  border-color: var(--rose);
+}
+.groupHead {
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--line-soft);
+}
+.groupTitle {
+  font-size: var(--fs-body);
+  font-weight: 620;
+  letter-spacing: -0.01em;
+  color: var(--tx);
+}
+.groupDanger .groupTitle {
+  color: var(--rose);
+}
+.groupDesc {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  margin-top: var(--sp-1);
+  line-height: 1.5;
+}
+
+/* ---- rows ---- */
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+  padding: var(--sp-4) var(--sp-5);
+  border-bottom: 1px solid var(--line-soft);
+}
+.row:last-child {
+  border-bottom: none;
+}
+.rowLabel {
+  min-width: 0;
+  flex: 1;
+}
+.rowLb {
+  font-size: var(--fs-data);
+  color: var(--tx);
+  font-weight: 500;
+}
+.rowHelp {
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  margin-top: var(--sp-1);
+  line-height: 1.5;
+}
+.rowControl {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.rowInset {
+  padding: var(--sp-4) var(--sp-5) 0;
+}
+.rowActions {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--sp-4) var(--sp-5);
+}
+.controlInput {
+  min-width: 240px;
+}
+
+/* ---- segmented control (theme) ---- */
+.seg {
+  display: flex;
+  gap: 2px;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  padding: 2px;
+}
+.segItem {
+  font-size: var(--fs-data);
+  color: var(--tx-3);
+  padding: var(--sp-1) var(--sp-4);
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+}
+.segItem:focus-visible {
+  outline: none;
+  color: var(--tx);
+}
+.segItemOn {
+  background: var(--s3);
+  color: var(--tx);
+  font-weight: 550;
+}
+
+/* ---- checkbox cluster (notifications) ---- */
+.checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-4);
+  justify-content: flex-end;
+}
+
+/* ---- misc ---- */
+.badgeIcon {
+  display: inline-flex;
+  align-items: center;
+  margin-right: var(--sp-1);
+}
+.pwReq {
+  margin-bottom: var(--sp-2);
+}
+.pwReqList {
+  margin: var(--sp-1) 0 0;
+  padding-left: var(--sp-5);
+  font-size: var(--fs-label);
+  color: var(--tx-3);
+  line-height: 1.7;
+}
+
+@media (max-width: 820px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .rail {
+    flex-direction: row;
+    flex-wrap: wrap;
+    position: static;
+  }
+  .railDivider {
+    display: none;
+  }
+  .controlInput {
+    min-width: 0;
+  }
+}

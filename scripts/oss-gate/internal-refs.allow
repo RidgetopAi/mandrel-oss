@@ -1,0 +1,16 @@
+# Allow-list for the internal-refs ban (scripts/oss-gate.sh STAGE R).
+#
+# Format: <class|*><TAB><path-glob><TAB><line-literal|*><TAB><reason>, one per line. A hit is allowed
+# only when the class matches, the path matches the glob (** crosses directories, * and ? do not),
+# and the line contains the literal ('*' = any line). Every entry must carry a reason, and an entry
+# that covers no hit is RED: delete it when its reason goes away.
+brand	**	github.com/RidgetopAi/mandrel-oss	The repository's own public URL; clone instructions and package metadata must name it.
+brand	README.md	(https://github.com/RidgetopAi)	Attribution line linking the copyright holder's public GitHub organisation.
+brand	LICENSE	Copyright (c) 2026 RidgetopAi	The MIT licence must name the copyright holder.
+*	mcp-server/vendor/wordlists/english-words.txt	*	Third-party SCOWL English wordlist: ordinary English words such as ridge, foreman and inspector.
+*	mcp-server/vendor/wordlists/LICENSE-SCOWL.txt	*	Third-party SCOWL licence text, which credits its authors by name.
+*	mcp-server/vendor/models/**	*	Third-party MiniLM tokenizer vocabulary: ordinary English words.
+id	mcp-server/src/tests/handoffCarriedFields.contract.test.ts	*	The subject under test parses "spine <id>" and "task <id>" references out of handoff prose; the ids are fixture values.
+id	mcp-server/src/tests/searchIdTokenInSentence.contract.test.ts	*	The subject under test extracts an 8-hex id from a sentence such as "what is decision <id> about"; the ids are fixture values.
+id	mcp-server/src/tests/gateExitCodeRendered.contract.test.ts	REVIEWER VERDICT	A verbatim review-verdict text fixture whose header names the reviewed task id.
+id	mcp-server/src/tests/reviewOutcomeRendered.contract.test.ts	REVIEWER VERDICT	A verbatim review-verdict text fixture whose header names the reviewed task id.

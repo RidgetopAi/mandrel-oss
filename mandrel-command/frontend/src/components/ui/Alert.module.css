@@ -1,0 +1,82 @@
+/* Alert / Callout — accent-driven surface. `--alert-accent` per variant; the
+   base derives the left bar, tint and title colour from it. Zero hardcoded hex. */
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border: 1px solid color-mix(in srgb, var(--alert-accent) 30%, transparent);
+  border-left-width: 2px;
+  border-left-color: var(--alert-accent);
+  border-radius: var(--r-sm);
+  background: color-mix(in srgb, var(--alert-accent) 8%, var(--s1));
+  color: var(--tx-2);
+}
+
+.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--alert-accent);
+  flex: none;
+  margin-top: 1px;
+}
+
+.content {
+  min-width: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+
+.title {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--tx);
+}
+
+.message {
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--tx-2);
+}
+
+.close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--sp-1);
+  border: none;
+  background: transparent;
+  color: var(--tx-3);
+  border-radius: var(--r-xs);
+  cursor: pointer;
+  flex: none;
+  transition:
+    background 0.14s ease,
+    color 0.14s ease;
+}
+.close:hover {
+  background: var(--s2);
+  color: var(--tx);
+}
+.close:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px var(--teal-glow);
+}
+
+/* ── Variants: set the accent only ────────────────────────────────────────── */
+.info {
+  --alert-accent: var(--blue);
+}
+.success {
+  --alert-accent: var(--ok);
+}
+.warning {
+  --alert-accent: var(--warn);
+}
+.error {
+  --alert-accent: var(--crit);
+}

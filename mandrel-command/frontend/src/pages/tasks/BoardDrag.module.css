@@ -1,0 +1,46 @@
+/**
+ * Board drag-and-drop affordances — the visual feedback for lifting a card
+ * and for the column it is about to land in. Token-driven (no hardcoded hex).
+ *
+ * Kept in its own stylesheet rather than added to Tasks.module.css so the drag layer can be
+ * read, and removed, as one piece.
+ */
+
+/* The drag layer's own tunables. Named here rather than inlined at each use; they are
+   local to this layer, so they live with it instead of in the page-wide token set. */
+.colCards,
+.colOver {
+  --drop-min-h: 48px;
+}
+
+/* The column body while a card is hovering over it — the drop target has to be obvious,
+   including for a KEYBOARD drag, where there is no cursor to indicate it. */
+.colOver {
+  background: var(--bg-2);
+  outline: 1px dashed var(--teal);
+  outline-offset: -2px;
+  border-radius: var(--r-sm);
+}
+
+/* Column bodies must keep a droppable area even when empty, or an empty column is
+   unreachable: there is nothing to drop onto. */
+.colCards {
+  min-height: var(--drop-min-h);
+}
+
+/* The lifted card. rbd owns the transform; this is only the lift cue. */
+.dragging {
+  opacity: 0.9;
+  border-color: var(--teal);
+  cursor: grabbing;
+}
+
+/* Show the affordance before the lift, so a card reads as draggable. */
+.draggable {
+  cursor: grab;
+}
+
+/* A move that the server rejected — the optimistic write has already been rolled back. */
+.moveError {
+  margin-bottom: var(--sp-3);
+}

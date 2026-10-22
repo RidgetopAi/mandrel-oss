@@ -1,0 +1,30 @@
+# GitGuardian / ggshield configuration
+# ---------------------------------------------------------------------------
+# PURPOSE: suppress confirmed FALSE-POSITIVE "Generic Password" hits on TEST
+# FIXTURE files (fake credentials that exist only to exercise auth code paths,
+# e.g. `password: 'Seed-Passw0rd!one'`, `MANDREL_OAUTH_SECRET: 'seed-test-...-not-for-prod-...'`).
+# These are NOT real secrets and nothing they name exists in any live system.
+#
+# PHILOSOPHY (mirrors .gitleaks.toml — conservative on purpose):
+#   - We exclude by TEST-FIXTURE PATH only. We do NOT globally allowlist any real
+#     secret SHAPE — a real ghp_/AKIA/jwt/private-key committed ANYWHERE (including
+#     a test file) is still caught by gitleaks (shape-based, scans the whole tree)
+#     and by GitGuardian on every non-test path. This only silences the aggressive
+#     generic-password heuristic on files whose whole job is holding fake creds.
+#
+# SCOPE / IMPORTANT: this file is honored by ggshield (local pre-commit / CI runs).
+# GitGuardian's SERVER-SIDE GitHub monitoring (the source of the dashboard incidents
+# + email alerts) is configured separately in the GitGuardian dashboard
+# (Workspace Settings -> Secrets Detection -> Excluded file paths). Keep the two in
+# sync: the same test globs below should also be excluded in the dashboard, and any
+# existing incidents on these paths marked as false-positive.
+version: 2
+
+secret:
+  ignored_paths:
+    # mcp-server test suites (vitest) — fixtures/integration creds
+    - 'mcp-server/src/tests/**'
+    - 'mcp-server/src/**/*.test.ts'
+    # mandrel-command backend test suites (jest)
+    - 'mandrel-command/backend/src/__tests__/**'
+    - 'mandrel-command/backend/src/**/*.test.ts'

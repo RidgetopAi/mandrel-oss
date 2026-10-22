@@ -1,0 +1,70 @@
+/* Chart frame chrome — token-driven (charts.guards.test.ts enforces no literals).
+   The panel surface matches the Card primitive (var(--s1) + hairline + radius);
+   the caption/value treatment matches command-design-language.html `.chart`. */
+
+.frame {
+  background: var(--s1);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+  padding: var(--sp-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.caption {
+  font-size: var(--fs-label);
+  font-weight: var(--fw-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--tx-4);
+  min-width: 0;
+}
+
+.title {
+  font-size: var(--fs-title);
+  font-weight: var(--fw-title);
+  letter-spacing: var(--tracking-title);
+  color: var(--tx);
+}
+
+.value {
+  font-family: var(--mono);
+  font-size: var(--fs-data);
+  font-weight: 600;
+  color: var(--tx);
+  white-space: nowrap;
+}
+
+.value.up {
+  color: var(--green);
+}
+.value.down {
+  color: var(--rose);
+}
+.value.teal {
+  color: var(--teal);
+}
+
+/* The chart body: a fixed-height stage the ResponsiveContainer fills. */
+.body {
+  position: relative;
+  width: 100%;
+}
+
+/* Centered overlay for loading / empty states. */
+.state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}

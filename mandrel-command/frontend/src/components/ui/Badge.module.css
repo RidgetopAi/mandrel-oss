@@ -1,0 +1,71 @@
+/* Badge / Tag — accent text on an accent-derived tint. `--badge-accent` is set
+   per variant; the base rule derives colour + tint from it (zero hardcoded hex,
+   zero duplicated per-variant rules). */
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font);
+  font-size: var(--fs-label);
+  font-weight: 600;
+  line-height: 1;
+  color: var(--badge-accent);
+  background: color-mix(in srgb, var(--badge-accent) 14%, transparent);
+}
+
+.tag {
+  padding: var(--sp-1) var(--sp-2);
+  border-radius: var(--r-xs);
+}
+
+.pill {
+  padding: var(--sp-1) var(--sp-3);
+  border-radius: 999px; /* structural: fully-rounded pill (no radius token) */
+}
+
+.mono {
+  font-family: var(--mono);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+/* ── Variants: only set the accent; base rule does the rest ───────────────── */
+.neutral {
+  --badge-accent: var(--tx-3);
+}
+.teal {
+  --badge-accent: var(--teal);
+}
+.violet {
+  --badge-accent: var(--violet);
+}
+.blue {
+  --badge-accent: var(--blue);
+}
+.green {
+  --badge-accent: var(--green);
+}
+.amber {
+  --badge-accent: var(--amber);
+}
+.rose {
+  --badge-accent: var(--rose);
+}
+.ok {
+  --badge-accent: var(--ok);
+}
+.warn {
+  --badge-accent: var(--warn);
+}
+.crit {
+  --badge-accent: var(--crit);
+}
