@@ -24,6 +24,7 @@ import {
   ReadResourceRequestSchema,
 } from '@modelcontextprotocol/sdk/types.js';
 import { logger } from '../utils/logger.js';
+import { assertToolInputWithinLimit } from '../utils/toolInputLimit.js';
 import type { TransportRouteContext } from '../routes/index.js';
 
 /**
@@ -88,6 +89,10 @@ export function registerMcpHandlers(
       // SCHEMA-DRIVEN inside validateToolArguments, once the per-op schema is resolved
       // (an earlier task — replaced the old name-allow-list deserializer here).
       const args = rawArgs || {};
+      // TOOL-INPUT ELEMENT LIMIT — the SDK 1.32 `maxToolInputElements` check, which the
+      // low-level Server does not offer. Its McpError(-32602) is re-thrown verbatim by the
+      // catch below.
+      assertToolInputWithinLimit(name, args);
       // Pass connectionId so HTTP sessions are isolated from stdio and each other.
       // `identified: true` — a connectionId is only non-empty here when the
       // caller's own Mcp-Session-Id (or X-Connection-ID) produced it, which IS a presented

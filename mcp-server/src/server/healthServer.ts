@@ -25,6 +25,13 @@ import { BETTER_AUTH_CONFIG } from '../config/betterAuthConfig.js';
 import type { RemoteMcpTransport } from './remoteMcpTransport.js';
 import { httpStatusForToolOutcome } from '../utils/mcpErrorStatus.js';
 import { isErrorResult } from '../utils/mcpFormatter.js';
+import { assertToolInputWithinLimit } from '../utils/toolInputLimit.js';
+import { mcpJsonBody } from './mcpBodyParser.js';
+import {
+  MCP_FLAT_MAX_REQUEST_BODY_BYTES,
+  MCP_MAX_REQUEST_BODY_BYTES,
+  MCP_REST_MAX_REQUEST_BODY_BYTES,
+} from '../config/mcpRequestLimitsConfig.js';
 
 /**
  * Header carrying the client-DECLARED actor. Mirrors the same constant in
@@ -116,9 +123,13 @@ export class HealthServer {
     // .well-known + /sign-in + /consent paths and never intercept /mcp or /mcp/tools/*.
     mountOAuthRoutes(this.app);
 
-    // JSON body parsing (for the health/bridge/REST routes below — NOT the auth routes).
-    this.app.use(express.json({ limit: '10mb' }));
-    this.app.use(express.urlencoded({ extended: true }));
+    // NO APP-WIDE BODY PARSER. An `app.use(express.json({limit:'10mb'}))` used to sit here
+    // and ran BEFORE every route's auth guard, so an unauthenticated caller could make this
+    // process parse 10 MB of JSON per request on /mcp, /mcp/tools/* and every REST mutation.
+    // Each route that reads a body now parses it AFTER its guard, with its own bound from
+    // config/mcpRequestLimitsConfig.ts (the /api/v2/sessions and /api/decisions routers and
+    // the OAuth routes already carried their own). The app-wide urlencoded parser went with
+    // it: no route on this app reads a form body.
   }
 
   /**
@@ -205,7 +216,11 @@ export class HealthServer {
       //   - OAuth DISABLED → bearerAuth(): the pre-existing static-only guard, byte-for-byte
       //     (incl. the 503 fail-closed when MCP_AUTH_TOKEN is unset).
       const auth = BETTER_AUTH_CONFIG.enabled ? dualBearerAuth() : bearerAuth();
-      this.app.post('/mcp', auth, this.remoteMcp.handlePost);
+      // AUTH, THEN PARSE: the body is read only after `auth` passes, and only up to
+      // MCP_MAX_REQUEST_BODY_BYTES — an unauthenticated body is never parsed at all.
+      // GET/DELETE carry no body, so they mount no parser.
+      const mcpBody = mcpJsonBody(MCP_MAX_REQUEST_BODY_BYTES, 'jsonrpc');
+      this.app.post('/mcp', auth, mcpBody.parse, this.remoteMcp.handlePost, mcpBody.onError);
       this.app.get('/mcp', auth, this.remoteMcp.handleSessionRequest);
       this.app.delete('/mcp', auth, this.remoteMcp.handleSessionRequest);
       logger.info(
@@ -225,7 +240,15 @@ export class HealthServer {
     const bridgeGuard = bridgeAuth();
     this.app.get('/mcp/tools/schemas', bridgeGuard, this.handleToolSchemasExpress.bind(this));
     this.app.get('/mcp/tools', bridgeGuard, this.handleToolListExpress.bind(this));
-    this.app.post('/mcp/tools/:toolName', bridgeGuard, this.handleMcpToolExpress.bind(this));
+    // AUTH, THEN PARSE — same order as /mcp, with this surface's own limit.
+    const flatBody = mcpJsonBody(MCP_FLAT_MAX_REQUEST_BODY_BYTES, 'flat');
+    this.app.post(
+      '/mcp/tools/:toolName',
+      bridgeGuard,
+      flatBody.parse,
+      this.handleMcpToolExpress.bind(this),
+      flatBody.onError,
+    );
 
     // V2 MCP API (handle all v2/mcp paths as middleware)
     this.app.use('/v2/mcp', this.handleV2McpExpress.bind(this));
@@ -245,6 +268,7 @@ export class HealthServer {
     this.app.post(
       '/api/v2/projects/:id/set-primary',
       bearerAuth(),
+      express.json({ limit: MCP_REST_MAX_REQUEST_BODY_BYTES }),
       this.handleProjectSetPrimaryExpress.bind(this),
     );
 
@@ -516,9 +540,18 @@ export class HealthServer {
 
     try {
       const toolName = String(req.params.toolName);
+      // No JSON body (missing, or not sent as application/json) is the caller's error: 400,
+      // never a TypeError 500.
+      if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
+        res.status(400).json({ success: false, error: 'Request body must be a JSON object sent with Content-Type: application/json' });
+        return;
+      }
       const rawArgs = req.body.arguments || req.body.args || {};
       // Schema-driven coercion happens in validateToolArguments.
       const args = rawArgs;
+      // TOOL-INPUT ELEMENT LIMIT — before anything walks the arguments. A throw lands in the
+      // catch below as McpError -32602 → 400.
+      assertToolInputWithinLimit(toolName, args);
 
       // THE COLLAPSE. `|| 'http-default'` merges every caller that presents
       // no identity onto ONE shared, sticky, last-writer-wins project slot. It is LEFT IN

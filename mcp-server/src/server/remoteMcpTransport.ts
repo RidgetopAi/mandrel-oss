@@ -31,6 +31,7 @@ import { PROJECT_INSTRUCTIONS_ENABLED } from '../config/projectEchoConfig.js';
 import { deriveActor } from '../config/actorRegistry.js';
 import { PROJECT_BINDING_HEADER } from '../config/projectBindingConfig.js';
 import { LOOP_ID_HEADER } from '../config/positionKeyConfig.js';
+import { MCP_MAX_REQUEST_BODY_BYTES } from '../config/mcpRequestLimitsConfig.js';
 
 const MCP_SESSION_HEADER = 'mcp-session-id';
 // The stable per-connection identity the bridge / remote client sends (SR-1, migration
@@ -510,6 +511,10 @@ export class RemoteMcpTransport {
       sessionIdGenerator: () => randomUUID(),
       enableDnsRebindingProtection: true,
       allowedHosts: this.allowedHosts,
+      // Applies only when the SDK reads the body itself. Every handleRequest call in this file
+      // passes the express-parsed body, which healthServer.ts bounds to the same number after
+      // auth — see config/mcpRequestLimitsConfig.ts.
+      maxRequestBodySize: MCP_MAX_REQUEST_BODY_BYTES,
       onsessioninitialized: (sid: string) => {
         if (!autoRegister) return; // rehydration registers under the OLD id itself
         // Bound the map BEFORE inserting: evict idle/LRU sessions so an authenticated
@@ -593,7 +598,7 @@ export class RemoteMcpTransport {
    * wiped by a server restart/deploy). Transparently re-create a valid session bound to
    * that EXACT id and handle the request, so the client never sees a 404 it would ignore.
    *
-   * Mechanism (verified against @modelcontextprotocol/sdk 1.29.0 internals — see the
+   * Mechanism (verified against @modelcontextprotocol/sdk 1.32.1 internals — see the
    * sdkCoupling guard test): the SDK exposes no public "mark initialized" API. So we:
    *   1. Build a fresh server+transport with the SAME wiring a normal session uses
    *      (buildSession, autoRegister=false so the synthetic init's throwaway id is NOT

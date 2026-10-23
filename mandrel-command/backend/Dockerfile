@@ -9,8 +9,11 @@
 #   only gets THIS member's dependency tree resolved deterministically from the root
 #   lock — not all workspaces (no frontend/shared bloat).
 
+# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to whatever image the
+# build host has CACHED, so a build without --pull can stay on an older patch past a Node
+# security release (22.23.4). An exact tag forces the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
 # Stage 1: Dependencies stage (production-only, for the runtime node_modules)
-FROM node:22-alpine AS deps
+FROM node:22.23.4-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -28,7 +31,7 @@ RUN npm ci -w mandrel-command-backend --include-workspace-root=false \
     npm cache clean --force
 
 # Stage 2: Build stage (full deps incl. dev for tsc)
-FROM node:22-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json .npmrc ./
@@ -44,7 +47,7 @@ COPY backend/ ./backend/
 RUN npm run build -w mandrel-command-backend
 
 # Stage 3: Production runtime
-FROM node:22-alpine AS runner
+FROM node:22.23.4-alpine AS runner
 
 # Install minimal runtime dependencies
 RUN apk add --no-cache \

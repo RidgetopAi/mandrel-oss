@@ -25,11 +25,14 @@
 # The retry helper is COPY'd into each stage that does a network install.
 # -----------------------------------------------------------------------------
 
+# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to whatever image the
+# build host has CACHED, so a build without --pull can stay on an older patch past a Node
+# security release (22.23.4). An exact tag forces the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
 # Stage 1: Dependencies stage
 # Use Debian-slim (glibc) NOT alpine: the embedding stack (@xenova/transformers ->
 # onnxruntime-node) ships a prebuilt glibc native binary that does not run reliably
 # on alpine/musl (Ort::Exception at load). glibc base avoids that entirely.
-FROM node:22-slim AS deps
+FROM node:22.23.4-slim AS deps
 WORKDIR /app
 
 # npm's own transport-level retry/backoff (beneath the shell retry below). Cheap,
@@ -58,7 +61,7 @@ RUN retry_net npm ci --only=production --ignore-scripts && \
 # Stage 2: Builder stage
 # The server runs via tsx (runtime TS), so the "build" here is just dependency
 # resolution + TS validation; the artifact the runner needs is the src/ tree.
-FROM node:22-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 ENV NPM_CONFIG_FETCH_RETRIES=5 \
     NPM_CONFIG_FETCH_RETRY_FACTOR=2 \
     NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=10000 \
@@ -95,7 +98,7 @@ RUN npx tsc -p tsconfig.build.json
 # before any image build; we don't ship tsconfig into the image just to re-gate it.
 
 # Stage 3: Production runtime (Debian-slim/glibc so onnxruntime-node runs natively)
-FROM node:22-slim AS runner
+FROM node:22.23.4-slim AS runner
 ENV NPM_CONFIG_FETCH_RETRIES=5 \
     NPM_CONFIG_FETCH_RETRY_FACTOR=2 \
     NPM_CONFIG_FETCH_RETRY_MINTIMEOUT=10000 \

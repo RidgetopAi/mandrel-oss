@@ -543,7 +543,7 @@ describe('Remote MCP transport — SDK-coupling guard for rehydration (fails lou
   // `_initialized` flag + the writable inner `_webStandardTransport.sessionId`). A future
   // SDK bump that renames/relocates these would SILENTLY brick rehydration (back to 404s
   // for every customer after a deploy). This guard asserts the mechanism against the
-  // INSTALLED SDK so such a bump fails CI loudly. The SDK is pinned to 1.29.x; if this
+  // INSTALLED SDK so such a bump fails CI loudly. The SDK is pinned to 1.32.x; if this
   // test goes red after a bump, re-verify driveSyntheticInitialize + the sessionId stamp.
   it('drives a synthetic initialize on the installed SDK transport: _initialized flips and the inner sessionId is writable', async () => {
     const { Server } = await import('@modelcontextprotocol/sdk/server/index.js');
@@ -608,7 +608,7 @@ describe('Remote MCP transport — SDK-coupling guard for rehydration (fails lou
     await transport.close();
   });
 
-  it('the installed @modelcontextprotocol/sdk is pinned to 1.29.x (rehydration is verified against this internals contract)', async () => {
+  it('the installed @modelcontextprotocol/sdk is pinned to 1.32.x (rehydration is verified against this internals contract)', async () => {
     // Read the SDK's own installed package.json version straight off disk. A major/minor
     // bump must be a DELIBERATE change that re-runs the guard above, not an unnoticed
     // drift that silently bricks rehydration.
@@ -621,16 +621,16 @@ describe('Remote MCP transport — SDK-coupling guard for rehydration (fails lou
       here, '..', '..', 'node_modules', '@modelcontextprotocol', 'sdk', 'package.json'
     );
     const sdkPkg = JSON.parse(readFileSync(sdkPkgPath, 'utf8')) as { version: string };
-    expect(sdkPkg.version).toMatch(/^1\.29\./);
+    expect(sdkPkg.version).toMatch(/^1\.32\./);
 
-    // And the declared pin in mcp-server/package.json is exact-1.29.x (no caret/range that
+    // And the declared pin in mcp-server/package.json is exact-1.32.x (no caret/range that
     // could silently float the SDK past the verified internals contract).
     const projPkgPath = path.resolve(here, '..', '..', 'package.json');
     const projPkg = JSON.parse(readFileSync(projPkgPath, 'utf8')) as {
       dependencies?: Record<string, string>;
     };
     const declared = projPkg.dependencies?.['@modelcontextprotocol/sdk'];
-    expect(declared).toMatch(/^1\.29\./);
+    expect(declared).toMatch(/^1\.32\./);
   });
 });
 

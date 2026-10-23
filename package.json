@@ -21,7 +21,7 @@
     "test:frontend": "cd mandrel-command/frontend && CI=true npx react-scripts test --watchAll=false"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "1.29.0",
+    "@modelcontextprotocol/sdk": "1.32.1",
     "axios": "^1.11.0",
     "bullmq": "^5.58.7",
     "cors": "^2.8.5",

@@ -8,8 +8,11 @@
 #   dependency tree resolved deterministically from the root lock — no backend/shared
 #   bloat. The frontend ships as a static nginx bundle, so node_modules is build-only.
 
+# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to whatever image the
+# build host has CACHED, so a build without --pull can stay on an older patch past a Node
+# security release (22.23.4). An exact tag forces the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
 # Stage 1: Dependencies stage
-FROM node:22-alpine AS deps
+FROM node:22.23.4-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
@@ -31,7 +34,7 @@ RUN npm ci -w mandrel-command-frontend --include-workspace-root=false \
     npm cache clean --force
 
 # Stage 2: Build stage
-FROM node:22-alpine AS builder
+FROM node:22.23.4-alpine AS builder
 WORKDIR /app
 
 # Reuse the resolved deps (hoisted to /app/node_modules + member-local under
