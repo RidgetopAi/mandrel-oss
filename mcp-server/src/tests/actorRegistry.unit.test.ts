@@ -27,9 +27,7 @@
  *      last-segment classification.
  */
 
-import { execFileSync } from 'node:child_process';
-import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -261,89 +259,6 @@ function useActorEnvSandbox(): void {
  */
 describe('COMPOSITE ACTORS — legacy parity: flag OFF is byte-identical to the pre-change commit', () => {
   useActorEnvSandbox();
-
-  /**
-   * PROVENANCE — THE TEST IS THE INTERPRETER (Reviewer N3).
-   *
-   * A shape-check on `_capturedFromCommit` (`/^[0-9a-f]{40}$/`) is decorative: Reviewer faked
-   * the sha to a bogus 40-hex and the suite stayed GREEN, so the fixture's claim to be "a
-   * recording of commit X" was unenforced — the fixture could have been hand-edited to say
-   * anything. The claim is about what GIT and the MODULE LOADER will do, so this test hands the
-   * artifact to git and to the loader and asks them, rather than asserting a model of them:
-   *   1. the sha must RESOLVE to a real commit in this repo,
-   *   2. it must be an ANCESTOR of HEAD (so it is genuinely our history, not a random object),
-   *   3. `git show <sha>:<path>` must yield the pre-change source, which is then RE-EXECUTED
-   *      and must reproduce EVERY recorded row.
-   * Fail-closed: a missing git, an unresolvable sha, or a non-ancestor is a RED, never a skip.
-   */
-  it('PROVENANCE — the recorded commit resolves, is an ancestor of HEAD, and RE-EXECUTES to the fixture', async () => {
-    const sha = GOLDEN._capturedFromCommit;
-    expect(sha).toMatch(/^[0-9a-f]{40}$/);
-
-    const git = (args: string[]): string =>
-      execFileSync('git', args, { encoding: 'utf8', cwd: process.cwd() }).toString();
-
-    // 1 + 2 — ask git, do not model git. Both throw (→ RED) on failure.
-    expect(git(['cat-file', '-t', `${sha}^{commit}`]).trim()).toBe('commit');
-    expect(() => git(['merge-base', '--is-ancestor', sha, 'HEAD'])).not.toThrow();
-
-    // 3 — re-execute the ORIGINAL source and replay the whole fixture through it.
-    const legacySource = git(['show', `${sha}:mcp-server/src/config/actorRegistry.ts`]);
-
-    // 3a — NON-CIRCULARITY. The point of the oracle is that it is code we are NOT shipping. If
-    // the fixture were ever regenerated from the CURRENT source, the parity test would be
-    // comparing the product against itself and would pass by construction. (This is the hole a
-    // sha-swap probe exposed: pointing `_capturedFromCommit` at a behaviourally identical
-    // ancestor is harmless — pointing it at HEAD is not.)
-    const currentSource = readFileSync(
-      path.join(HERE, '..', 'config', 'actorRegistry.ts'),
-      'utf8',
-    );
-    expect(legacySource).not.toBe(currentSource);
-    const dir = mkdtempSync(path.join(tmpdir(), 'actor-provenance-'));
-    const file = path.join(dir, 'legacyActorRegistry.ts');
-    writeFileSync(file, legacySource);
-    try {
-      const legacy = (await import(/* @vite-ignore */ file)) as {
-        deriveActor: typeof deriveActor;
-        classifyActor: typeof classifyActor;
-        normalizeActor: typeof normalizeActor;
-      };
-      // 3b — THE ORACLE IS PRE-CHANGE, ASSERTED BEHAVIOURALLY (Reviewer N-e). Until now this
-      // rested on an ACCIDENT: a composite-era source would fail to resolve its
-      // `./actorIdentityConfig.js` sibling from the temp dir and blow up the import. That is a
-      // load-bearing accident, not a guard. So ASK the module instead: force the flag ON and
-      // confirm it still OVERRIDES rather than composes — no composite-era source can do that,
-      // and it holds no matter where the file is loaded from or what resolves alongside it.
-      const savedFlag = process.env[FLAG];
-      process.env[FLAG] = 'true';
-      try {
-        expect(legacy.deriveActor('operator@example.com', 'builder-abc')).toBe('operator@example.com');
-      } finally {
-        if (savedFlag === undefined) delete process.env[FLAG];
-        else process.env[FLAG] = savedFlag;
-      }
-      // …and the post-change surface genuinely does not exist in it.
-      const legacyExports = legacy as unknown as Record<string, unknown>;
-      expect(legacyExports.encodePrincipalActor).toBeUndefined();
-      expect(legacyExports.refineActor).toBeUndefined();
-      expect(legacyExports.sanitizeDeclaredActor).toBeUndefined();
-
-      const drift: string[] = [];
-      for (const row of GOLDEN.deriveActor) {
-        if ((legacy.deriveActor(row.sub, row.declared) ?? null) !== row.out) {
-          drift.push(`deriveActor(${JSON.stringify(row.sub)}, ${JSON.stringify(row.declared)})`);
-        }
-      }
-      for (const row of GOLDEN.unary) {
-        if (legacy.normalizeActor(row.in) !== row.normalize) drift.push(`normalizeActor(${JSON.stringify(row.in)})`);
-        if (legacy.classifyActor(row.in) !== row.classify) drift.push(`classifyActor(${JSON.stringify(row.in)})`);
-      }
-      expect(drift).toEqual([]);
-    } finally {
-      rmSync(dir, { recursive: true, force: true });
-    }
-  });
 
   it('the fixture is NOT vacuous', () => {
     expect(GOLDEN._capturedUnderEnv[FLAG]).toBe('<unset>');

@@ -114,13 +114,13 @@ describe('explicit settings beat the key-derived mode', () => {
 
   test('provider=openai-compat with its endpoint + both keys → openai-compat', async () => {
     process.env.MANDREL_BELIEF_ADJUDICATOR_PROVIDER = 'openai-compat';
-    process.env.MANDREL_BELIEF_ADJUDICATOR_ENDPOINT = 'http://127.0.0.1:8080';
+    process.env.MANDREL_BELIEF_ADJUDICATOR_ENDPOINT = 'http://127.0.0.1';
     process.env.SUBQ_API_KEY = SUBQ_VALUE;
     process.env.ANTHROPIC_API_KEY = ANTHROPIC_VALUE;
     const c = await load();
     expect(c.SUPERSESSION_MODE).toMatchObject({ mode: 'openai-compat', source: 'explicit' });
     expect(c.BELIEF_ADJUDICATOR_CONFIG.provider).toBe('openai-compat');
-    expect(c.BELIEF_ADJUDICATOR_CONFIG.endpoint).toBe('http://127.0.0.1:8080');
+    expect(c.BELIEF_ADJUDICATOR_CONFIG.endpoint).toBe('http://127.0.0.1');
   });
 
   test('MANDREL_BELIEF_TIER1_PROVIDER=openai-compat overrides the Snap tier-1 default', async () => {

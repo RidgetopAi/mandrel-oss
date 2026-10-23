@@ -140,8 +140,9 @@ const EXPECTED_ACCESSOR_DEFINITIONS = 4;
  *   the disclosed population matches the population that was read.
  * resolution (routes/project.routes.ts, getCurrentProject) is classified `effective`:
  * a hook-injected briefing must describe the BOUND project, never the interactive slot.
+ * 45 -> 44: the code-scan (surveyor) routes module was removed, and its one call site with it.
  */
-const EXPECTED_TOTAL_CALL_SITES = 45;
+const EXPECTED_TOTAL_CALL_SITES = 44;
 
 /** Every .ts file under src/, EXCLUDING tests — tests legitimately mention the accessors. */
 function sourceFiles(dir: string = SRC_DIR, acc: string[] = []): string[] {

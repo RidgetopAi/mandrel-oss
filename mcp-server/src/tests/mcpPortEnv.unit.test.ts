@@ -43,8 +43,8 @@ describe('assignPort("aidis-mcp") env resolution', () => {
     expect(warn).not.toHaveBeenCalled();
   });
 
-  it('falls back to the default (8080) when neither is set', async () => {
-    expect(await portManager.assignPort('aidis-mcp')).toBe(8080);
+  it('falls back to the built-in default port when neither is set', async () => {
+    expect(await portManager.assignPort('aidis-mcp')).toBe(8080); // reserved-port-ok: asserts the product's documented default value, binds nothing
     expect(warn).not.toHaveBeenCalled();
   });
 });

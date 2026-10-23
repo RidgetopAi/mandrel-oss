@@ -1,5 +1,7 @@
 /**
- * AUTO-OPEN POSITIONS — the acceptance contract ( * design an earlier note). The 11 checks the design names, in order, each runnable.
+ * AUTO-OPEN POSITIONS — the acceptance contract. Checks 1-10 of the design, in order, each
+ * runnable. (The design's check 11 diffed two fixed commits that predate this repository's
+ * history, so it cannot run here and was removed.)
  *
  * EVERY check drives the FULL PUBLIC PATH — validateToolArguments -> routeExecutor, the
  * exact path the HTTP bridge uses. That matters most for the three mutation probes (6/7/8):
@@ -23,8 +25,6 @@ vi.mock('../services/embedding.js', () => ({
   },
 }));
 
-import { execFileSync } from 'node:child_process';
-import path from 'node:path';
 import { db } from '../config/database.js';
 import { routeExecutor } from '../routes/index.js';
 import { validateToolArguments } from '../middleware/validation.js';
@@ -755,128 +755,6 @@ describe('CHECK 10 — RECONNECT', () => {
     expect(rowsAfter).toHaveLength(2);
     const old = rowsAfter.find((r: any) => r.spine_id === t1.id);
     expect(old.origin).toBe('trunk');
-  });
-});
-
-// =========================================================================================
-// CHECK 11 — NO-CONFIG GREP. The design forbids a new config key, env var or TTL: nothing
-// may be required of any customer agent, and nothing may be tunable into a different
-// behaviour. This is a property of BYTES, so the instrument is grep over the diff — not a
-// golden list of known knobs, which would drift and would only ever describe the knobs
-// somebody remembered.
-// =========================================================================================
-describe('CHECK 11 — NO-CONFIG GREP', () => {
-  /**
-   * THE DIFF RANGE IS FIXED AT BOTH ENDS, ON PURPOSE.
-   *
-   * BASE_REF is the v0.23.0 release the auto-open branch was cut from; HEAD_REF is the
-   * v0.24.0 release that merged it. CHECK 11 asserts a HISTORICAL FACT about ONE change —
-   * "the auto-open change introduced no new env var, config key or TTL" — so it must measure
-   * that change and nothing else.
-   *
-   * It used to read `git diff BASE_REF -- <paths>`, i.e. the base against the WORKING TREE.
-   * That silently turned a claim about auto-open into a standing "no new config anywhere,
-   * ever" rule policing every future commit. The first branch to touch it was Phase 3
-   *, which tripped it by ADDING A CONFIG MODULE CORRECTLY — obeying the
-   * standing `configs-not-hardcoded` rule — and went RED on the clean gate for it.
-   *
-   * The predicate below is deliberately NOT loosened to accommodate that. A repo-wide
-   * "no new config" guard may well be worth having, but it is a different, deliberate
-   * decision and must not be created by accident as a side effect of one release's check.
-   */
-  const BASE_REF = 'e2e93b1';
-  const HEAD_REF = '6430317';
-  const repoRoot = path.resolve(process.cwd(), '..');
-
-  function git(args: string[]): string {
-    return execFileSync('git', args, { cwd: repoRoot, encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
-  }
-
-  /**
-   * Strip COMMENTS before matching. The claim under test is about code — a knob that
-   * EXISTS — and prose is not a knob. Without this the guard fails on its own subject
-   * matter: the first run flagged exactly two lines, both of them comments in this change
-   * saying "NO TTL, NO new config key, NO new env var". A guard that a healthy run makes go
-   * red gets deleted the first time it is inconvenient, which is worse than the hole.
-   *
-   * Fail-closed on purpose: `//` and `--` are stripped wherever they appear, so a URL or a
-   * SQL string containing them loses its tail and can only make this check STRICTER, never
-   * blinder. Block-comment bodies (` * …`) are dropped whole.
-   */
-  function codeOnly(lines: string[]): string[] {
-    return lines
-      .map((l) => l.replace(/^\+/, ''))
-      .filter((l) => !/^\s*(\/\*|\*|\/\/|--)/.test(l))
-      .map((l) => l.split('//')[0].split('--')[0]);
-  }
-
-  /** Every way this repo reads a knob. A TTL can only arrive through one of them. */
-  const KNOB = /process\.env|envInt\(|envBool\(|envStr\(|envList\(|MANDREL_[A-Z0-9_]+|AIDIS_[A-Z0-9_]+|\bttl\b/i;
-
-  /**
-   * THE POPULATION, named: PRODUCT source and migrations under mcp-server — everything that
-   * ships and everything a running server reads. That is the whole population the claim is
-   * about, because "no new config, env var or TTL" is a claim about what a CUSTOMER AGENT
-   * must supply, and nothing under src/tests is loaded by a server or shipped to anyone.
-   *
-   * Test files are excluded for a co-located, written reason rather than by an allow-list:
-   * this very file must contain the strings `process.env` and `MANDREL_..._TTL` to probe
-   * that KNOB is not hollow (see the probe below). A guard that forbids the mutation probe
-   * of the feature it guards is a guard that gets deleted the first time it is inconvenient.
-   * The narrowing is exactly one directory and it is asserted below that it does not empty
-   * the population.
-   */
-  const isProduct = (f: string) => f.startsWith('mcp-server/') && !f.includes('/tests/');
-
-  test('the base ref is reachable (an unmeasurable check must FAIL, never pass quietly)', () => {
-    // C1's third state: "could not measure" gets its own branch and is a FAILURE here. A
-    // grep that finds nothing because it ran against nothing is the false green this whole
-    // check exists to avoid.
-    // BOTH ends must be reachable now that the range is closed — an unreachable HEAD_REF
-    // would otherwise surface as an empty diff, i.e. a passing check that measured nothing.
-    expect(git(['cat-file', '-t', BASE_REF]).trim()).toBe('commit');
-    expect(git(['cat-file', '-t', HEAD_REF]).trim()).toBe('commit');
-  });
-
-  test('the diff introduces no new env var, config key, or TTL', () => {
-    const changed = git(['diff', '--name-only', BASE_REF, HEAD_REF, '--', 'mcp-server/src', 'mcp-server/database'])
-      .split('\n')
-      .filter(Boolean);
-    const productFiles = changed.filter(isProduct);
-    // The narrowing must not empty the population — if it did, this check would pass by
-    // measuring nothing, which is the false green the whole check exists to prevent.
-    expect(productFiles.length, 'product files this change touched').toBeGreaterThan(0);
-
-    const diff = git(['diff', BASE_REF, HEAD_REF, '--', ...productFiles]);
-    const added = diff.split('\n').filter((l) => l.startsWith('+') && !l.startsWith('+++'));
-    expect(added.length, 'the diff must be non-empty or this check measured nothing').toBeGreaterThan(0);
-
-    const offenders = codeOnly(added).filter((l) => KNOB.test(l));
-    expect(offenders, 'added CODE lines introducing a knob').toEqual([]);
-  });
-
-  test('the knob pattern actually matches a knob (this guard is not hollow)', () => {
-    // C3, one probe: the check above passes trivially if KNOB matches nothing or codeOnly()
-    // eats everything. Feed it a line of each shape that MUST be caught, and one comment
-    // that must not be — so a green above means the pattern looked and found nothing, not
-    // that it could not look.
-    expect(codeOnly(['+  const x = process.env.FOO;']).filter((l) => KNOB.test(l))).toHaveLength(1);
-    expect(codeOnly(['+  ttlSeconds: envInt(\'MANDREL_THING_TTL\', 60),']).filter((l) => KNOB.test(l))).toHaveLength(1);
-    expect(codeOnly(['+-- NO TTL, no new env var']).filter((l) => KNOB.test(l))).toHaveLength(0);
-    expect(codeOnly(['+ * NO new config, NO env var, NO TTL.']).filter((l) => KNOB.test(l))).toHaveLength(0);
-  });
-
-  // DELETED 2026-08-15 (SK2): 'no untracked source file smuggles one in either'.
-  // It scanned UNTRACKED files, and scripts/ci-clean-gate.sh refuses to run at all on a
-  // checkout with any (`git status --porcelain` non-empty → die, before a single stage). So
-  // its population was EMPTY BY CONSTRUCTION in every authoritative gate run: it could only
-  // ever fire in a developer worktree, on whatever that developer happened to be writing.
-
-  test('no new config MODULE was added', () => {
-    const names = git(['diff', '--name-status', BASE_REF, HEAD_REF, '--', 'mcp-server/src/config'])
-      .split('\n')
-      .filter(Boolean);
-    expect(names.filter((l) => l.startsWith('A')), 'added files under src/config').toEqual([]);
   });
 });
 
