@@ -24,7 +24,7 @@ Store what you learned, with a type and tags:
 
 ```text
 context({action:"store",
-  content:"pgbouncer dropped idle connections after 30s under load; fixed with server_idle_timeout=600. Symptom was 'connection reset' errors.",
+  content:"pgbouncer dropped idle connections after 30s under load; fixed with client_idle_timeout=600. Symptom was 'connection reset' errors.",
   type:"error",
   tags:["postgresql","pgbouncer"]})
 ```

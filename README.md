@@ -225,7 +225,7 @@ Protocol clients navigate the token-lean gateway: `discover({action:'catalog'})`
 ```typescript
 context_store({
   content: "pgbouncer dropped idle connections after 30s under load; fixed with " +
-           "server_idle_timeout=600. Symptom was 'connection reset' errors.",
+           "client_idle_timeout=600. Symptom was 'connection reset' errors.",
   type: "error",
   tags: ["postgresql", "pgbouncer", "connection-pooling"]
 })
