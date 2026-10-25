@@ -244,7 +244,7 @@ describe('threading lens axes — component: is the registry, actor: is the rost
     }
     expect(ACTOR_PREFIX_RULES.length).toBeGreaterThan(0);
     for (const rule of ACTOR_PREFIX_RULES) {
-      expect(isQuarantinedThreadingTag(store(`actor:${rule.prefix}0803a2d0`).stored)).toBe(false);
+      expect(isQuarantinedThreadingTag(store(`actor:${rule.prefix}0803f00d`).stored)).toBe(false);
       // A BARE prefix names nobody and must not pass as a family member.
       expect(isQuarantinedThreadingTag(store(`actor:${rule.prefix}`).stored)).toBe(true);
     }

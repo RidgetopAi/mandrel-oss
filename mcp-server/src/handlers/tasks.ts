@@ -1708,7 +1708,7 @@ class TasksHandler {
             // metadataMergeSql helper the single task_update path uses, instead of the old
             // wholesale `metadata = $n` REPLACE that silently DROPPED every sibling key not
             // in the incoming object. That REPLACE left the Lesson-011 "whole class"
-            // incomplete after the single-path merge fix (f7a4f6f) — bulk clobbered while
+            // incomplete after the single-path merge fix (f7af00d) — bulk clobbered while
             // single merged. Now both share the shallow-merge semantics: set/overwrite
             // incoming keys, keep untouched keys, and an explicit `null` deletes a key.
             //

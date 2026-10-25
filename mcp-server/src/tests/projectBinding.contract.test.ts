@@ -77,7 +77,7 @@ afterEach(() => {
  * That property was measured to be a BUG, not a feature: the un-normalized identifier reached
  * `AND project_id = $n` against a uuid column, so a project NAME severed tag/link edge minting
  * (silently, blaming the referent) and hard-failed EVERY tool lacking its own name-aware
- * resolution with a raw Postgres cast error — at least twelve of them, measured on f9d9ff9;
+ * resolution with a raw Postgres cast error — at least twelve of them, measured on f9de00d;
  * see projectArgNormalizer.contract.test.ts for the enumeration and why it is a floor rather
  * than a definition. an earlier Task therefore NORMALIZES rung 1 for everyone and refuses an unresolvable
  * one. The guarantee that survives — and that this block now states exactly — is about rung 3:

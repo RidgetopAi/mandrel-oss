@@ -984,7 +984,7 @@ class ContextHandler {
   /**
    * SINGLE SOURCE OF TRUTH for the context-search id-prefix / partial-tag MATCH and the
    * retrieval GATE it relaxes (an earlier task — the Contexts half of the class-fix
-   * whose Decisions half shipped in 7014f77).
+   * whose Decisions half shipped in 701f00d).
    *
    * THE BUG (RANKING, not retrieval): an id8 (`2b3c4d5e`) typed in the Contexts search box
    * matched NOTHING. Hex has no semantic content, so the embedder yields a meaningless vector

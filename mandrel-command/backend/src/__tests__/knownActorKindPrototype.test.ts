@@ -96,6 +96,6 @@ describe('knownActorKind: Object.prototype keys are not actors', () => {
       expect(ACTOR_KINDS).toContain(knownActorKind(actor));
     }
     // …and the prefix families, which resolve on a different branch entirely.
-    expect(ACTOR_KINDS).toContain(knownActorKind('builder-0803a2d0'));
+    expect(ACTOR_KINDS).toContain(knownActorKind('builder-0803f00d'));
   });
 });

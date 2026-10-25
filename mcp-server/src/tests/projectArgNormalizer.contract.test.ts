@@ -207,7 +207,7 @@ describe('a project NAME in an explicit scope arg still mints the edge', () => {
    * project-scoped predicate without name-aware resolution of its own, with the raw Postgres
    * cast error `invalid input syntax for type uuid`.
    *
-   * AT LEAST twelve such tools were reproduced on f9d9ff9 (2026-07-25) — task_create,
+   * AT LEAST twelve such tools were reproduced on f9de00d (2026-07-25) — task_create,
    * task_list, task_details, task_progress_summary, context_search, context_update,
    * decision_record, decision_search, decision_stats, recall_thread, thread_set,
    * and one stored-scan reader — sampled from 43 scoped project params. That enumeration is a FLOOR

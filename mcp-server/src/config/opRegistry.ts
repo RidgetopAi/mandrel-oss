@@ -505,7 +505,7 @@ export const OP_REGISTRY: readonly OpRegistryEntry[] = [
     humanDescriptions: {
       contextId: 'Context UUID or 8+-hex short id to edit (project-scoped)',
       content: 'New full content (replaces the stored content; re-embeds for search)',
-      tags: 'New tag set (REPLACES tags) — re-tag/re-thread, e.g. ["task:9e25dac7","scope:product"]. Malformed threading/ref tags are normalized + reported, never rejected; an unusable threading value is stored QUARANTINED as `invalid-<tag>`.',
+      tags: 'New tag set (REPLACES tags) — re-tag/re-thread, e.g. ["task:9e25f00d","scope:product"]. Malformed threading/ref tags are normalized + reported, never rejected; an unusable threading value is stored QUARANTINED as `invalid-<tag>`.',
       metadata: 'Structured metadata to MERGE over the existing object (shallow). Set a key to null to DELETE just that key; omitted keys are preserved (no silent data loss).',
       relevanceScore: 'New importance score 0–10',
       projectId: 'Project ID or name to scope the lookup (defaults to current project)',

@@ -13,7 +13,7 @@
  *
  * THE FIXTURE IS THE MEASURED DEFECT, not an invented one. Captured read-only from prod on
  * 2026-08-23 (project `riverbend`) into
- * runtime/lib/__fixtures__/boot-recall-collapse/walk-cycle-eb98686d.json:
+ * runtime/lib/__fixtures__/boot-recall-collapse/walk-cycle-eb98f00d.json:
  *
  *     superseded_by 2b3c4d5e   tier:declared
  *     superseded_by 3c4d5e6f   tier:declared

@@ -9,7 +9,7 @@
  * `storeEdgeReporting.contract.test.ts` locks that in for the context write path.
  *
  * The decision write path had the same disease in two different degrees, both MEASURED on
- * ref 61d4648 before this file existed:
+ * ref 61df00d before this file existed:
  *
  *   decision_record  — reported a correct `linksMinted` TOTAL (an earlier task summed the
  *                      three sources) but NO itemization at all. A caller could see "4"

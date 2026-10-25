@@ -12,7 +12,7 @@
  * end-to-end on real data.
  *
  * WHERE THE RETRACT/RE-MINT EXERCISE WENT. The `ADJRUN_RECONCILE_TEST` flag
- * deleted in 6ddf3ac is not coming back here: it was coupled to this paid run only because
+ * deleted in 6ddf00d is not coming back here: it was coupled to this paid run only because
  * it drew its sample from the run's minted edges, and reconcileBeliefEdge needs no provider.
  * It is ported to src/tests/beliefEdgeReconciliationRealRows.contract.test.ts, which runs the
  * same retract/re-mint round trip against real `links` rows on the disposable CI DB, for free

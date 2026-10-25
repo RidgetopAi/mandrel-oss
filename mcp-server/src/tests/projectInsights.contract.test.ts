@@ -33,7 +33,7 @@
  *   visible; a fabricated green is TRUSTED — the worse of the two.
  *
  * DEFECT 3 (the meta-defect) — THE CAMOUFLAGE, and the thing this file most exists to stop.
- *   Commit c688805, 48h after the rename, added an information_schema existence check that
+ *   Commit c68f00d, 48h after the rename, added an information_schema existence check that
  *   returned {total: 0} when `agent_tasks` was missing. That turned a LOUD
  *   `relation "agent_tasks" does not exist` — which would have failed on day one — into a
  *   plausible silent zero. The guard WAS the bug's camouflage.

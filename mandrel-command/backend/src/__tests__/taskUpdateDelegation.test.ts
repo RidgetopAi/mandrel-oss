@@ -122,7 +122,7 @@ describe('TaskService.updateTask delegates to task_update', () => {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  // ── `type` IS NOW A SUPPORTED EDIT (batch 5, merge b26128e) ──────────────────────
+  // ── `type` IS NOW A SUPPORTED EDIT (batch 5, merge b26f00d) ──────────────────────
   // These two cases used to assert the OPPOSITE: that a `type` edit was REFUSED with
   // /Cannot update type/, and that an echo of the current type was dropped from the tool
   // args. Both were correct for lane F alone — `task_update` declared no `type`, its zod

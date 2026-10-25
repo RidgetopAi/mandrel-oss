@@ -225,13 +225,6 @@ keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd"
     '''(^|/)config/environments/\.env\.development$''',
     '''(^|/)\.env\.logging$''',
     '''(^|/)ORACLE_REFRACTOR\.md$''',
-    # HISTORY-ONLY pasted gate logs (2026-09-22): a lane committed four
-    # ci-clean-gate transcripts under an evidence/ directory; one line quoted a fleet
-    # posture guard's placeholder `ANTHROPIC_API_KEY=<8-char word>` (entropy 2.75, not a
-    # key). The files are DELETED from the worktree in the same commit as this line;
-    # this scopes the dead history so the fleet roll's history scan is not permanently
-    # RED. Raw gate logs never belong in evidence/ — the receipt lives in the commit body.
-    '''^evidence/task-f2c8cf5c/''',
   ]
   regexes = [
     # --- documentation placeholders ---------------------------------------
@@ -346,20 +339,6 @@ keywords = ["password","passwd"]
     '''['"][A-Z]+(?:_[A-Z]+)+['"]''',
     '''(?i)['"]changeme['"]''',
   ]
-  # HISTORICAL carriers of this shape, rule-scoped (not the global allowlist), one reason
-  # each. Every one is dead at HEAD: the file is gone or the line is gone (measured
-  # 2026-09-08: `gitleaks detect --log-opts=HEAD` attributed all 6 findings to these two
-  # commits + the two below; none of the four files carries a `PASSWORD '…'` line today).
-  # scripts/test/gitleaks-credential-shapes.test.sh 5d strips THIS line and proves
-  # the leaked-password commit still scans RED without it — the allowlist is the only thing silencing it.
-  #   one commit (2026-01-25): README.md:242 + docs/DEPLOYMENT.md:121 — deployment-guide
-  #            example passwords (lowercase snake_case words, no entropy), removed since.
-  #   the other (2025-12-02): scripts/prod-host-setup.sh:50,53 — the REAL postgres superuser
-  #            password, the miss this rule was written for. ROTATED 2026-09-08
-  #           ; the file no longer exists at HEAD.
-  # Two more commits (TS015 guide, `your_…` placeholders) need no row: the placeholder
-  # regex above covers them once it actually matches.
-  commits = ["e9a864f74cbfaa35c3e428497275581d238cc7fa", "8cb7b7e608583c7dc8729fdfd085abab7809532b"]
 
 [[rules]]
 id = "mandrel-credential-in-uri"

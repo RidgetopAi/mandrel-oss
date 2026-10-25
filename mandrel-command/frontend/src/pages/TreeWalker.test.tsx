@@ -68,7 +68,7 @@ const mockApi = api as unknown as {
 };
 
 /** The trunk head the backend serves (the project's newest handoff) — the jump target. */
-const TRUNK_HEAD = 'e4bb5dc5-0000-4000-8000-00000000aaaa';
+const TRUNK_HEAD = 'e4bbf00d-0000-4000-8000-00000000aaaa';
 
 const SAMPLE: ThreadGraph = {
   anchor: { branchLabel: 'command-redesign', anchorId: 'a0000000-0000-4000-8000-000000000001', recordCount: 2 },

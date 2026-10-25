@@ -8,7 +8,7 @@
  *
  * WHY IT EXISTS — measured, from one rendered boot package on 2026-08-23 (prod, project
  * `riverbend`; the response is kept read-only at
- * runtime/lib/__fixtures__/boot-recall-collapse/walk-cycle-eb98686d.json and is the fixture
+ * runtime/lib/__fixtures__/boot-recall-collapse/walk-cycle-eb98f00d.json and is the fixture
  * the contract test runs on):
  *
  *   superseded_by 2b3c4d5e   tier:declared

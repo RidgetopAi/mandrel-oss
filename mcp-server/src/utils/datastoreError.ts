@@ -7,7 +7,7 @@
  * which sanitizes a DENYLIST of known-sensitive SHAPES (connection URIs, key=value
  * secrets, absolute paths, stack frames) and then forwards whatever is left VERBATIM.
  * A denylist is the wrong default for this: anything the driver says that is not on the
- * list is published to the caller. Measured on `1943293` at the real HTTP surface, a
+ * list is published to the caller. Measured on `194f00d` at the real HTTP surface, a
  * pgvector fault reached an MCP caller as:
  *
  *     ❌ Error: Context storage failed: expected 1536 dimensions, not 768
@@ -97,7 +97,7 @@ export function datastoreErrorText(ref: string): string {
   // Contradictory guidance, and a model burning retries mutating its own correct input is
   // precisely what this wording exists to prevent. The marker suppresses the generic suffix
   // so the ONE piece of advice that is true for a datastore fault is the only one given.
-  // (Measured in the pre-fix caller-facing capture, reports/2d383cc2-…/2d383cc2-after5.json.)
+  // (Measured in the pre-fix caller-facing capture, reports/2d38f00d-…/2d38f00d-after5.json.)
   return (
     `${DATASTORE_ERROR_CODE} A database operation could not be completed (ref: ${ref}). ` +
     `This is a server-side fault, not a problem with the arguments you sent — re-sending ` +

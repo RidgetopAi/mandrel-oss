@@ -469,7 +469,7 @@ describe('(d) byproduct opens still work, and yield to a deliberately opened pos
 // (declaredLimbsGoldenParity.contract.test.ts). So: NOT a defect, and deliberately unchanged.
 describe('fold-in — LIMB_ID8_PATTERN on a full UUID: measured, not assumed', () => {
   test('a full UUID in the body yields exactly its own id8, which resolves to that same record', () => {
-    const uuid = '2e21d2ac-1111-4222-8333-444455556666';
+    const uuid = '2e21f00d-1111-4222-8333-444455556666';
     const rec = {
       id: 'aaaaaaaa-0000-4000-8000-000000000000',
       type: 'context' as const,
@@ -479,7 +479,7 @@ describe('fold-in — LIMB_ID8_PATTERN on a full UUID: measured, not assumed', (
     const { bodyId8s } = collectNamedId8s(rec);
     // EXACTLY ONE token — not zero (which would mean full-UUID citations declare nothing)
     // and not two (which would be the double-count the guard is meant to prevent).
-    expect(bodyId8s).toEqual(['2e21d2ac']);
+    expect(bodyId8s).toEqual(['2e21f00d']);
 
     // And it resolves to the record the UUID actually names — the octet is not "bogus".
     const derived = deriveDeclaredLimbs(rec, buildId8Resolver([{ id: uuid, type: 'task' }]));
@@ -490,13 +490,13 @@ describe('fold-in — LIMB_ID8_PATTERN on a full UUID: measured, not assumed', (
   test('the same body through BOTH layers agrees on the count Coordinator measured live: two', () => {
     // Coordinator's prod fixture: two ids, cited in mixed full-UUID and bare-id8 form. The live
     // mint report resolved exactly 2. The limb layer must not see 4.
-    const a = 'efc03f42-1111-4222-8333-444455556666';
-    const b = '2e21d2ac-9999-4888-8777-666655554444';
+    const a = 'efc0f00d-1111-4222-8333-444455556666';
+    const b = '2e21f00d-9999-4888-8777-666655554444';
     const rec = {
       id: 'bbbbbbbb-0000-4000-8000-000000000000',
       type: 'decision' as const,
-      body: `supersedes ${a} and relates to 2e21d2ac (full: ${b})`,
-      tags: ['task:efc03f42'],
+      body: `supersedes ${a} and relates to 2e21f00d (full: ${b})`,
+      tags: ['task:efc0f00d'],
     };
     const derived = deriveDeclaredLimbs(
       rec,

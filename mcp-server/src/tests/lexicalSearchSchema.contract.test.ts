@@ -52,12 +52,12 @@ const DIFFERENTIAL_INPUTS: readonly string[] = Object.freeze([
   'services/anchorGate.ts:122 with MANDREL_SEARCH_MIN_SIMILARITY',
   'anchorgate.ts:122',
   'plain.md, package.json, the CI gate, index.ts',
-  'at 5320bd9 and 5320bd9204273cc24dc41ae77ca96ecc2610dccf',
-  'deadbe abcdef x5320bd9y',
+  'at 532f00d and 532f00d204273cc24dc41ae77ca96ecc2610dccf',
+  'deadbe abcdef x532f00dy',
   'the quick brown fox jumps over the lazy dog',
   'MANDREL_SEARCH_MIN_SIMILARITY_MANDREL_SEARCH_MIN_SIMILARITY',
   'mixed CASE_TOKEN.TS and CASE_TOKEN.ts and Case_Token.ts',
-  'https://command.example.com/r/6df13326 and a.b.c.d.e',
+  'https://command.example.com/r/6df1f00d and a.b.c.d.e',
   'punctuation: (foo.ts:1), [bar.js], {baz.md}; qux.py.',
   'a_b A_B AB_CD_EF _LEADING TRAILING_',
   '',
@@ -195,7 +195,7 @@ describe('migration 091 — the lexical layer schema contract', () => {
   // ── acceptance 1: the identifier round trip, BOTH directions ─────────────────
   test('a stored document matches queries for each of its identifiers, and not for others', async () => {
     const content =
-      'services/anchorGate.ts:122 with MANDREL_SEARCH_MIN_SIMILARITY at 5320bd9';
+      'services/anchorGate.ts:122 with MANDREL_SEARCH_MIN_SIMILARITY at 532f00d';
     const id = (
       await db.query(
         `INSERT INTO contexts (project_id, context_type, content) VALUES ($1,'code',$2) RETURNING id`,
@@ -215,7 +215,7 @@ describe('migration 091 — the lexical layer schema contract', () => {
     // DIRECTION 1 — every identifier in the document is findable by its bare query form.
     expect(await hits('anchorgate.ts:122')).toBe(true);
     expect(await hits('mandrel_search_min_similarity')).toBe(true);
-    expect(await hits('5320bd9')).toBe(true);
+    expect(await hits('532f00d')).toBe(true);
 
     // DIRECTION 2 — and a different identifier does NOT match. Without this the test would
     // pass against a column that matched everything.

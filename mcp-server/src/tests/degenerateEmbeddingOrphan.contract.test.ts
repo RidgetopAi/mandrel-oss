@@ -118,7 +118,7 @@ describe('the JS predicate and the SQL predicate are ONE rule', () => {
   // seventeen orders of magnitude away from where the two implementations actually part company
   // — so it "proved agreement" while sampling only the easy middle. `degeneracyOf` evaluated in
   // float64 and pgvector evaluates in float32, and every STORABLE vector between ~1e-23 and
-  // ~1e-161 per component got opposite verdicts (Reviewer REJECT of 403e49b; the band is
+  // ~1e-161 per component got opposite verdicts (Reviewer REJECT of 403f00d; the band is
   // reproduced in this file's sibling probe and documented in degenerate.ts).
   //
   // 1e-22 and 1e-23 STRADDLE the float32 underflow edge: (1e-22)² = 1e-44 is a representable

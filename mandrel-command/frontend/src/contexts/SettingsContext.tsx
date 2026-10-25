@@ -78,7 +78,7 @@ const SettingsContext = createContext<UseSettingsReturn | undefined>(undefined);
  * DISCARDED rather than trusted — the old cache shape stored a project NAME under
  * `defaultProject`, and letting that through would put a name where every consumer now
  * expects an id (and would send it as X-Project-ID). This is the upgrade path for a
- * browser that has the pre-41293984 cache.
+ * browser that has the pre-page-scope cache.
  */
 const readStoredSettings = (): UserSettings => {
   try {

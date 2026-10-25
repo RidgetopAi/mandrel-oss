@@ -73,7 +73,7 @@ const TRUST: Trust = {
  * line so the fixture is a real one, not a strawman built to be easy.
  */
 const VERDICT_CONTENT =
-  '★ REVIEWER VERDICT — task 12ffd25e (P5a: pass the recall knobs at boot). ROUND: 1. APPROVE-WITH-NITS.\n\nGATE: ci.yml exit 0.';
+  '★ REVIEWER VERDICT — task 12fff00d (P5a: pass the recall knobs at boot). ROUND: 1. APPROVE-WITH-NITS.\n\nGATE: ci.yml exit 0.';
 /**
  * The title the PRODUCT derives for that record — through the product's own clip, never a
  * hand-typed "…". The clip is where the call disappears, so faking it would fake the defect.

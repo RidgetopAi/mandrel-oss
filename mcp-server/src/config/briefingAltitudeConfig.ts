@@ -272,7 +272,7 @@ export const READ_BRIEFING_FULL_PROSE_TYPES = (): readonly string[] => envCsv(
  *     count(*) filter (where length(description) > 900) over900,
  *     count(*) filter (where length(description) > 1200) over1200,
  *     round(avg(length(description))) avg, max(length(description)) max from tasks
- *     where project_id='6a1c953a-0278-4c44-9e01-9e56a374c48c' and archived_at is null
+ *     where project_id='6a1cf00d-0278-4c44-9e01-9e56a374c48c' and archived_at is null
  *     and status in ('todo','in_progress','blocked');\""
  *   -> total 205 | over900 172 | over1200 145 | avg 2140 | max 4725
  * 1200 rather than 900 for exactly that reason: 900 buys ~600 more chars of headroom and

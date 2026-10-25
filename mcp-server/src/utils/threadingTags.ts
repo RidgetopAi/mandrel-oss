@@ -35,7 +35,7 @@
  * DESIGN — warn & normalize & QUARANTINE, never hard-reject (contract preserved from refs.ts):
  *   - We NEVER reject a context_store carrying a malformed threading tag (that would
  *     be a regression against existing callers and could lose a user's content).
- *   - We normalize the salvageable common cases (trim, lowercase) so `Task:9E25DAC7`
+ *   - We normalize the salvageable common cases (trim, lowercase) so `Task:9E25F00D`
  *     becomes `task:1a2b3c4d`, and RETURN a warning describing what changed.
  *   - An unsalvageable value is QUARANTINED (see below), never dropped, and warned about.
  *
@@ -96,7 +96,7 @@ import { LENS_AXES } from '../config/threadingVocabConfig.js';
  * `src/tests/refScopeHonesty.contract.test.ts` asserts that message. Following that
  * instruction produced a quarantined tag and no edge.
  *
- * This is the SAME defect the `context:` prefix was repaired for in 8f65dd1 (45 prod
+ * This is the SAME defect the `context:` prefix was repaired for in 8f6f00d (45 prod
  * records would have stopped threading); `task:` and `decision:` carried it too and were
  * not widened with it. The fix is not a third hand-written pattern — it is to stop having
  * a second answer at all (and CLASSES.md C5's "two copies of one list"): a
@@ -149,7 +149,7 @@ const ID_PREFIXES: PrefixSpec[] = [
   { prefix: 'task:', expects: `${ID_EXPECTS} (task:<id8|uuid>)`, isValid: isThreadingIdValue },
   { prefix: 'decision:', expects: `${ID_EXPECTS} (decision:<id8|uuid>)`, isValid: isThreadingIdValue },
   // All three id-bearing prefixes share ONE predicate on purpose. `context:` was widened
-  // alone in 8f65dd1 (a hand-written UUID-only pattern quarantined `context:<id8>`, which
+  // alone in 8f6f00d (a hand-written UUID-only pattern quarantined `context:<id8>`, which
   // mints edges and appears on 45 prod records); `task:`/`decision:` carried the same shape
   // of defect and are repaired here by removing the private copy rather than adding a third.
   { prefix: 'context:', expects: `${ID_EXPECTS} (context:<id8|uuid>)`, isValid: isThreadingIdValue },

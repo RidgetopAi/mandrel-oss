@@ -100,7 +100,7 @@ beforeAll(async () => {
 
   const r = await db.query(
     `INSERT INTO projects (name, description) VALUES ($1, $2) RETURNING id`,
-    [`QA-SessionBoundary-${STAMP}`, 'be2179a9 — interactive default does not roll at 00:00 UTC']
+    [`QA-SessionBoundary-${STAMP}`, 'be21f00d — interactive default does not roll at 00:00 UTC']
   );
   projectId = r.rows[0].id;
 });

@@ -40,7 +40,7 @@ describe('buildSearchMatchPredicate', () => {
   });
 
   test('8-hex id-prefix → id-prefix LIKE clause + partial-tag clause, all parameterized', () => {
-    const c = buildSearchMatchPredicate('0f3906cd', 2, COLS)!;
+    const c = buildSearchMatchPredicate('0f39f00d', 2, COLS)!;
     expect(c).not.toBeNull();
     // id-prefix uses the dash-stripped text form, bound (no concatenation of the value).
     expect(c.sql).toContain(`REPLACE(id::text, '-', '') LIKE $2 || '%'`);
@@ -48,21 +48,21 @@ describe('buildSearchMatchPredicate', () => {
     expect(c.sql).toContain('unnest(tags)');
     expect(c.sql.toLowerCase()).toContain('ilike');
     // params: normalized prefix + the %substring% tag pattern — in that order.
-    expect(c.params).toEqual(['0f3906cd', '%0f3906cd%']);
+    expect(c.params).toEqual(['0f39f00d', '%0f39f00d%']);
     expect(c.nextParamIndex).toBe(4);
   });
 
   test('dashed partial is normalized like the resolver (dash-stripped, lower-cased)', () => {
-    const c = buildSearchMatchPredicate('0F3906CD-DB79', 5, COLS)!;
-    expect(c.params[0]).toBe('0f3906cddb79'); // dashes stripped, lower-cased
+    const c = buildSearchMatchPredicate('0F39F00D-DB79', 5, COLS)!;
+    expect(c.params[0]).toBe('0f39f00ddb79'); // dashes stripped, lower-cased
     expect(c.sql).toContain('$5'); // id clause at the live start index
   });
 
   test('a full UUID → id-prefix clause present (maximal prefix)', () => {
-    const uuid = '0f3906cd-db79-4f00-8abc-0123456789ab';
+    const uuid = '0f39f00d-db79-4f00-8abc-0123456789ab';
     const c = buildSearchMatchPredicate(uuid, 2, COLS)!;
     expect(c.sql).toContain('LIKE $2');
-    expect(c.params[0]).toBe('0f3906cddb794f008abc0123456789ab');
+    expect(c.params[0]).toBe('0f39f00ddb794f008abc0123456789ab');
   });
 
   test('a short / non-hex query → partial-tag ONLY (no id-prefix clause)', () => {
@@ -93,21 +93,21 @@ describe('queryLooksLikeId / queryIsAmbiguousIdPrefix', () => {
     expect(queryLooksLikeId(atFloor)).toBe(true);
   });
   test('full UUID looks like id but is NOT an ambiguous prefix', () => {
-    const uuid = '0f3906cd-db79-4f00-8abc-0123456789ab';
+    const uuid = '0f39f00d-db79-4f00-8abc-0123456789ab';
     expect(queryLooksLikeId(uuid)).toBe(true);
     expect(queryIsAmbiguousIdPrefix(uuid)).toBe(false);
   });
   test('a hex prefix is an ambiguous prefix', () => {
-    expect(queryIsAmbiguousIdPrefix('0f3906cd')).toBe(true);
+    expect(queryIsAmbiguousIdPrefix('0f39f00d')).toBe(true);
   });
 });
 
 describe('capSearchLimit', () => {
   test('caps an ambiguous prefix to SEARCH_ID_MAX_CANDIDATES', () => {
-    expect(capSearchLimit('0f3906cd', 1000)).toBe(SEARCH_ID_MAX_CANDIDATES);
+    expect(capSearchLimit('0f39f00d', 1000)).toBe(SEARCH_ID_MAX_CANDIDATES);
   });
   test('leaves a full-UUID query limit alone', () => {
-    expect(capSearchLimit('0f3906cd-db79-4f00-8abc-0123456789ab', 5)).toBe(5);
+    expect(capSearchLimit('0f39f00d-db79-4f00-8abc-0123456789ab', 5)).toBe(5);
   });
   test('leaves a plain text query limit alone', () => {
     expect(capSearchLimit('pgvector', 50)).toBe(50);

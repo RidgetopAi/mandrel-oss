@@ -54,17 +54,17 @@ describe('LinkifiedText — highlight', () => {
 
 describe('LinkifiedText — composition (highlight ∘ linkify)', () => {
   it('an id that also matches the term LINKS (whole id) AND HIGHLIGHTS inside it', () => {
-    // term "b822" is a prefix of id b822dfcb.
-    const html = render('see b822dfcb now', 'b822');
-    expect(html).toContain('href="/r/b822dfcb"');
+    // term "b822" is a prefix of id b822f00d.
+    const html = render('see b822f00d now', 'b822');
+    expect(html).toContain('href="/r/b822f00d"');
     expect(html).toMatch(/<mark[^>]*>b822<\/mark>/);
     // The <mark> is INSIDE the <a> (segment linkified first, then split on term).
-    expect(html).toMatch(/<a href="\/r\/b822dfcb"><mark[^>]*>b822<\/mark>dfcb<\/a>/);
+    expect(html).toMatch(/<a href="\/r\/b822f00d"><mark[^>]*>b822<\/mark>f00d<\/a>/);
   });
 
   it('links an id and highlights ordinary prose beside it', () => {
-    const html = render('problem b822dfcb here', 'problem');
-    expect(html).toContain('href="/r/b822dfcb"');
+    const html = render('problem b822f00d here', 'problem');
+    expect(html).toContain('href="/r/b822f00d"');
     expect(html).toMatch(/<mark[^>]*>problem<\/mark>/);
   });
 

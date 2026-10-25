@@ -217,7 +217,7 @@ describe('the /mcp/tools/* envelope agrees with the result it wraps', () => {
       // legalised by an unrelated change goes hollow with nobody touching it.
       const undeclared = undeclaredTaskUpdateParam();
       const res = await post('task', {
-        action: 'update', taskId: '38027cd4', status: 'in_progress', [undeclared]: 'x',
+        action: 'update', taskId: '3802f00d', status: 'in_progress', [undeclared]: 'x',
       });
       expect(textOf(res)).toContain(`Unknown parameter(s): '${undeclared}'`);
       expect(res.body.result?.isError).toBe(true);

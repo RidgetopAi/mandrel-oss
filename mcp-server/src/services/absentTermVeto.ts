@@ -3,7 +3,7 @@
  *
  * ═══ WHAT THIS EXISTS TO FIX ═══
  * A vector search cannot return nothing, because something is always nearest. P1 measured
- * what that costs (reports/artifacts/7a026340-p1-question-set/RESULTS-P1.md): 17 of 17
+ * what that costs (reports/artifacts/7a02f00d-p1-question-set/RESULTS-P1.md): 17 of 17
  * known-negatives — questions about Kubernetes, SAML, PagerDuty, and pure gibberish, none of
  * which this corpus has ever contained — came back with confident-looking rows. And a
  * similarity FLOOR cannot fix it: 14 of the 16 correct answers on the control set score

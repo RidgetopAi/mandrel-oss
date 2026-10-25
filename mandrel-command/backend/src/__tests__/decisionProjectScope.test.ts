@@ -1,7 +1,7 @@
 /**
  * Guard test: GET /api/decisions and /api/decisions/stats SCOPE by the
  * active project WITHOUT mutating shared MCP session state. This is the whole-class sibling
- * of the Contexts scope fix (commit 8fb17f2): the request's project scope is forwarded as
+ * of the Contexts scope fix (commit 8fbf00d): the request's project scope is forwarded as
  * the MCP tool's camelCase `projectId` arg — NEVER via a project_switch side-effect on a GET.
  *
  * ── PRECEDENCE INVERTED BY an earlier TASK (a real, deliberate behaviour change) ────────

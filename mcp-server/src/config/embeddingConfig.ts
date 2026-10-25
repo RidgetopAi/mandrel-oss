@@ -237,7 +237,7 @@ export function embedders(): Record<string, EmbedderSpec> {
  * this module's evaluation was reused across files, the flip was INERT and
  * embedResilienceGemma's `expect(activeEmbeddingColumn()).toBe(embedders().gemma.column)`
  * failed with "expected 'embedding' to be 'embedding_gemma'" — GREEN then RED on the same
- * ref, same box. Reproduced deterministically at f9d10f8 with a shared module registry;
+ * ref, same box. Reproduced deterministically at f9df00d with a shared module registry;
  * see embedderSelectionMemoization.unit.test.ts + vitest.order-matrix.config.ts.
  *
  * THE FIX IS THE DELETION. There is no cached value left to go stale, so the bad state is

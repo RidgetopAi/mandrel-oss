@@ -378,7 +378,7 @@ const PrimitivesGallery: React.FC = () => {
               readability up front.
             </Text>
             <Label tone="faint">Label — memory &amp; work</Label>
-            <Code tone="teal">Data — 0b7cdc56 · 990 ctx · 118k tok</Code>
+            <Code tone="teal">Data — 0b7cf00d · 990 ctx · 118k tok</Code>
             <Divider />
             <Row>
               <Text tone="default">default</Text>
@@ -654,7 +654,7 @@ const PrimitivesGallery: React.FC = () => {
                 <Input placeholder="e.g. Sessions foundation" />
               </Field>
               <Field label="Context id" hint="Mono for ids & tokens">
-                <Input mono placeholder="0b7cdc56" />
+                <Input mono placeholder="0b7cf00d" />
               </Field>
               <Field label="Summary">
                 <Textarea placeholder="What happened, and why it matters…" />

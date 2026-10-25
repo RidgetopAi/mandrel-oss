@@ -16,11 +16,11 @@ import type { HastNode, HastElement } from './rehypeDecorateText';
 
 describe('buildNavHref', () => {
   it('builds /r/<short-id>', () => {
-    expect(buildNavHref('b822dfcb')).toBe('/r/b822dfcb');
+    expect(buildNavHref('b822f00d')).toBe('/r/b822f00d');
   });
   it('strips dashes and lowercases a full UUID', () => {
-    expect(buildNavHref('0F3906CD-DB79-4D2A-8B3C-1A2B3C4D5E6F')).toBe(
-      '/r/0f3906cddb794d2a8b3c1a2b3c4d5e6f',
+    expect(buildNavHref('0F39F00D-DB79-4D2A-8B3C-1A2B3C4D5E6F')).toBe(
+      '/r/0f39f00ddb794d2a8b3c1a2b3c4d5e6f',
     );
   });
 });
@@ -29,32 +29,32 @@ describe('segmentNavIds — DETECTS id forms', () => {
   const linkSegs = (s: string) => segmentNavIds(s).filter((seg) => seg.href);
 
   it('detects an 8-hex short id that contains a digit', () => {
-    const segs = segmentNavIds('see b822dfcb here');
+    const segs = segmentNavIds('see b822f00d here');
     expect(segs).toEqual([
       { text: 'see ' },
-      { text: 'b822dfcb', href: '/r/b822dfcb' },
+      { text: 'b822f00d', href: '/r/b822f00d' },
       { text: ' here' },
     ]);
   });
 
   it('detects a full dashed UUID (whole token, not just its first 8 hex)', () => {
-    const uuid = '0f3906cd-db79-4d2a-8b3c-1a2b3c4d5e6f';
+    const uuid = '0f39f00d-db79-4d2a-8b3c-1a2b3c4d5e6f';
     const segs = segmentNavIds(`ref ${uuid}.`);
     expect(segs).toContainEqual({
       text: uuid,
-      href: '/r/0f3906cddb794d2a8b3c1a2b3c4d5e6f',
+      href: '/r/0f39f00ddb794d2a8b3c1a2b3c4d5e6f',
     });
   });
 
   it('detects threading tags task:/decision:/context: and links the whole token', () => {
-    expect(segmentNavIds('task:34910609')).toEqual([
-      { text: 'task:34910609', href: '/r/34910609' },
+    expect(segmentNavIds('task:34919999')).toEqual([
+      { text: 'task:34919999', href: '/r/34919999' },
     ]);
-    expect(segmentNavIds('decision:6aaad6ce')).toEqual([
-      { text: 'decision:6aaad6ce', href: '/r/6aaad6ce' },
+    expect(segmentNavIds('decision:6aaaf00d')).toEqual([
+      { text: 'decision:6aaaf00d', href: '/r/6aaaf00d' },
     ]);
-    expect(segmentNavIds('context:0f3906cd')).toEqual([
-      { text: 'context:0f3906cd', href: '/r/0f3906cd' },
+    expect(segmentNavIds('context:0f39f00d')).toEqual([
+      { text: 'context:0f39f00d', href: '/r/0f39f00d' },
     ]);
   });
 
@@ -63,8 +63,8 @@ describe('segmentNavIds — DETECTS id forms', () => {
   });
 
   it('accepts uppercase hex and normalizes the href to lowercase', () => {
-    expect(segmentNavIds('B822DFCB')).toEqual([
-      { text: 'B822DFCB', href: '/r/b822dfcb' },
+    expect(segmentNavIds('B822F00D')).toEqual([
+      { text: 'B822F00D', href: '/r/b822f00d' },
     ]);
   });
 });
@@ -87,9 +87,9 @@ describe('segmentNavIds — LEAVES non-ids alone (no false positives)', () => {
     noLinks('deadbeef'.repeat(8)); // 64 chars
   });
 
-  it('ignores hex embedded in a larger token (0xdeadbeef1, foo-0f3906cd1)', () => {
+  it('ignores hex embedded in a larger token (0xdeadbeef1, foo-0f39f00d1)', () => {
     noLinks('0xdeadbeef1');
-    noLinks('foo-0f3906cd1bar');
+    noLinks('foo-0f39f00d1bar');
   });
 
   it('ignores ordinary prose with short hex-ish words', () => {
@@ -104,13 +104,13 @@ describe('segmentNavIds — LEAVES non-ids alone (no false positives)', () => {
 
 describe('linkifyNavIdsDecorator — HAST output', () => {
   it('wraps an id token in an <a> element whose href is the /r landing', () => {
-    const nodes = linkifyNavIdsDecorator('id b822dfcb');
+    const nodes = linkifyNavIdsDecorator('id b822f00d');
     const anchor = nodes.find(
       (n): n is HastElement => (n as HastElement).tagName === 'a',
     );
     expect(anchor).toBeDefined();
-    expect(anchor!.properties).toEqual({ href: '/r/b822dfcb' });
-    expect(anchor!.children).toEqual([{ type: 'text', value: 'b822dfcb' }]);
+    expect(anchor!.properties).toEqual({ href: '/r/b822f00d' });
+    expect(anchor!.children).toEqual([{ type: 'text', value: 'b822f00d' }]);
   });
 
   it('returns a single unchanged text node when there is nothing to linkify', () => {
@@ -131,29 +131,29 @@ describe('rehypeLinkifyNavIds — tree transform + skip subtrees', () => {
     const tree: any = {
       type: 'root',
       children: [
-        { type: 'element', tagName: 'p', properties: {}, children: [{ type: 'text', value: 'ref b822dfcb' }] },
+        { type: 'element', tagName: 'p', properties: {}, children: [{ type: 'text', value: 'ref b822f00d' }] },
       ],
     };
     run(tree);
     const p = tree.children[0];
     const anchor = p.children.find((c: any) => c.tagName === 'a');
-    expect(anchor.properties.href).toBe('/r/b822dfcb');
+    expect(anchor.properties.href).toBe('/r/b822f00d');
   });
 
   it('does NOT descend into <a> (never double-links) or <pre> (never rewrites code)', () => {
     const tree: any = {
       type: 'root',
       children: [
-        { type: 'element', tagName: 'a', properties: { href: '/x' }, children: [{ type: 'text', value: 'b822dfcb' }] },
+        { type: 'element', tagName: 'a', properties: { href: '/x' }, children: [{ type: 'text', value: 'b822f00d' }] },
         { type: 'element', tagName: 'pre', properties: {}, children: [
-          { type: 'element', tagName: 'code', properties: {}, children: [{ type: 'text', value: 'b822dfcb' }] },
+          { type: 'element', tagName: 'code', properties: {}, children: [{ type: 'text', value: 'b822f00d' }] },
         ] },
       ],
     };
     run(tree);
     // The <a> keeps its single text child (no nested <a> injected).
-    expect(tree.children[0].children).toEqual([{ type: 'text', value: 'b822dfcb' }]);
+    expect(tree.children[0].children).toEqual([{ type: 'text', value: 'b822f00d' }]);
     // The <pre>/<code> text is untouched.
-    expect(tree.children[1].children[0].children).toEqual([{ type: 'text', value: 'b822dfcb' }]);
+    expect(tree.children[1].children[0].children).toEqual([{ type: 'text', value: 'b822f00d' }]);
   });
 });

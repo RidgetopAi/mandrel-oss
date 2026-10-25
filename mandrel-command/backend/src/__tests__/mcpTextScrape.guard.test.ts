@@ -3,7 +3,7 @@
  *
  * THE CLASS THIS STOPS (instance four): reading a MACHINE fact out of a HUMAN
  * rendering. Three instances landed in one day (2026-07-30): the ANSI-poisoned CI
- * regex (fixed 40ac3ec), the decision read model, and this backend's
+ * regex (fixed 40af00d), the decision read model, and this backend's
  * six text parsers (deleted by an earlier task). Every number those parsers scraped is
  * carried by the structured channel (`data` sibling or `structuredContent`, which the
  * bridge guarantees on every response). A rendered string is a representation the

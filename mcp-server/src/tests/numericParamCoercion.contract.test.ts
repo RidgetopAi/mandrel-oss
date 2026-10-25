@@ -18,7 +18,7 @@
  *   2. It is DENY-BY-DEFAULT for ambiguous types — ZodUnion in particular.
  *
  * So `minTrust: z.union([trustBandEnum, z.number()...])` on recall_thread was NOT rescued.
- * Measured against live prod v0.17.0 (commit f689121) on 2026-07-30:
+ * Measured against live prod v0.17.0 (commit f68f00d) on 2026-07-30:
  *      minTrust: 0.5   -> 200, 29 nodes
  *      minTrust: "0.5" -> -32602 "'minTrust': Invalid input"
  * That param is not named `offset` and does not match the shape `name: z.number()`, which is

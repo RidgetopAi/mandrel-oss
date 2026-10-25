@@ -18,7 +18,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
 const VENDORED = path.resolve(here, '../../vendor/models');
-const MISSING = path.join(os.tmpdir(), 'mandrel-no-such-model-dir-9eb66417');
+const MISSING = path.join(os.tmpdir(), 'mandrel-no-such-model-dir-9eb6f00d');
 
 async function freshService() {
   vi.resetModules();

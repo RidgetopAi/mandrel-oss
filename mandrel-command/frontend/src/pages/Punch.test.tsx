@@ -143,7 +143,7 @@ describe('DONE WHEN (2) — the submit payload carries the structured contract',
     const touchesBox = container.querySelector('textarea[aria-label="Touches"]') as HTMLTextAreaElement;
     const depsBox = container.querySelector('textarea[aria-label="Dependencies"]') as HTMLTextAreaElement;
     act(() => type(touchesBox, 'src/pages/punch/PunchForm.tsx, src/pages/punch/ClauseRows.tsx'));
-    act(() => type(depsBox, '28ad3543'));
+    act(() => type(depsBox, '28adf00d'));
 
     act(() => submitBtn().click());
     await settle();
@@ -163,7 +163,7 @@ describe('DONE WHEN (2) — the submit payload carries the structured contract',
       source: 'form',
       touches: ['src/pages/punch/PunchForm.tsx', 'src/pages/punch/ClauseRows.tsx'],
     });
-    expect(payload.dependencies).toEqual(['28ad3543']);
+    expect(payload.dependencies).toEqual(['28adf00d']);
     expect(payload.metadata).toBeUndefined();
     expect('punch' in payload).toBe(true);
   });

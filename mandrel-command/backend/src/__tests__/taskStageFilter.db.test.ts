@@ -4,10 +4,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_stagefilter_1e53165a
- *   eval "$(bash scripts/provision-test-db.sh ci_stagefilter_1e53165a --print-env)"
+ *   bash scripts/provision-test-db.sh ci_stagefilter_1e53f00d
+ *   eval "$(bash scripts/provision-test-db.sh ci_stagefilter_1e53f00d --print-env)"
  *   npx jest taskStageFilter --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_stagefilter_1e53165a --drop
+ *   bash scripts/provision-test-db.sh ci_stagefilter_1e53f00d --drop
  */
 
 import { v4 as uuidv4 } from 'uuid';
@@ -47,7 +47,7 @@ describeDb('TaskService.getTasks — the stage filter (DB integration, migration
     await db.query(
       `INSERT INTO projects (id, name, description, status, created_at)
        VALUES ($1, $2, 'taskStageFilter fixture', 'active', NOW())`,
-      [projectId, `stagefilter-1e53165a-${projectId.slice(0, 8)}`],
+      [projectId, `stagefilter-1e53f00d-${projectId.slice(0, 8)}`],
     );
   });
 

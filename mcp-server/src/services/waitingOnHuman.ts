@@ -4,7 +4,7 @@
  *
  * ═══ THE DEFECT ═══
  * Our own boot package's most valuable section for a human operator selected tasks BY TAG,
- * from a four-tag vocabulary we invented. `grep -rn "blocked_on" mcp-server/src` at ea771d8
+ * from a four-tag vocabulary we invented. `grep -rn "blocked_on" mcp-server/src` at ea7f00d
  * returned nothing: there was NO SERVER CONCEPT of "a person has to act next". And our
  * vocabulary is itself broken — `needs-operator` and `needs:operator` are one concept spelled two
  * ways, both live, so a consumer that picks one spelling sees a fraction of the truth.

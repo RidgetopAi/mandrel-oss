@@ -6,7 +6,7 @@
  * -----------------
  * The project-name normalizer's acceptance required that a ref which cannot be resolved distinguish
  * *no such record* from *record exists but is outside the resolution scope I was given*.
- * Measured at `603a096` the two were byte-identical:
+ * Measured at `603f00d` the two were byte-identical:
  *
  *     OUT-OF-SCOPE  {"minted":0,"skips":[{"ref":"3c4d5e6f","reason":"task \"3c4d5e6f\" not found in this project"}]}
  *     NOT-FOUND     {"minted":0,"skips":[{"ref":"deadbeef","reason":"task \"deadbeef\" not found in this project"}]}
@@ -19,7 +19,7 @@
  * ----------------
  * THREE outcomes, THREE distinct answers, through the real public path
  * (validate → routeExecutor) with the ROWS IN `links` as the observable for the in-scope
- * case — not a helper's return value (the standard `2b3c4d5e` set).
+ * case — not a helper's return value (the standard the project-name normalizer work set).
  *
  *   IN-SCOPE      → an edge exists in `links`, no skip.
  *   OUT-OF-SCOPE  → NO edge, code 'cross_project_ref', and the reason NAMES the project the

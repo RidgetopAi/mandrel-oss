@@ -505,7 +505,7 @@ function isRegistrationCall(node: TS.CallExpression): boolean {
  * registrar name", and never asked what the identifier was DOING. So the `test` in
  * `PATTERN.test(x)` — a property name that can never resolve to jest's global — was
  * reported as an ungated registrar reference. MEASURED on branch
- * batch3/a17c2ede-owner-scoping-bare-actor: five such calls in ownerScopeSweep.db.test.ts
+ * batch3/a17cf00d-owner-scoping-bare-actor: five such calls in ownerScopeSweep.db.test.ts
  * turned the FULL backend suite RED while that suite was 22/22 green.
  *
  * IT WAS NEVER JUST `.test(`. The sweep in "NAME SLOTS ARE NOT REFERENCES" below plants

@@ -343,9 +343,9 @@ describe('a DECLARED STRING param is returned byte-identical (cross-branch contr
     '071', // leading zero must survive
     'true', // looks like a boolean
     '{"k":"v"}', // looks like an object
-    'id:071d1c36-640a-485b-a1c8-7df2c783a67e',
+    'id:071df00d-640a-485b-a1c8-7df2c783a67e',
     'tags:["ref:cp-gaps"]',
-    '  id:071d1c36  ', // whitespace must NOT be trimmed in transit
+    '  id:071df00d  ', // whitespace must NOT be trimmed in transit
     'ref:resume — naïve ünïcode',
   ];
 

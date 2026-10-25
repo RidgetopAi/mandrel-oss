@@ -11,11 +11,11 @@ import { trustCounts, trustTotal, id8 } from './parts';
 import { TRUST_META, KIND_META, edgeClass } from './config';
 
 const GRAPH: ThreadGraph = {
-  anchor: { branchLabel: 'command-redesign', anchorId: 'da47db21-1111-2222-3333-444444444444', recordCount: 4 },
+  anchor: { branchLabel: 'command-redesign', anchorId: 'da47f00d-1111-2222-3333-444444444444', recordCount: 4 },
   spine: [
     { label: '★ CANONICAL — north star', tier: 'root', id: 'ca000000-0000-0000-0000-00000000000c' },
     { label: 'tree:mandrel-product', tier: 'tree' },
-    { label: 'handoffs · 3', tier: 'trunk', id: 'e4bb5dc5-0000-0000-0000-00000000aaaa' },
+    { label: 'handoffs · 3', tier: 'trunk', id: 'e4bbf00d-0000-0000-0000-00000000aaaa' },
     { label: 'command-redesign', tier: 'branch' },
   ],
   nodes: [
@@ -30,7 +30,7 @@ const GRAPH: ThreadGraph = {
     { id: 'e3', source: 'dddddddd-0000-0000-0000-000000000004', target: 'bbbbbbbb-0000-0000-0000-000000000002', edgeType: 'supersedes' },
   ],
   story: [],
-  trunkAnchorId: 'e4bb5dc5-0000-0000-0000-00000000aaaa',
+  trunkAnchorId: 'e4bbf00d-0000-0000-0000-00000000aaaa',
 };
 
 describe('buildFlowNodes', () => {
@@ -101,7 +101,7 @@ describe('vocab maps cover every kind + trust level', () => {
 
 describe('id8', () => {
   it('strips dashes and takes the first 8 chars', () => {
-    expect(id8('da47db21-1111-2222-3333-444444444444')).toBe('da47db21');
+    expect(id8('da47f00d-1111-2222-3333-444444444444')).toBe('da47f00d');
     expect(id8(null)).toBe('');
   });
 });

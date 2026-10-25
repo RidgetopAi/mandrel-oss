@@ -113,8 +113,8 @@ describeDb('GET/PATCH /api/users/preferences — the ROUTE, not the service', ()
 
     await pool.query(
       `INSERT INTO projects (id, name, description, status)
-       VALUES ($1,'prefroute-granted','41293984 granted','active'),
-              ($2,'prefroute-denied','41293984 PLANTED denied','active')`,
+       VALUES ($1,'prefroute-granted','page-scope granted','active'),
+              ($2,'prefroute-denied','page-scope PLANTED denied','active')`,
       [P_GRANTED, P_DENIED]
     );
     await pool.query(

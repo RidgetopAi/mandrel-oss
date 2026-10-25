@@ -42,7 +42,7 @@ class StubProvider implements AdjudicationProvider {
 describe('belief pairing — first-failure-wins when BOTH the candidate query and the clock read fail', () => {
   let projectId: string;
   beforeAll(async () => {
-    projectId = (await db.query(`INSERT INTO projects (name, description) VALUES ('a2a4fbbd-first-failure-wins','') RETURNING id`)).rows[0].id;
+    projectId = (await db.query(`INSERT INTO projects (name, description) VALUES ('a2a4f00d-first-failure-wins','') RETURNING id`)).rows[0].id;
   });
   afterAll(async () => {
     await db.query('DELETE FROM belief_adjudication_attempts WHERE project_id = $1', [projectId]);

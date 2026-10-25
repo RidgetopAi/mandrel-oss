@@ -1,7 +1,7 @@
 /**
  * UNRESOLVABLE THREADING INTENT — the no-silent-orphan floor.
  *
- * THE BUG THIS REPRODUCES (measured on 61d4648 before the fix)
+ * THE BUG THIS REPRODUCES (measured on 61df00d before the fix)
  * -----------------------------------------------------------
  * A threading tag (`task:`/`decision:`) sets `hasExplicitTag`, which sets
  * `explicitThreadIntent`, which SUPPRESSES the B1 inference fallback in

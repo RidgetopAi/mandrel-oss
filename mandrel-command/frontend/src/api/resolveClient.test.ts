@@ -24,14 +24,14 @@ beforeEach(() => {
 describe('resolveNavRecord', () => {
   it('calls GET /resolve/<id> with the encoded id, as an EXPLICITLY GLOBAL read', async () => {
     mockGet.mockResolvedValue({ success: true, type: 'task', id: 'u', title: 't', url: '/tasks/u' });
-    await resolveNavRecord('b822dfcb');
+    await resolveNavRecord('b822f00d');
     // The `project_id=all` sentinel is load-bearing, not incidental (Reviewer B4, §A4):
     // the backend resolves a short id inside a project scope, so with the ambient header
     // pinned to the user's default a link to a record in ANY other project 404s — and the
     // global switcher that could have unwedged the user is gone. Asserted on the exact
     // config so a silent drop of the sentinel is a RED here as well as in
     // api/http/globalRead.seam.test.ts, which measures it at the axios adapter.
-    expect(mockGet).toHaveBeenCalledWith('/resolve/b822dfcb', {
+    expect(mockGet).toHaveBeenCalledWith('/resolve/b822f00d', {
       params: { project_id: 'all' },
     });
   });
@@ -121,6 +121,6 @@ describe('resolveNavRecord', () => {
 
   it('an unexpected error (no details) → { status: "notfound" } (fail-closed, no throw)', async () => {
     mockGet.mockRejectedValue(new Error('network down'));
-    await expect(resolveNavRecord('b822dfcb')).resolves.toEqual({ status: 'notfound' });
+    await expect(resolveNavRecord('b822f00d')).resolves.toEqual({ status: 'notfound' });
   });
 });

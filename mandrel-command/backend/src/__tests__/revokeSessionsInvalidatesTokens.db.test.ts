@@ -40,10 +40,10 @@
  *     response never carries the reassuring message — the exact shape of the bug.
  *
  * RUN (throwaway DB — provision FIRST):
- *   bash scripts/provision-test-db.sh ci_revoke_e6c30326
- *   eval "$(bash scripts/provision-test-db.sh ci_revoke_e6c30326 --print-env)"
+ *   bash scripts/provision-test-db.sh ci_revoke_e6c3f00d
+ *   eval "$(bash scripts/provision-test-db.sh ci_revoke_e6c3f00d --print-env)"
  *   npx jest revokeSessionsInvalidatesTokens --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_revoke_e6c30326 --drop
+ *   bash scripts/provision-test-db.sh ci_revoke_e6c3f00d --drop
  */
 
 import request from 'supertest';
@@ -65,7 +65,7 @@ describeDb('POST /api/users/revoke-sessions — really revokes credentials (DB i
   let app: Express;
   let userId: string;
   let username: string;
-  const password = 'ProbePassw0rd!e6c30326';
+  const password = 'ProbePassw0rd!e6c3f00d';
   const seededUserIds: string[] = [];
 
   beforeAll(async () => {

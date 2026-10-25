@@ -82,17 +82,17 @@ describe('composition — linkify BEFORE highlight (the order contract)', () => 
   };
 
   it('an id that also matches the term LINKS (whole id) AND HIGHLIGHTS inside it', () => {
-    // term "b822" is a prefix of the id b822dfcb.
-    const tree = el('p', [txt('see b822dfcb now')]);
+    // term "b822" is a prefix of the id b822f00d.
+    const tree = el('p', [txt('see b822f00d now')]);
     linkifyThenHighlight(tree, 'b822');
     const p = tree as HastElement;
-    // Linkify produced an <a href="/r/b822dfcb"> around the WHOLE id (detection ran
+    // Linkify produced an <a href="/r/b822f00d"> around the WHOLE id (detection ran
     // first, so the <mark> could not split the token).
     const anchor = p.children.find(
       (c) => (c as HastElement).tagName === 'a',
     ) as HastElement;
     expect(anchor).toBeDefined();
-    expect((anchor.properties as any).href).toBe('/r/b822dfcb');
+    expect((anchor.properties as any).href).toBe('/r/b822f00d');
     // Highlight then descended INTO the link and wrapped the matching run in <mark>.
     const markInLink = anchor.children.find(
       (c) => (c as HastElement).tagName === 'mark',
@@ -107,17 +107,17 @@ describe('composition — linkify BEFORE highlight (the order contract)', () => 
           : (c as HastText).value,
       )
       .join('');
-    expect(joined).toBe('b822dfcb');
+    expect(joined).toBe('b822f00d');
   });
 
   it('highlighting ordinary prose next to an id leaves the id link intact', () => {
-    const tree = el('p', [txt('lock and b822dfcb')]);
+    const tree = el('p', [txt('lock and b822f00d')]);
     linkifyThenHighlight(tree, 'lock');
     const p = tree as HastElement;
     const anchor = p.children.find(
       (c) => (c as HastElement).tagName === 'a',
     ) as HastElement;
-    expect((anchor.properties as any).href).toBe('/r/b822dfcb');
+    expect((anchor.properties as any).href).toBe('/r/b822f00d');
     // The word "lock" outside the link is highlighted.
     const hasMark = p.children.some((c) => (c as HastElement).tagName === 'mark');
     expect(hasMark).toBe(true);

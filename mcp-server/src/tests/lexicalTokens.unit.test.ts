@@ -35,13 +35,13 @@ describe('extractIdentifiers — the three shapes it exists for', () => {
   });
 
   test('hex 7-40 chars, bounded at both ends', () => {
-    expect(extractIdentifiers('at 5320bd9 we shipped')).toEqual(['5320bd9']);
-    expect(extractIdentifiers('at 5320bd9204273cc24dc41ae77ca96ecc2610dccf we shipped')).toEqual([
-      '5320bd9204273cc24dc41ae77ca96ecc2610dccf',
+    expect(extractIdentifiers('at 532f00d we shipped')).toEqual(['532f00d']);
+    expect(extractIdentifiers('at 532f00d204273cc24dc41ae77ca96ecc2610dccf we shipped')).toEqual([
+      '532f00d204273cc24dc41ae77ca96ecc2610dccf',
     ]);
     // Too short to be a sha, and not a word boundary on either side.
     expect(extractIdentifiers('deadbe and abcdef')).toEqual([]);
-    expect(extractIdentifiers('x5320bd9y')).toEqual([]);
+    expect(extractIdentifiers('x532f00dy')).toEqual([]);
   });
 
   test('ordinary prose yields nothing — the extractor is not a tokenizer', () => {

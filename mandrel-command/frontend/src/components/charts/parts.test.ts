@@ -88,9 +88,9 @@ describe('truncateTick', () => {
    */
   it('keeps prefix-sharing ids distinguishable', () => {
     const ids = [
-      'builder-a7e922bd-0000-4000-8000-000000000001',
-      'builder-a7e922bd-0000-4000-8000-000000000002',
-      'builder-a7e922bd-0000-4000-8000-000000000003',
+      'builder-a7e9f00d-0000-4000-8000-000000000001',
+      'builder-a7e9f00d-0000-4000-8000-000000000002',
+      'builder-a7e9f00d-0000-4000-8000-000000000003',
     ];
     const shown = ids.map((id) => truncateTick(id, 13));
     expect(new Set(shown).size).toBe(ids.length);

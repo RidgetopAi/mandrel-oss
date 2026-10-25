@@ -459,7 +459,7 @@ describe('PHASE 3 scheduled graph backfill', () => {
 
     test('an edge with an ARCHIVED endpoint is left entirely alone — both legs honour soft-delete', async () => {
       // WHY THIS FIXTURE IS CONSTRUCTED RATHER THAN FOUND. Measured on the prod snapshot at
-      // 67e631b: 19 archived contexts and ZERO edges in the repair population touching one.
+      // 67ef00d: 19 archived contexts and ZERO edges in the repair population touching one.
       // So a guard that went looking for real archived edges would pass identically with or
       // without the predicate — it would be measuring an empty population, which is the
       // false green C3 names. The archived endpoint is therefore built here on purpose.

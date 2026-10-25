@@ -142,7 +142,7 @@ export function getFlatToolsPolicy(): FlatToolsPolicy {
  * branch_unassign — and the lazy envelope carries the action enum, so the surface grew.
  * MEASURED with the meter's own instrument (`encode(JSON.stringify({tools}))`, o200k_base,
  * gpt-tokenizer) on both refs:
- *   base main@f6da757  TOTAL 1400 tokens / 6114 bytes · `graph` envelope 221 tokens / 944 bytes
+ *   base main@f6df00d  TOTAL 1400 tokens / 6114 bytes · `graph` envelope 221 tokens / 944 bytes
  *   head (this tree)   TOTAL 1407 tokens / 6148 bytes · `graph` envelope 228 tokens / 978 bytes
  * The delta is +7 tokens and it is ENTIRELY the two action NAMES in `graph`'s action enum —
  * every other envelope is byte-identical, and NO param was lifted (`spine` was added to
@@ -162,7 +162,7 @@ export function getFlatToolsPolicy(): FlatToolsPolicy {
  * BREAKDOWN, not by the failure. All four numbers from the meter's own instrument
  * (`encode(JSON.stringify({tools}))`, o200k_base, gpt-tokenizer), run on this tree with the
  * change progressively removed:
- *   base ref 61d4648 (no op, no description edit)  1425 tokens / 6225 bytes
+ *   base ref 61df00d (no op, no description edit)  1425 tokens / 6225 bytes
  *   + the one-clause gateway description edit      1432 (+7)
  *   + the `move` name in project's action enum     1434 (+2)
  *   + lazy+core lifting its three params           1494 (+60)   ← shipped

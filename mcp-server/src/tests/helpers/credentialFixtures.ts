@@ -82,9 +82,9 @@ export const CREDENTIAL = SYNTHETIC['aws-access-key-id'];
 export const CONTROLS: ReadonlyArray<readonly [string, string]> = [
   ['vitest output', '$ npx vitest run\n Test Files  270 passed (270)\n      Tests  3532 passed (3532)\n  exit 0'],
   ['a git sha (40 hex)', 'merged at 00b940bdc1e2f3a4b5c6d7e8f90112233445566a on main'],
-  ['a short sha + git log line', 'ffe8d8bf Merge fix-0a21d: attribute the write, do not infer it'],
-  ['a uuid', 'record 1c0aa11a-8885-421a-b580-5e09381369a9 was dispatched'],
-  ['several uuids in a row', '6a1c953a-0278-4c44-9e01-9e56a374c48c e59fe9a8-0e7a-4714-98f7-5999a7d09e34'],
+  ['a short sha + git log line', 'ffe8f00d Merge fix-0a21d: attribute the write, do not infer it'],
+  ['a uuid', 'record 1c0af00d-8885-421a-b580-5e09381369a9 was dispatched'],
+  ['several uuids in a row', '6a1cf00d-0278-4c44-9e01-9e56a374c48c e59ff00d-0e7a-4714-98f7-5999a7d09e34'],
   ['a docker image digest', 'sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'],
   ['a base64 payload', 'echo -n hello | base64 -> aGVsbG8= ; longer: ' + 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ejAxMjM0NTY3ODk='],
   ['a bare hex blob (the ACCEPTED MISS, asserted so the trade is visible)', 'token=' + 'a3f9'.repeat(16)],

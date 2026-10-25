@@ -146,11 +146,11 @@ describe('0. wiring — claim/renew/release are registered, categorized, schema-
    * it was noticed on.
    */
   const CLAIM_ID_TOOLS: Array<[string, any]> = [
-    ['task_claim', { taskId: '59823126' }],
-    ['task_renew', { taskId: '59823126' }],
-    ['task_release', { taskId: '59823126' }],
-    ['task_update', { taskId: '59823126', status: 'completed' }],
-    ['cancel_task', { taskId: '59823126' }],
+    ['task_claim', { taskId: '59829999' }],
+    ['task_renew', { taskId: '59829999' }],
+    ['task_release', { taskId: '59829999' }],
+    ['task_update', { taskId: '59829999', status: 'completed' }],
+    ['cancel_task', { taskId: '59829999' }],
   ];
 
   test('every claimId param refuses a SHORT id at the edge, and accepts a full uuid', () => {
@@ -1430,8 +1430,8 @@ describe('task_claim — attribution actor cannot be forged', () => {
   test('a caller with NO derived principal still gets its declared handle (dispatcher path preserved)', async () => {
     delete process.env[FLAG];
     const taskId = await makeTask('no principal');
-    await claimAs(undefined, { projectId, taskId, actor: 'builder-0803a2d0' });
-    expect((await readTask(taskId)).claim_actor).toBe('builder-0803a2d0');
+    await claimAs(undefined, { projectId, taskId, actor: 'builder-0803f00d' });
+    expect((await readTask(taskId)).claim_actor).toBe('builder-0803f00d');
   });
 
   /**

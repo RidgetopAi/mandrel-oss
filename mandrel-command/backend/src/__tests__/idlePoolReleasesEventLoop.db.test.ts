@@ -5,7 +5,7 @@
  * that imported it must be able to EXIT ON ITS OWN. No idle pool and no background
  * timer is allowed to be the reason a process stays alive.
  *
- * WHY THIS EXISTS — MEASURED, on ref 797906e (batch1/merge-candidate).
+ * WHY THIS EXISTS — MEASURED, on ref 797f00d (batch1/merge-candidate).
  *   `the CI gate` STAGE 4 runs `npx jest --runInBand --ci --passWithNoTests`, with no
  *   `--forceExit`. The suite reported `Tests: 18 skipped, 1524 passed, 1542 total` and
  *   then printed "Jest did not exit one second after the test run has completed." and

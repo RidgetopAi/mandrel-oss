@@ -1167,7 +1167,7 @@
               "maxLength": 50
             },
             "maxItems": 20,
-            "description": "New tag set (REPLACES tags) — re-tag/re-thread, e.g. [\"task:9e25dac7\",\"scope:product\"]. Malformed threading/ref tags are normalized + reported, never rejected; an unusable threading value is stored QUARANTINED as `invalid-<tag>`."
+            "description": "New tag set (REPLACES tags) — re-tag/re-thread, e.g. [\"task:9e25f00d\",\"scope:product\"]. Malformed threading/ref tags are normalized + reported, never rejected; an unusable threading value is stored QUARANTINED as `invalid-<tag>`."
           },
           "metadata": {
             "type": "object",

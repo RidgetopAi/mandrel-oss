@@ -1,7 +1,7 @@
 /**
  * CONTEXT SEARCH id-prefix + partial-tag lookup — Contract Test
  *
- * The Contexts half of the class-fix whose Decisions half shipped in 7014f77.
+ * The Contexts half of the class-fix whose Decisions half shipped in 701f00d.
  * Operator pasted the id8 `2b3c4d5e` into the Contexts search box and got nothing.
  *
  * THE BUG IS RANKING, NOT RETRIEVAL. Hex has no semantic content, so the embedder yields a
@@ -355,7 +355,7 @@ describe('context_search id-prefix + partial-tag lookup', () => {
   });
 
   test('id-lookup: a dashed PARTIAL uuid (a pasted prefix) still resolves to rank #1', async () => {
-    const dashed = idTargetNull.slice(0, 13); // e.g. "e26aee99-4208"
+    const dashed = idTargetNull.slice(0, 13); // e.g. "e26af00d-4208"
     expect(dashed).toContain('-');
     const resp = await viaPublicTool({ query: dashed, projectId, limit: 20 });
     expect(rows(resp)[0].id).toBe(idTargetNull);

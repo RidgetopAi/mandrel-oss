@@ -65,7 +65,7 @@ describe('actorRegistry.normalizeActor', () => {
   });
 
   it('is idempotent on already-normalized values', () => {
-    for (const v of ['coordinator', 'deploy-smoke', 'builder-0803a2d0', 'anonymous']) {
+    for (const v of ['coordinator', 'deploy-smoke', 'builder-0803f00d', 'anonymous']) {
       expect(normalizeActor(v)).toBe(v);
     }
   });
@@ -85,7 +85,7 @@ describe('actorRegistry.classifyActor', () => {
   });
 
   it('classifies the parametric builder-<id8> family as agent via the prefix rule', () => {
-    expect(classifyActor('builder-0803a2d0')).toBe('agent');
+    expect(classifyActor('builder-0803f00d')).toBe('agent');
     expect(classifyActor('builder-sessions-phase1')).toBe('agent');
     expect(classifyActor('reviewer-abc123')).toBe('agent');
   });
@@ -393,7 +393,7 @@ describe('COMPOSITE ACTORS — scoped composition (flag ON)', () => {
   it('DEGENERATE — declared only → the declared handle (the static-bearer path, unchanged)', () => {
     expect(deriveActor(undefined, 'tick')).toBe('tick');
     expect(deriveActor(null, '  tick  ')).toBe('tick');
-    expect(deriveActor('', 'builder-0803a2d0')).toBe('builder-0803a2d0');
+    expect(deriveActor('', 'builder-0803f00d')).toBe('builder-0803f00d');
   });
 
   it('DEGENERATE — neither → undefined (→ the flagged anonymous actor at stamp time)', () => {
@@ -563,7 +563,7 @@ describe('COMPOSITE ACTORS — delimiter sanitation is the FORGERY GUARD (flag O
    * locked degenerate cases in an earlier decision have changed and that must be a decision, not
    * a side effect.
    *
-   * IT IS NOT FIXABLE HERE: 27244326 locks BOTH flat cases to the identity function (sub-only →
+   * IT IS NOT FIXABLE HERE: an earlier change locks BOTH flat cases to the identity function (sub-only →
    * sub, declared-only → declared). Two identity functions over the same domain collide totally.
    * The upgrade path is per-agent MINTED CREDENTIALS, not a stronger string rule.
    *
@@ -626,7 +626,7 @@ describe('COMPOSITE ACTORS — delimiter sanitation is the FORGERY GUARD (flag O
    */
   it('every actor the system can PRODUCE holds at most ONE delimiter (first-split ≡ last-split)', () => {
     const subs = ['operator@example.com', 'a/b', 'a:b', 'https://issuer/u1', 'auth0|abc123', 'x%2Fy'];
-    const declared = ['coordinator', 'a/b', 'victim@x/coordinator', 'x:y', 'builder-0803a2d0', '///'];
+    const declared = ['coordinator', 'a/b', 'victim@x/coordinator', 'x:y', 'builder-0803f00d', '///'];
     const produced: string[] = [];
     for (const s of subs) {
       for (const dd of [...declared, undefined]) {
@@ -674,7 +674,7 @@ describe('COMPOSITE ACTORS — delimiter sanitation is the FORGERY GUARD (flag O
   it('refineActor: composites OFF → the derived actor WINS (declared never replaces it)', () => {
     delete process.env[FLAG];
     expect(refineActor('coordinator', 'somebody-else')).toBe('coordinator');
-    expect(refineActor(undefined, 'builder-0803a2d0')).toBe('builder-0803a2d0'); // dispatcher path
+    expect(refineActor(undefined, 'builder-0803f00d')).toBe('builder-0803f00d'); // dispatcher path
     expect(refineActor(undefined, undefined)).toBeUndefined();
     expect(refineActor('coordinator', undefined)).toBe('coordinator');
   });
@@ -705,7 +705,7 @@ describe('COMPOSITE ACTORS — classification reads the LAST segment (flag ON)',
   });
 
   it('the parametric builder-<id8> family still hits its prefix rule inside a composite', () => {
-    expect(classifyActor('operator@example.com/builder-0803a2d0')).toBe('agent');
+    expect(classifyActor('operator@example.com/builder-0803f00d')).toBe('agent');
     expect(classifyActor('operator@example.com/reviewer-abc123')).toBe('agent');
   });
 
@@ -718,7 +718,7 @@ describe('COMPOSITE ACTORS — classification reads the LAST segment (flag ON)',
 
   it('a non-composite actor is unaffected by last-segment classification', () => {
     expect(classifyActor('tick')).toBe('automation');
-    expect(classifyActor('builder-0803a2d0')).toBe('agent');
+    expect(classifyActor('builder-0803f00d')).toBe('agent');
     expect(classifyActor(ACTOR_ANONYMOUS)).toBe('agent');
     expect(classifyActor(undefined)).toBe('agent');
   });

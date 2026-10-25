@@ -20,7 +20,7 @@
  * pasting one into the box has to find it — that is why `id` is a searched field at all.
  * It needs no special case under this rule: the word boundary splits a UUID on its
  * dashes, so each dashed segment is its own word. An id8 is a prefix of the first
- * segment, and a dashed partial (`709aca13-44db`) is two terms that are prefixes of the
+ * segment, and a dashed partial (`709af00d-44db`) is two terms that are prefixes of the
  * first two. What it deliberately gives up is matching from the MIDDLE of a segment,
  * which is the same trade the rule makes everywhere else.
  *

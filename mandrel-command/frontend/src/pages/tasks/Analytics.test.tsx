@@ -182,7 +182,7 @@ describe('Analytics — throughput + by-actor render REAL data (wired), honest-e
     expect(text).toContain('Completed by actor');
     expect(text).toContain('completed · last 30d');
     // wired now — the old actor-on-read gap wording is gone, and it's not empty.
-    expect(text).not.toContain('305998f3');
+    expect(text).not.toContain('3059f00d');
     expect(text).not.toContain('No data yet');
   });
 

@@ -61,7 +61,7 @@ BEGIN;
 
 UPDATE sessions
 SET metadata = COALESCE(metadata, '{}'::jsonb) || jsonb_build_object(
-      'counters_epoch', 'pre-3f9fb289',
+      'counters_epoch', 'pre-3f9ff00d',
       'counters_epoch_note',
         'Finalized before an earlier task. sessions.contexts_created / tasks_* / total_tokens '
         || 'on this row were absolute-SET from an in-memory delta and are unreliable; '

@@ -203,7 +203,7 @@ describe('THE WRITE BOUNDARY — the shipped validator refuses a credential, by 
     ],
     ['project_create', { name: 'p-cred-probe', description: CREDENTIAL }],
     ['session_start', { title: 'clean', goal: CREDENTIAL }],
-    ['task_update', { taskId: '440f0091-1111-2222-3333-444455556666', notes: CREDENTIAL }],
+    ['task_update', { taskId: '440ff00d-1111-2222-3333-444455556666', notes: CREDENTIAL }],
   ])('%s refuses a credential in its prose fields', (tool, args) => {
     expect(() => validateToolArguments(tool, args as never)).toThrow(/live credential/i);
   });
@@ -245,11 +245,11 @@ describe('TAGS — the last unscanned stored free-text field (baseTags split)', 
     ],
     ['decision_update', (tags: string[]) => ({ decisionId: 'aaaaaaaa1111', tags })],
     ['task_create', (tags: string[]) => ({ title: 't', tags })],
-    ['task_update', (tags: string[]) => ({ taskId: '440f0091-1111-2222-3333-444455556666', tags })],
+    ['task_update', (tags: string[]) => ({ taskId: '440ff00d-1111-2222-3333-444455556666', tags })],
   ])('%s WRITES tags with hygiene: a credential and a raw leak are both refused', (tool, build) => {
     expect(() => validateToolArguments(tool, build([CREDENTIAL]) as never)).toThrow(/live credential/i);
     expect(() => validateToolArguments(tool, build([RAW_LEAK]) as never)).toThrow(/tool-call XML/i);
-    expect(() => validateToolArguments(tool, build(['batch:13', 'task:1c0aa11a']) as never)).not.toThrow();
+    expect(() => validateToolArguments(tool, build(['batch:13', 'task:1c0af00d']) as never)).not.toThrow();
   });
 
   test.each([

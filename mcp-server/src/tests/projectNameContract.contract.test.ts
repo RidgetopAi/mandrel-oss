@@ -50,7 +50,7 @@
  *   · REGISTER A FAKE OP that claims "Project ID or name" and does NOT resolve — an op whose
  *     project param is `exempt` (so the choke point ignores it) with no exerciser — and this
  *     file goes RED naming it. Removing it returns GREEN. Exercised by
- *     `__c13ba669_fake_*` in the "a NEW op that claims the contract without honouring it"
+ *     `__c13bf00d_fake_*` in the "a NEW op that claims the contract without honouring it"
  *     block, which injects into the REAL registries the product reads.
  *   · DELETE the `PROJECT_REF_CONTRACT_PHRASE` from any one param's description → RED naming
  *     that param.
@@ -424,7 +424,7 @@ describe('BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-to-end', () =
  * THE EMPTY / ZERO POPULATION (C3 — the values that slip through). A whitespace-only project
  * reference was NOT blank enough to trip the old `raw.trim() !== ''` check, so it fell through
  * as "no project named" and travelled raw into `AND project_id = $n`. Measured on v0.15.0
- * (9930d1a): task_list({projectId:'   '}) → [DATASTORE_ERROR] with the advice "This is a
+ * (993f00d): task_list({projectId:'   '}) → [DATASTORE_ERROR] with the advice "This is a
  * server-side fault, not a problem with the arguments you sent" — false, and unretryable.
  */
 describe('a BLANK project reference is refused loudly, everywhere', () => {
@@ -486,7 +486,7 @@ describe('a BLANK project reference is refused loudly, everywhere', () => {
  * THIS block stops failing — and a permanently-passing probe is itself the signal.
  */
 describe('a NEW op that claims the contract without honouring it is CAUGHT', () => {
-  const STEM = `__c13ba669_probe_${STAMP}`;
+  const STEM = `__c13bf00d_probe_${STAMP}`;
 
   /** Inject a fake op into the REAL registries the product reads, run body, always clean up. */
   function withFakeOp(

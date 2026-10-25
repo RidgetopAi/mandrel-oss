@@ -98,7 +98,7 @@ describe('resolveProjectHeader — rung 3 (the settings cache)', () => {
 
   test('a settings cache holding a NON-uuid is ignored, not sent', () => {
     localStorage.setItem('aidis_user_settings', JSON.stringify({ defaultProjectId: 'Alpha' }));
-    // The pre-41293984 cache stored a project NAME here. It must never be sent as an id.
+    // The pre-page-scope cache stored a project NAME here. It must never be sent as an id.
     expect(resolveProjectHeader()).toBeUndefined();
   });
 });

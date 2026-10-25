@@ -63,8 +63,8 @@ function trustFrom(signals: Partial<TrustSignals>): Trust {
   });
 }
 
-const NEWER = '8c8c08d4-dcfd-432e-95c5-681b02b7a2c5';
-const OTHER = '866cba4f-3c50-45a6-b1ca-5ba590dd52cb';
+const NEWER = '8c8cf00d-dcfd-432e-95c5-681b02b7a2c5';
+const OTHER = '866cf00d-3c50-45a6-b1ca-5ba590dd52cb';
 
 /** DECLARED supersession → band `superseded`, abstain, reason `declared-superseded`. */
 const declaredSuperseded = trustFrom({

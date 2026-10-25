@@ -22,8 +22,8 @@ import { describe, test, expect } from 'vitest';
 import { matchesSearch } from './Tasks';
 import type { Task } from '../types/task';
 
-const TASK_ID = '709aca13-44db-4cb9-92ec-054dc1798544';
-const OTHER_ID = 'f29bbd44-1111-2222-3333-444455556666';
+const TASK_ID = '709af00d-44db-4cb9-92ec-054dc1798544';
+const OTHER_ID = 'f29bf00d-1111-2222-3333-444455556666';
 
 function makeTask(over: Partial<Task> = {}): Task {
   return {
@@ -46,7 +46,7 @@ describe('Tasks matchesSearch — id lookup', () => {
   // ── The fix ────────────────────────────────────────────────────────────────
   test('an id8 typed in the search box finds the task (the reported bug)', () => {
     // PRE-FIX: false — `id` was not in the haystack.
-    expect(matchesSearch(makeTask(), '709aca13')).toBe(true);
+    expect(matchesSearch(makeTask(), '709af00d')).toBe(true);
   });
 
   test('a FULL uuid finds the task', () => {
@@ -54,11 +54,11 @@ describe('Tasks matchesSearch — id lookup', () => {
   });
 
   test('a dashed PARTIAL uuid (a pasted prefix) finds the task', () => {
-    expect(matchesSearch(makeTask(), '709aca13-44db')).toBe(true);
+    expect(matchesSearch(makeTask(), '709af00d-44db')).toBe(true);
   });
 
   test('id matching is case-insensitive (an UPPER-CASE id8 still matches)', () => {
-    expect(matchesSearch(makeTask(), '709ACA13')).toBe(true);
+    expect(matchesSearch(makeTask(), '709AF00D')).toBe(true);
   });
 
   test("a DIFFERENT task's id does not match", () => {
@@ -66,7 +66,7 @@ describe('Tasks matchesSearch — id lookup', () => {
   });
 
   test('a task with no id is not matched by an id query (and does not throw)', () => {
-    expect(matchesSearch(makeTask({ id: undefined as unknown as string }), '709aca13')).toBe(false);
+    expect(matchesSearch(makeTask({ id: undefined as unknown as string }), '709af00d')).toBe(false);
   });
 
   // ── No regression: every pre-existing haystack field still matches ──────────
@@ -97,7 +97,7 @@ describe('Tasks matchesSearch — id lookup', () => {
       tags: undefined,
     });
     expect(matchesSearch(sparse, 'Port the')).toBe(true);
-    expect(matchesSearch(sparse, '709aca13')).toBe(true);
+    expect(matchesSearch(sparse, '709af00d')).toBe(true);
   });
 });
 

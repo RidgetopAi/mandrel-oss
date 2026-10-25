@@ -97,15 +97,15 @@ rubber-stamping):
   bake-off: drives `scripts/adjScore.ts` with `provider=subq` (single), the
   Sonnet-5 baseline, or `tiered` (Snap tier-1 → Sonnet tier-2) over the 80 pairs; the scorer
   reports recall/precision vs the oracle and vs the Sonnet majority, the 4-verdict confusion,
-  calibration buckets, p50/p95 latency and $/1k pairs. Recorded runs: `decision-run/subq-37b2040f/`.
+  calibration buckets, p50/p95 latency and $/1k pairs. Recorded runs: `decision-run/subq-37b2f00d/`.
 - `decision-run/heldout-*/` — the confirmation round's 150 HELD-OUT pairs (`select.sql`,
   read-only from prod), configs frozen in `frozen-configs.json` before any run, runs + blind Opus
-  judgements in `runs/`; score with `decision-run/score-heldout.py decision-run/heldout-37b2040f/runs`.
+  judgements in `runs/`; score with `decision-run/score-heldout.py decision-run/heldout-37b2f00d/runs`.
   `judge-pairs-blind.py` is the blind pair judge (no adjudicator output shown).
   Round 3 (claude-sonnet-5-5 as tier 2) is in `runs-sonnet55/`; its `score.txt` was produced by
   `EXTRA_RUN_DIRS=<runs-sonnet55> REFERENCE_CONFIGS=a-snapcv,b-snapcn,c-sonnet5,d-tiered
   SONNET_REF_CONFIG=c-sonnet5 COST_RATES_FILE=<runs-sonnet55>/cost-rates-2026-10-12.json
-  python3 decision-run/score-heldout.py decision-run/heldout-37b2040f/runs <runs-sonnet55>/heldout-scorecard.json`.
+  python3 decision-run/score-heldout.py decision-run/heldout-37b2f00d/runs <runs-sonnet55>/heldout-scorecard.json`.
 - Report shaper: `../../mcp-server/src/services/belief/dryRunReport.ts` (+ unit test).
 - Full pipeline: `../../mcp-server/scripts/beliefBackfillDryRun.ts`.
 

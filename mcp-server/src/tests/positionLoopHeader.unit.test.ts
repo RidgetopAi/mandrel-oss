@@ -75,9 +75,9 @@ describe('POST /mcp/tools/:toolName carries the declared agent loop id', () => {
 
   it('a declared X-Loop-ID arrives on the executor context verbatim', async () => {
     process.env.MCP_BRIDGE_AUTH_ENABLED = 'false';
-    const res = await postTool({ 'X-Connection-ID': 'shared-bridge', 'X-Loop-ID': 'builder-04a4c7d9' });
+    const res = await postTool({ 'X-Connection-ID': 'shared-bridge', 'X-Loop-ID': 'builder-04a4f00d' });
     expect(res.status).toBe(200);
-    expect(capturedContext?.loopId).toBe('builder-04a4c7d9');
+    expect(capturedContext?.loopId).toBe('builder-04a4f00d');
     // …and it does NOT quietly rewrite the connection identity, which stays the transport's.
     expect(capturedContext?.connectionId).toBe('shared-bridge');
   });

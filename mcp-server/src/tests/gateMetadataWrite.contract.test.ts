@@ -102,7 +102,7 @@ const gate = (block: unknown) => ({ [GATE_METADATA_KEY]: block });
 const GOOD_BLOCK = {
   [GATE_CANONICAL_RUN_KEY]: true,
   [GATE_CANONICAL_EXIT_CODE_KEY]: 0,
-  [GATE_CANONICAL_REF_KEY]: '1594229d',
+  [GATE_CANONICAL_REF_KEY]: '1594f00d',
   name: 'scripts/ci-clean-gate.sh',
   reason: 'free-form sibling keys are deliberately still free-form',
 };
@@ -131,7 +131,7 @@ describe('§1 metadata.gate — enforced on every metadata-accepting op', () => 
 
   test('a free-prose STRING gate block is REJECTED — on every one of them', () => {
     // The dominant malformed shape on prod: 14 contexts + 5/5 tasks store a sentence here.
-    const prose = 'CLEAN GATE GREEN on 648b328, exit 0, zero FAIL lines, all twelve stages';
+    const prose = 'CLEAN GATE GREEN on 648f00d, exit 0, zero FAIL lines, all twelve stages';
     for (const opId of METADATA_OPS) {
       const r = parseMetadata(opId, gate(prose));
       expect(r.success, `${opId} accepted a free-prose gate block`).toBe(false);
@@ -206,9 +206,9 @@ describe('§2 the measured mis-spellings are refused — a deny-list, not a clos
   });
 
   test('the ref spellings: `ref` accepted, `refReported`/`refMeasured` rejected', () => {
-    expect(parseMetadata('context_store', gate({ ref: '1594229d' })).success).toBe(true);
+    expect(parseMetadata('context_store', gate({ ref: '1594f00d' })).success).toBe(true);
     for (const alias of ['refReported', 'refMeasured']) {
-      const r = parseMetadata('context_store', gate({ [alias]: '1594229d' }));
+      const r = parseMetadata('context_store', gate({ [alias]: '1594f00d' }));
       expect(r.success, `${alias} was accepted`).toBe(false);
       expect(issueText(r)).toContain(GATE_CANONICAL_REF_KEY);
     }
@@ -220,7 +220,7 @@ describe('§2 the measured mis-spellings are refused — a deny-list, not a clos
     // "helpfully" rename them.
     const r = parseMetadata(
       'context_store',
-      gate({ refToGate: 'merge of batch10/belief-failopen@9305a39a into main', refChecked: true }),
+      gate({ refToGate: 'merge of batch10/belief-failopen@9305f00d into main', refChecked: true }),
     );
     expect(r.success, `a legitimate refToGate/refChecked block was rejected: ${issueText(r)}`).toBe(
       true,
@@ -285,7 +285,7 @@ describe('§3 validateToolArguments — the production configuration, not just t
   test('a well-formed gate block SURVIVES the shipped entry point unchanged', () => {
     const out = validateToolArguments('context_store', args(gate(GOOD_BLOCK)));
     expect(out.metadata[GATE_METADATA_KEY][GATE_CANONICAL_EXIT_CODE_KEY]).toBe(0);
-    expect(out.metadata[GATE_METADATA_KEY][GATE_CANONICAL_REF_KEY]).toBe('1594229d');
+    expect(out.metadata[GATE_METADATA_KEY][GATE_CANONICAL_REF_KEY]).toBe('1594f00d');
     // Nothing was coerced or renamed on the way through.
     expect(out.metadata[GATE_METADATA_KEY]).toEqual(GOOD_BLOCK);
   });
@@ -410,7 +410,7 @@ describe('§5 exit code, ref and run — the typed reserved fields', () => {
     ).toEqual([]);
     expect(
       validateMetadataGate(
-        gate({ [GATE_CANONICAL_REF_KEY]: 'merge of batch15/c-gatemeta into main @ 1594229d' }),
+        gate({ [GATE_CANONICAL_REF_KEY]: 'merge of batch15/c-gatemeta into main @ 1594f00d' }),
       ),
     ).toEqual([]);
   });

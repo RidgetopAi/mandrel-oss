@@ -112,7 +112,7 @@ export interface AdvertisedOperation {
  * ENUMERATE every callable operation on the advertised surface — the list the counts are the
  * LENGTH of, and the list mandrel_help renders on the gateway surface.
  *
- * WHY ONE LIST AND NOT TWO NUMBERS (the reviewer finding on 22c79e9). The first cut counted
+ * WHY ONE LIST AND NOT TWO NUMBERS (the reviewer finding on 22cf00d). The first cut counted
  * operations with a `reduce` and rendered the body from the FLAT catalog. Both were "derived", but
  * from DIFFERENT walks — and they disagreed by exactly the `session_pin` fan-out: one flat catalog
  * entry (`session_pin`) is THREE gateway actions (`session.pin_set` / `pin_get` / `pin_clear`), so

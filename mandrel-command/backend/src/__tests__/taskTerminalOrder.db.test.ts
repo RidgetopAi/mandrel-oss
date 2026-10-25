@@ -6,10 +6,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_terminalorder_d186ff4f
- *   eval "$(bash scripts/provision-test-db.sh ci_terminalorder_d186ff4f --print-env)"
+ *   bash scripts/provision-test-db.sh ci_terminalorder_d186f00d
+ *   eval "$(bash scripts/provision-test-db.sh ci_terminalorder_d186f00d --print-env)"
  *   npx jest taskTerminalOrder --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_terminalorder_d186ff4f --drop
+ *   bash scripts/provision-test-db.sh ci_terminalorder_d186f00d --drop
  */
 
 import { v4 as uuidv4 } from 'uuid';
@@ -62,7 +62,7 @@ describeDb('TaskService.getTasks — terminal columns sort by completion time', 
     await db.query(
       `INSERT INTO projects (id, name, description, status, created_at)
        VALUES ($1, $2, 'taskTerminalOrder fixture', 'active', NOW())`,
-      [projectId, `terminalorder-d186ff4f-${projectId.slice(0, 8)}`],
+      [projectId, `terminalorder-d186f00d-${projectId.slice(0, 8)}`],
     );
   });
 

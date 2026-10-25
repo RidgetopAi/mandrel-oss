@@ -75,7 +75,7 @@ afterAll(async () => {
 
 describe('gap 3 — the actor the write already carries becomes the author', () => {
   test('THE FIX: no explicit createdBy + an actor -> the actor is stored (was NULL on 75% of open tasks)', async () => {
-    expect(await createAndReadAuthor({}, 'builder-83fd88b0')).toBe('builder-83fd88b0');
+    expect(await createAndReadAuthor({}, 'builder-83fdf00d')).toBe('builder-83fdf00d');
   });
 
   test('an EXPLICIT createdBy still wins over the actor — a machine writer names itself', async () => {
@@ -157,7 +157,7 @@ describe('gap 3 — migration 098 PART 2 and normalizeActor() are ONE rule', () 
    */
   const FIXTURES = [
     'coordinator', 'Coordinator', 'COORDINATOR', '  Coordinator  ', 'Ops Agent', 'ops--agent', '-coordinator-',
-    'builder-83FD88B0', 'tree-drift', 'a   b', '   ', '', '-', '---',
+    'builder-83FDF00D', 'tree-drift', 'a   b', '   ', '', '-', '---',
     'operator@example.com', 'operator@example.com/coordinator',
   ];
 

@@ -2,7 +2,7 @@
  * BELIEF EDGE RECONCILIATION on REAL ROWS — the retract/re-mint round trip.
  *
  * ── WHY THIS FILE EXISTS ─────────────────────────────────────────────────────────────
- * `ADJRUN_RECONCILE_TEST` in scripts/beliefBackfillDryRun.ts was deleted in 6ddf3ac: it
+ * `ADJRUN_RECONCILE_TEST` in scripts/beliefBackfillDryRun.ts was deleted in 6ddf00d: it
  * constructed a `mint_supersedes` outcome (unconstructible since the no-hard-tier change) and counted
  * `edge_type='supersedes'` rows the pipeline can no longer create, so it would have
  * reported FAIL forever. Deleting it was right. What it EXERCISED was not covered anywhere

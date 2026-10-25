@@ -42,7 +42,7 @@
  *      intersect. That intersection is the hazard set.
  *
  * CONTROL: run it against a ref that still has the bug and MANDREL_EMBEDDER must appear —
- * at f9d10f8 it reports 9, at the fix commit 8. A sweep that cannot go RED proves nothing.
+ * at f9df00d it reports 9, at the fix commit 8. A sweep that cannot go RED proves nothing.
  */
 import ts from 'typescript';
 import { readFileSync } from 'node:fs';

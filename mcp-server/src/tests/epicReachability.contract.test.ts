@@ -34,7 +34,7 @@ import { routeExecutor } from '../routes/index.js';
 import { validateToolArguments } from '../middleware/validation.js';
 
 /** The PROD epic's real id — seeded here as the prod copy (acceptance 6's subject). */
-const EPIC_ID = '886d138b-c6e3-4584-888a-1ecfffe35b74';
+const EPIC_ID = '886df00d-c6e3-4584-888a-1ecfffe35b74';
 
 const STAMP = Date.now();
 let projectId: string;

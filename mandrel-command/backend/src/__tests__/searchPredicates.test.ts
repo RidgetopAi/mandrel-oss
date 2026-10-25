@@ -17,8 +17,8 @@ import {
 } from '../utils/searchPredicates';
 import { searchConfig } from '../config/search';
 
-const FULL_UUID = '0f3906cd-db79-4f82-b065-4426427640e7';
-const HEX_PREFIX = '0f3906cd';
+const FULL_UUID = '0f39f00d-db79-4f82-b065-4426427640e7';
+const HEX_PREFIX = '0f39f00d';
 
 describe('searchPredicates — classifiers', () => {
   it('recognizes a full UUID', () => {
@@ -31,7 +31,7 @@ describe('searchPredicates — classifiers', () => {
   it('treats a long-enough hex prefix as an id (config: idPrefixMinLength)', () => {
     expect(searchConfig.idPrefixMinLength).toBe(6);
     expect(looksLikeId(HEX_PREFIX)).toBe(true); // 8 chars >= 6
-    expect(looksLikeId('0f3906')).toBe(true); // exactly 6
+    expect(looksLikeId('0f39f0')).toBe(true); // exactly 6
     expect(looksLikeId('0f39')).toBe(false); // 4 < 6 → plain text
     expect(looksLikeId(FULL_UUID)).toBe(true);
     expect(looksLikeId('bucket')).toBe(false); // 'bucket' has non-hex chars
@@ -91,8 +91,8 @@ describe('searchPredicates — buildSearchPredicate', () => {
     expect(clause.params).toContain(HEX_PREFIX);
   });
 
-  it('dashed partial (0f3906cd-db79): treated as id, dashes stripped', () => {
-    const dashed = '0f3906cd-db79';
+  it('dashed partial (0f39f00d-db79): treated as id, dashes stripped', () => {
+    const dashed = '0f39f00d-db79';
     expect(looksLikeId(dashed)).toBe(true);
     const clause = buildSearchPredicate(dashed, 1, {
       textColumns: ['c.content'],
@@ -100,7 +100,7 @@ describe('searchPredicates — buildSearchPredicate', () => {
       tagsColumn: 'c.tags',
     });
     expect(clause.sql).toContain("REPLACE(c.id::text, '-', '') LIKE $2 || '%'");
-    expect(clause.params).toContain('0f3906cddb79'); // dash-stripped
+    expect(clause.params).toContain('0f39f00ddb79'); // dash-stripped
   });
 
   it('preserves caller extra OR clauses (no regression for exact type match)', () => {

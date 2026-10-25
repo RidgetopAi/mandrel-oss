@@ -127,7 +127,7 @@ describe('EVERY metadata boundary rejects a malformed artifact reference', () =>
     // The shapes prod already carries: the control-plane dispatch-proof + the amp-orb eval refs.
     const text = issueTextFor(tool, {
       kind: 'dispatch-proof',
-      commitSha: '32cfb05fa3f23164810611a2234274a1104de188',
+      commitSha: '32cff00da3f23164810611a2234274a1104de188',
       commitVerified: true,
       amp_thread_id: 'T-019f2b33-0840-74c2-911a-d2ecdcdefa30',
     });

@@ -262,7 +262,7 @@ describe('HTTP ↔ MCP contract', () => {
       } else {
         // A NON-200 NOW HAS TWO LEGAL BODIES, and this branch used to know only one.
         //
-        // Before an earlier task (commit 32d6817) a 4xx could only come from the express
+        // Before an earlier task (commit 32df00d) a 4xx could only come from the express
         // catch, whose body is `{success:false, error:<string>}`. A POLICY REFUSAL — the
         // identity guards, the actor requirement, a binding mismatch — never reaches that
         // catch: routeExecutorInner returns formatMcpError IN BAND, and that branch used to

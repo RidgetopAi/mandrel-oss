@@ -40,10 +40,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_softdel_a648c2b9
- *   eval "$(bash scripts/provision-test-db.sh ci_softdel_a648c2b9 --print-env)"
+ *   bash scripts/provision-test-db.sh ci_softdel_a648f00d
+ *   eval "$(bash scripts/provision-test-db.sh ci_softdel_a648f00d --print-env)"
  *   npx jest contextDecisionSoftDelete --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_softdel_a648c2b9 --drop
+ *   bash scripts/provision-test-db.sh ci_softdel_a648f00d --drop
  */
 
 import request from 'supertest';
@@ -68,7 +68,7 @@ describeDb('Context + decision delete are SOFT deletes, and bulk is project-scop
   let userId: string;
   let username: string;
   let token: string;
-  const password = 'ProbePassw0rd!a648c2b9';
+  const password = 'ProbePassw0rd!a648f00d';
 
   const createdContextIds: string[] = [];
   const createdDecisionIds: string[] = [];
@@ -85,7 +85,7 @@ describeDb('Context + decision delete are SOFT deletes, and bulk is project-scop
     createdContextIds.push(id);
     await db.query(
       `INSERT INTO contexts (id, project_id, context_type, content, tags, archived_at)
-       VALUES ($1, $2, $3, $4, ARRAY['softdel-a648c2b9']::text[],
+       VALUES ($1, $2, $3, $4, ARRAY['softdel-a648f00d']::text[],
                CASE WHEN $5::boolean THEN now() ELSE NULL END)`,
       [
         id,
@@ -159,7 +159,7 @@ describeDb('Context + decision delete are SOFT deletes, and bulk is project-scop
     projectId = uuidv4();
     otherProjectId = uuidv4();
     for (const [id, name] of [
-      [projectId, `softdel-a648c2b9-${projectId.slice(0, 8)}`],
+      [projectId, `softdel-a648f00d-${projectId.slice(0, 8)}`],
       [otherProjectId, `softdel-other-${otherProjectId.slice(0, 8)}`],
     ] as const) {
       await db.query(

@@ -21,7 +21,7 @@ import type { ContextSearchParams } from '../services/context';
 import { allProjects, projectsScope } from '../services/projectListScope';
 
 const PROJECT = '11111111-1111-1111-1111-111111111111';
-const FULL_UUID = '0f3906cd-db79-4a1a-9f0e-1a2b3c4d5e6f';
+const FULL_UUID = '0f39f00d-db79-4a1a-9f0e-1a2b3c4d5e6f';
 
 describe('buildContextSearchArgs', () => {
   it('REQUIRES projectId — throws MissingProjectIdError when absent (→ 400)', () => {
@@ -52,8 +52,8 @@ describe('buildContextSearchArgs', () => {
   });
 
   it('routes a hex id-PREFIX query (>= min length) to the by-id branch', () => {
-    const args = buildContextSearchArgs({ query: '0f3906cd', scope: projectsScope([PROJECT])});
-    expect(args.id).toBe('0f3906cd');
+    const args = buildContextSearchArgs({ query: '0f39f00d', scope: projectsScope([PROJECT])});
+    expect(args.id).toBe('0f39f00d');
     expect(args.query).toBeUndefined();
   });
 

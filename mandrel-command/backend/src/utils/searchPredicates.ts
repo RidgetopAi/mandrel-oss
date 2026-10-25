@@ -38,7 +38,7 @@ const FULL_UUID_RE =
 
 /**
  * A hex id-prefix the user typed. Dashes are allowed (a user often pastes a
- * dashed partial like `0f3906cd-db79`); we normalize them away before matching,
+ * dashed partial like `0f39f00d-db79`); we normalize them away before matching,
  * exactly like idResolver.normalizeShortId. After stripping dashes it must be
  * pure hex.
  */
@@ -156,7 +156,7 @@ export function buildSearchPredicate(
   //    DASH-STRIPPED text form of the id, exactly like idResolver
   //    (replace(id::text,'-','') LIKE $n || '%'). $n is always BOUND, never
   //    concatenated. We normalize both sides so a user can paste a dashed partial
-  //    (`0f3906cd-db79`) or a bare hex prefix and get the same match. A full UUID
+  //    (`0f39f00d-db79`) or a bare hex prefix and get the same match. A full UUID
   //    is just the maximal prefix → same LIKE form. The query's own LIMIT (and
   //    searchConfig.idMaxCandidates on callers that cap by it) bound how many
   //    ambiguous-prefix rows surface.

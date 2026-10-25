@@ -145,7 +145,7 @@ describe('THE CLASS, NOT THE INSTANCE — siblings and other boundaries, by cons
   test('`notes` is metadata by another door (it is appended into metadata.noteLog) and is guarded', () => {
     expect(() =>
       validateToolArguments('task_update', {
-        taskId: '440f0091-1111-2222-3333-444455556666',
+        taskId: '440ff00d-1111-2222-3333-444455556666',
         notes: RAW_LEAK,
       }),
     ).toThrow(/tool-call XML/i);

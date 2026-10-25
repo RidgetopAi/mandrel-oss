@@ -107,7 +107,7 @@ describe('migration 085 backfill — every historical provenance shape maps to a
   /**
    * One row per pre-085 shape found in the tree, with the via it must map to. The shapes are
    * the four metadata keys the mint sites actually wrote (measured by reading every mintEdge
-   * caller at 35ae193) plus the created_by-only shapes, plus the no-signal shape.
+   * caller at 35af00d) plus the created_by-only shapes, plus the no-signal shape.
    */
   const CASES: Array<{
     name: string;

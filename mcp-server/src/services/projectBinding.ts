@@ -238,7 +238,7 @@ export function projectRefParams(toolName: string): string[] {
 /**
  * A BLANK project reference — present in the arguments but naming nothing.
  *
- * THE HOLE THIS CLOSES, measured on v0.15.0 (9930d1a) against a migrated DB:
+ * THE HOLE THIS CLOSES, measured on v0.15.0 (993f00d) against a migrated DB:
  *   task_list({projectId:'   '})     → ❌ [DATASTORE_ERROR] … "This is a server-side fault,
  *                                        not a problem with the arguments you sent —
  *                                        re-sending the same call is reasonable."
@@ -250,7 +250,7 @@ export function projectRefParams(toolName: string): string[] {
  * below, so rung 1 declares the call "not named", materialises nothing, and the raw `'   '`
  * travels down the route's own resolveProjectId into `AND project_id = $n` — the ORIGINAL
  * uuid-cast bug, surviving inside the fix for it, one input away. v0.15.0's datastore error
- * boundary (guardPool, merge a50ad09) catches the leak, but its advice is then actively
+ * boundary (guardPool, merge a50f00d) catches the leak, but its advice is then actively
  * wrong: it tells the caller their arguments are not what failed and that retrying is
  * reasonable, when the argument IS what failed and retrying fails identically forever.
  *
@@ -672,7 +672,7 @@ export async function resolveProjectBinding(
     // THE PROPERTY, not the instance list: ANY consumer that put the argument into a
     // project-scoped predicate got the raw Postgres cast error, so the set of affected tools
     // was never "the ones we happened to try" — it was "every tool without its own name-aware
-    // resolution". Measured on f9d9ff9 (2026-07-25), AT LEAST these twelve hard-failed
+    // resolution". Measured on f9de00d (2026-07-25), AT LEAST these twelve hard-failed
     // outright on a VALID project name: task_create, task_list, task_details,
     // task_progress_summary, context_search, context_update, decision_record, decision_search,
     // decision_stats, recall_thread, thread_set, and one stored-scan reader. Treat that as a floor

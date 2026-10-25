@@ -20,7 +20,7 @@
  *   tagged it. Neither is a member of it. Restricted to spines with real branch activity,
  *   roughly half of each branch was missing this way:
  *
- *     WITH spines(s) AS (VALUES ('ddba6ec7-'),('e6170769-'),('ee38f63a-'))
+ *     WITH spines(s) AS (VALUES ('ddbaf00d-'),('e617f00d-'),('ee38f00d-'))
  *     SELECT sp.s,
  *       (SELECT count(*) FROM links l
  *         WHERE l.to_id::text LIKE sp.s||'%' AND l.mint_via='position') AS pos_edges,

@@ -93,7 +93,7 @@ export class DecisionController {
       offset = 0
       } = req.query;
 
-      // Project scope — mirror the Contexts fix (commit 8fb17f2): the X-Project-ID header
+      // Project scope — mirror the Contexts fix (commit 8fbf00d): the X-Project-ID header
       // (→ req.projectId via projectContextMiddleware) takes priority over the query param,
       // and the resolved id is passed STRAIGHT into the MCP decision_search args as
       // `projectId` (the tool schema's camelCase param name). NO project_switch: a GET must

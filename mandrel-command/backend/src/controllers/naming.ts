@@ -488,7 +488,7 @@ export class NamingController {
       // 3. Delete directly from the database
 
       // Get current project info and extract the project ID
-      const projectId = '4afb236c-00d7-433d-87de-0f489b96acb2'; // aidis-bootstrap project
+      const projectId = '4afbf00d-00d7-433d-87de-0f489b96acb2'; // aidis-bootstrap project
 
       // Verify the project exists by calling project_current
       // mcp-write-scope: read — project_current reports the connection's current project.

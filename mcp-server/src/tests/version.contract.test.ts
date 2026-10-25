@@ -100,25 +100,25 @@ describe('single version source', () => {
 });
 
 describe('build-metadata suffix derivation (the ref half of the contract)', () => {
-  const sha40 = 'cdf909944fe3a1b2c3d4e5f60718293a4b5c6d7e';
+  const sha40 = 'cdff00d44fe3a1b2c3d4e5f60718293a4b5c6d7e';
 
   it('a real revision becomes its first 12 lowercase hex chars', () => {
-    expect(resolveBuildMetadata(sha40)).toBe('cdf909944fe3');
+    expect(resolveBuildMetadata(sha40)).toBe('cdff00d44fe3');
     expect(resolveBuildMetadata(sha40)).toHaveLength(REVISION_SHORT_LEN);
-    expect(composeVersion('1.2.3', sha40)).toBe('1.2.3+cdf909944fe3');
+    expect(composeVersion('1.2.3', sha40)).toBe('1.2.3+cdff00d44fe3');
   });
 
   it('an uppercase revision is normalised (the image tag is lowercase)', () => {
-    expect(resolveBuildMetadata(sha40.toUpperCase())).toBe('cdf909944fe3');
+    expect(resolveBuildMetadata(sha40.toUpperCase())).toBe('cdff00d44fe3');
   });
 
   it('the suffix width is FIXED — a partial sha is +invalid, never a short suffix', () => {
     // The reported string has exactly three shapes: +<sha12>, +unknown, +invalid.
-    // A partial object id must not create a fourth (`0.19.0+cdf9099`), because
+    // A partial object id must not create a fourth (`0.19.0+cdff00d`), because
     // downstream guards match the suffix as `<sha12>|unknown|invalid`. The fleet
     // lane only ever supplies `git rev-parse HEAD` (40 hex), so nothing real
     // regresses; a partial id genuinely did not come from that lane.
-    expect(resolveBuildMetadata('cdf9099')).toBe(BUILD_METADATA_INVALID);
+    expect(resolveBuildMetadata('cdff00d')).toBe(BUILD_METADATA_INVALID);
     expect(resolveBuildMetadata(sha40.slice(0, 39))).toBe(BUILD_METADATA_INVALID);
     expect(resolveBuildMetadata(sha40 + 'a')).toBe(BUILD_METADATA_INVALID);
   });

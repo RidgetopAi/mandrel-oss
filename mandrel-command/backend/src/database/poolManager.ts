@@ -66,7 +66,7 @@ class BackendPoolManager {
       //
       // The sibling `.unref()` on the monitoring timer below fixed the
       // TIMER half of this and left the CLIENT half open, so the gate went on hanging.
-      // MEASURED on ref 797906e: with the full backend suite finished and reported
+      // MEASURED on ref 797f00d: with the full backend suite finished and reported
       // (1524 passed), `process.getActiveResourcesInfo()` in the still-running jest
       // process returned exactly ONE entry — ["TCPSocketWrap"] — and its creation stack
       // was BackendPoolManager.initialize -> getConnection -> query -> healthCheck via

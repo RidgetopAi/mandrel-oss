@@ -360,7 +360,7 @@ const REPAIR_POPULATION_SQL = (col: string): string => `
    -- without this line one leg of one job respected a user's deletion and the other
    -- re-labeled and re-pointed edges into records the user had deleted.
    --
-   -- MEASURED at 67e631b on the prod snapshot: 19 archived contexts, and ZERO edges in this
+   -- MEASURED at 67ef00d on the prod snapshot: 19 archived contexts, and ZERO edges in this
    -- population touching one. That zero is the reason to fix it now rather than a reason not
    -- to: the defect is currently unexercised, so nothing would have surfaced it, and the
    -- archived population only grows. A guard written against today's corpus would pass

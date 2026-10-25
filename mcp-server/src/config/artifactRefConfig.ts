@@ -326,7 +326,7 @@ export const ARTIFACT_REF_CONFIG: ArtifactRefConfig = {
   locatorPathPattern: envPattern('MANDREL_ARTIFACT_REF_PATH_PATTERN', '[A-Za-z0-9._~:@=+/-]+'),
   // An org/repo slug (optionally host-qualified), nothing else.
   repositoryPattern: envPattern('MANDREL_ARTIFACT_REF_REPOSITORY_PATTERN', '[A-Za-z0-9._-]+(?:/[A-Za-z0-9._-]+)*'),
-  // A thread id (T-019f…) or a branch name (builder/caf5958e-artifact-ref).
+  // A thread id (T-019f…) or a branch name (builder/caf5f00d-artifact-ref).
   producerThreadPattern: envPattern('MANDREL_ARTIFACT_REF_PRODUCER_PATTERN', '[A-Za-z0-9._~:@=+/-]+'),
   allowedUriSchemes: envStrList('MANDREL_ARTIFACT_REF_URI_SCHEMES', ['https', 'ssh', 'git']),
 };

@@ -48,9 +48,9 @@ describeDb('Task analytics reads share ONE population: live tasks', () => {
   const createdTaskIds: string[] = [];
 
   /** The live completed task: created 10d ago, completed 8d ago → lead time 2 days. */
-  const LIVE_ACTOR = 'alpha-live-d21ec7bd';
+  const LIVE_ACTOR = 'alpha-live-d21ef00d';
   /** The archived completed task: created 30d ago, completed 8d ago → lead time 22 days. */
-  const ARCHIVED_ACTOR = 'beta-archived-d21ec7bd';
+  const ARCHIVED_ACTOR = 'beta-archived-d21ef00d';
 
   const LIVE_LEAD_DAYS = 2;
   const ARCHIVED_LEAD_DAYS = 22;
@@ -127,7 +127,7 @@ describeDb('Task analytics reads share ONE population: live tasks', () => {
     await db.query(
       `INSERT INTO projects (id, name, description, status, created_at)
        VALUES ($1, $2, 'taskAnalyticsArchivedPopulation fixture', 'active', NOW())`,
-      [projectId, `d21ec7bd-${projectId.slice(0, 8)}`],
+      [projectId, `d21ef00d-${projectId.slice(0, 8)}`],
     );
 
     liveTaskId = await seedCompletedTask({

@@ -56,8 +56,8 @@ function restoreEnv(): void {
 beforeEach(clearEnv);
 afterEach(restoreEnv);
 
-const UUID = 'd7b47a46-383e-4e29-bc34-a37aba07b693';
-const ID8 = 'd7b47a46';
+const UUID = 'd7b4f00d-383e-4e29-bc34-a37aba07b693';
+const ID8 = 'd7b4f00d';
 
 describe('commandUrlConfig — recordUrl (THE shared permalink helper)', () => {
   it('builds a PLAIN full https URL pointing at /r/<id8> (not markdown)', async () => {

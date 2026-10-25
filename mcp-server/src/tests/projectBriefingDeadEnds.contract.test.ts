@@ -278,10 +278,10 @@ describe('briefing dead-ends — D: the line states the record\'s actual basis',
     const handoff = withBasis(
       'superseded',
       '★ HANDOFF — 2026-08-15 (overnight build session, end state)',
-      'superseded by 84ea8af0',
+      'superseded by 84eaf00d',
     );
     const md = renderBriefing(fabData([], [handoff]), CFG).markdown;
-    expect(md).toContain('- superseded: ★ HANDOFF — 2026-08-15 (overnight build session, end state) — superseded by 84ea8af0');
+    expect(md).toContain('- superseded: ★ HANDOFF — 2026-08-15 (overnight build session, end state) — superseded by 84eaf00d');
     expect(md).not.toContain('tried and rejected');
   });
 });

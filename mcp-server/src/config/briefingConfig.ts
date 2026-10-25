@@ -331,7 +331,7 @@ export const READ_BRIEFING_PROTECTION_RANK_ALWAYS_SURFACE = (): ReturnType<typeo
  *       ssh prod-host "sudo -u postgres psql -d mandrel -X -q -c \"select priority,
  *         count(*) filter (where created_at < now() - interval '7 days') as stale,
  *         count(*) filter (where status='blocked') as blocked, count(*) as total
- *         from tasks where project_id='6a1c953a-0278-4c44-9e01-9e56a374c48c'
+ *         from tasks where project_id='6a1cf00d-0278-4c44-9e01-9e56a374c48c'
  *         and archived_at is null and status in ('todo','in_progress','blocked')
  *         group by 1;\""
  *     -> 13 blocked (the always-surface band) against 61 stale high-priority. Placing a
@@ -398,7 +398,7 @@ export const READ_BRIEFING_PROTECTED_TASK_PRIORITIES = (): ReturnType<typeof env
  *   ssh prod-host "sudo -u postgres psql -d mandrel -X -q -c \"select priority,
  *     count(*) filter (where updated_at < now() - interval '7 days') as stale7,
  *     count(*) filter (where created_at < now() - interval '7 days') as old7, count(*) total
- *     from tasks where project_id='6a1c953a-0278-4c44-9e01-9e56a374c48c' and archived_at is null
+ *     from tasks where project_id='6a1cf00d-0278-4c44-9e01-9e56a374c48c' and archived_at is null
  *     and status in ('todo','in_progress','blocked') group by 1;\""
  * -> stale7 = 0 for EVERY priority across all 184 open tasks, while old7 = 154. `updated_at`
  * is last-write-only and 184 of 184 open tasks carry 184 distinct values all inside the last

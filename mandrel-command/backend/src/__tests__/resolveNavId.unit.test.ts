@@ -38,7 +38,7 @@ function fakePool(rows: Array<{ id: string; type: string; title: string; is_punc
   return { pool, calls };
 }
 
-const FULL_UUID = 'b822dfcb-1111-4111-8111-111111111111';
+const FULL_UUID = 'b822f00d-1111-4111-8111-111111111111';
 
 describe('urlForRecord', () => {
   it('builds /<type>s/<id> for EVERY resolvable type (matches the frontend detail routes)', () => {
@@ -174,8 +174,8 @@ describe('NavIdNotFoundError — explains itself instead of being a bare 404', (
 describe('navIdRejectionReason — a rejected id says WHICH rule it broke', () => {
   it('returns null for resolvable shapes', () => {
     expect(navIdRejectionReason(FULL_UUID)).toBeNull();
-    expect(navIdRejectionReason('b822dfcb')).toBeNull();
-    expect(navIdRejectionReason('b822dfcb-1111')).toBeNull();
+    expect(navIdRejectionReason('b822f00d')).toBeNull();
+    expect(navIdRejectionReason('b822f00d-1111')).toBeNull();
   });
 
   it('classifies too-short, not-hex, and empty distinctly', () => {
@@ -234,11 +234,11 @@ describe('isResolvableNavId (shape gate)', () => {
     expect(isResolvableNavId(FULL_UUID)).toBe(true);
   });
   it('accepts an 8-hex short id (the reference form) and a dashed partial', () => {
-    expect(isResolvableNavId('b822dfcb')).toBe(true);
-    expect(isResolvableNavId('b822dfcb-1111')).toBe(true);
+    expect(isResolvableNavId('b822f00d')).toBe(true);
+    expect(isResolvableNavId('b822f00d-1111')).toBe(true);
   });
   it('rejects a too-short prefix (< 8 hex)', () => {
-    expect(isResolvableNavId('b822df')).toBe(false);
+    expect(isResolvableNavId('b822f0')).toBe(false);
   });
   it('rejects non-hex garbage and empty', () => {
     expect(isResolvableNavId('zzzzzzzz')).toBe(false);
@@ -268,7 +268,7 @@ describe('resolveNavId — three-case contract', () => {
 
   it('exactly 1 match (decision) → resolved with /decisions/<uuid> url', async () => {
     const { pool } = fakePool([{ id: FULL_UUID, type: 'decision', title: 'A decision' }]);
-    const rec = await resolveNavId('b822dfcb', { pool, scope: allProjects });
+    const rec = await resolveNavId('b822f00d', { pool, scope: allProjects });
     expect(rec).toEqual({
       type: 'decision',
       id: FULL_UUID,
@@ -279,7 +279,7 @@ describe('resolveNavId — three-case contract', () => {
 
   it('exactly 1 match (task) → /tasks/<uuid>', async () => {
     const { pool } = fakePool([{ id: FULL_UUID, type: 'task', title: 'A task' }]);
-    const rec = await resolveNavId('b822dfcb', { pool, scope: allProjects });
+    const rec = await resolveNavId('b822f00d', { pool, scope: allProjects });
     expect(rec.type).toBe('task');
     expect(rec.url).toBe(`/tasks/${FULL_UUID}`);
   });
@@ -288,7 +288,7 @@ describe('resolveNavId — three-case contract', () => {
     const { pool } = fakePool([
       { id: FULL_UUID, type: 'task', title: 'A plain task', is_punch: false },
     ]);
-    const rec = await resolveNavId('b822dfcb', { pool, scope: allProjects });
+    const rec = await resolveNavId('b822f00d', { pool, scope: allProjects });
     expect(rec.url).toBe(`/tasks/${FULL_UUID}`);
   });
 
@@ -296,14 +296,14 @@ describe('resolveNavId — three-case contract', () => {
     const { pool } = fakePool([
       { id: FULL_UUID, type: 'task', title: 'A punch', is_punch: true },
     ]);
-    const rec = await resolveNavId('b822dfcb', { pool, scope: allProjects });
+    const rec = await resolveNavId('b822f00d', { pool, scope: allProjects });
     expect(rec.type).toBe('task');
     expect(rec.url).toBe(`/punch/${FULL_UUID}`);
   });
 
   it('exactly 1 match (context) → /contexts/<uuid>', async () => {
     const { pool } = fakePool([{ id: FULL_UUID, type: 'context', title: 'milestone: hi' }]);
-    const rec = await resolveNavId('b822dfcb', { pool, scope: allProjects });
+    const rec = await resolveNavId('b822f00d', { pool, scope: allProjects });
     expect(rec.type).toBe('context');
     expect(rec.url).toBe(`/contexts/${FULL_UUID}`);
   });
@@ -365,9 +365,9 @@ describe('resolveNavId — a full UUID is NOT short-circuited (type must be disc
 
   it('adds the project scope as a bound param when projectId is given', async () => {
     const { pool, calls } = fakePool([{ id: FULL_UUID, type: 'task', title: 'T' }]);
-    await resolveNavId('b822dfcb', { pool, scope: projectsScope(['proj-123']) });
+    await resolveNavId('b822f00d', { pool, scope: projectsScope(['proj-123']) });
     // The scope is bound as a uuid ARRAY now, so the param is the array, not the string.
-    expect(calls[0].params).toEqual(['b822dfcb', ['proj-123']]);
+    expect(calls[0].params).toEqual(['b822f00d', ['proj-123']]);
     expect(calls[0].sql).toContain('project_id = ANY($2::uuid[])');
   });
 });

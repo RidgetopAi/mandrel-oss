@@ -51,7 +51,7 @@ function envBool(name: string, fallback: boolean): boolean {
 //   2. file.ext, optional :line   anchorGate.ts:122   (also matches the tail of the
 //      document form `services/anchorGate.ts:122`, which is WHY a query for the bare form
 //      finds the document form — measured, and the reason the two ever match at all)
-//   3. 7-40 char hex           5320bd9  /  a full commit sha  /  a record id prefix
+//   3. 7-40 char hex           532f00d  /  a full commit sha  /  a record id prefix
 //
 // ⚠️ THE ALTERNATION ORDER IS LOAD-BEARING, AND IT IS NOT THE ORDER THE SPIKE WROTE.
 // MEASURED 2026-08-21, both engines, same input `'ABC_DEF.ts and MY_VAR.js:12'`:

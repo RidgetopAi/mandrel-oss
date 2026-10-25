@@ -4,7 +4,7 @@
  *
  * SCOPE PRECEDENCE (load-bearing): the endpoint reads the `project` QUERY param
  * ('all' or a uuid) and treats it as AUTHORITATIVE — the controller prefers the
- * query param over the auto-attached `X-Project-ID` header (backend commit 1e8a34f),
+ * query param over the auto-attached `X-Project-ID` header (backend commit 1e8f00d),
  * so the Calendar's own filter always wins over the globally selected project. In
  * particular `project=all` correctly means unscoped even while a global project is
  * header-selected.

@@ -155,12 +155,12 @@ describe('MarkdownContent sanitization (load-bearing XSS guard)', () => {
 
 describe('MarkdownContent id interlinking (Feature C)', () => {
   it('linkifies an id token in content to an internal /r/<id> link', () => {
-    const html = mdToHtml('See b822dfcb for details.');
-    expect(html).toContain('href="/r/b822dfcb"');
-    expect(html).toContain('b822dfcb');
+    const html = mdToHtml('See b822f00d for details.');
+    expect(html).toContain('href="/r/b822f00d"');
+    expect(html).toContain('b822f00d');
     // Internal links render as a react-router Link — a SAME-TAB navigation, so no
     // target=_blank on it (that is reserved for external links).
-    expect(html).toMatch(/<a href="\/r\/b822dfcb">b822dfcb<\/a>/);
+    expect(html).toMatch(/<a href="\/r\/b822f00d">b822f00d<\/a>/);
   });
 
   it('leaves an ordinary hex-ish word (no digit) as plain text — no link', () => {
@@ -170,22 +170,22 @@ describe('MarkdownContent id interlinking (Feature C)', () => {
   });
 
   it('linkifies a threading tag (decision:<id>) inside content', () => {
-    const html = mdToHtml('per decision:6aaad6ce we shipped it');
-    expect(html).toContain('href="/r/6aaad6ce"');
+    const html = mdToHtml('per decision:6aaaf00d we shipped it');
+    expect(html).toContain('href="/r/6aaaf00d"');
   });
 
   it('survives sanitize: the injected link uses a safe relative href (no XSS)', () => {
     // linkify runs BEFORE sanitize, so sanitize validates our anchors too. A
     // relative /r/ href is safe; no javascript:/data: could ever be produced.
-    const html = mdToHtml('id 0f3906cd here');
+    const html = mdToHtml('id 0f39f00d here');
     expect(html.toLowerCase()).not.toContain('javascript:');
-    expect(html).toContain('href="/r/0f3906cd"');
+    expect(html).toContain('href="/r/0f39f00d"');
   });
 
   it('does NOT linkify an id inside a fenced code block', () => {
-    const html = mdToHtml('```\nb822dfcb\n```');
+    const html = mdToHtml('```\nb822f00d\n```');
     expect(html).toContain('<pre>');
-    expect(html).not.toContain('href="/r/b822dfcb"');
+    expect(html).not.toContain('href="/r/b822f00d"');
   });
 });
 
@@ -217,18 +217,18 @@ describe('MarkdownContent search-term highlight (Feature B)', () => {
   });
 
   it('COMPOSES with linkify: an id that matches the term LINKS and HIGHLIGHTS', () => {
-    // term "b822" is a prefix of id b822dfcb: the whole id still links, and the
+    // term "b822" is a prefix of id b822f00d: the whole id still links, and the
     // matching run is <mark>ed inside the link.
-    const html = mdToHtmlH('see b822dfcb here', 'b822');
-    expect(html).toContain('href="/r/b822dfcb"');
+    const html = mdToHtmlH('see b822f00d here', 'b822');
+    expect(html).toContain('href="/r/b822f00d"');
     expect(html).toMatch(/<mark>b822<\/mark>/i);
     // The <mark> sits INSIDE the anchor (highlight ran after linkify).
-    expect(html).toMatch(/<a href="\/r\/b822dfcb"><mark>b822<\/mark>dfcb<\/a>/i);
+    expect(html).toMatch(/<a href="\/r\/b822f00d"><mark>b822<\/mark>f00d<\/a>/i);
   });
 
   it('a <mark> never breaks id detection (full id still resolves to /r/<id>)', () => {
-    const html = mdToHtmlH('id 0f3906cd matters', '0f39');
-    expect(html).toContain('href="/r/0f3906cd"');
+    const html = mdToHtmlH('id 0f39f00d matters', '0f39');
+    expect(html).toContain('href="/r/0f39f00d"');
   });
 
   it('picks up the term AMBIENTLY from an enclosing HighlightRegion', () => {

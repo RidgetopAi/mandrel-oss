@@ -43,7 +43,7 @@ const STATUSES = zodStatusOptions('task_update');
 const STAMPING = [...ASSIGNEE_STAMP_CONFIG.stampOnStatuses];
 const NON_STAMPING = STATUSES.filter((s) => !STAMPING.includes(s));
 
-const ACTOR = 'builder-0544d878';
+const ACTOR = 'builder-0544f00d';
 const PROJ_NAME = `assignee-stamp-${Date.now()}`;
 let projectId: string;
 

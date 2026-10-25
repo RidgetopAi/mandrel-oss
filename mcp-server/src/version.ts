@@ -113,7 +113,7 @@ export const BUILD_METADATA_INVALID = 'invalid';
  *   The only producer in the fleet lane is fleet-deploy script's release_build,
  *   which sets MANDREL_IMAGE_REVISION="$(git rev-parse HEAD)" — always a full
  *   40-hex sha. Accepting a shorter id would buy nothing real and would let the
- *   reported string take a FOURTH shape (`0.19.0+cdf9099`, a 7-char suffix)
+ *   reported string take a FOURTH shape (`0.19.0+cdff00d`, a 7-char suffix)
  *   beyond the three this contract defines. Downstream guards match the suffix
  *   as `<sha12>|unknown|invalid`; a variable-width suffix is precisely the
  *   "guard's population is narrower than reality" defect this task exists to

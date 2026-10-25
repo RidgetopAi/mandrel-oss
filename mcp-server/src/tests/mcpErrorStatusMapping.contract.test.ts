@@ -2,8 +2,8 @@
  * JSON-RPC error code → HTTP status contract.
  *
  * THE DEFECT (measured against prod, two calls differing only by one undeclared param):
- *   POST /mcp/tools/task_update {"taskId":"38027cd4","status":"in_progress","notes":"x"} → 500
- *   POST /mcp/tools/task_update {"taskId":"38027cd4","status":"in_progress"}             → 200
+ *   POST /mcp/tools/task_update {"taskId":"3802f00d","status":"in_progress","notes":"x"} → 500
+ *   POST /mcp/tools/task_update {"taskId":"3802f00d","status":"in_progress"}             → 200
  *   500 body: `MCP error -32602: Input validation failed: … Unknown parameter(s): 'notes'.`
  *
  *   NOTE ON THE SUBJECT PARAM: `notes` is no longer undeclared — an earlier task made it the
@@ -103,7 +103,7 @@ const CONN = `errstatus-conn-${STAMP}`;
 const PROJ_NAME = `errstatus-P-${STAMP}`;
 
 // The exact prod-reported request bodies, stated ONCE so §3/§4/§5 cannot drift apart.
-const TASK_ID = '38027cd4';
+const TASK_ID = '3802f00d';
 
 /**
  * The undeclared param these blocks send, DERIVED from the live zod schema rather than

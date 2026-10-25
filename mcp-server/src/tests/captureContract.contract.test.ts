@@ -184,7 +184,7 @@ describe('§1 metadata.capture — the shape, on every metadata-accepting op', (
     const withRef = parseMetadata('context_store', {
       [CAPTURE_METADATA_KEY]: {
         [CAPTURE_STATUS_KEY]: 'verified',
-        [CAPTURE_EVIDENCE_KEY]: { artifact: 'gate-1e474867.log' },
+        [CAPTURE_EVIDENCE_KEY]: { artifact: 'gate-1e47f00d.log' },
       },
     });
     expect(withRef.success, issueText(withRef)).toBe(true);

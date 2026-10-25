@@ -15,7 +15,7 @@ describe('normalizeActor', () => {
   test('lowercases + hyphenates whitespace + collapses/strips hyphens', () => {
     expect(normalizeActor('  Coordinator  ')).toBe('coordinator');
     expect(normalizeActor('Deploy Smoke')).toBe('deploy-smoke');
-    expect(normalizeActor('builder--281e810a')).toBe('builder-281e810a');
+    expect(normalizeActor('builder--281ef00d')).toBe('builder-281ef00d');
     expect(normalizeActor('-tick-')).toBe('tick');
   });
 
@@ -27,7 +27,7 @@ describe('normalizeActor', () => {
   });
 
   test('is idempotent on already-normalized slugs', () => {
-    for (const s of ['coordinator', 'tick', 'builder-281e810a', 'deploy-smoke', 'anonymous']) {
+    for (const s of ['coordinator', 'tick', 'builder-281ef00d', 'deploy-smoke', 'anonymous']) {
       expect(normalizeActor(s)).toBe(s);
     }
   });
@@ -37,7 +37,7 @@ describe('parseActorParam', () => {
   test('accepts + normalizes valid actor slugs', () => {
     expect(parseActorParam('coordinator')).toBe('coordinator');
     expect(parseActorParam('  Tick ')).toBe('tick');
-    expect(parseActorParam('builder-281e810a')).toBe('builder-281e810a');
+    expect(parseActorParam('builder-281ef00d')).toBe('builder-281ef00d');
   });
 
   test('absent param → undefined (no filter)', () => {

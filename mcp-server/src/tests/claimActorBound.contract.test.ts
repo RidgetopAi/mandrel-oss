@@ -130,10 +130,10 @@ describe('claim_actor column bound (typed refusal before the statement — an ea
 
   test('(3) control: a normal actor claims fine (the guard does not over-block)', async () => {
     const taskId = await newTask('normal actor');
-    const resp = await claimAs('builder-e912b354', taskId);
+    const resp = await claimAs('builder-e912f00d', taskId);
     expect(resp.isError).not.toBe(true);
-    expect(responseText(resp)).toContain('builder-e912b354');
+    expect(responseText(resp)).toContain('builder-e912f00d');
     const row = await db.query(`SELECT claim_actor FROM tasks WHERE id = $1`, [taskId]);
-    expect(row.rows[0].claim_actor).toBe('builder-e912b354');
+    expect(row.rows[0].claim_actor).toBe('builder-e912f00d');
   });
 });

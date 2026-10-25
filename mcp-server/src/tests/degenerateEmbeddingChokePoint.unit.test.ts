@@ -83,7 +83,7 @@ describe('degeneracyOf — the values that actually slip through', () => {
     { label: 'healthy unit vector', input: healthy(), expect: null },
     { label: 'tiny but real (0.001 on one axis)', input: [0.001, 0, 0], expect: null },
     { label: 'single negative component', input: [-0.5], expect: null },
-    // ── THE FLOAT32 BOUNDARY (Reviewer REJECT of 403e49b) ──────────────────────────────
+    // ── THE FLOAT32 BOUNDARY (Reviewer REJECT of 403f00d) ──────────────────────────────
     // This predicate must judge the vector as the float4 COLUMN will hold it and as pgvector's
     // float32 `<#>` will square it — not as float64. These four cases are the ones a float64
     // implementation gets wrong; the DB-side half of the proof is the agreement test in

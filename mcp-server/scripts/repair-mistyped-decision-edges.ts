@@ -1,6 +1,6 @@
 /**
  * REPAIR — `links` rows whose `to_type='decision'` names an id that is NOT a decision.
- * (forward fix for the minting path shipped in 130369d.)
+ * (forward fix for the minting path shipped in 130f00d.)
  *
  * ═══ WHAT WENT WRONG ═══
  * Before the resolveMintEndpoint guard, autoMintFromDecision's evidence fallback
@@ -57,7 +57,7 @@ import type { Pool, PoolClient } from 'pg';
 
 /** The provenance stamp key and value. The undo is scoped on EXACTLY these. */
 export const REPAIR_SCRIPT_ID = 'repair-mistyped-decision-edges';
-export const REPAIR_TASK_ID = '642e36fb';
+export const REPAIR_TASK_ID = '642ef00d';
 
 export type Classification = 'RETYPE' | 'DELETE' | 'CROSS_PROJECT' | 'RESOLVES_TO_TASK';
 

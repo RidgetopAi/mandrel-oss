@@ -69,7 +69,7 @@ beforeEach(() => {
   vi.clearAllMocks();
   mockApi.resolve.record.mockResolvedValue({
     status: 'unique',
-    record: { type: 'task', id: 'f2d34d25-1929-45db-88a5-6bb927663ea1', title: 'X', url: '/tasks/f2d34d25-1929-45db-88a5-6bb927663ea1' },
+    record: { type: 'task', id: 'f2d3f00d-1929-45db-88a5-6bb927663ea1', title: 'X', url: '/tasks/f2d3f00d-1929-45db-88a5-6bb927663ea1' },
   });
 });
 
@@ -80,13 +80,13 @@ afterEach(() => {
 
 describe('useResolveTaskSearch — server-side resolve for id-shaped queries', () => {
   it('resolves an id8 query via api.resolve.record', async () => {
-    await mount(() => useResolveTaskSearch('5ead6b59'));
-    expect(mockApi.resolve.record).toHaveBeenCalledWith('5ead6b59');
+    await mount(() => useResolveTaskSearch('5eadf00d'));
+    expect(mockApi.resolve.record).toHaveBeenCalledWith('5eadf00d');
   });
 
   it('normalizes a dashed id (dashes stripped, lowercased) before resolving', async () => {
-    await mount(() => useResolveTaskSearch('F2D34D25-1929'));
-    expect(mockApi.resolve.record).toHaveBeenCalledWith('f2d34d251929');
+    await mount(() => useResolveTaskSearch('F2D3F00D-1929'));
+    expect(mockApi.resolve.record).toHaveBeenCalledWith('f2d3f00d1929');
   });
 
   it('does NOT fire for a prose query (left to the client-side substring filter)', async () => {
@@ -95,7 +95,7 @@ describe('useResolveTaskSearch — server-side resolve for id-shaped queries', (
   });
 
   it('does NOT fire for a hex run shorter than the id8 floor', async () => {
-    await mount(() => useResolveTaskSearch('5ead6b5')); // 7 hex
+    await mount(() => useResolveTaskSearch('5eadf00')); // 7 hex
     expect(mockApi.resolve.record).not.toHaveBeenCalled();
   });
 

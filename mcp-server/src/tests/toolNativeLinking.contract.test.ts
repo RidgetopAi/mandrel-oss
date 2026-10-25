@@ -77,9 +77,9 @@ const id8 = (uuid: string) => uuid.replace(/-/g, '').slice(0, 8);
 // ---------------------------------------------------------------------------
 describe('tool-native linking: threading grammar (pure)', () => {
   test('isThreadingTag recognizes the join-key prefixes and nothing else', () => {
-    expect(isThreadingTag('task:9e25dac7')).toBe(true);
-    expect(isThreadingTag('decision:77ce0f7f')).toBe(true);
-    expect(isThreadingTag('context:0f3906cd-0000-4000-8000-000000000000')).toBe(true);
+    expect(isThreadingTag('task:9e25f00d')).toBe(true);
+    expect(isThreadingTag('decision:77cef00d')).toBe(true);
+    expect(isThreadingTag('context:0f39f00d-0000-4000-8000-000000000000')).toBe(true);
     expect(isThreadingTag('scope:product')).toBe(true);
     expect(isThreadingTag('owner:engineering')).toBe(true);
     expect(isThreadingTag('tranche:safe')).toBe(true);
@@ -89,19 +89,19 @@ describe('tool-native linking: threading grammar (pure)', () => {
 
   test('well-formed threading tags pass through unchanged with NO warning', () => {
     const { tags, warnings } = validateAndNormalizeTags([
-      'task:9e25dac7', 'decision:77ce0f7f', 'scope:product', 'owner:engineering', 'tranche:safe', 'audit',
+      'task:9e25f00d', 'decision:77cef00d', 'scope:product', 'owner:engineering', 'tranche:safe', 'audit',
     ]);
     expect(tags).toEqual([
-      'task:9e25dac7', 'decision:77ce0f7f', 'scope:product', 'owner:engineering', 'tranche:safe', 'audit',
+      'task:9e25f00d', 'decision:77cef00d', 'scope:product', 'owner:engineering', 'tranche:safe', 'audit',
     ]);
     expect(warnings).toHaveLength(0);
   });
 
   test('case/whitespace is normalized (lowercased) and reported, never rejected', () => {
-    const { tags, warnings } = validateAndNormalizeTags(['Task:9E25DAC7', '  scope:Product  ']);
-    expect(tags).toEqual(['task:9e25dac7', 'scope:product']);
+    const { tags, warnings } = validateAndNormalizeTags(['Task:9E25F00D', '  scope:Product  ']);
+    expect(tags).toEqual(['task:9e25f00d', 'scope:product']);
     expect(warnings).toHaveLength(2);
-    expect(warnings.join(' ')).toContain('task:9e25dac7');
+    expect(warnings.join(' ')).toContain('task:9e25f00d');
     expect(warnings.join(' ')).toContain('scope:product');
   });
 
@@ -133,10 +133,10 @@ describe('tool-native linking: threading grammar (pure)', () => {
     // `tagToEdgeIntent` hands ANY non-empty ref to a resolver that accepts an id8. So
     // `context:<id8>` minted a real `learned_from` edge while this module called it invalid,
     // and quarantining it would have silently broken 45 live records' threading.
-    // Measured before the fix: `context:353ec1c1` minted [learned_from, related_to]; with
+    // Measured before the fix: `context:353ef00d` minted [learned_from, related_to]; with
     // quarantine and the old validator, zero edges.
-    const id8 = '353ec1c1';
-    const uuid = '353ec1c1-3cb5-4158-994d-95a7282cb1b6';
+    const id8 = '353ef00d';
+    const uuid = '353ef00d-3cb5-4158-994d-95a7282cb1b6';
     for (const form of [`context:${id8}`, `context:${uuid}`]) {
       const { tags, warnings } = validateAndNormalizeTags([form]);
       expect(tags, `${form} must survive unrewritten`).toEqual([form]);
@@ -184,8 +184,8 @@ describe('tool-native linking: threading grammar (pure)', () => {
   });
 
   test('ref grammar still composes (ref normalization + threading both run)', () => {
-    const { tags, warnings } = validateAndNormalizeTags(['ref:My Resume', 'task:9e25dac7']);
-    expect(tags).toEqual(['ref:my-resume', 'task:9e25dac7']);
+    const { tags, warnings } = validateAndNormalizeTags(['ref:My Resume', 'task:9e25f00d']);
+    expect(tags).toEqual(['ref:my-resume', 'task:9e25f00d']);
     // One warning: the ref normalization (the well-formed task tag is silent).
     expect(warnings).toHaveLength(1);
     expect(warnings[0]).toContain('ref:my-resume');

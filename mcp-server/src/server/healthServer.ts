@@ -259,7 +259,7 @@ export class HealthServer {
     // POST /api/v2/projects/:id/set-primary MUTATES prod state — it flips which project is
     // primary for every new session — and was reachable UNAUTHENTICATED directly on
     // mandrel.*:8080, so an anonymous caller could change that state. Gate it with the SAME
-    // mount-level static Bearer guard the /api/v2/sessions family uses (714a584): the sole
+    // mount-level static Bearer guard the /api/v2/sessions family uses (714f00d): the sole
     // legitimate caller is the Command backend (:5000, authenticates the USER via JWT), which
     // already presents MCP_AUTH_TOKEN as the INTERNAL SERVICE TOKEN on this proxied call
     // (McpService.callMcpEndpoint → authHeader()). UNCONDITIONAL + FAIL-CLOSED (not behind the

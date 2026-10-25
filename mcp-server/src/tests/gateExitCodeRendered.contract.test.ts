@@ -77,13 +77,13 @@ const TRUST: Trust = {
  * Faking a record whose first line states the gate would fake away the defect.
  */
 const VERDICT_CONTENT =
-  '★ REVIEWER VERDICT — task 252200e1 (lane F). ROUND: 2. REJECT.\n\n' +
-  'GATE: scripts/ci-clean-gate.sh on 9305a39a1b2c3d4e5f60718293a4b5c6d7e8f900.';
+  '★ REVIEWER VERDICT — task 2522f00d (lane F). ROUND: 2. REJECT.\n\n' +
+  'GATE: scripts/ci-clean-gate.sh on 9305f00d1b2c3d4e5f60718293a4b5c6d7e8f900.';
 const VERDICT_TITLE = deriveContextTitle(VERDICT_CONTENT)!;
 
 /** The two refs used below, full-length, as a real record stores them. */
-const GREEN_REF = '3fd825a2ff80df3a44ae1ec8f7bcad8fb8ffc2f4';
-const RED_REF = '9305a39a1b2c3d4e5f60718293a4b5c6d7e8f900';
+const GREEN_REF = '3fd8f00dff80df3a44ae1ec8f7bcad8fb8ffc2f4';
+const RED_REF = '9305f00d1b2c3d4e5f60718293a4b5c6d7e8f900';
 
 function threadResult(nodes: ThreadNode[]): ThreadResult {
   return {
@@ -157,20 +157,20 @@ function currentStateLineFor(metadata: unknown): string {
 describe('the stored gate exit code survives the render', () => {
   test('STORY channel — a measured GREEN renders its code, its label and its ref', () => {
     const text = storyLineFor({ gate: { exitCode: 0, ref: GREEN_REF } });
-    expect(text).toContain('gate-rc:0=GREEN@3fd825a2');
+    expect(text).toContain('gate-rc:0=GREEN@3fd8f00d');
   });
 
   test('STORY channel — a measured RED renders its code, its label and ITS OWN ref', () => {
     // The second half of the defect: when a run went RED, the ref THAT run executed on was
     // never given separately from the GREEN one.
     const text = storyLineFor({ gate: { exitCode: 1, ref: RED_REF } });
-    expect(text).toContain('gate-rc:1=RED@9305a39a');
-    expect(text).not.toContain('3fd825a2');
+    expect(text).toContain('gate-rc:1=RED@9305f00d');
+    expect(text).not.toContain('3fd8f00d');
   });
 
   test('CURRENT-STATE channel — the code renders in the lifecycle stamp', () => {
     expect(currentStateLineFor({ gate: { exitCode: 1, ref: RED_REF } })).toContain(
-      'gate-rc:1=RED@9305a39a'
+      'gate-rc:1=RED@9305f00d'
     );
   });
 
@@ -179,7 +179,7 @@ describe('the stored gate exit code survives the render', () => {
     // the code was being lost. Enumerated from the product's own altitude list.
     for (const altitude of THREAD_CONTENT_ALTITUDES) {
       const text = storyLineFor({ gate: { exitCode: 2, ref: RED_REF } }, altitude as 'headline');
-      expect(text, `altitude ${altitude}`).toContain('gate-rc:2=CANNOT-MEASURE@9305a39a');
+      expect(text, `altitude ${altitude}`).toContain('gate-rc:2=CANNOT-MEASURE@9305f00d');
     }
   });
 });
@@ -313,21 +313,21 @@ describe('the reader reads the corpus as it is actually written', () => {
   });
 
   test('all three live ref spellings are read', () => {
-    expect(gateOutcomeOf({ gate: { exit: 40, ref: GREEN_REF } })).toBe('40=STATIC-GREEN@3fd825a2');
+    expect(gateOutcomeOf({ gate: { exit: 40, ref: GREEN_REF } })).toBe('40=STATIC-GREEN@3fd8f00d');
     expect(gateOutcomeOf({ gate: { exit: 40, refReported: GREEN_REF } })).toBe(
-      '40=STATIC-GREEN@3fd825a2'
+      '40=STATIC-GREEN@3fd8f00d'
     );
     expect(gateOutcomeOf({ gate: { exit: 40, refMeasured: GREEN_REF } })).toBe(
-      '40=STATIC-GREEN@3fd825a2'
+      '40=STATIC-GREEN@3fd8f00d'
     );
   });
 
   test('refToGate is NOT read as the ref the run executed on', () => {
     // It means "the ref that SHOULD be gated" — measured live as
-    // "merge of batch10/belief-failopen@9305a39a into mandrel main", an intention. Rendering
+    // "merge of batch10/belief-failopen@9305f00d into mandrel main", an intention. Rendering
     // it as a ref a run executed on is exactly the substitution this task exists to stop.
     const out = gateOutcomeOf({
-      gate: { run: false, refToGate: 'merge of batch10/belief-failopen@9305a39a into main' },
+      gate: { run: false, refToGate: 'merge of batch10/belief-failopen@9305f00d into main' },
     })!;
     expect(out).toBe('none=NOT-RUN');
     expect(out).not.toContain('@');
@@ -344,14 +344,14 @@ describe('the reader reads the corpus as it is actually written', () => {
         meaning: 'static subset GREEN; rc 0 is reserved for the full gate',
         stagesRan: 69,
         refChecked: true,
-        refReported: '3fd825a2ff80df3a44ae1ec8f7bcad8fb8ffc2f4',
+        refReported: '3fd8f00dff80df3a44ae1ec8f7bcad8fb8ffc2f4',
         stagesSkipped: 21,
         stage1VitestRan: false,
         authoritativeGateOwner: 'coordinator',
         authoritativeGateStillOwed: true,
       },
     };
-    expect(storyLineFor(stored)).toContain('gate-rc:40=STATIC-GREEN@3fd825a2');
+    expect(storyLineFor(stored)).toContain('gate-rc:40=STATIC-GREEN@3fd8f00d');
   });
 });
 
@@ -542,16 +542,16 @@ function briefingWith(parts: {
 describe('project_briefing renders the same structured facts as the walk', () => {
   // ── 8.1 the three shapeLine populations ──────────────────────────────────
   test('a TASK carrying a gate result renders its exit code', () => {
-    expect(briefingWith({ tasks: [bTask(GATE_RED)] })).toContain('gate-rc:1=RED@9305a39a');
+    expect(briefingWith({ tasks: [bTask(GATE_RED)] })).toContain('gate-rc:1=RED@9305f00d');
   });
 
   test('a DECISION carrying a gate result renders its exit code', () => {
-    expect(briefingWith({ decisions: [bDecision(GATE_RED)] })).toContain('gate-rc:1=RED@9305a39a');
+    expect(briefingWith({ decisions: [bDecision(GATE_RED)] })).toContain('gate-rc:1=RED@9305f00d');
   });
 
   test('a CONVENTION carrying a gate result renders its exit code', () => {
     expect(briefingWith({ conventions: [bConvention(GATE_RED)] })).toContain(
-      'gate-rc:1=RED@9305a39a'
+      'gate-rc:1=RED@9305f00d'
     );
   });
 
@@ -578,8 +578,8 @@ describe('project_briefing renders the same structured facts as the walk', () =>
       })),
     });
     // The full-prose head is recognisable by its `[trust:…]` tail; the shape line by its date.
-    expect(asFull).toMatch(/- BTASK-TITLE .*\[id:\w+ gate-rc:1=RED@9305a39a\] \[trust:/);
-    expect(asShape).toMatch(/^- \[\d{4}-\d{2}-\d{2}\] \[task:\w+ gate-rc:1=RED@9305a39a\]/m);
+    expect(asFull).toMatch(/- BTASK-TITLE .*\[id:\w+ gate-rc:1=RED@9305f00d\] \[trust:/);
+    expect(asShape).toMatch(/^- \[\d{4}-\d{2}-\d{2}\] \[task:\w+ gate-rc:1=RED@9305f00d\]/m);
   });
 
   // ── 8.2 the defect proper: three states, not two, in THIS document too ────

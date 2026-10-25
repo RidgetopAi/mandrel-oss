@@ -417,7 +417,7 @@ SQL
 no ${OWNER_CONFLICT_SENTINEL} was raised). Error tail:"
     printf '%s\n' "$drop_out" | tail -5 >&2
   fi
-  [[ "$pre_state" != "unstamped" ]] || warn "Note: '$DBNAME' carried no ownership stamp (pre-908f3c37 leftover); dropped it anyway."
+  [[ "$pre_state" != "unstamped" ]] || warn "Note: '$DBNAME' carried no ownership stamp (pre-908ff00d leftover); dropped it anyway."
   left=$($PGSUPER psql -tAc "SELECT count(*) FROM pg_database WHERE datname='${DBNAME}';" 2>/dev/null || echo "?")
   role=$($PGSUPER psql -tAc "SELECT count(*) FROM pg_roles    WHERE rolname='${DBUSER}';" 2>/dev/null || echo "?")
   # THE VERDICT MUST READ THE MEASUREMENT IT JUST TOOK.
@@ -600,7 +600,7 @@ fi
 # between "the guard is off" and "there was nothing to guard yet".
 pre_state="$(db_owner_state "$DBNAME")"
 [[ "$pre_state" != "unstamped" ]] \
-  || warn "Note: '$DBNAME' exists with no ownership stamp (pre-908f3c37 leftover or hand-made). Adopting and stamping it for ${OWNER}."
+  || warn "Note: '$DBNAME' exists with no ownership stamp (pre-908ff00d leftover or hand-made). Adopting and stamping it for ${OWNER}."
 
 prov_rc=0
 # Captured, not discarded — same reason as the drop path: the sentinel is in here, and

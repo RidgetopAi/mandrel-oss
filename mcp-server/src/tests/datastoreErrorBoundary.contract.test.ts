@@ -120,8 +120,8 @@ const FAULTS: Array<{ name: string; sql: string; params?: unknown[]; leaks: RegE
   // leak (`value too long for type character varying(200)`), so the guard covers it for real.
   { name: '22001 value too long (column constraint)', sql: `INSERT INTO projects (name) VALUES (repeat('x', 300))`, leaks: /value too long for type/i },
   { name: '22003 numeric out of range', sql: `SELECT 99999::smallint`, leaks: /smallint out of range/i },
-  { name: '42703 undefined column', sql: `SELECT no_such_column_2d383cc2 FROM projects`, leaks: /column .*no_such_column_2d383cc2.* does not exist/i },
-  { name: '42P01 undefined table', sql: `SELECT 1 FROM no_such_table_2d383cc2`, leaks: /relation .*no_such_table_2d383cc2.* does not exist/i },
+  { name: '42703 undefined column', sql: `SELECT no_such_column_2d38f00d FROM projects`, leaks: /column .*no_such_column_2d38f00d.* does not exist/i },
+  { name: '42P01 undefined table', sql: `SELECT 1 FROM no_such_table_2d38f00d`, leaks: /relation .*no_such_table_2d38f00d.* does not exist/i },
   { name: '22012 division by zero', sql: `SELECT 1/0`, leaks: /division by zero/i },
   { name: '42601 syntax error', sql: `SELEKT 1`, leaks: /syntax error at or near/i },
   { name: '22P02 enum/int cast', sql: `SELECT $1::int`, params: ['abc'], leaks: /invalid input syntax for type integer/i },
@@ -236,7 +236,7 @@ describe('datastore error boundary', () => {
 
     test('dbPool.query (the SECOND pool) is guarded too', async () => {
       await expectRedacted(
-        () => dbPool.query(`SELECT no_such_column_2d383cc2 FROM projects`),
+        () => dbPool.query(`SELECT no_such_column_2d38f00d FROM projects`),
         /does not exist/i,
         'dbPool.query',
       );

@@ -63,10 +63,10 @@ export function toId8(projectId: string): string {
  *
  * PURE. Three renderings, one per way the target was chosen:
  *
- *  - BOUND (boundOriginLabel given) → `📁 Project: 'HEx' (8c6254aa) — 🔒 bound by
+ *  - BOUND (boundOriginLabel given) → `📁 Project: 'HEx' (8c62f00d) — 🔒 bound by
  *                       x-mandrel-project header`
- *  - manual/explicit → `📁 Project: 'HEx' (8c6254aa)`
- *  - defaulted       → `📁 Project: 'HEx' (8c6254aa) — ⚠️ default project (not switched this
+ *  - manual/explicit → `📁 Project: 'HEx' (8c62f00d)`
+ *  - defaulted       → `📁 Project: 'HEx' (8c62f00d) — ⚠️ default project (not switched this
  *                       session); project_switch if this is wrong`
  *
  * BOUND WINS OVER `defaulted`, and the precedence is here rather than at the call site so

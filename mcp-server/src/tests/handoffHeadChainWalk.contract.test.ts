@@ -92,7 +92,7 @@ const declareSupersedes = (conn: string, from: string, to: string) =>
  * A BACKWARDS edge, hand-built. `mint_via 'link-tool'` => provenance_class DECLARED, i.e.
  * byte-identical to what the `link` tool used to write here.
  *
- * WHY HAND-BUILT RATHER THAN THROUGH THE `link` TOOL (commit 6db3618):
+ * WHY HAND-BUILT RATHER THAN THROUGH THE `link` TOOL (commit 6dbf00d):
  * `mintEdge` now checks CHRONOLOGY at the choke point and REFUSES a chronology-ordered edge
  * whose source is older than its target — `{created:false, refused:'direction_backwards_in_time'}`,
  * surfaced by the link tool as `ok:false, action:'rejected'` (routes/links.routes.ts). That
@@ -125,7 +125,7 @@ const softSupersedes = (from: string, to: string, projectId: string) =>
 
 /**
  * THE LITERAL PRE-P5.2 PREDICATE, frozen. Copied byte-for-byte from
- * projectBriefing.ts@6c42047 lines 455-466 so the reproduction cannot drift into agreeing
+ * projectBriefing.ts@6c4f00d lines 455-466 so the reproduction cannot drift into agreeing
  * with the fix by accident.
  */
 async function preFixOneHopPick(projectId: string): Promise<string | undefined> {

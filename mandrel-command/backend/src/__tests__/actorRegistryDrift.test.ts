@@ -125,7 +125,7 @@ describe('config/actorRegistry mirrors mcp-server/src/config/actorRegistry.ts', 
     expect(knownActorKind('Builder')).toBe('agent');
     expect(knownActorKind('  OPERATOR ')).toBe('human');
     expect(knownActorKind('tick')).toBe('automation');
-    expect(knownActorKind('builder-0544d878')).toBe('agent'); // prefix rule
+    expect(knownActorKind('builder-0544f00d')).toBe('agent'); // prefix rule
     expect(knownActorKind('Operator + Coordinator')).toBeNull();
     expect(knownActorKind('')).toBeNull();
     expect(knownActorKind('   ')).toBeNull();

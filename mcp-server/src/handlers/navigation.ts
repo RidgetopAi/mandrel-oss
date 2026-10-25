@@ -172,7 +172,7 @@ class NavigationHandler {
       {
         title: 'Fetch specific context by ID',
         example: `context_search({
-  id: "86df4635-8090-41ff-a4d4-ed77925dbf17"
+  id: "86dff00d-8090-41ff-a4d4-ed77925dbf17"
 })`
       },
       {
@@ -313,7 +313,7 @@ context_restore({ contextId: "a1b2c3d4" })`
         title: 'Move a misfiled context into the right project',
         example: `project_move_record({
   recordType: "context",
-  recordId: "d1452e76",
+  recordId: "d145f00d",
   toProject: "riverbend"
 })`
       },
@@ -321,7 +321,7 @@ context_restore({ contextId: "a1b2c3d4" })`
         title: 'Move a task a customer filed under the wrong project',
         example: `project_move_record({
   recordType: "task",
-  recordId: "8ce3a9f7-9900-4f47-913f-414d5e66e652",
+  recordId: "8ce3f00d-9900-4f47-913f-414d5e66e652",
   toProject: "globex"
 })`
       },
@@ -329,7 +329,7 @@ context_restore({ contextId: "a1b2c3d4" })`
         title: 'Undo a move — it is the same call in reverse',
         example: `project_move_record({
   recordType: "context",
-  recordId: "d1452e76",
+  recordId: "d145f00d",
   toProject: "personal"
 })`
       }
@@ -455,14 +455,14 @@ context_restore({ contextId: "a1b2c3d4" })`
       {
         title: 'Mark task as completed',
         example: `task_update({
-  taskId: "59823126-9442-45dd-87e7-3dfae691e41f",
+  taskId: "59829999-9442-45dd-87e7-3dfae691e41f",
   status: "completed"
 })`
       },
       {
         title: 'Reassign task to different agent',
         example: `task_update({
-  taskId: "59823126-9442-45dd-87e7-3dfae691e41f",
+  taskId: "59829999-9442-45dd-87e7-3dfae691e41f",
   status: "in_progress",
   assignedTo: "CodeReviewGuru"
 })`
@@ -472,13 +472,13 @@ context_restore({ contextId: "a1b2c3d4" })`
       {
         title: 'Get full task details',
         example: `task_details({
-  taskId: "59823126-9442-45dd-87e7-3dfae691e41f"
+  taskId: "59829999-9442-45dd-87e7-3dfae691e41f"
 })`
       },
       {
         title: 'Get task details for specific project',
         example: `task_details({
-  taskId: "59823126-9442-45dd-87e7-3dfae691e41f",
+  taskId: "59829999-9442-45dd-87e7-3dfae691e41f",
   projectId: "my-project-id"
 })`
       }
@@ -487,7 +487,7 @@ context_restore({ contextId: "a1b2c3d4" })`
       {
         title: 'Soft-delete (archive) a task by short id',
         example: `task_delete({
-  taskId: "59823126"
+  taskId: "59829999"
 })`
       }
     ],
@@ -495,13 +495,13 @@ context_restore({ contextId: "a1b2c3d4" })`
       {
         title: 'Restore a previously archived task',
         example: `task_restore({
-  taskId: "59823126"
+  taskId: "59829999"
 })`
       },
       {
         title: 'See archived tasks, then restore one',
         example: `task_list({ includeArchived: true })
-task_restore({ taskId: "59823126" })`
+task_restore({ taskId: "59829999" })`
       }
     ],
 
@@ -513,21 +513,21 @@ task_restore({ taskId: "59823126" })`
       {
         title: 'Claim a task before working it (the safe way to pick up work)',
         example: `task_claim({
-  taskId: "59823126"
+  taskId: "59829999"
 })
 // -> { claimed: true, claimId: "3f0c…", version: 4, expiresAt: "…" }
 // -> { claimed: false, reason: "held", currentActor: "builder-a1b2" }  // someone else has it`
       },
       {
         title: 'The full loop: claim, work, then complete WITH the token (clears the claim)',
-        example: `const c = task_claim({ taskId: "59823126" });
+        example: `const c = task_claim({ taskId: "59829999" });
 // … do the work …
-task_update({ taskId: "59823126", claimId: c.claimId, status: "completed" })`
+task_update({ taskId: "59829999", claimId: c.claimId, status: "completed" })`
       },
       {
         title: 'Claim with an optimistic-lock check and a custom lease',
         example: `task_claim({
-  taskId: "59823126",
+  taskId: "59829999",
   expectedVersion: 4,      // fail with version-stale if it changed since you read it
   leaseSeconds: 3600       // hold it for an hour
 })`
@@ -535,7 +535,7 @@ task_update({ taskId: "59823126", claimId: c.claimId, status: "completed" })`
       {
         title: 'Claim a BLOCKED task too (widen the status guard explicitly)',
         example: `task_claim({
-  taskId: "59823126",
+  taskId: "59829999",
   allowedStatuses: ["todo", "blocked"]
 })`
       }
@@ -544,7 +544,7 @@ task_update({ taskId: "59823126", claimId: c.claimId, status: "completed" })`
       {
         title: 'Heartbeat a long-running claim before the lease expires',
         example: `task_renew({
-  taskId: "59823126",
+  taskId: "59829999",
   claimId: "3f0c1d2e-…"
 })
 // -> { claimed: false, reason: "claim-lost" }  // you no longer own it — re-claim`
@@ -554,14 +554,14 @@ task_update({ taskId: "59823126", claimId: c.claimId, status: "completed" })`
       {
         title: 'Hand a claim back when you stop work without completing',
         example: `task_release({
-  taskId: "59823126",
+  taskId: "59829999",
   claimId: "3f0c1d2e-…"
 })
 // Release returns OWNERSHIP only — the status stays "in_progress" (claiming set it there;
 // release does not guess a status to roll back to). So the NEXT worker must widen the guard:
-//   task_claim({ taskId: "59823126", allowedStatuses: ["todo", "in_progress"] })
+//   task_claim({ taskId: "59829999", allowedStatuses: ["todo", "in_progress"] })
 // …or put the status back yourself BEFORE releasing:
-//   task_update({ taskId: "59823126", claimId: "3f0c1d2e-…", status: "todo" })`
+//   task_update({ taskId: "59829999", claimId: "3f0c1d2e-…", status: "todo" })`
       }
     ],
 
@@ -594,7 +594,7 @@ task_update({ taskId: "59823126", claimId: c.claimId, status: "completed" })`
         example: `link({
   from: "b71c22e0",
   fromType: "context",
-  to: "59823126",
+  to: "59829999",
   toType: "task",
   edgeType: "informs",
   metadata: { reason: "capture predates thread_set — back-filled" }
@@ -612,8 +612,8 @@ task_update({ taskId: "59823126", claimId: c.claimId, status: "completed" })`
       },
       {
         title: 'Retype an edge: remove the wrong type, then link the right one',
-        example: `unlink({ from: "a1b2c3d4", to: "59823126", edgeType: "related_to" })
-link({ from: "a1b2c3d4", fromType: "context", to: "59823126", toType: "task", edgeType: "informs" })`
+        example: `unlink({ from: "a1b2c3d4", to: "59829999", edgeType: "related_to" })
+link({ from: "a1b2c3d4", fromType: "context", to: "59829999", toType: "task", edgeType: "informs" })`
       }
     ],
     'get_links': [
@@ -665,7 +665,7 @@ link({ from: "a1b2c3d4", fromType: "context", to: "59823126", toType: "task", ed
       {
         title: 'Walk only the causal/outcome edges of a task\'s thread',
         example: `recall_thread({
-  anchor: "59823126",
+  anchor: "59829999",
   edgeTypes: ["caused", "produced_outcome", "supersedes"]
 })`
       }
@@ -674,7 +674,7 @@ link({ from: "a1b2c3d4", fromType: "context", to: "59823126", toType: "task", ed
       {
         title: 'Stand on a branch — every write now stamps a declared edge to its spine',
         example: `branch_open({
-  id: "59823126"
+  id: "59829999"
 })
 // context_store / decision_record / task_create each mint informs → the spine`
       },
@@ -682,11 +682,11 @@ link({ from: "a1b2c3d4", fromType: "context", to: "59823126", toType: "task", ed
         title: 'Interrupt: switch branches, work, then pop back',
         example: `branch_open({ id: "b2b2b2b2" })   // the interrupt
 context_store({ content: "hotfix note", type: "error" })
-branch_open({ id: "59823126" })   // back to the original branch`
+branch_open({ id: "59829999" })   // back to the original branch`
       },
       {
         title: 'The full working loop: open, capture, verify, close',
-        example: `branch_open({ id: "59823126" })
+        example: `branch_open({ id: "59829999" })
 context_store({ content: "Root cause: pool exhausted on retry storm", type: "error" })
 branch_current()
 branch_close()`
@@ -707,17 +707,17 @@ branch_close()`
     'branch_history': [
       {
         title: 'Read a branch back — what was written on it, in write order',
-        example: `branch_history({ id: "59823126" })`
+        example: `branch_history({ id: "59829999" })`
       },
       {
         title: 'Works AFTER the branch is closed, from any session',
         example: `branch_close()
 // the position row is gone; the history is not
-branch_history({ id: "59823126" })   // same members, same order`
+branch_history({ id: "59829999" })   // same members, same order`
       },
       {
         title: 'A long branch: page it, and read `omitted` rather than assuming completeness',
-        example: `branch_history({ id: "59823126", limit: 20 })
+        example: `branch_history({ id: "59829999", limit: 20 })
 // -> { memberCount: 20, totalMembers: 137, omitted: 117, truncated: true }`
       }
     ],
@@ -726,22 +726,22 @@ branch_history({ id: "59823126" })   // same members, same order`
         title: 'The record was written on the wrong branch — put it where it belongs',
         example: `branch_assign({
   id: "7c1d9f04",      // the record
-  spine: "59823126"    // the branch it actually belongs to
+  spine: "59829999"    // the branch it actually belongs to
 })
 // -> { action: "moved", previousSpineId: "b2b2b2b2-...", spineSource: "assigned" }`
       },
       {
         title: 'Claim a record that was never on any branch (band 3, from branch_history)', // trust-render-exempt: EXAMPLE TITLE prose; "band 3" is branch_history's MEMBERSHIP band (tag-only, no recorded position), not a trust band — renders no verdict
-        example: `branch_history({ id: "59823126" })
+        example: `branch_history({ id: "59829999" })
 // -> { tagOnlyNoPosition: 2, tagOnlyNoPositionIds: ["7c1d9f04-...", "aa31b0c2-..."] }
-branch_assign({ id: "7c1d9f04", spine: "59823126" })
+branch_assign({ id: "7c1d9f04", spine: "59829999" })
 // -> { action: "assigned", previousSpineId: null }  — band 3 drains by one`
       },
       {
         title: 'Record WHY, so the audit row explains itself later',
         example: `branch_assign({
   id: "7c1d9f04",
-  spine: "59823126",
+  spine: "59829999",
   reason: "auto-opened onto the wrong task during a task_claim"
 })`
       }
@@ -750,7 +750,7 @@ branch_assign({ id: "7c1d9f04", spine: "59823126" })
       {
         title: 'An auto-opened position made this a member of something it is not',
         example: `branch_unassign({ id: "7c1d9f04" })
-// -> { action: "unassigned", previousSpineId: "59823126-..." }
+// -> { action: "unassigned", previousSpineId: "59829999-..." }
 // the record and its edges are untouched; only the membership row goes`
       },
       {
@@ -762,9 +762,9 @@ branch_assign({ id: "7c1d9f04", spine: "59823126" })
     'thread_set': [
       {
         title: 'DEPRECATED — use branch_open (this alias warns and delegates)',
-        example: `thread_set({ task: "59823126" })
+        example: `thread_set({ task: "59829999" })
 // delegates to the replacement — call it directly instead:
-branch_open({ id: "59823126" })`
+branch_open({ id: "59829999" })`
       }
     ],
     'thread_current': [
@@ -879,7 +879,7 @@ branch_close()`
     const surfaceCounts = countAdvertisedSurface();
     const isGateway = surfaceCounts.surface === 'gateway';
 
-    // THE BODY IS THE HEADER'S OWN LIST (the reviewer finding on 22c79e9). The body must enumerate the
+    // THE BODY IS THE HEADER'S OWN LIST (the reviewer finding on 22cf00d). The body must enumerate the
     // SAME operations the header counted, or the fix reintroduces the bug it was written to kill:
     // the first cut rendered the FLAT catalog under a gateway header, and the two disagreed by
     // exactly the `session_pin` fan-out (one flat entry, three gateway actions) — header 62, body

@@ -419,7 +419,7 @@ export class SmartSearchHandler {
      *      a LOOKUP, not a similarity estimate.
      * MEASURED with the tier off, everything else held: the exact-token arm falls from 15/17
      * to 10/17 hit@1, losing five questions to semantic-rank-1 ties broken on date. Full
-     * table in reports/artifacts/d8c10b18-p2b-hybrid/RESULTS-P2b.md.
+     * table in reports/artifacts/d8c1f00d-p2b-hybrid/RESULTS-P2b.md.
      *
      * THE FINAL TIE-BREAK IS THE EXISTING ONE. Ties on fused score fall through to
      * compareCandidates — score, then created_at, then id — because Postgres leaves the order
@@ -960,7 +960,7 @@ export class SmartSearchHandler {
             // established. The END STATE is certain, and it is the end state that matters
             // here — this read must target `tasks`.
             //
-            // Then commit c688805 wrapped this query in an information_schema existence check
+            // Then commit c68f00d wrapped this query in an information_schema existence check
             // that returned {total: 0} when the table was missing — converting a LOUD
             // `relation "agent_tasks" does not exist` into a PLAUSIBLE SILENT ZERO.
             //

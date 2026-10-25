@@ -24,23 +24,25 @@ hexref	**	5e6f7a8b	Documented synthetic example id (internal-refs.patterns, hexr
 hexref	**	6f7a8b9c	Documented synthetic example id (internal-refs.patterns, hexref class).
 hexref	**	a1b2c3d4	Synthetic example id (alternating digit/letter), used in doc comments and fixtures.
 hexref	**	abc12345	Synthetic example id used by tag-grammar tests and their doc comments.
-# hexref: fixture ids a test genuinely needs. Each is a value the test asserts on, and the comment or
-# title that names it describes that fixture.
-hexref	mcp-server/src/tests/handoffCarriedFields.contract.test.ts	*	The subject under test parses "spine <id>" references out of handoff prose; the ids are fixture values.
-hexref	mcp-server/src/tests/searchIdTokenInSentence.contract.test.ts	*	The subject under test extracts an 8-hex id from a sentence; the ids are fixture values.
-hexref	mcp-server/src/tests/gateExitCodeRendered.contract.test.ts	REVIEWER VERDICT	A verbatim review-verdict text fixture whose header names the reviewed task id.
-hexref	mcp-server/src/tests/gateExitCodeRendered.contract.test.ts	9305a39a	The fixture ref the gate-exit-code renderer is asserted to print.
-hexref	mcp-server/src/tests/reviewOutcomeRendered.contract.test.ts	REVIEWER VERDICT	A verbatim review-verdict text fixture whose header names the reviewed task id.
-hexref	mcp-server/src/tests/projectEcho.unit.test.ts	8c6254aa	The fixture project id the write-echo renderer is asserted to print.
-hexref	mcp-server/src/config/projectEchoConfig.ts	8c6254aa	The doc comment shows the exact rendering its test asserts, with the same fixture id.
-hexref	mandrel-command/frontend/src/**.test.ts*	b822dfcb	The fixture id the id-linkify and highlight tests feed in and assert on.
-hexref	mandrel-command/frontend/src/components/common/MarkdownContent.test.tsx	0f3906cd	A fixture id the markdown linkify test feeds in and asserts on.
+# hexref: synthetic fixture ids. Tests that need a specific id use a made-up value; the f00d suffix marks
+# it as invented (each was checked to resolve to no record and no commit). None names a real record.
+hexref	**	b822f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	bdd5f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	b341f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	8c62f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	e617f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	7b8af00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	3802f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	0f39f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	ffe8f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	a7e9f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	9305f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	353ef00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	2e21f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	2522f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	12fff00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
+hexref	**	deadbe0f	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
 hexref	mandrel-command/frontend/src/utils/navIdLinkify.test.ts	e5f6a7b8	Synthetic fixture id (pairs with a1b2c3d4) in a two-id linkify case.
-hexref	mandrel-command/frontend/src/pages/tasks/ActorBreakdown.test.tsx	a7e922bd	The fixture actor slug the axis-gutter test renders and asserts on.
 hexref	mandrel-command/backend/src/__tests__/resolveJson.route.db.test.ts	facef00d	The suite's reserved fixture prefix, listed in its prefix-namespace comment.
 hexref	mandrel-command/backend/src/__tests__/projectListGlobalRead.db.test.ts	e8e80000	The fixture id prefix the global-read test resolves; the comment describes that probe.
-hexref	mcp-server/src/tests/mcpErrorStatusMapping.contract.test.ts	38027cd4	The fixture task id in the reproduced request bodies the test replays.
-hexref	mcp-server/src/tests/toolNativeLinking.contract.test.ts	353ec1c1	The fixture id8 the tag-linking regression test mints against.
-hexref	mcp-server/src/tests/sk1DeterministicMembership.contract.test.ts	2e21d2ac	The fixture id8 the membership test writes into a body and asserts is counted once.
-hexref	mcp-server/src/tests/helpers/credentialFixtures.ts	ffe8d8bf	A git-log-line fixture the credential detector must NOT flag; the sha is its shape.
 hexref	mcp-server/src/tests/handoffStalenessStamp.contract.test.ts	a1a1a1a1	Synthetic uuid head in a comment describing the stamp's mis-render.

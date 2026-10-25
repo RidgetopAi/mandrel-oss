@@ -201,11 +201,11 @@ describe('P5.4 control — the harness can see a value at all', () => {
   });
 
   test('readCarriedFields returns a VALUE (not null) for a plainly-present field', () => {
-    const c = readCarriedFields({ handoff: { mode: 'build', spine: 'b341f7d0' } }, '');
+    const c = readCarriedFields({ handoff: { mode: 'build', spine: 'b341f00d' } }, '');
     expect(c.mode).not.toBeNull();
     expect(c.mode!.value).toBe('build');
     expect(c.spine).not.toBeNull();
-    expect(c.spine!.ref).toBe('b341f7d0');
+    expect(c.spine!.ref).toBe('b341f00d');
   });
 });
 
@@ -229,14 +229,14 @@ describe('P5.4 proof 1 — field alone, with NO MODE/PATH prose anywhere in the 
   test('MODE and SPINE render from the field, each labelled [source: field]', () => {
     const s = carriedLines(
       render(
-        data(BODY, { handoff: { mode: 'build', spine: 'b341f7d0' } }, {
+        data(BODY, { handoff: { mode: 'build', spine: 'b341f00d' } }, {
           kind: 'task',
           title: 'P4 boot package',
         }),
       ),
     );
     expect(s).toContain('MODE: build  [source: field]');
-    expect(s).toContain('SPINE: task b341f7d0 — P4 boot package  [source: field]');
+    expect(s).toContain('SPINE: task b341f00d — P4 boot package  [source: field]');
     // PATH has no field equivalent and must NOT be invented from the spine.
     expect(s).toContain('PATH: (none recorded)');
   });
@@ -262,7 +262,7 @@ describe('P5.4 proof 2 — a legacy prose-only handoff renders via the fallback'
     '★ HANDOFF — p4 boot package',
     '',
     'MODE: build — wiring collapse-by-equivalence into the walk. Do NOT re-open the eval wave.',
-    'PATH: roots → tree:canonical → trunk(@moat/memory-layer) ⟶ branch:p4-boot-package (spine `b341f7d0`)',
+    'PATH: roots → tree:canonical → trunk(@moat/memory-layer) ⟶ branch:p4-boot-package (spine `b341f00d`)',
     '',
     'Three remain.',
   ].join('\n');
@@ -272,8 +272,8 @@ describe('P5.4 proof 2 — a legacy prose-only handoff renders via the fallback'
     expect(s).toContain(
       'MODE: build — wiring collapse-by-equivalence into the walk. Do NOT re-open the eval wave.  [source: prose]',
     );
-    expect(s).toContain('PATH: roots → tree:canonical → trunk(@moat/memory-layer) ⟶ branch:p4-boot-package (spine `b341f7d0`)  [source: prose]');
-    expect(s).toContain('SPINE: task b341f7d0 — P4 boot package  [source: prose]');
+    expect(s).toContain('PATH: roots → tree:canonical → trunk(@moat/memory-layer) ⟶ branch:p4-boot-package (spine `b341f00d`)  [source: prose]');
+    expect(s).toContain('SPINE: task b341f00d — P4 boot package  [source: prose]');
   });
 
   test('the markdown-HEADING form is accepted too (a bare ^MODE: grep never matched it)', () => {
@@ -288,15 +288,15 @@ describe('P5.4 proof 2 — a legacy prose-only handoff renders via the fallback'
   });
 
   test('the typeless and backticked spine forms both parse; an unknown type word does not', () => {
-    expect(extractProseSpine('… (spine 7b8a66f4) [CLOSED]')).toEqual({ ref: '7b8a66f4', kind: 'record' });
-    expect(extractProseSpine('… (spine `b341f7d0`)')).toEqual({ ref: 'b341f7d0', kind: 'record' });
-    expect(extractProseSpine('… (spine decision e6170769)')).toEqual({ ref: 'e6170769', kind: 'decision' });
+    expect(extractProseSpine('… (spine 7b8af00d) [CLOSED]')).toEqual({ ref: '7b8af00d', kind: 'record' });
+    expect(extractProseSpine('… (spine `b341f00d`)')).toEqual({ ref: 'b341f00d', kind: 'record' });
+    expect(extractProseSpine('… (spine decision e617f00d)')).toEqual({ ref: 'e617f00d', kind: 'decision' });
     // Refused on purpose: the id8 window must start right after `(spine ` or a KNOWN type.
-    expect(extractProseSpine('… (spine session e6170769)')).toBeNull();
+    expect(extractProseSpine('… (spine session e617f00d)')).toBeNull();
     expect(extractProseSpine('… (spine zzzz)')).toBeNull();
     expect(extractProseSpine('… (spine)')).toBeNull();
     // The leading octet of a full uuid must not be read as a short id.
-    expect(extractProseSpine('… (spine b341f7d0-1111-2222-3333-444444444444)')).toBeNull();
+    expect(extractProseSpine('… (spine b341f00d-1111-2222-3333-444444444444)')).toBeNull();
   });
 });
 
@@ -312,11 +312,11 @@ describe('P5.4 proof 3 — precedence: the declared field beats the inferred pro
 
   test('the FIELD value renders and the prose value does not', () => {
     const c = carriedLines(
-      render(data(BOTH, { handoff: { mode: 'build', spine: 'b341f7d0' } }, { kind: 'task', title: 'T' })),
+      render(data(BOTH, { handoff: { mode: 'build', spine: 'b341f00d' } }, { kind: 'task', title: 'T' })),
     );
     expect(c).toContain('MODE: build  [source: field]');
     expect(c).not.toContain('research');
-    expect(c).toContain('SPINE: task b341f7d0 — T  [source: field]');
+    expect(c).toContain('SPINE: task b341f00d — T  [source: field]');
     expect(c).not.toContain('SPINE: task deadbeef');
   });
 
@@ -324,7 +324,7 @@ describe('P5.4 proof 3 — precedence: the declared field beats the inferred pro
     // The losing prose must remain visible in the body. The field wins the DERIVED line;
     // it does not get to edit what the author wrote (the handoffStamp.ts rule).
     const s = handoffSection(
-      render(data(BOTH, { handoff: { mode: 'build', spine: 'b341f7d0' } }, { kind: 'task', title: 'T' })),
+      render(data(BOTH, { handoff: { mode: 'build', spine: 'b341f00d' } }, { kind: 'task', title: 'T' })),
     );
     expect(s).toContain('MODE: research');
     expect(s).toContain('branch:old (spine task deadbeef)');
@@ -416,15 +416,15 @@ describe('P5.4 proof 5 — the write path warns and stores; it never rejects', (
   });
 
   test('an id-shaped spine passes the shape check clean — the negative control', () => {
-    const r = applyCarriedFields('handoff', undefined, { spine: 'B341F7D0' });
-    expect(r.report!.spine).toBe('b341f7d0');
+    const r = applyCarriedFields('handoff', undefined, { spine: 'B341F00D' });
+    expect(r.report!.spine).toBe('b341f00d');
     expect(r.report!.spineResolvable).toBe(true);
     expect(r.warnings).toEqual([]);
   });
 
   test('mode/spine on a NON-handoff type are dropped WITH A WARNING, and metadata is untouched', () => {
     const meta = { keep: 'me' };
-    const r = applyCarriedFields('completion', meta, { mode: 'build', spine: 'b341f7d0' });
+    const r = applyCarriedFields('completion', meta, { mode: 'build', spine: 'b341f00d' });
     expect(r.metadata).toBe(meta);
     expect(r.report).toBeNull();
     expect(r.warnings.join(' ')).toContain('are carried by `handoff` contexts');

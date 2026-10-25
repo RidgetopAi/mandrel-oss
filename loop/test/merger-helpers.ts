@@ -55,7 +55,7 @@ export function script(dir: string, name: string, body: string): string {
 
 export function evidenceTask(sha: string, over: Partial<Task> = {}, punch: Record<string, unknown> = {}): Task {
   return {
-    id: 'daa8bb19-0000-0000-0000-000000000001',
+    id: 'daa8f00d-0000-0000-0000-000000000001',
     title: 'loop: thing',
     stage: 'evidence',
     status: 'in_progress',

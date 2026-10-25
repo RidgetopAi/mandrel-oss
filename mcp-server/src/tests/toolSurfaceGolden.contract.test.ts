@@ -7,7 +7,7 @@
  *
  * This test serializes the full advertised surface (the tool definitions + category
  * grouping + order) and asserts it is BYTE-IDENTICAL to a golden fixture captured from the
- * PRE-refactor code (git main @e9b6025, before opRegistry.ts existed). If a future change to
+ * PRE-refactor code (git main @e9bf00d, before opRegistry.ts existed). If a future change to
  * the registry, buildInputSchema, or a zod validator shifts a single byte of the advertised
  * `tools/list`, this fails LOUD and names the exact diff.
  *
@@ -569,7 +569,7 @@
  *   Fixture 229682 → 229995 bytes (+313, +0.136%); the compact `tools/list` definitions payload
  *   107247 → 107532 bytes (+285, +0.266%).
  *   Each of those four absolutes was produced by running the command, on both refs:
- *     base    `git show 9930d1a:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
+ *     base    `git show 993f00d:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
  *     head    `wc -c mcp-server/src/tests/fixtures/toolSurface.golden.json`
  *     compact `DATABASE_NAME=measure_only npx tsx -e "import {AIDIS_TOOL_DEFINITIONS} from
  *              './src/config/toolDefinitions.js'; console.log(Buffer.byteLength(
@@ -602,7 +602,7 @@
  *   archived by DEFAULT and takes the SAME param name/meaning decision_search already has —
  *   deliberately not a second spelling for one concept.
  *   MEASURED HERE, each number re-run against THIS tree (not carried forward — see the ⚠️
- *   above), base = main @ceff2d6 measured in the shared checkout with the SAME commands.
+ *   above), base = main @ceff00d measured in the shared checkout with the SAME commands.
  *   EACH NUMBER NAMES ITS INSTRUMENT, because two reasonable instruments disagree (an
  *   Reviewer measured the per-tool figures 2 bytes lower than the line below and was right
  *   to flag it: a tool object measured standalone carries its own enclosing braces, one
@@ -630,13 +630,13 @@
  *   entry is the FIRST regen (232693 / 109217), not main, since both regens are on one branch:
  *     fixture      — wc -c                     232693 → 233458  (+765, +0.33%)
  *     tools/list   — compact JSON.stringify    109217 → 109880  (+663, +0.61%)
- *     context_stats    — JSON.stringify(def, null, 2)  552 → 875  (+323)  [base on main @ceff2d6]
- *     project_insights — JSON.stringify(def, null, 2)  563 → 973  (+410)  [base on main @ceff2d6]
+ *     context_stats    — JSON.stringify(def, null, 2)  552 → 875  (+323)  [base on main @ceff00d]
+ *     project_insights — JSON.stringify(def, null, 2)  563 → 973  (+410)  [base on main @ceff00d]
  *     decision_stats   — unchanged by this regen (903)
  *     tool count   — AIDIS_TOOL_DEFINITIONS.length: 60 → 60
  *   `git diff --numstat` on the fixture: 10 added / 2 removed — exactly two tools' bytes
  *   moved, and +323 +410 = +733 accounts for the +765 modulo indentation.
- *   Cumulative for the whole task vs main @ceff2d6: fixture 232337 → 233458 (+1121, +0.48%);
+ *   Cumulative for the whole task vs main @ceff00d: fixture 232337 → 233458 (+1121, +0.48%);
  *   compact tools/list 108912 → 109880 (+968, +0.89%); three tools changed, none added or
  *   removed.
  *
@@ -734,7 +734,7 @@
  *   services/projectBriefing.ts, pinned by its contract test).
  *   MEASURED on this tree (each command re-run, not carried forward):
  *     fixture          — `wc -c` 247244 → 248378 (+1134, +0.46%); base re-measured via
- *                        `git show 0328fd2:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
+ *                        `git show 032f00d:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
  *     tools/list       — compact `Buffer.byteLength(JSON.stringify(AIDIS_TOOL_DEFINITIONS))`
  *                        115720 → 116538 (+818, +0.71%)
  *     project_briefing — `Buffer.byteLength(JSON.stringify(def, null, 2))` = 990 (new)
@@ -790,9 +790,9 @@
  *   have none of: `depthLimitReached` advertised a signal nothing could emit any more.
  *   MEASURED on this tree, commands named per line:
  *     fixture     — `wc -c` 253626 → 254865 (+1239, +0.49%); base re-measured via
- *                   `git show 52c0918^:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
+ *                   `git show 52cf00d^:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
  *     tool count  — `AIDIS_TOOL_DEFINITIONS.length`: 65 → 65 (unchanged)
- *   `git diff --numstat 52c0918^` on the fixture: 25 added / 4 removed.
+ *   `git diff --numstat 52cf00d^` on the fixture: 25 added / 4 removed.
  *
  * 2026-08-16 · FIX A (SK5 follow-on) — NO tool added or removed; ONE new
  *   OPTIONAL param, `project_briefing.spine`. SK5 scoped the briefing to the caller's open
@@ -964,7 +964,7 @@
  *                     branch_history 4951 → 5139 (+188)
  *     tool count    — `AIDIS_TOOL_DEFINITIONS.length`, read off both fixtures: 65 → 67
  *   Each number was produced by running its command against THIS tree and against the base ref
- *   (main @f6da757, measured in the shared checkout with the identical command) — not carried
+ *   (main @f6df00d, measured in the shared checkout with the identical command) — not carried
  *   forward from a delta that still adds up, which is the failure the ⚠️ above describes.
  *
  * 2026-08-21 · an earlier task (P4 L1) — THE AGENT CAPTURE CONTRACT added ONE
@@ -976,7 +976,7 @@
  *   cannot, because it IS the code.
  *   MEASURED delta, by a NAME-LEVEL structural diff of the old vs regenerated fixture (each tool
  *   re-serialized and compared to its old self, so "which tools moved" is measured rather than
- *   assumed — scratch script `measure-1e474867.ts`, the same shape as P3's):
+ *   assumed — scratch script `measure-1e47f00d.ts`, the same shape as P3's):
  *     ADDED tools 1 ["mandrel_contract"] · REMOVED tools 0 · EXISTING tools whose bytes moved: []
  *     fixture    — `wc -c src/tests/fixtures/toolSurface.golden.json`
  *                  264047 → 266619  (+2572, +0.97%); `git diff --numstat`: 94 added / 1 removed

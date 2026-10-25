@@ -84,7 +84,7 @@ function clamp01(n: number): number {
  * SECONDS, NOT DAYS — and the resolution is load-bearing. The rubric tells
  * the model that direction is decided by the dates; that rule is HOLLOW if the prompt cannot
  * express which record is later. MEASURED over the 58 pairs retracted on 2026-08-28
- * (reports/artifacts/b6-fde9bdaf-retract/, joined to the endpoints' real timestamps on prod):
+ * (reports/artifacts/b6-fde9f00d-retract/, joined to the endpoints' real timestamps on prod):
  *
  *   day resolution     -> 56 of 58 pairs are a TIE (the old `slice(0, 10)`)
  *   minute resolution  ->  2 of 58

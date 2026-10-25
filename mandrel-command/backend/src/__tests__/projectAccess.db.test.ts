@@ -43,7 +43,7 @@ describeDb('ProjectAccessService — user_project_access (DB integration)', () =
     adminId = uuidv4();
     projectId = uuidv4();
     otherProjectId = uuidv4();
-    projectName = `fm-b3cf883b-${projectId.slice(0, 8)}`;
+    projectName = `fm-b3cff00d-${projectId.slice(0, 8)}`;
 
     const client = await pool.connect();
     try {
@@ -116,7 +116,7 @@ describeDb('ProjectAccessService — user_project_access (DB integration)', () =
   it('resolveProjectId resolves by UUID and by exact name; unknown → null', async () => {
     await expect(ProjectAccessService.resolveProjectId(projectId)).resolves.toBe(projectId);
     await expect(ProjectAccessService.resolveProjectId(projectName)).resolves.toBe(projectId);
-    await expect(ProjectAccessService.resolveProjectId('no-such-project-b3cf883b')).resolves.toBeNull();
+    await expect(ProjectAccessService.resolveProjectId('no-such-project-b3cff00d')).resolves.toBeNull();
   });
 
   it('FK cascade: deleting the project deletes the grant (no dead-project grants)', async () => {

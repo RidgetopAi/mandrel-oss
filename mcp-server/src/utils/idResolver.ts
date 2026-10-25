@@ -76,7 +76,7 @@ export function isUuidOrShortId(value: string): boolean {
  *
  * EXPORTED so the SEARCH id-prefix predicate reuses the SAME
  * normalization the resolver uses (no second, drifting copy). A user
- * pasting a dashed partial (`0f3906cd-db79`) and a bare hex prefix (`0f3906cddb79`)
+ * pasting a dashed partial (`0f39f00d-db79`) and a bare hex prefix (`0f39f00ddb79`)
  * must normalize identically on BOTH the resolve path and the search path.
  */
 export function normalizeShortId(value: string): string {

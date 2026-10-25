@@ -69,7 +69,7 @@ function envEnum<T extends string>(name: string, allowed: readonly T[], fallback
  *  3. ⚠️ THE SCORE IS INSENSITIVE TO IT. THE ORDER BELOW RANK 1 IS NOT — and that is a
  *     MEASURED FINDING, reported rather than tuned around. The sweep (all three question
  *     sets re-run at k ∈ {1, 10, 30, 60, 120, 600}, 335 question-runs; artifact
- *     reports/artifacts/d8c10b18-p2b-hybrid/k-sweep.tsv) found:
+ *     reports/artifacts/d8c1f00d-p2b-hybrid/k-sweep.tsv) found:
  *       · EVERY metric identical at every k — exact-token 15/17 hit@1 and 16/17 hit@5,
  *         negatives 12/17 empty, control 12/33 hit@1 and 17/33 hit@5, at all six values;
  *       · rank 1 identical to k=60 on 335 of 335 question-runs — no question changed its
@@ -167,7 +167,7 @@ export const HYBRID_SEARCH_CONFIG = {
    *   'off' — no prose channel at all; fusion is semantic + identifier. The ABLATION, kept
    *           because it is the only way to ask what the prose half is worth.
    *
-   * ⚠️ MEASURED, ALL THREE MODES, ALL THREE SETS (reports/artifacts/d8c10b18-p2b-hybrid/
+   * ⚠️ MEASURED, ALL THREE MODES, ALL THREE SETS (reports/artifacts/d8c1f00d-p2b-hybrid/
    * RESULTS-P2b.md). 'any' IS THE MODE THAT ATE THE CONTROL SET, and finding that is the
    * reason this knob exists:
    *              exact-token @1/@5   negatives empty   control @1/@5
@@ -205,7 +205,7 @@ export const HYBRID_SEARCH_CONFIG = {
    * is forced to #1 rather than competing on cosine. This is the same rule for the same
    * reason, applied to the other class of exact literal.
    *
-   * MEASURED (reports/artifacts/d8c10b18-p2b-hybrid/RESULTS-P2b.md), everything else held:
+   * MEASURED (reports/artifacts/d8c1f00d-p2b-hybrid/RESULTS-P2b.md), everything else held:
    *   tier ON    exact-token 15/17 hit@1, 16/17 hit@5
    *   tier OFF   exact-token 10/17 hit@1, 15/17 hit@5
    * with the control arm 12/33 and 17/33 and the negatives arm 12/17 in BOTH — the tier

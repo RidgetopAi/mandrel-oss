@@ -51,7 +51,7 @@ vi.mock('../services/effectiveProjectScope.js', () => ({
 // Imported AFTER the mock is declared (vi.mock is hoisted, so this is safe).
 const { buildWriteEcho, resolveInstructions } = await import('../utils/projectEcho.js');
 
-const FULL_ID = '8c6254aa-1111-2222-3333-444455556666';
+const FULL_ID = '8c62f00d-1111-2222-3333-444455556666';
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -62,15 +62,15 @@ beforeEach(() => {
 
 describe('FIX #1 — write-echo formatter (pure)', () => {
   test('manual/explicit target: names project + id8, NO default hint', () => {
-    const line = formatWriteEcho('HEx', '8c6254aa', /* defaulted */ false);
+    const line = formatWriteEcho('HEx', '8c62f00d', /* defaulted */ false);
     expect(line).toContain("'HEx'");
-    expect(line).toContain('(8c6254aa)');
+    expect(line).toContain('(8c62f00d)');
     expect(line).not.toContain(DEFAULT_PROJECT_HINT);
   });
 
   test('DEFAULTED target renders DISTINCTLY (extra noticeable hint)', () => {
-    const manual = formatWriteEcho('HEx', '8c6254aa', false);
-    const defaulted = formatWriteEcho('HEx', '8c6254aa', true);
+    const manual = formatWriteEcho('HEx', '8c62f00d', false);
+    const defaulted = formatWriteEcho('HEx', '8c62f00d', true);
     expect(defaulted).not.toEqual(manual);
     expect(defaulted).toContain(DEFAULT_PROJECT_HINT);
     expect(defaulted).toContain('project_switch');
@@ -78,7 +78,7 @@ describe('FIX #1 — write-echo formatter (pure)', () => {
 
   test('toId8 truncates the UUID to the configured id8 length', () => {
     expect(toId8(FULL_ID)).toBe(FULL_ID.substring(0, PROJECT_ID8_LEN));
-    expect(toId8(FULL_ID)).toBe('8c6254aa');
+    expect(toId8(FULL_ID)).toBe('8c62f00d');
   });
 });
 
@@ -111,7 +111,7 @@ describe('FIX #1 — buildWriteEcho resolver (mocked handler, no DB)', () => {
     getProject.mockResolvedValue({ id: FULL_ID, name: 'HEx' });
     const line = await buildWriteEcho(FULL_ID, 'conn-1', /* explicit */ true);
     expect(line).toContain("'HEx'");
-    expect(line).toContain('(8c6254aa)');
+    expect(line).toContain('(8c62f00d)');
     expect(line).not.toContain(DEFAULT_PROJECT_HINT);
     // Explicit target must NOT consult manualOverride at all.
     expect(getSessionInfo).not.toHaveBeenCalled();
@@ -177,7 +177,7 @@ describe('FIX #2 — resolveInstructions resolver (mocked handler, no DB)', () =
 
 describe('N5 — the write echo tells a BOUND client its write was BOUND, not defaulted', () => {
   test('formatter: the BOUND rendering names the binding surface and drops the default hint', () => {
-    const line = formatWriteEcho('HEx', '8c6254aa', /* defaulted */ false, 'x-mandrel-project header');
+    const line = formatWriteEcho('HEx', '8c62f00d', /* defaulted */ false, 'x-mandrel-project header');
     expect(line).toContain("'HEx'");
     expect(line).toContain(BOUND_PROJECT_HINT);
     expect(line).toContain('x-mandrel-project header');
@@ -187,7 +187,7 @@ describe('N5 — the write echo tells a BOUND client its write was BOUND, not de
   test('formatter: BOUND WINS over defaulted (the precedence lives in one place)', () => {
     // The whole defect in one assertion: a bound target must never render the hint that says
     // "default project … project_switch if this is wrong" — a call that hard-fails while bound.
-    const line = formatWriteEcho('HEx', '8c6254aa', /* defaulted */ true, 'MANDREL_PROJECT_ID env var');
+    const line = formatWriteEcho('HEx', '8c62f00d', /* defaulted */ true, 'MANDREL_PROJECT_ID env var');
     expect(line).not.toContain(DEFAULT_PROJECT_HINT);
     expect(line).not.toContain('project_switch');
     expect(line).toContain('MANDREL_PROJECT_ID env var');
@@ -195,11 +195,11 @@ describe('N5 — the write echo tells a BOUND client its write was BOUND, not de
 
   test('formatter: with NO binding label the two legacy renderings are byte-identical', () => {
     // default == today. The 4th argument is the only thing that changes anything.
-    expect(formatWriteEcho('HEx', '8c6254aa', false, undefined)).toBe(
-      `Project: 'HEx' (8c6254aa)`
+    expect(formatWriteEcho('HEx', '8c62f00d', false, undefined)).toBe(
+      `Project: 'HEx' (8c62f00d)`
     );
-    expect(formatWriteEcho('HEx', '8c6254aa', true, undefined)).toBe(
-      `Project: 'HEx' (8c6254aa) — ${DEFAULT_PROJECT_HINT}`
+    expect(formatWriteEcho('HEx', '8c62f00d', true, undefined)).toBe(
+      `Project: 'HEx' (8c62f00d) — ${DEFAULT_PROJECT_HINT}`
     );
   });
 

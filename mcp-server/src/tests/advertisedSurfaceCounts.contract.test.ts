@@ -240,7 +240,7 @@ describe('advertised-surface counts are MEASURED, never stated', () => {
 
   // ── T6: the BODY mandrel_help renders must add up to the number its HEADER claims ────────
   //
-  // The Reviewer finding on 22c79e9. The header counted the ADVERTISED surface (62 operations)
+  // The Reviewer finding on 22cf00d. The header counted the ADVERTISED surface (62 operations)
   // while the body enumerated the FLAT catalog (60 entries) — two honest-looking derivations of
   // the same fact that disagreed by exactly the `session_pin` fan-out (one flat entry, three
   // gateway actions). A header contradicting its own body misleads the very agent this task

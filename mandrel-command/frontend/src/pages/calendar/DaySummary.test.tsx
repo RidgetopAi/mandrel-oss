@@ -57,9 +57,9 @@ const INHERITED_SCOPE = { headers: { 'X-Project-ID': 'inherited-from-calendar' }
 const pageScope = () => INHERITED_SCOPE;
 const mockDownload = downloadNodeAsPng as unknown as ReturnType<typeof vi.fn>;
 
-const HL_ID = '76951513-aaaa-bbbb-cccc-1234567890ab';
-const DEC_ID = '98795ba9-0000-1111-2222-333344445555';
-const TASK_ID = 'e889f623-dddd-eeee-ffff-000011112222';
+const HL_ID = '76959999-aaaa-bbbb-cccc-1234567890ab';
+const DEC_ID = '9879f00d-0000-1111-2222-333344445555';
+const TASK_ID = 'e889f00d-dddd-eeee-ffff-000011112222';
 
 function populated(): DaySummaryData {
   const kpi = (value: number, delta: number) => ({ value, delta });
@@ -207,7 +207,7 @@ describe('DaySummary — populated card', () => {
     // href is the dashless-normalized id under /r/; visible text is r/<id8>
     const hl = document.body.querySelector(`a[href="/r/${HL_ID.replace(/-/g, '')}"]`);
     expect(hl).not.toBeNull();
-    expect(hl?.textContent).toBe('r/76951513');
+    expect(hl?.textContent).toBe('r/76959999');
     expect(document.body.querySelector(`a[href="/r/${DEC_ID.replace(/-/g, '')}"]`)).not.toBeNull();
     expect(document.body.querySelector(`a[href="/r/${TASK_ID.replace(/-/g, '')}"]`)).not.toBeNull();
   });

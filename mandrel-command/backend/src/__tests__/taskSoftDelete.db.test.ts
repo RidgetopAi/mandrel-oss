@@ -26,10 +26,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_softdel_9a73bddc
- *   eval "$(bash scripts/provision-test-db.sh ci_softdel_9a73bddc --print-env)"
+ *   bash scripts/provision-test-db.sh ci_softdel_9a73f00d
+ *   eval "$(bash scripts/provision-test-db.sh ci_softdel_9a73f00d --print-env)"
  *   npx jest taskSoftDelete --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_softdel_9a73bddc --drop
+ *   bash scripts/provision-test-db.sh ci_softdel_9a73f00d --drop
  */
 
 import request from 'supertest';
@@ -57,7 +57,7 @@ describeDb('Task delete is a SOFT delete + restore (DB integration)', () => {
   let userId: string;
   let username: string;
   let token: string;
-  const password = 'ProbePassw0rd!9a73bddc';
+  const password = 'ProbePassw0rd!9a73f00d';
 
   /** Every task id this suite creates, so teardown can hard-delete them for real. */
   const createdTaskIds: string[] = [];
@@ -87,7 +87,7 @@ describeDb('Task delete is a SOFT delete + restore (DB integration)', () => {
         overrides.title ?? `softdel probe ${id.slice(0, 8)}`,
         overrides.status ?? 'todo',
         overrides.archived ?? false,
-        overrides.tags ?? ['softdel-9a73bddc'],
+        overrides.tags ?? ['softdel-9a73f00d'],
       ],
     );
     return id;
@@ -120,7 +120,7 @@ describeDb('Task delete is a SOFT delete + restore (DB integration)', () => {
     projectId = uuidv4();
     otherProjectId = uuidv4();
     for (const [id, name] of [
-      [projectId, `softdel-9a73bddc-${projectId.slice(0, 8)}`],
+      [projectId, `softdel-9a73f00d-${projectId.slice(0, 8)}`],
       [otherProjectId, `softdel-other-${otherProjectId.slice(0, 8)}`],
     ] as const) {
       await db.query(

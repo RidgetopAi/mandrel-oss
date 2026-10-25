@@ -2,7 +2,7 @@
  * RESERVED ARG-NAME PREFIX IN A QUERY — Contract Test.
  *
  * THE BUG THIS PINS (dogfood snag, an earlier note — reproduced on BOTH tool surfaces):
- *   `context_search({ query: 'id:071d1c36-…' })` SILENTLY returned an unrelated record.
+ *   `context_search({ query: 'id:071df00d-…' })` SILENTLY returned an unrelated record.
  *   `id:<uuid>` READS like query syntax, but there is no query DSL. The `:` fails
  *   HEX_PREFIX_RE (utils/idResolver.ts), so `queryLooksLikeId()` returns false, the
  *   id-prefix SQL arm is never emitted, the partial-tag arm matches no tag (+0), and the
@@ -96,7 +96,7 @@ import { OP_REGISTRY } from '../config/opRegistry.js';
 const STAMP = Date.now();
 const PROJ_NAME = `reserved-prefix-${STAMP}`;
 const TAG_TARGET = 'ref:resume';
-const TASK_TAG = 'task:4d137535';
+const TASK_TAG = 'task:4d13f00d';
 
 let projectId: string;
 /** The record a correct `id` call must return — prose that does NOT match the noise concept. */
@@ -170,7 +170,7 @@ describe('reserved arg-name prefix in a search query', () => {
       expect(reservedFor('context_search')).toEqual(['id', 'type', 'tags']);
 
       for (const name of reservedFor('context_search')) {
-        const query = `${name}:071d1c36-640a-485b-a1c8-7df2c783a67e`;
+        const query = `${name}:071df00d-640a-485b-a1c8-7df2c783a67e`;
         const resp: any = await viaPublicTool({ query, projectId, limit: 20 });
 
         expect(resp.isError, `"${query}" must be an ERROR, not a result set`).toBe(true);
@@ -204,8 +204,8 @@ describe('reserved arg-name prefix in a search query', () => {
     });
 
     test('the error message ECHOES the value so the caller can copy it into the parameter', async () => {
-      const resp: any = await viaPublicTool({ query: 'id:071d1c36', projectId, limit: 20 });
-      expect(text(resp)).toContain('id = "071d1c36"');
+      const resp: any = await viaPublicTool({ query: 'id:071df00d', projectId, limit: 20 });
+      expect(text(resp)).toContain('id = "071df00d"');
     });
 
     test('tags: is steered to the ARRAY form, not a bare scalar', () => {
@@ -213,14 +213,14 @@ describe('reserved arg-name prefix in a search query', () => {
     });
 
     test('matching is case-insensitive on the arg NAME', () => {
-      expect(reservedArgPrefixInQuery('ID:071d1c36', 'context_search')).toBe('id');
+      expect(reservedArgPrefixInQuery('ID:071df00d', 'context_search')).toBe('id');
       expect(reservedArgPrefixInQuery('Type:handoff', 'context_search')).toBe('type');
     });
 
     test('the guard sits AHEAD of every searching branch (tags supplied alongside a bad query)', async () => {
       // A reserved-prefix query must not slip through on a branch that also got tags.
       const resp: any = await viaPublicTool({
-        query: 'id:071d1c36',
+        query: 'id:071df00d',
         tags: [TAG_TARGET],
         projectId,
         limit: 20,
@@ -339,12 +339,12 @@ describe('reserved arg-name prefix in a search query', () => {
           matchesReservedPrefix('ref:resume', meta),
           `metacharacter name "${meta}" must NOT match ref:resume as a pattern`,
         ).toBe(false);
-        expect(matchesReservedPrefix('task:4d137535', meta)).toBe(false);
+        expect(matchesReservedPrefix('task:4d13f00d', meta)).toBe(false);
       }
 
       // NOT VACUOUS: the matcher really does match — literally, and case-insensitively.
       expect(matchesReservedPrefix('ref:resume', 'ref')).toBe(true);
-      expect(matchesReservedPrefix('ID:071d1c36', 'id')).toBe(true);
+      expect(matchesReservedPrefix('ID:071df00d', 'id')).toBe(true);
 
       // A malformed name is inert, NOT a per-call SyntaxError (the old second symptom:
       // env='id,[' threw at REQUEST time inside the route try/catch instead of at boot).
@@ -370,7 +370,7 @@ describe('reserved arg-name prefix in a search query', () => {
       expect(reservedArgPrefixInQuery('notes on id: the resolver design', 'context_search')).toBeNull();
       expect(reservedArgPrefixInQuery('rapid: a study', 'context_search')).toBeNull();
       // Not anchored at the start → not the misuse shape.
-      expect(reservedArgPrefixInQuery('see id:071d1c36 for details', 'context_search')).toBeNull();
+      expect(reservedArgPrefixInQuery('see id:071df00d for details', 'context_search')).toBeNull();
       // Empty value → nothing to steer them to, so not caught.
       expect(reservedArgPrefixInQuery('id:', 'context_search')).toBeNull();
       expect(reservedArgPrefixInQuery(undefined, 'context_search')).toBeNull();
@@ -416,7 +416,7 @@ describe('reserved arg-name prefix in a search query', () => {
 
     test('decision_search rejects a reserved-prefix query through its real route', async () => {
       const resp: any = await decisionsRoutes.handleSearch({
-        query: 'id:071d1c36-640a-485b-a1c8-7df2c783a67e',
+        query: 'id:071df00d-640a-485b-a1c8-7df2c783a67e',
         projectId,
       });
       expect(resp.isError).toBe(true);
@@ -426,7 +426,7 @@ describe('reserved arg-name prefix in a search query', () => {
 
     test('smart_search rejects a reserved-prefix query through its real route', async () => {
       const resp: any = await searchRoutes.handleSmartSearch({
-        query: 'id:071d1c36-640a-485b-a1c8-7df2c783a67e',
+        query: 'id:071df00d-640a-485b-a1c8-7df2c783a67e',
         projectId,
       });
       expect(resp.isError).toBe(true);
@@ -439,14 +439,14 @@ describe('reserved arg-name prefix in a search query', () => {
       // and smart_search do NOT. Telling a decision_search caller to "use the id parameter"
       // would earn them a strict-mode rejection — a confidently WRONG instruction, which is
       // the very "product teaches the misread" failure this task exists to kill.
-      const ctxMsg = reservedArgPrefixMessage('id', 'id:071d1c36', 'context_search');
-      expect(ctxMsg).toContain('id = "071d1c36"');
+      const ctxMsg = reservedArgPrefixMessage('id', 'id:071df00d', 'context_search');
+      expect(ctxMsg).toContain('id = "071df00d"');
       expect(ctxMsg).not.toContain('Drop the prefix');
 
       for (const tool of ['decision_search', 'smart_search']) {
-        const msg = reservedArgPrefixMessage('id', 'id:071d1c36', tool);
+        const msg = reservedArgPrefixMessage('id', 'id:071df00d', tool);
         expect(msg, `${tool} must steer to the BARE token`).toContain('Drop the prefix');
-        expect(msg).toContain('query = "071d1c36"');
+        expect(msg).toContain('query = "071df00d"');
         expect(msg, `${tool} has no id parameter — must not advertise one`)
           .toContain('has no `id` parameter');
       }
@@ -465,14 +465,14 @@ describe('reserved arg-name prefix in a search query', () => {
     test('an UNGUARDED tool is never guessed at rather than given another tool\'s rules', () => {
       // toolName is required and unknown tools return null — a default would silently apply
       // context_search\'s (possibly wrong) remedy to a new call site.
-      expect(reservedArgPrefixInQuery('id:071d1c36', 'task_list')).toBeNull();
-      expect(reservedArgPrefixInQuery('id:071d1c36', 'nope_not_a_tool')).toBeNull();
+      expect(reservedArgPrefixInQuery('id:071df00d', 'task_list')).toBeNull();
+      expect(reservedArgPrefixInQuery('id:071df00d', 'nope_not_a_tool')).toBeNull();
     });
 
     test('tag-grammar queries still work on the sibling tools too', async () => {
       for (const tool of ['decision_search', 'smart_search']) {
         expect(reservedArgPrefixInQuery('ref:resume', tool)).toBeNull();
-        expect(reservedArgPrefixInQuery('task:4d137535', tool)).toBeNull();
+        expect(reservedArgPrefixInQuery('task:4d13f00d', tool)).toBeNull();
       }
       // And end-to-end through the real decision route (must not error).
       const resp: any = await decisionsRoutes.handleSearch({ query: 'ref:resume', projectId });
@@ -532,9 +532,9 @@ describe('reserved arg-name prefix in a search query', () => {
         // — trips the OBJECT arm —
         '{"k":"v"}',
         // — realistic misuse + integrity cases —
-        'id:071d1c36-640a-485b-a1c8-7df2c783a67e',
+        'id:071df00d-640a-485b-a1c8-7df2c783a67e',
         'tags:["ref:cp-gaps"]',
-        '  id:071d1c36  ',          // whitespace must NOT be trimmed away in transit
+        '  id:071df00d  ',          // whitespace must NOT be trimmed away in transit
         'ref:resume — naïve ünïcode',
       ];
 
@@ -575,14 +575,14 @@ describe('reserved arg-name prefix in a search query', () => {
     test('decision gateway: the same query errors with the BARE-TOKEN remedy', async () => {
       const resp: any = await dispatchGateway(
         'decision',
-        { action: 'search', query: 'id:071d1c36', projectId },
+        { action: 'search', query: 'id:071df00d', projectId },
         { connectionId: GW_CONN },
       );
       expect(resp.isError).toBe(true);
       expect(resp.structuredContent.error).toBe('reserved_query_prefix');
       // decision_search has NO `id` parameter — the remedy must differ from context's.
       expect(responseText(resp)).toContain('Drop the prefix');
-      expect(responseText(resp)).toContain('query = "071d1c36"');
+      expect(responseText(resp)).toContain('query = "071df00d"');
     });
 
     test('smart_search is NOT gateway-folded — it is guarded on its always-flat route', async () => {
@@ -595,7 +595,7 @@ describe('reserved arg-name prefix in a search query', () => {
 
       const resp: any = await routeExecutor(
         'smart_search',
-        { query: 'id:071d1c36', projectId },
+        { query: 'id:071df00d', projectId },
         { connectionId: GW_CONN },
       );
       expect(resp.isError).toBe(true);
@@ -622,7 +622,7 @@ describe('reserved arg-name prefix in a search query', () => {
     test('the gateway does not alter the query string in transit (exact echo)', async () => {
       // Any encoding/coercion/trimming introduced anywhere on the gateway path would show up
       // as a mismatch between what we sent and what the error echoes back.
-      const sent = 'id:071d1c36-640a-485b-a1c8-7df2c783a67e';
+      const sent = 'id:071df00d-640a-485b-a1c8-7df2c783a67e';
       const resp: any = await dispatchGateway(
         'context',
         { action: 'search', query: sent, projectId },

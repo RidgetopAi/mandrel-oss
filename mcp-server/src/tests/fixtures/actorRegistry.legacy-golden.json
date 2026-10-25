@@ -1,6 +1,6 @@
 {
   "_README": "GOLDEN PARITY FIXTURE — a RECORDING of the pre-change actor registry, captured by executing the source at the commit named in _capturedFromCommit (via `git show`), NOT a hand-written oracle. Consumed by tests/actorRegistry.unit.test.ts to prove that with MANDREL_ACTOR_COMPOSITE_ENABLED off (the shipped default) the actor stack is byte-identical to main. Regenerate ONLY with an explicit decision to change legacy behavior — this file is the thing that says \"the default path did not move\".",
-  "_capturedFromCommit": "f9d9ff9b343b9264696fd32dda9a6999f3a18926",
+  "_capturedFromCommit": "f9df00db343b9264696fd32dda9a6999f3a18926",
   "_capturedUnderEnv": {
     "MANDREL_ACTOR_REGISTRY_EXTRA": "<unset>",
     "MANDREL_ACTOR_DEFAULT_KIND": "<unset>",
@@ -18,7 +18,7 @@
     "tick",
     "deploy-smoke",
     "cron",
-    "builder-0803a2d0",
+    "builder-0803f00d",
     "reviewer-abc123",
     "anonymous",
     "some-unregistered-thing",
@@ -101,8 +101,8 @@
     },
     {
       "sub": null,
-      "declared": "builder-0803a2d0",
-      "out": "builder-0803a2d0"
+      "declared": "builder-0803f00d",
+      "out": "builder-0803f00d"
     },
     {
       "sub": null,
@@ -276,8 +276,8 @@
     },
     {
       "sub": null,
-      "declared": "builder-0803a2d0",
-      "out": "builder-0803a2d0"
+      "declared": "builder-0803f00d",
+      "out": "builder-0803f00d"
     },
     {
       "sub": null,
@@ -451,8 +451,8 @@
     },
     {
       "sub": "",
-      "declared": "builder-0803a2d0",
-      "out": "builder-0803a2d0"
+      "declared": "builder-0803f00d",
+      "out": "builder-0803f00d"
     },
     {
       "sub": "",
@@ -626,8 +626,8 @@
     },
     {
       "sub": "   ",
-      "declared": "builder-0803a2d0",
-      "out": "builder-0803a2d0"
+      "declared": "builder-0803f00d",
+      "out": "builder-0803f00d"
     },
     {
       "sub": "   ",
@@ -801,7 +801,7 @@
     },
     {
       "sub": "operator",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "operator"
     },
     {
@@ -976,7 +976,7 @@
     },
     {
       "sub": "  operator  ",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "operator"
     },
     {
@@ -1151,7 +1151,7 @@
     },
     {
       "sub": "Operator",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "Operator"
     },
     {
@@ -1326,7 +1326,7 @@
     },
     {
       "sub": "coordinator",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "coordinator"
     },
     {
@@ -1501,7 +1501,7 @@
     },
     {
       "sub": "tick",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "tick"
     },
     {
@@ -1676,7 +1676,7 @@
     },
     {
       "sub": "deploy-smoke",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "deploy-smoke"
     },
     {
@@ -1851,7 +1851,7 @@
     },
     {
       "sub": "cron",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "cron"
     },
     {
@@ -1970,179 +1970,179 @@
       "out": "cron"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": null,
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": null,
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "   ",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "operator",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "  operator  ",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "Operator",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "coordinator",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "tick",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "deploy-smoke",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "cron",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
-      "declared": "builder-0803a2d0",
-      "out": "builder-0803a2d0"
+      "sub": "builder-0803f00d",
+      "declared": "builder-0803f00d",
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "reviewer-abc123",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "anonymous",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "some-unregistered-thing",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "operator@example.com",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "auth0|abc123",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "a/b",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "/",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": ":",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "a//b",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "x:y",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "::",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "operator@example.com/builder-abc",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "operator@example.com/tick",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "operator@example.com/operator",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "someone-else/coordinator",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "UPPER/Operator",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "/leading",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "trailing/",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "a/b/c",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "has space",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "Builder  --  ABC123",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "--edges--",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
-      "sub": "builder-0803a2d0",
+      "sub": "builder-0803f00d",
       "declared": "a-b",
-      "out": "builder-0803a2d0"
+      "out": "builder-0803f00d"
     },
     {
       "sub": "reviewer-abc123",
@@ -2201,7 +2201,7 @@
     },
     {
       "sub": "reviewer-abc123",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "reviewer-abc123"
     },
     {
@@ -2376,7 +2376,7 @@
     },
     {
       "sub": "anonymous",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "anonymous"
     },
     {
@@ -2551,7 +2551,7 @@
     },
     {
       "sub": "some-unregistered-thing",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "some-unregistered-thing"
     },
     {
@@ -2726,7 +2726,7 @@
     },
     {
       "sub": "operator@example.com",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "operator@example.com"
     },
     {
@@ -2901,7 +2901,7 @@
     },
     {
       "sub": "auth0|abc123",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "auth0|abc123"
     },
     {
@@ -3076,7 +3076,7 @@
     },
     {
       "sub": "a/b",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "a/b"
     },
     {
@@ -3251,7 +3251,7 @@
     },
     {
       "sub": "/",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "/"
     },
     {
@@ -3426,7 +3426,7 @@
     },
     {
       "sub": ":",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": ":"
     },
     {
@@ -3601,7 +3601,7 @@
     },
     {
       "sub": "a//b",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "a//b"
     },
     {
@@ -3776,7 +3776,7 @@
     },
     {
       "sub": "x:y",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "x:y"
     },
     {
@@ -3951,7 +3951,7 @@
     },
     {
       "sub": "::",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "::"
     },
     {
@@ -4126,7 +4126,7 @@
     },
     {
       "sub": "operator@example.com/builder-abc",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "operator@example.com/builder-abc"
     },
     {
@@ -4301,7 +4301,7 @@
     },
     {
       "sub": "operator@example.com/tick",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "operator@example.com/tick"
     },
     {
@@ -4476,7 +4476,7 @@
     },
     {
       "sub": "operator@example.com/operator",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "operator@example.com/operator"
     },
     {
@@ -4651,7 +4651,7 @@
     },
     {
       "sub": "someone-else/coordinator",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "someone-else/coordinator"
     },
     {
@@ -4826,7 +4826,7 @@
     },
     {
       "sub": "UPPER/Operator",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "UPPER/Operator"
     },
     {
@@ -5001,7 +5001,7 @@
     },
     {
       "sub": "/leading",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "/leading"
     },
     {
@@ -5176,7 +5176,7 @@
     },
     {
       "sub": "trailing/",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "trailing/"
     },
     {
@@ -5351,7 +5351,7 @@
     },
     {
       "sub": "a/b/c",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "a/b/c"
     },
     {
@@ -5526,7 +5526,7 @@
     },
     {
       "sub": "has space",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "has space"
     },
     {
@@ -5701,7 +5701,7 @@
     },
     {
       "sub": "Builder  --  ABC123",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "Builder  --  ABC123"
     },
     {
@@ -5876,7 +5876,7 @@
     },
     {
       "sub": "--edges--",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "--edges--"
     },
     {
@@ -6051,7 +6051,7 @@
     },
     {
       "sub": "a-b",
-      "declared": "builder-0803a2d0",
+      "declared": "builder-0803f00d",
       "out": "a-b"
     },
     {
@@ -6222,8 +6222,8 @@
       "classify": "automation"
     },
     {
-      "in": "builder-0803a2d0",
-      "normalize": "builder-0803a2d0",
+      "in": "builder-0803f00d",
+      "normalize": "builder-0803f00d",
       "classify": "agent"
     },
     {

@@ -153,7 +153,7 @@ const TASK_LEAD_TIME = {
  * fallback, and 4 of prod's 142 most recent sessions are in it.
  */
 const PRODUCTIVE = [
-  { id: '72ae7f9a-1111-2222-3333-444444444444', project_id: 'p1', project_name: 'riverbend', actor: 'coordinator-alert-sink', actor_kind: 'automation' as const, created_at: '2026-07-03', duration_minutes: 90, context_count: 40, tokens_used: 12000 }, // reserved-port-ok: token-count fixture, not a port
+  { id: '72aef00d-1111-2222-3333-444444444444', project_id: 'p1', project_name: 'riverbend', actor: 'coordinator-alert-sink', actor_kind: 'automation' as const, created_at: '2026-07-03', duration_minutes: 90, context_count: 40, tokens_used: 12000 }, // reserved-port-ok: token-count fixture, not a port
   { id: '0b7cdc5b-1111-2222-3333-444444444444', project_id: 'p2', project_name: 'daisy', actor: null, actor_kind: null, created_at: '2026-07-02', duration_minutes: 60, context_count: 22, tokens_used: 8000 },
 ];
 

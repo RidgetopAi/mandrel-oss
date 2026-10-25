@@ -13,7 +13,7 @@
  * of both. Predicate-and-message-agree is not correctness. The guard on a schema-derived
  * gate has to be a HOSTILE SCHEMA, not the internal agreement of its own two outputs.
  *
- * ── WHAT WENT WRONG IN 4dcbe0e, MEASURED ───────────────────────────────────────────────
+ * ── WHAT WENT WRONG IN 4dcf00d, MEASURED ───────────────────────────────────────────────
  * Discovery returned one row per FK CONSTRAINT while `byTable` is keyed by TABLE NAME. A
  * table with two cascading FKs to `projects` produced two UNION-ALL branches with the same
  * label and the later OVERWROTE the earlier:
@@ -27,7 +27,7 @@
  * with TWO victims, one per column, so it is RED whichever branch a plan prefers.
  *
  * ── EVERY TEST HERE IS A MUTATION THAT WAS SILENT ──────────────────────────────────────
- * Reviewer ran fourteen mutations against 4dcbe0e; four left all nine tests GREEN. Each
+ * Reviewer ran fourteen mutations against 4dcf00d; four left all nine tests GREEN. Each
  * one now has a test, and each test was re-checked by re-applying that mutation:
  *
  *   H1  discovery keyed per-constraint (the blocker)      ← was a silent DESTRUCTION

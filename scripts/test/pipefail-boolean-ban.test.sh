@@ -97,9 +97,9 @@
 #   DO NOT SHARPEN INSTRUMENT B. Its dumbness is load-bearing.
 #
 # THE ANCHOR IS WHERE THIS REPO'S GUARDS HAVE FAILED TWICE
-#   db-capacity-gate.test.sh (cb2d5b5) was satisfied by a COMMENTED-OUT copy of the
+#   db-capacity-gate.test.sh (cb2f00d) was satisfied by a COMMENTED-OUT copy of the
 #   line it checked for. Then the first version of test-wiring-coverage.test.sh
-#   (ebeef7f) stripped comments with a rule requiring WHITESPACE before the `#` —
+#   (ebef00d) stripped comments with a rule requiring WHITESPACE before the `#` —
 #   but bash starts a comment at the start of any WORD, and metacharacters delimit
 #   words, so `:;#`, `x &#` and `y |#` all parse as comments and slipped through.
 #   scripts/lib/pipefail-boolean-scan.awk therefore strips comments with that same

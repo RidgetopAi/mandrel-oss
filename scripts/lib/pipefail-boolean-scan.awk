@@ -34,7 +34,7 @@
 #   Comments are stripped with WORD-BOUNDARY correctness: bash starts a comment at
 #   the start of any WORD, and metacharacters delimit words, so `:;#`, `x &#` and
 #   `y |#` are all comments. That exact hole produced a false GREEN in this repo
-#   once already (test-wiring-coverage.test.sh, commit ebeef7f). Unlike the sed
+#   once already (test-wiring-coverage.test.sh, commit ebef00d). Unlike the sed
 #   strip used there, this one is also QUOTE-AWARE, so `grep -q '# x'` survives
 #   intact instead of being truncated into a miss.
 #

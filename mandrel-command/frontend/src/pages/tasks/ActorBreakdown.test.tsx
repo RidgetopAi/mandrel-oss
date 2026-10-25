@@ -69,7 +69,7 @@ describe('actorChartHeight', () => {
 describe('ActorBreakdown', () => {
   /**
    * WHAT THIS CATCHES: a gutter too narrow for the real actor set, which is what elided
-   * `builder-a7e922bd` into an unreadable stub. Probed by setting `categoryWidth` back to
+   * `builder-a7e9f00d` into an unreadable stub. Probed by setting `categoryWidth` back to
    * the shared 72px default — this goes RED.
    *
    * WHAT IT DOES NOT CATCH: tick THINNING. jsdom reports zero-width SVG text, so recharts
@@ -87,8 +87,8 @@ describe('ActorBreakdown', () => {
       { actor: 'builder (P3 Insight)', count: 4 },
       { actor: 'Coordinator', count: 3 },
       { actor: 'research', count: 2 },
-      { actor: 'builder-779f5be8', count: 1 },
-      { actor: 'builder-a7e922bd', count: 1 },
+      { actor: 'builder-779ff00d', count: 1 },
+      { actor: 'builder-a7e9f00d', count: 1 },
       { actor: 'ops-bot', count: 1 },
       { actor: 'Coordinator + Operator', count: 1 },
       { actor: 'system', count: 1 },
@@ -99,7 +99,7 @@ describe('ActorBreakdown', () => {
     ].map((t) => t.textContent ?? '');
     expect(rendered.length).toBe(actors.length);
     expect(rendered).toContain(UNASSIGNED_ACTOR);
-    expect(rendered).toContain('builder-a7e922bd');
+    expect(rendered).toContain('builder-a7e9f00d');
   });
 
   it('shows the honest empty state when nothing completed in the window', () => {

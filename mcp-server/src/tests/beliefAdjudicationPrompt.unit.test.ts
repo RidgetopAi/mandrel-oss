@@ -163,7 +163,7 @@ describe('buildAdjudicationPrompt — direction hardening (the direction retract
   });
 
   test('date= carries SECOND resolution, not a bare day — the rule is otherwise hollow', () => {
-    // MEASURED over the 58 retracted pairs (reports/artifacts/b6-fde9bdaf-retract/, joined to
+    // MEASURED over the 58 retracted pairs (reports/artifacts/b6-fde9f00d-retract/, joined to
     // the endpoints' prod timestamps): at day resolution 56 of 58 are a TIE, at second
     // resolution 1. "Direction is decided by date" is unanswerable for 97% of exactly the
     // population that got it wrong unless the prompt prints a time. This is the assertion

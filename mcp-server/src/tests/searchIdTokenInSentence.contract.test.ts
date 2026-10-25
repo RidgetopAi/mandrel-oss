@@ -114,7 +114,7 @@ describe('id-token extraction — an id8 inside a sentence resolves', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(
-        `INSERT INTO projects (name, description) VALUES ($1, 'bdd55ce6 fixture') RETURNING id`,
+        `INSERT INTO projects (name, description) VALUES ($1, 'bdd5f00d fixture') RETURNING id`,
         [PROJ_NAME],
       )
     ).rows[0].id;
@@ -180,19 +180,19 @@ describe('id-token extraction — an id8 inside a sentence resolves', () => {
   // ── the extractor itself (pure, so the classification is directly readable) ──────────
   describe('extractIdTokens', () => {
     test('pulls the id8 out of the X17 sentence', () => {
-      expect(extractIdTokens('what is decision bdd55ce6 about')).toEqual(['bdd55ce6']);
+      expect(extractIdTokens('what is decision bdd5f00d about')).toEqual(['bdd5f00d']);
     });
     test('a bare id8 yields exactly the same single token (X16 degenerates to the old path)', () => {
-      expect(extractIdTokens('bdd55ce6')).toEqual(['bdd55ce6']);
-      expect(queryLooksLikeId('bdd55ce6')).toBe(true);
+      expect(extractIdTokens('bdd5f00d')).toEqual(['bdd5f00d']);
+      expect(queryLooksLikeId('bdd5f00d')).toBe(true);
     });
     test('a full uuid in a sentence is extracted whole, dashes and all', () => {
-      const u = 'bdd55ce6-7ab1-4a04-8759-678872af50bb';
+      const u = 'bdd5f00d-7ab1-4a04-8759-678872af50bb';
       expect(extractIdTokens(`please open ${u} for me`)).toEqual([u]);
     });
     test('separators that cannot occur inside an id do not hide one', () => {
-      expect(extractIdTokens('re: task:bdd55ce6, thoughts?')).toEqual(['bdd55ce6']);
-      expect(extractIdTokens('(bdd55ce6)')).toEqual(['bdd55ce6']);
+      expect(extractIdTokens('re: task:bdd5f00d, thoughts?')).toEqual(['bdd5f00d']);
+      expect(extractIdTokens('(bdd5f00d)')).toEqual(['bdd5f00d']);
     });
     test('ordinary prose yields NO tokens — the arm cannot fire on everything', () => {
       expect(extractIdTokens('what is this decision about')).toEqual([]);
@@ -202,7 +202,7 @@ describe('id-token extraction — an id8 inside a sentence resolves', () => {
       expect(extractIdTokens('see face and beef')).toEqual([]);
     });
     test('duplicates collapse and the token count is CAPPED by config', () => {
-      expect(extractIdTokens('bdd55ce6 and again bdd55ce6')).toEqual(['bdd55ce6']);
+      expect(extractIdTokens('bdd5f00d and again bdd5f00d')).toEqual(['bdd5f00d']);
       const many = Array.from({ length: SEARCH_ID_MAX_QUERY_TOKENS + 3 }, (_, i) =>
         `deadbe${i.toString(16).padStart(2, '0')}`,
       ).join(' ');

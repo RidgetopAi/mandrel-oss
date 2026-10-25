@@ -24,11 +24,11 @@ import { hasTrustThreadingTag } from '../services/links.js';
 
 describe('hasTrustThreadingTag — the explicit-tag-beats-anchor precedence signal', () => {
   test('a `task:` tag is a trust-threading tag → TRUE', () => {
-    expect(hasTrustThreadingTag(['task:6907faf6'], 'context')).toBe(true);
+    expect(hasTrustThreadingTag(['task:6907f00d'], 'context')).toBe(true);
   });
 
   test('a `decision:` tag is a trust-threading tag → TRUE', () => {
-    expect(hasTrustThreadingTag(['decision:0a3ed4d0'], 'context')).toBe(true);
+    expect(hasTrustThreadingTag(['decision:0a3ef00d'], 'context')).toBe(true);
   });
 
   test('detects a trust tag among unrelated tags', () => {
@@ -58,19 +58,19 @@ describe('hasTrustThreadingTag — the explicit-tag-beats-anchor precedence sign
     test('`task:` is trust-bearing from a context/decision but NOT from a TASK', () => {
       // From a context or decision, `task:` mints `informs` — an OUTCOME edge, so it
       // outranks the anchor.
-      expect(hasTrustThreadingTag(['task:6907faf6'], 'context')).toBe(true);
-      expect(hasTrustThreadingTag(['task:6907faf6'], 'decision')).toBe(true);
+      expect(hasTrustThreadingTag(['task:6907f00d'], 'context')).toBe(true);
+      expect(hasTrustThreadingTag(['task:6907f00d'], 'decision')).toBe(true);
       // From a TASK, the same tag mints the weak `related_to` (the ambiguous task→task
       // case). That is NOT evidence, so it must NOT be treated as a trust-threading tag.
       // The OLD source-blind predicate ("the referent is a task or decision") answered
       // TRUE here — this is the exact behaviour the matrix corrects.
-      expect(hasTrustThreadingTag(['task:6907faf6'], 'task')).toBe(false);
+      expect(hasTrustThreadingTag(['task:6907f00d'], 'task')).toBe(false);
     });
 
     test('`decision:` is trust-bearing from EVERY source, including a task', () => {
       // decided_by explicitly lists task as a valid source (edgeTypes.ts), and it IS an
       // outcome edge — a task ladders up to the decision that authorized it.
-      expect(hasTrustThreadingTag(['decision:0a3ed4d0'], 'task')).toBe(true);
+      expect(hasTrustThreadingTag(['decision:0a3ef00d'], 'task')).toBe(true);
     });
 
     test('`context:` is trust-bearing from NO source (learned_from is off the trust walk)', () => {

@@ -33,10 +33,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_archcount_c987497b
- *   eval "$(bash scripts/provision-test-db.sh ci_archcount_c987497b --print-env)"
+ *   bash scripts/provision-test-db.sh ci_archcount_c987f00d
+ *   eval "$(bash scripts/provision-test-db.sh ci_archcount_c987f00d --print-env)"
  *   npx jest archivedTaskCountSweep --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_archcount_c987497b --drop
+ *   bash scripts/provision-test-db.sh ci_archcount_c987f00d --drop
  */
 
 import request from 'supertest';
@@ -95,7 +95,7 @@ describeDb('Archived tasks never move a rendered count', () => {
       `INSERT INTO tasks (id, project_id, session_id, title, description, type, status,
                           priority, tags, archived_at, completed_at)
        VALUES ($1, $2, $3, $4, 'seeded by archivedTaskCountSweep.db.test', 'general', $5::text,
-               'medium', ARRAY['archcount-c987497b']::text[],
+               'medium', ARRAY['archcount-c987f00d']::text[],
                CASE WHEN $6::boolean THEN now() ELSE NULL END,
                CASE WHEN $5::text = 'completed' THEN now() ELSE NULL END)`,
       [
@@ -182,7 +182,7 @@ describeDb('Archived tasks never move a rendered count', () => {
 
     userId = uuidv4();
     const username = `archcount_${userId.slice(0, 8)}`;
-    const password = 'ProbePassw0rd!c987497b';
+    const password = 'ProbePassw0rd!c987f00d';
     await db.query(
       `INSERT INTO admin_users (id, username, email, password_hash, role, is_active, must_change_password)
        VALUES ($1, $2, $3, $4, 'admin', true, false)`,

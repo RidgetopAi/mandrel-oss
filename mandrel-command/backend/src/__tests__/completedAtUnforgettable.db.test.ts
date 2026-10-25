@@ -91,7 +91,7 @@ describeDb('tasks.completed_at is UNFORGETTABLE — trigger + CHECK', () => {
     await db.query(
       `INSERT INTO projects (id, name, description, status, created_at)
        VALUES ($1, $2, 'completedAtUnforgettable fixture', 'active', NOW())`,
-      [projectId, `32e6e04d-${projectId.slice(0, 8)}`],
+      [projectId, `32e6f00d-${projectId.slice(0, 8)}`],
     );
   });
 
