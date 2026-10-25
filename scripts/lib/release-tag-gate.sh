@@ -62,7 +62,7 @@ _RTG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # routinely BEHIND that — the deploy prints its own WARN saying so. This gate read
 # the control tree's HEAD, so on the v0.50.0 dry run it printed
 #   [PASS] release-tag PRE-FLIGHT GATE: HEAD is tagged v0.49.0
-# in the same run whose plan said PROD_REF = 3626ea626b79 (v0.50.0). Two refs, one
+# in the same run whose plan said PROD_REF = <the v0.50.0 commit>. Two refs, one
 # PASS, and the PASS was about the ref that was NOT shipping. The admitted failure
 # mode: push an UNTAGGED commit while the control tree sits on any older tagged
 # commit and this gate reports PASS while the roll ships an untagged release.
@@ -161,7 +161,7 @@ release_tag_manifest_version() {
 # release.sh (which does check agreement), so no bump commit was ever made. Both
 # shipped with all four manifests still reading 0.50.0 — and the two command
 # manifests reading 0.47.0, four releases stale. Prod advertised
-# "0.50.0+ab756ca4ddaa" in the handshake for 18h.
+# "0.50.0+<older commit>" in the handshake for 18h.
 #
 # Three guards passed that state: the drift check counts commits since the latest
 # TAG (a tag existed -> drift 0), this gate asked only whether a tag EXISTED at the

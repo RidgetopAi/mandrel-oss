@@ -9,7 +9,7 @@
 #   serves a populated spec ... the backend runtime image ships no src/, so
 #   swagger-jsdoc's cwd-relative `apis` glob finds nothing there."
 #
-#   That bound was real. MEASURED 2026-08-31 on image 5fe35c4e5a47: all 7 running
+#   That bound was real. MEASURED 2026-08-31 on the then-current image: all 7 running
 #   command-backend containers, prod included, served GET /api/openapi/openapi.json as
 #   HTTP 200 / 33229 bytes / `paths: []`. 5o was green the whole time, because the
 #   population it enumerates is the CI tree and the defect lives in the runtime image.

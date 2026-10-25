@@ -19,7 +19,7 @@
  * ----------------
  * THREE outcomes, THREE distinct answers, through the real public path
  * (validate → routeExecutor) with the ROWS IN `links` as the observable for the in-scope
- * case — not a helper's return value (the standard the project-name normalizer work set).
+ * case — not a helper's return value (the same standard the project-name normalizer tests hold).
  *
  *   IN-SCOPE      → an edge exists in `links`, no skip.
  *   OUT-OF-SCOPE  → NO edge, code 'cross_project_ref', and the reason NAMES the project the

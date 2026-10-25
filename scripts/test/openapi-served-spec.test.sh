@@ -9,7 +9,7 @@
 #   matched nothing. It did not error: swagger-jsdoc returns a well-formed document
 #   with `paths: {}` and exits 0.
 #
-#   MEASURED 2026-08-31 on the live fleet, image 5fe35c4e5a47 — all 7 running
+#   MEASURED 2026-08-31 on the live fleet, the then-current image — all 7 running
 #   command-backend containers, prod included: GET /api/openapi/openapi.json returned
 #   HTTP 200, 33229 bytes, 70 schemas, 11 tags, and `paths: []`. A customer reading our
 #   API spec got a document describing nothing, and it was indistinguishable from an

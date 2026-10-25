@@ -10,7 +10,7 @@
  * artifact was simply empty, and Express served it with a 200.
  *
  * MEASURED 2026-08-31 on the running fleet — all 7 command-backend containers on
- * image 5fe35c4e5a47, prod included: GET /api/openapi/openapi.json returned HTTP 200,
+ * the then-current image, prod included: GET /api/openapi/openapi.json returned HTTP 200,
  * 33229 bytes, 70 schemas, 11 tags, and `paths: []`. The systemd instance that DOES
  * have src/ was inactive, so every instance actually serving this endpoint served a
  * spec documenting zero endpoints.
