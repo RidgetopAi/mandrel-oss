@@ -1,6 +1,6 @@
 /**
  * sessionRestAuth — SECURITY gate for the mcp-server's /api/v2/sessions/* REST family
- * (an earlier task / trust boundary b3cf883b).
+ * (an earlier task / the trust-boundary change).
  *
  * Regression guard for a LIVE exposure: the mcp-server's own `/api/v2/sessions/*` REST
  * endpoints (:8080) served + mutated real session data to UNAUTHENTICATED callers on the (reserved-port-ok: doc comment naming prod's :8080, binds nothing)

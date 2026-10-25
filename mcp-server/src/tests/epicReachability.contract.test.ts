@@ -1,7 +1,7 @@
 /**
- * EPIC REACHABILITY — PHASE 2 acceptance 6 (folded from 434ea89b).
+ * EPIC REACHABILITY — PHASE 2 acceptance 6 (folded from an earlier change).
  *
- * THE PROD FINDING: epic 886d138b (`EPIC: Command UI redesign BUILD`) has ZERO
+ * THE PROD FINDING: an earlier epic (`EPIC: Command UI redesign BUILD`) has ZERO
  * task→task structural edges — measured on prod 2026-08-13, its edges group entirely
  * into context→task rows stamped auto:active_thread (24, the RETIRED anchor) and
  * auto:context_store (10). When those age out of relevance, the epic falls off the map.

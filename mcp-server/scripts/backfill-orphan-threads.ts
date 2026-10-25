@@ -2,7 +2,7 @@
 
 /**
  * ONE-TIME ORPHAN BACKFILL — CLI entrypoint (reliable-auto-threading ST-6)
- * (branch:mandrel-reliability, task ST-6 66bf6a72, spec
+ * (branch:mandrel-reliability, task ST-6, spec
  * docs/specs/reliable-auto-threading.md §C1/C2/C3, §X4).
  *
  * Thin npx-tsx wrapper (mirrors scripts/migrate.ts's invocation style) around the testable

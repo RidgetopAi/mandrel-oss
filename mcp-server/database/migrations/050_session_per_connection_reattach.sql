@@ -1,13 +1,13 @@
 -- Migration 050: SESSION-PER-CONNECTION + RE-ATTACH-ON-RESTART (Session-Rework SR-1).
 --
--- WHY (root cause ctx 81901e32, the operator's model a5e6620c):
+-- WHY (root cause, and the operator's session model):
 -- A session was a TECHNICAL connection with NO persisted identity. The active-session map
 -- is RAM-only, so a SERVER RESTART wiped it → the SAME live bridge connection got a NEW
 -- session row minted for it ("random session spawning"). And graceful shutdown / the idle
 -- reaper never marked these sessions ended → 'active' really meant 'never closed', so they
 -- accumulated.
 --
--- THE MODEL (the operator, a5e6620c): a session = PER CONNECTION, keyed on the STABLE connection
+-- THE MODEL (the operator): a session = PER CONNECTION, keyed on the STABLE connection
 -- id the bridge already sends as X-Connection-ID (e.g. 'bridge-<pid>-<ts>', 'http-default',
 -- 'stdio', or a remote mcp-session-id). Persisting that id ON the session row lets an action
 -- after a restart RE-ATTACH to the still-open session for that connection (within the 1h

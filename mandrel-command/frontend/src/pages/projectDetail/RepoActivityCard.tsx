@@ -2,7 +2,7 @@
  * RepoActivityCard — the REAL repository-activity signal from insights.git_activity
  * (commits, code churn, files changed, and the latest commit subject). This card stands
  * in for the mock's "active branches → TreeWalker" card, whose per-branch telemetry is
- * NOT served (policy 10397f65): rather than fabricate branch names we surface the git
+ * NOT served (the data-gap policy): rather than fabricate branch names we surface the git
  * activity we DO have, and disclose the substitution on-screen (BRANCH_GAP_NOTE).
  *
  * When no commits are indexed for the project, the card shows an honest empty state

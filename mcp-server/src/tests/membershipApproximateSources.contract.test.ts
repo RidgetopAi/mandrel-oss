@@ -1,6 +1,6 @@
 /**
  * APPROXIMATE_SOURCES — the positive set that replaces `spineSource !== recorded`
- * (P3 build spec bf0b40ea section C4).
+ * (P3 build spec, section C4).
  *
  * THE DEFECT THIS FILE EXISTS TO PREVENT — and why it cannot be caught by any test written
  * against today's data. Four product sites answered "was this member's branch DERIVED

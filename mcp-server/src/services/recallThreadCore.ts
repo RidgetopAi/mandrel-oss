@@ -502,8 +502,8 @@ export function reviewOutcomeOf(metadata: unknown): string | null {
  * WHAT IT RETURNS, and why each state is its own string (CLASSES.md C1 — an
  * instrument has THREE states and "could not measure" never shares a value with "no"):
  *
- *   `0=GREEN@3fd825a2`      a MEASURED pass, on a named ref
- *   `1=RED@9305a39a`        a MEASURED failure — a bug to fix
+ *   `0=GREEN@<sha>`      a MEASURED pass, on a named ref
+ *   `1=RED@<sha>`        a MEASURED failure — a bug to fix
  *   `2=CANNOT-MEASURE@…`    NOT a verdict on the commit — an instrument to repair
  *   `3=SKIP`                not applicable to this ref
  *   `40=STATIC-GREEN`       the subset passed; NOT the ship condition

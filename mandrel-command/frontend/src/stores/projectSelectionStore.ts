@@ -7,7 +7,7 @@
  * its scope from this (via `usePageProject`), and the ambient `X-Project-ID` header
  * follows it (contexts/ProjectContext).
  *
- * ── WHY localStorage, KEYED TO THE LOGIN (walkthrough ed6ae449 F1) ───────────────────
+ * ── WHY localStorage, KEYED TO THE LOGIN (the project-switch walkthrough F1) ───────────────────
  * The operator's done-when: "Once selected it stays showing that project's data until logged
  * back in where it goes back to 'Default' project from Settings or user re-selects."
  * The first cut used sessionStorage and a NEW TAB in the same login reverted to the

@@ -224,7 +224,7 @@ describe('mandrel_help catalog is derived from a single source (no drift)', () =
   });
 
   // ── G7: the moat tools MUST have curated examples ────────────
-  // Walkthrough finding (ctx 60c132af): a cold agent reaches for
+  // Walkthrough finding: a cold agent reaches for
   // mandrel_examples exactly on the novel tools it can't infer from names — the
   // Linking & Graph category (link/unlink/get_links/recall_thread/thread_*). G6 lets
   // any tool degrade to "No examples available yet"; for THIS category that graceful

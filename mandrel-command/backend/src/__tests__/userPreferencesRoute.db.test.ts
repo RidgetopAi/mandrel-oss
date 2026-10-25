@@ -1,6 +1,6 @@
 /**
  * ROUTE-LEVEL guard for `GET` / `PATCH /api/users/preferences`
- * (epic 41293984 §A / §A5, migration 076 `admin_users.default_project_id`).
+ * (page-scope epic §A / §A5, migration 076 `admin_users.default_project_id`).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE DEFECT THIS EXISTS TO CATCH (Reviewer B2, reject round 1)

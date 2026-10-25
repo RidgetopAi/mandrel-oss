@@ -4,7 +4,7 @@
  * threshold, the stat trio's colours, the toolbar segments + sort options, and the
  * project-dot palette all live here so the parts stay declarative.
  *
- * DATA-GAP NOTES (policy 10397f65 — show what's REAL, never fabricate):
+ * DATA-GAP NOTES (the data-gap policy — show what's REAL, never fabricate):
  *  - The `/api/projects` list serves context_count / session_count / last_activity /
  *    status / metadata; task + decision counts come from `/api/projects/:id/insights`.
  *  - There is NO per-project daily-activity series served, so the mock's 30-day

@@ -50,7 +50,7 @@ function envBool(name: string, fallback: boolean): boolean {
 export const ADVERTISE_OUTPUT_SCHEMAS = envBool('MANDREL_ADVERTISE_OUTPUT_SCHEMAS', true);
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
- * PHASE 2 — gateway surface + `discover` + lazy tools/list (rebuild plan §1.2/§8, dec 5a61768d).
+ * PHASE 2 — gateway surface + `discover` + lazy tools/list (rebuild plan §1.2/§8 and its decision).
  *
  * These flags gate the WHOLE new 10-tool gateway surface. THE CORE INVARIANT: every flag
  * DEFAULTS to today's behaviour, so at the defaults the advertised `tools/list` is
@@ -132,7 +132,7 @@ export function getFlatToolsPolicy(): FlatToolsPolicy {
  * "lazy+core" (gatewaySurface.ts) DELIBERATELY lifts required-param hints + closed enums for the
  * un-guessable WRITE actions into the envelope (context ContextType enum, decision.record's 5
  * required, graph edge types, …) to close the measured 60%→100% first-call gap (the auditor rec
- * b53c213f). MEASURED lazy+core = 1318 o200k tokens — a MEASURED, intentional trade (NOT creep),
+ * the auditor recommendation). MEASURED lazy+core = 1318 o200k tokens — a MEASURED, intentional trade (NOT creep),
  * and still a 93.7% cut vs the 21,012-token flat surface (54 tools w/ outputSchemas) / ~9x vs the
  * ~11.6k stripped surface. The ceiling sits ~80 tokens above the measured number so it still
  * catches genuine future creep. If lazy+core is ever tuned to lift more, re-measure and re-justify
@@ -183,7 +183,7 @@ export function getToolListTokenBudget(): number {
 
 /**
  * MANDREL_LAZY_CORE_ENUM_MAX — DEFAULT 12. The largest CLOSED enum (value count) that lazy+core
- * inlines as an actual schema-prop `enum` on the lazy list (plan §1.2 / the auditor rec b53c213f
+ * inlines as an actual schema-prop `enum` on the lazy list (plan §1.2 / the auditor recommendation
  * "≤ ~12 values"). A required param whose enum EXCEEDS this is lifted by NAME only (its allowed
  * values stay one `discover.explain` call away) — this is exactly what keeps decision.record's
  * 15-value `decisionType` from bloating the budget while `impactLevel`(4) / ContextType(10) /

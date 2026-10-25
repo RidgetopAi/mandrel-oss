@@ -1,14 +1,14 @@
 /**
  * REF-RESOLUTION HONESTY — "no such record" is NOT "exists, but out of my scope"
- * (split out of 1ca8b181 as Reviewer finding N1).
+ * (split out of the project-name normalizer as Reviewer finding N1).
  *
  * THE GAP THIS PINS
  * -----------------
- * `1ca8b181`'s acceptance required that a ref which cannot be resolved distinguish
+ * The project-name normalizer's acceptance required that a ref which cannot be resolved distinguish
  * *no such record* from *record exists but is outside the resolution scope I was given*.
  * Measured at `603a096` the two were byte-identical:
  *
- *     OUT-OF-SCOPE  {"minted":0,"skips":[{"ref":"a10aaa25","reason":"task \"a10aaa25\" not found in this project"}]}
+ *     OUT-OF-SCOPE  {"minted":0,"skips":[{"ref":"3c4d5e6f","reason":"task \"3c4d5e6f\" not found in this project"}]}
  *     NOT-FOUND     {"minted":0,"skips":[{"ref":"deadbeef","reason":"task \"deadbeef\" not found in this project"}]}
  *
  * An agent that names a real task from the WRONG PROJECT got the same message as one that
@@ -19,7 +19,7 @@
  * ----------------
  * THREE outcomes, THREE distinct answers, through the real public path
  * (validate → routeExecutor) with the ROWS IN `links` as the observable for the in-scope
- * case — not a helper's return value (the standard `1ca8b181` set).
+ * case — not a helper's return value (the standard `2b3c4d5e` set).
  *
  *   IN-SCOPE      → an edge exists in `links`, no skip.
  *   OUT-OF-SCOPE  → NO edge, code 'cross_project_ref', and the reason NAMES the project the
@@ -130,7 +130,7 @@ const id8 = (uuid: string) => uuid.replace(/-/g, '').slice(0, 8);
 
 async function mkProject(name: string): Promise<string> {
   const id = (
-    await db.query(`INSERT INTO projects (name, description) VALUES ($1, '085e1cb4 fixture') RETURNING id`, [name])
+    await db.query(`INSERT INTO projects (name, description) VALUES ($1, 'fixture') RETURNING id`, [name])
   ).rows[0].id;
   projectIds.push(id);
   return id;

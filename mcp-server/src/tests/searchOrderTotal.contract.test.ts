@@ -124,12 +124,12 @@ const TIED_AT = '2026-01-01T00:00:00.000Z';
 // INSERT — which surfaces as a DatastoreError from a test that reads as though it were
 // asserting about sort order, so it does not look like a naming problem at all.
 //
-// OBSERVED 2026-08-30: this suite failed the clean gate on ref bd3750ba with exactly that
+// OBSERVED 2026-08-30: this suite failed the clean gate on one ref with exactly that
 // error, then PASSED on the immediately following run of the same gate — twice-seen,
 // nondeterministic, and it turns the authoritative gate RED at random.
 //
 // The prefix below was applied for that, WITHOUT a reproduction, under an explicit bound
-// saying a recurrence should be traced. It recurred on ref 0d0ce0d2 (v0.52.0), and the
+// saying a recurrence should be traced. It recurred on a later ref (v0.52.0), and the
 // trace on 2026-08-31 found a DIFFERENT cause, which the prefix could not have covered:
 // the collision was BETWEEN this test's own four fixture rows, in one process, not
 // between two runs. `${PROJ_PREFIX}plist-${id.slice(0, 8)}` took the first 8 hex of a
@@ -252,7 +252,7 @@ async function twoPhysicalOrders(opts: {
 describe('ordered-and-paged surfaces carry a TOTAL order', () => {
   beforeAll(() => {
     console.log(
-      `[14dff41a] running under MANDREL_EMBEDDER=${activeEmbedder().key} ` +
+      `[search-order] running under MANDREL_EMBEDDER=${activeEmbedder().key} ` +
       `(column=${activeEmbeddingColumn()}, dims=${DIM})`,
     );
   });

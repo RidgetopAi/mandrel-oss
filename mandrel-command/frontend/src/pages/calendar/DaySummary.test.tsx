@@ -25,7 +25,7 @@ vi.mock('../../api', () => ({
   },
 }));
 // The card reads the ONE central project list for its scope LABEL — it no longer issues
-// its own `/api/projects` fetch (epic 41293984 §D).
+// its own `/api/projects` fetch (page-scope epic §D).
 vi.mock('../../contexts/ProjectContext', () => ({
   useProjectContext: () => ({ setSelectedProjectId: () => undefined,
     allProjects: [
@@ -50,7 +50,7 @@ const mockApi = api as unknown as {
 
 /**
  * The card is handed the CALENDAR's per-request scope; it has no scope of its own by
- * design (epic 41293984 §E). A recognisable stand-in so the assertions can prove the card
+ * design (page-scope epic §E). A recognisable stand-in so the assertions can prove the card
  * PASSES IT THROUGH rather than quietly calling unscoped.
  */
 const INHERITED_SCOPE = { headers: { 'X-Project-ID': 'inherited-from-calendar' } };

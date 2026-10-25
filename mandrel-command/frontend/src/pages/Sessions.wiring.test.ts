@@ -22,7 +22,7 @@ const allTsSrcs = [{ f: 'Sessions.tsx', src: pageSrc }, ...partSrcs];
 const HEX = /#[0-9a-fA-F]{3,8}\b/g;
 
 /**
- * ── THE AXIOS BAN IS A LINT RULE NOW, NOT A REGEX HERE (epic 41293984) ───────────────
+ * ── THE AXIOS BAN IS A LINT RULE NOW, NOT A REGEX HERE (page-scope epic) ───────────────
  * It used to be a hand-written matcher (`src/testSupport/axiosValueImport.ts`) fed the
  * TEXT of the files each wiring suite happened to list. That was a TypeScript import
  * parser written in regex: "completed" three times and still holed (it false-REDs on the
@@ -65,7 +65,7 @@ describe('Sessions rebuild — token-driven', () => {
   });
 });
 
-describe('Sessions — the page owns its project scope, and does not re-invent it (epic 41293984)', () => {
+describe('Sessions — the page owns its project scope, and does not re-invent it (page-scope epic)', () => {
   /**
    * Source-level DRIFT guards only. They cannot prove the request is scoped correctly —
    * that is what the behavioural suites do, against the header a request would actually

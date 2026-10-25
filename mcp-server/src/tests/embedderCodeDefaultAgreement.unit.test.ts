@@ -1,8 +1,8 @@
 /**
  * THE CODE DEFAULT MUST BE THE FLEET DEFAULT — for MANDREL_EMBEDDER (an earlier task
- * and 9d2f4c49).
+ * and an earlier change).
  *
- * THE CLASS THIS GUARDS (9d2f4c49): a setting is rolled across the EXISTING fleet by
+ * THE CLASS THIS GUARDS: a setting is rolled across the EXISTING fleet by
  * hand while the code/compose default is left on the old value. The existing fleet masks
  * it completely — everything looks healthy — until a NEW tenant is provisioned, or one
  * hand-typed env line is lost, and that instance is silently born on the wrong value.

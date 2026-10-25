@@ -40,7 +40,7 @@ vi.mock('../api', () => ({
 }));
 
 /**
- * PAGE PROJECT (epic 41293984). The page owns its project now — there is no global
+ * PAGE PROJECT (page-scope epic). The page owns its project now — there is no global
  * selector to follow. These render tests need SOME concrete project so the reads are
  * enabled (`scope()` throws rather than silently sending unscoped), so a single fixture
  * project is provided and is BOTH the user's default and the only selectable one. The
@@ -230,7 +230,7 @@ describe('Tasks List — the Archived chip', () => {
     await clickGroupButton('Filter by status', 'Archived');
 
     // The dedicated archived read fired — as a SCOPE, carrying no status param — and with
-    // the page's own project scope as its second argument (epic 41293984). Without that,
+    // the page's own project scope as its second argument (page-scope epic). Without that,
     // the Archived view would list the AMBIENT project's deleted tasks.
     expect(mockApi.tasks.list).toHaveBeenCalledWith(
       expect.objectContaining({ archived: 'only', project_id: TEST_PROJECT.id }),

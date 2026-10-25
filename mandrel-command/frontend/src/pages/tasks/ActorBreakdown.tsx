@@ -5,7 +5,7 @@
  * with a real `unassigned` bucket. This fully closes the actor dimension for the Tasks page.
  * REUSES the shared BarChartCard (horizontal, per-bar colour via `colorKey`) like the
  * priority panel. Counts are REAL; an empty `actors` array ⇒ an HONEST empty state (nothing
- * completed in the window) — never fabricated (data policy 10397f65). Colours resolve from
+ * completed in the window) — never fabricated (the data-gap policy). Colours resolve from
  * the chart theme (no hex literals).
  */
 import React from 'react';

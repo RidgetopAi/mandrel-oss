@@ -88,7 +88,7 @@ export interface TaskDrawerProps {
   onCreated: (id: string) => void;
   /**
    * The PAGE's selected project (`usePageProject().projectId`) — the project create mode
-   * opens on (epic 41293984). This replaces `useEffectiveProjectId()`, which read the
+   * opens on (page-scope epic). This replaces `useEffectiveProjectId()`, which read the
    * AMBIENT default: with a per-page selector those are different values by design, and
    * seeding the form from the ambient one meant a "+ New Task" on a page showing B
    * defaulted to filing into A.
@@ -170,7 +170,7 @@ export const TaskDrawer: React.FC<TaskDrawerProps> = ({
   const effectiveProjectId = pageProjectId ?? ambientProjectId;
 
   /**
-   * ── THE CREATE SCOPE (epic 41293984 §A1) ───────────────────────────────────────────
+   * ── THE CREATE SCOPE (page-scope epic §A1) ───────────────────────────────────────────
    * Derived from `projectId` — the project the FORM is showing — not from the page and not
    * from the ambient default. The two must agree: the payload's `project_id` is what
    * `controllers/task.ts` files the row under, and a request that names a DIFFERENT

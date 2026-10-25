@@ -1,6 +1,6 @@
 /**
  * SettingsContext — the user's own settings, with the DEFAULT PROJECT as its
- * load-bearing value (epic 41293984 §A).
+ * load-bearing value (page-scope epic §A).
  *
  * ── WHAT CHANGED AND WHY ─────────────────────────────────────────────────────────────
  * This context used to hold `defaultProject`: a project NAME, seeded by fetching

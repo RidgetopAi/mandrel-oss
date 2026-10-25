@@ -510,7 +510,7 @@ export default class MandrelMcpServer {
 
         // SR-1: Park ALL active sessions as 'interrupted' (resumable) on shutdown.
         //
-        // REPLACES the old stdio-only endSession (ctx 81901e32): shutdown used to end
+        // REPLACES the old stdio-only endSession: shutdown used to end
         // ONLY the 'stdio' connection's session, leaving every bridge/http/remote
         // session 'active' with ended_at NULL forever (they accumulated, and a restart
         // minted duplicates because the RAM map was empty). Now we mark them ALL

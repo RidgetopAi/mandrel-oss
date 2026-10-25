@@ -7,7 +7,7 @@ about caching?") and it makes the calls. Use `discover({action:"explain", tool:"
 any tool's exact contract, and `discover({action:"examples", tool:"<name>"})` for more patterns.
 
 Replies are not reproduced here because they carry ids, timestamps and similarity scores that
-differ on every server; each reply names the ids it created (short 8-hex ids such as `1e53165a`),
+differ on every server; each reply names the ids it created (short 8-hex ids such as `2b3c4d5e`),
 which you use in the later calls.
 
 ## Choose a project

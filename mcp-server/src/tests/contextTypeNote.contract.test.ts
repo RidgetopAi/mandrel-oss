@@ -1,6 +1,6 @@
 /**
  * `note` CONTEXT TYPE — the generic capture has a real home, and `fact` does not
- * (Auditor rec b53c213f).
+ * (Auditor recommendation).
  *
  * THE DEFECT: in the Phase-3 eval 5/7 stores guessed `type: "fact"` — an invalid enum —
  * because no generic type existed. The fix is a real type, `note`, added to every copy of

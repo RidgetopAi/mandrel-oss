@@ -7,7 +7,7 @@
  *
  * Root: every per-session context count joined `contexts ON session_id` WITHOUT
  * scoping to the session's project_id. When a session's project_id diverges from
- * its contexts' project_id (the deep session->project association bug, b6c18866),
+ * its contexts' project_id (the deep session->project association bug),
  * one project's contexts showed up under another project's session.
  *
  * This test builds exactly that divergent shape — a session bound to Project A

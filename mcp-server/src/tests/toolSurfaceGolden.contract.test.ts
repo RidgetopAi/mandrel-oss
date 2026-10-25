@@ -181,7 +181,7 @@
  *   existing param retyped or removed. No outputSchema touched. Every new param carries a
  *   `description` — a description-less wire param is itself the defect.
  *     fixture — `wc -c src/tests/fixtures/toolSurface.golden.json`: 248,267 -> 251,253
- *   Measured against this branch's point of departure (1594229d), `git diff --numstat` on the
+ *   Measured against this branch's point of departure, `git diff --numstat` on the
  *   fixture is 39/0 (added/removed) — purely additive, nothing moved.
  *   AMENDED in the same branch: `task_update.dependencies` first shipped a storage promise —
  *   "an id that names no existing task is REFUSED, never stored" — which is not a property of
@@ -212,7 +212,7 @@
  *   the length of the new value plus its separator.
  *
  * 2026-09-03 · BATCH 13 MERGE NOTE (Coordinator) — the two entries below landed on SEPARATE lanes
- *   (1489a8c8 and 252200e1) that each registered one guard class and each regenerated this
+ *   (two changes, one of them the gate-exit-code fix) that each registered one guard class and each regenerated this
  *   fixture against a 21-value axis. They conflicted here, which is the correct outcome: two
  *   independent writers to a closed, customer-visible axis SHOULD collide rather than one
  *   silently overwrite the other's regeneration. Resolved by keeping both entries and
@@ -585,7 +585,7 @@
  *
  * ⚠️ 2026-07-29 · THE CHAIN ABOVE DOES NOT RECONCILE, and it predates this entry. Measured:
  *   224439 → 227671 → 228106, then the next two entries BOTH claim to start from 228288
- *   (thread_set at "228288 → 228758" and the 6ca299d9 entry at "228288 → 229033"), and neither
+ *   (thread_set at "228288 → 228758" and the entry at "228288 → 229033"), and neither
  *   continues from 228106. So the running total has been wrong for several entries and reads as
  *   continuous when it is not. NOT repaired here: reconstructing the true historical values means
  *   building a worktree per commit, and guessing them would be strictly worse than saying this

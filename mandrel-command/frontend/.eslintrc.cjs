@@ -67,7 +67,7 @@ const DYNAMIC_ENV_READ_BANS = [
   },
 ];
 
-// ── RUNTIME axios LOADS (epic 41293984) ──────────────────────────────────────────
+// ── RUNTIME axios LOADS (page-scope epic) ──────────────────────────────────────────
 // `@typescript-eslint/no-restricted-imports` (configured below) is an ES-MODULE rule:
 // it sees `import … from 'axios'` in every spelling, but NOT `await import('axios')`
 // and NOT `require('axios')`. MEASURED on this toolchain (eslint 8.57.1 /
@@ -146,7 +146,7 @@ module.exports = {
     // Whole-env inlining ban — see DYNAMIC_ENV_READ_BANS at the top of this file.
     'no-restricted-syntax': ['error', ...DYNAMIC_ENV_READ_BANS, ...AXIOS_RUNTIME_LOAD_BANS],
 
-    // ── DIRECT axios VALUE IMPORTS ARE BANNED src-wide (epic 41293984) ─────────────
+    // ── DIRECT axios VALUE IMPORTS ARE BANNED src-wide (page-scope epic) ─────────────
     //
     // Every request must go through the unified client in `src/api` so it carries the
     // shared interceptor (auth header, project scope, error normalisation). A module
@@ -200,7 +200,7 @@ module.exports = {
 
   overrides: [
     {
-      // ── THE ONE AXIOS VALUE IMPORT (epic 41293984) ────────────────────────────────
+      // ── THE ONE AXIOS VALUE IMPORT (page-scope epic) ────────────────────────────────
       // `src/services/api.ts` IS the axios instance every other module consumes through
       // src/api; it must import the library. This is the only exemption, and it was
       // measured, not assumed — see the rule's comment above for the command. Kept as a

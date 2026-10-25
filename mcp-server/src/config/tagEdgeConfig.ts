@@ -171,7 +171,7 @@ export interface TagEdgeIntent {
  * other row's semantics.
  *
  * @param sourceType the record type carrying the tag (the FROM endpoint)
- * @param tag        the raw tag, e.g. `task:0f3906cd`
+ * @param tag        the raw tag, e.g. `task:1a2b3c4d`
  */
 export function tagToEdgeIntent(sourceType: EdgeNodeType, tag: string): TagEdgeIntent | null {
   // An unrecognized source type denies outright — no default row (the whole point).

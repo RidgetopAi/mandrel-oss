@@ -1,5 +1,5 @@
 /**
- * HANDOFF SUPERSESSION — the PHASE 2 item-g acceptance contract ( * folds D5-A from 8f218f17).
+ * HANDOFF SUPERSESSION — the PHASE 2 item-g acceptance contract (folds D5-A from an earlier review).
  *
  * Driven through the FULL public path (validate → routeExecutor — the exact path the
  * HTTP bridge uses), asserted at the ROW level, same conventions as

@@ -31,7 +31,7 @@
  * two optional string fields do not earn a migration across 8 instances), under ONE
  * reserved namespace object:
  *
- *     {"handoff": {"mode": "build", "spine": "b341f7d0"}}
+ *     {"handoff": {"mode": "build", "spine": "2b3c4d5e"}}
  *
  * Namespaced rather than top-level `metadata.mode` deliberately. `metadata` is a free-form
  * object the CALLER owns and `context_update` MERGES into — a customer using `mode` for

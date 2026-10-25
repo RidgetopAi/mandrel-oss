@@ -174,7 +174,7 @@ describe('trust model (T2b) — surfaced default-on in recall', () => {
     const row = search.structuredContent.results.find((r: any) => r.id === ctxId);
     expect(row, 'the context is in the results').toBeTruthy();
     assertWellFormedTrust(row.trust);
-    // THE MATH, read from the service (the wire carries band+score only since 014edd48):
+    // THE MATH, read from the service (the wire carries band+score only since an earlier change):
     // counted outcome evidence (the successful decision) → outcome.score = 1, samples ≥ 1.
     const t = await fullTrust(ctxId, 'context');
     expect(t.outcome.samples).toBeGreaterThanOrEqual(1);

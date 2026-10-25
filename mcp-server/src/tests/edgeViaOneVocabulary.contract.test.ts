@@ -4,13 +4,13 @@
  * TWO defects, one subject: "which path minted this edge?" had two spellings and two
  * reporting holes.
  *
- *   0ff77a96 — the store RESPONSE spelled the label differently from the stored COLUMN.
+ *   the store RESPONSE spelled the label differently from the stored COLUMN.
  *     `MintedEdgeVia` said 'links-arg' / 'handoff-supersession'; `EDGE_MINT_VIA` (which is
  *     what actually reaches `links.mint_via`) says 'links-param' / 'handoff-timeline'. A
  *     consumer reading the response and a consumer reading the column disagreed about the
  *     same edge, and nothing could tell them they disagreed.
  *
- *   205dbc83 — `link` and `unlink` ADVERTISE `mintVia` + `provenanceClass` in the shared
+ *   `link` and `unlink` ADVERTISE `mintVia` + `provenanceClass` in the shared
  *     `edgeRecord` output schema and never populated either. A declared contract field that
  *     is permanently absent is worse than an undeclared one: a consumer coded to the schema
  *     reads `undefined` as "this edge has no provenance", when in fact `mint_via` is NOT
@@ -94,7 +94,7 @@ afterAll(async () => {
   }
 });
 
-describe('edge provenance: the response and the column say the SAME word (0ff77a96)', () => {
+describe('edge provenance: the response and the column say the SAME word', () => {
   /**
    * THE HEADLINE. A `links`-param edge, read through BOTH surfaces. The assertion is an
    * IDENTITY between two independently-produced values — not either one against a literal —
@@ -172,7 +172,7 @@ describe('edge provenance: the response and the column say the SAME word (0ff77a
   });
 });
 
-describe('link / unlink populate the provenance they advertise (205dbc83)', () => {
+describe('link / unlink populate the provenance they advertise', () => {
   test('`link` reports the created edge\'s mintVia + provenanceClass, matching the row', async () => {
     const { conn } = await freshCase('linktool');
     const a = parseId(await viaTool('context_store', { content: `onevocab link a ${STAMP}`, type: 'discussion' }, conn));

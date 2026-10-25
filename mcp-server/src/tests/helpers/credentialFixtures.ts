@@ -55,20 +55,20 @@ export const SYNTHETIC: Readonly<Record<string, string>> = {
   'sql-password-literal': `ALTER USER postgres ${'PASSWORD'} 'DUMMY_${body(12, 'y')}';`,
 };
 
-// ── THE HISTORICAL BODIES, BY SHAPE (an earlier task / Auditor 86f5887a E5) ──────────────────
+// ── THE HISTORICAL BODIES, BY SHAPE (an earlier task / audit finding E5) ──────────────────
 // The two values scrubbed from prod on 2026-09-08, the 2026-09-01 transcript
-// leak, the untriaged task row and the ra-an earlier commit carrier — each recreated as
+// leak, the untriaged task row and the leaked-password commit carrier — each recreated as
 // its SHAPE with a DUMMY body, never the value. Every one of these must now be REFUSED.
 export const HISTORICAL_SHAPES: ReadonlyArray<readonly [string, string, string]> = [
-  ['a5840b58 completion body (SURVEYOR_LLM_API_KEY=…, 2026-01-26)',
+  ['completion body (SURVEYOR_LLM_API_KEY=…, 2026-01-26)',
     `deployed with ${assign('SURVEYOR_LLM_API_KEY', `DUMMY_${body(20, 'a')}1`)} in /etc/surveyor.env`, 'env-assignment-literal'],
-  ['730aa6ae error body (JWT_SECRET=…, 2025-09-18)',
+  ['error body (JWT_SECRET=…, 2025-09-18)',
     `env dump:\n${assign('JWT_SECRET', `DUMMY_${body(28, 'b')}`)}\nPORT=8080`, 'env-assignment-literal'],
-  ['80a05d73 transcript leak (MANDREL_BELIEF_GROQ_API_KEY=gsk_…, 2026-09-01)',
+  ['transcript leak (MANDREL_BELIEF_GROQ_API_KEY=gsk_…, 2026-09-01)',
     assign('MANDREL_BELIEF_GROQ_API_KEY', `gsk_${body(40, 'c')}`), 'groq-api-key'],
-  ['ffea5a2e task body (PASSWORD= + 20 chars, 2026-07-22)',
+  ['task body (PASSWORD= + 20 chars, 2026-07-22)',
     `compose env had ${assign('POSTGRES_PASSWORD', `DUMMY_${body(14, 'd')}`)} set`, 'env-assignment-literal'],
-  ['8cb7b7e6 commit carrier (ALTER USER postgres PASSWORD \'<12 chars>\')',
+  ['leaked-password commit carrier (ALTER USER postgres PASSWORD \'<12 chars>\')',
     `sudo -u postgres psql -c "ALTER USER postgres ${'PASSWORD'} 'DUMMY_${body(12, 'e')}';"`, 'sql-password-literal'],
   ['compose mapping written as an assignment in evidence',
     `docker-compose.yml: ${assign('MINIO_ROOT_PASSWORD', `DUMMY_${body(16, 'f')}`, '"')}`, 'env-assignment-literal'],

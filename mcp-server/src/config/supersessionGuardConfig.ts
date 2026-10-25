@@ -11,11 +11,11 @@
  * runtime/lib/__fixtures__/boot-recall-collapse/walk-cycle-eb98686d.json and is the fixture
  * the contract test runs on):
  *
- *   866cba4f  superseded_by 8c8c08d4   tier:declared
- *   8c8c08d4  superseded_by eb98686d   tier:declared
- *   eb98686d  superseded_by 866cba4f   tier:soft  conf:0.85     ← a cycle
+ *   superseded_by 2b3c4d5e   tier:declared
+ *   superseded_by 3c4d5e6f   tier:declared
+ *   superseded_by 4d5e6f7a   tier:soft  conf:0.85     ← a cycle
  *
- * `eb98686d` was the LIVE handoff head. The belief adjudicator (a real LLM call, default ON,
+ * `3c4d5e6f` was the LIVE handoff head. The belief adjudicator (a real LLM call, default ON,
  * `beliefConfig.ts`) minted an opinion saying it was superseded by a record it transitively
  * supersedes BY DECLARATION. The declared-edge resolver was right every time; the opinion was
  * the thing that was wrong. The consequence is not cosmetic — the soft edge halves the head's

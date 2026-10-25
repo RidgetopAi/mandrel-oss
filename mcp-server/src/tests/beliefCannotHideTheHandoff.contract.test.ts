@@ -2,7 +2,7 @@
  * THE DIVERGENCE TEST — the belief adjudicator cannot delete the answer.
  *
  * ── WHY A TEST WITH *UNRELATED* CONTENT WOULD NOT HAVE CAUGHT THIS BUG ───────────────
- * The pre-57f35350 defect was NOT "the adjudicator fires on unrelated records". The
+ * The earlier defect was NOT "the adjudicator fires on unrelated records". The
  * adjudicator was CORRECT about the overlap and wrong about the RELATIONSHIP: given a live
  * handoff and a newer note covering the same subject at high cosine, it returned a
  * high-confidence `supersedes` verdict — a reasonable read of two overlapping records — and

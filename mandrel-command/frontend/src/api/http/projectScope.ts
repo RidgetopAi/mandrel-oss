@@ -1,5 +1,5 @@
 /**
- * projectScope — THE way a page scopes a request to ITS OWN project (epic 41293984 §A1).
+ * projectScope — THE way a page scopes a request to ITS OWN project (page-scope epic §A1).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE BUG THIS EXISTS TO CLOSE — READ THIS BEFORE WRITING A PAGE
@@ -86,7 +86,7 @@ export function scopedRequestConfig(
       'Refusing to send an unscoped request: this page has no project selected yet. ' +
         'Guard the call on `project.projectId` (e.g. react-query `enabled: !!project.projectId`). ' +
         'Falling back to the ambient project here would file writes in the wrong project ' +
-        'and silently widen reads to every project (epic 41293984 §A1).'
+        'and silently widen reads to every project (page-scope epic §A1).'
     );
   }
 

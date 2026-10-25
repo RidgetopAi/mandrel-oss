@@ -1,12 +1,12 @@
 /**
- * THE HANDOFF STALENESS STAMP (finding bf1980d5).
+ * THE HANDOFF STALENESS STAMP.
  *
  * ═══ THE DEFECT, MEASURED ═══════════════════════════════════════════════════════════════
  * The boot package prints two things about the same work: (1) the latest handoff as FULL
  * frozen prose, and (2) a live recall walk of the database. NOTHING marks which one is
  * current. Two independent blind readers — no transcript, no Mandrel access, no contact with
  * each other — both hit this unprompted on the 2026-08-21 P6 package: the handoff said
- * "Three remain: P3b, P4, P6" and routed the reader to BUILD `1e474867` and `2dbf3073`,
+ * "Three remain: P3b, P4, P6" and routed the reader to BUILD `2b3c4d5e` and `3c4d5e6f`,
  * while the walk on the same page carried a builder run report AND a reviewer verdict for
  * both. Reader B, verbatim: "Acting on the handoff's list could mean rebuilding finished
  * work."
@@ -18,7 +18,7 @@
  * ═══ ★ THE STORED RECORD IS NEVER MODIFIED ══════════════════════════════════════════════
  * This is a RENDER-TIME OVERLAY. The handoff row is the archive of what was true when it was
  * written; rewriting it to today's truth would destroy the only record of the author's state
- * of knowledge, and would be the `task_update` description-clobber defect (39abb203) wearing
+ * of knowledge, and would be the `task_update` description-clobber defect wearing
  * a new hat. NOTHING in this file issues an UPDATE, and the contract test asserts the stored
  * `contexts` row is byte-identical across a render. If a future change here needs to write,
  * it is the wrong change.

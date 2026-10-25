@@ -1,7 +1,7 @@
 /**
  * EMBED-FAILURE RESILIENCE CONFIG — the single source of truth for the tunables of the
- * unified embed-failure resilience mechanism (merges 430a7329 +
- * 8a3b9fcd into ONE mechanism). The operator chose Option B: degrade + queue + alert
+ * unified embed-failure resilience mechanism (merges two earlier designs,
+ * into ONE mechanism). The operator chose Option B: degrade + queue + alert
  * — never lose a record, never fail silently.
  *
  * STANDING PRINCIPLE (the operator, binds this + all future builds): NO HARDCODED VARIABLES.

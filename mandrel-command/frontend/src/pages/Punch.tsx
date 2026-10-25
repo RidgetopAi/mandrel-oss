@@ -49,7 +49,7 @@ const Punch: React.FC = () => {
   const creating = location.pathname.endsWith('/punch/new');
   const desktop = useMediaQuery(DESKTOP_MEDIA_QUERY);
 
-  // THE PAGE OWNS ITS PROJECT (epic 41293984) — no `allowAll`: a punch files into ONE project.
+  // THE PAGE OWNS ITS PROJECT (page-scope epic) — no `allowAll`: a punch files into ONE project.
   const project = usePageProject();
   const projectId = project.projectId;
   const projectNames = React.useMemo(

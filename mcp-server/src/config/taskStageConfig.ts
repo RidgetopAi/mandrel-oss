@@ -40,7 +40,7 @@ export type PunchSource = (typeof PUNCH_SOURCES)[number];
 
 /**
  * `metadata.punch.doneWhen[].owner` legal values (an earlier decision /
- * 1e53165a). `lane` = a confined lane can produce the proof itself, and REQUIRES `proof`
+ * the Punch List loop decision). `lane` = a confined lane can produce the proof itself, and REQUIRES `proof`
  * (a repo-relative path or a test id — the artifact the critic opens); `human` = the clause
  * needs a person and carries no proof.
  */

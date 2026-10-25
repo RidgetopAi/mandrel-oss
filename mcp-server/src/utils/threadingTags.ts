@@ -5,9 +5,9 @@
  * tasks↔contexts↔decisions into one searchable story using a small, fixed tag
  * grammar. Historically that grammar was a HAND-MAINTAINED convention with no
  * machine validation for the threading prefixes — a typo (`task:9e25` instead of
- * `task:9e25dac7`, `scope:prod` instead of `scope:product`) would silently store a
+ * `task:1a2b3c4d`, `scope:prod` instead of `scope:product`) would silently store a
  * tag that never joins, quietly breaking the thread. `ref:` was made first-class in
- * 4ff5809d (see ./refs.ts); this module extends that exact approach — WARN & NORMALIZE,
+ * (see ./refs.ts); this module extends that exact approach — WARN & NORMALIZE,
  * NEVER reject/drop — to the rest of the threading prefixes so threading is consistent
  * and self-documenting end-to-end.
  *
@@ -36,7 +36,7 @@
  *   - We NEVER reject a context_store carrying a malformed threading tag (that would
  *     be a regression against existing callers and could lose a user's content).
  *   - We normalize the salvageable common cases (trim, lowercase) so `Task:9E25DAC7`
- *     becomes `task:9e25dac7`, and RETURN a warning describing what changed.
+ *     becomes `task:1a2b3c4d`, and RETURN a warning describing what changed.
  *   - An unsalvageable value is QUARANTINED (see below), never dropped, and warned about.
  *
  * ═══ WHY QUARANTINE, AND WHY NOT REJECTION ═══════════════════
@@ -85,7 +85,7 @@ import { LENS_AXES } from '../config/threadingVocabConfig.js';
  * silently-unthreaded write. MEASURED on this ref against a real in-project task
  * (`460fd070-0f8d-4d31-9d78-72ae4d1e3a01`), one context_store per form, reading `links`:
  *
- *   task:460fd070                            -> stored as-is            edge minted: 1
+ *   task:1a2b3c4d                        -> stored as-is            edge minted: 1
  *   task:460fd0700          (9 hex)          -> invalid-task:460fd0700  edge minted: 0
  *   task:460fd0700f8d       (12 hex)         -> invalid-task:...        edge minted: 0
  *   task:460fd070-0f8d-...  (the FULL uuid)  -> invalid-task:...        edge minted: 0

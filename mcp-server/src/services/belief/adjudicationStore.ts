@@ -1,5 +1,5 @@
 /**
- * BELIEF ADJUDICATION STORE (design ca9a33c0 §1: "a new small table belief_adjudications
+ * BELIEF ADJUDICATION STORE (the belief-layer design §1: "a new small table belief_adjudications
  * records EVERY pairwise verdict = idempotency + audit trail + the labeled-set feeder").
  *
  * Every verdict — including RESTATES / UNRELATED / below-dial — is persisted. This is the
@@ -60,7 +60,7 @@ export async function recordAdjudication(
   const key = pairKey(input.a.id, input.b.id);
   const derivedAction = input.outcome.action; // 'soft_possibly_superseded' | 'none'
   // no_edge_reason explains WHY the pair produced NO edge at all — the NoEdgeReason. It is
-  // NULL for `soft_possibly_superseded`, which DID produce an edge. Before 57f35350 the soft
+  // NULL for `soft_possibly_superseded`, which DID produce an edge. Before the no-hard-tier change the soft
   // tier also wrote a below-bar reason here (below_confidence / below_cosine), naming which
   // hard-mint threshold it had missed; the thresholds are gone, so there is nothing left to
   // name and `derived_action` alone carries the outcome. Historical rows keep their value.

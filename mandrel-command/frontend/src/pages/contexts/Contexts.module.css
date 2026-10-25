@@ -671,7 +671,7 @@
   gap: var(--sp-4);
 }
 
-/* The page's own project selector, first in the filter row (epic 41293984). */
+/* The page's own project selector, first in the filter row (page-scope epic). */
 .projectSelect {
   min-width: 170px;
 }

@@ -126,7 +126,7 @@ describe('record permalinks in tool output (real DB)', () => {
     const resp = await viaTool('context_store', { content: 'permalink probe A', type: 'planning' });
     const id = resp.structuredContent.context.id;
     expectPermalink(responseText(resp), id);
-    // STRUCTURED (b0b3d450): the created context's structured payload carries the url.
+    // STRUCTURED: the created context's structured payload carries the url.
     expectStructuredUrl(resp.structuredContent.context.url, id);
   });
 

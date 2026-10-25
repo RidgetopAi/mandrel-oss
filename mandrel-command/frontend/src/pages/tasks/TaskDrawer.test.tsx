@@ -13,7 +13,7 @@
  * create target (page project → the no-project-must-pick case).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  THE CREATE TARGET CHANGED (epic 41293984 §A1)
+ *  THE CREATE TARGET CHANGED (page-scope epic §A1)
  * ════════════════════════════════════════════════════════════════════════════════════
  * Create mode used to seed its project from `useEffectiveProjectId()` — the AMBIENT
  * project. With a per-page selector that is a DIFFERENT value by design: the ambient one
@@ -361,7 +361,7 @@ describe('TaskDrawer — create flow', () => {
 
   it('seeds create mode from the PAGE project, not the ambient default', async () => {
     // THE BUG THIS PINS: the page is showing daisy; the ambient default is riverbend.
-    // Before epic 41293984 the drawer read the ambient one and a task created from the
+    // Before the page-scope epic the drawer read the ambient one and a task created from the
     // daisy board was filed in riverbend — where the user was not looking.
     mockEffectiveId = P_RIVERBEND;
     mount(

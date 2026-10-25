@@ -112,7 +112,7 @@ export interface TaskColumnPage {
  *
  * ── WHY THIS EXISTS, SEPARATELY FROM `useTaskList` ──────────────────────────────────
  * The Board/PunchBoard used to split ONE shared, LIMIT-bound list into columns
- * client-side. Once a project passed the list cap, the terminal-order fix (d186ff4f)
+ * client-side. Once a project passed the list cap, the terminal-order fix
  * sorts every `completed`-implying row after every open one, so the LIMIT cuts the tail
  * off the fetch — and the tail is EXCLUSIVELY the terminal columns (Done / Merged /
  * Deployed). A shared cap can only ever protect the columns lucky enough to sort first.
@@ -351,7 +351,7 @@ function invalidateTaskCaches(qc: ReturnType<typeof useQueryClient>, id?: string
 /**
  * POST /api/tasks — create a task from the CRUD drawer's create mode.
  *
- * ── THE WRITE SCOPE (epic 41293984 §A1) ─────────────────────────────────────────────
+ * ── THE WRITE SCOPE (page-scope epic §A1) ─────────────────────────────────────────────
  * `controllers/task.ts` reads `project_id` from the BODY, so this write was never going to
  * land in the ambient project the way `decision_record`/`decision_update`/`context_store`
  * would. It is scoped anyway, and the scope is derived from the SAME `project_id` the

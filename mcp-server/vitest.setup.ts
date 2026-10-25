@@ -134,7 +134,7 @@ afterAll(() => {
 // COLLECTION failure on whichever innocent file logs next.
 // Spying only when the method is not already a mock caps the chain at 1;
 // mockClear keeps the per-test fresh call history the old code got for free.
-// ⚠️ THIS SILENCES YOUR PROBE WITNESS TOO (defect 8e74e121). A mutation
+// ⚠️ THIS SILENCES YOUR PROBE WITNESS TOO. A mutation
 // probe that prints its "the mutant ran" marker with console.* from inside test-run code
 // emits NOTHING — the spy is installed before every test — so a LANDED mutation reads as
 // "did not land" and burns a round.

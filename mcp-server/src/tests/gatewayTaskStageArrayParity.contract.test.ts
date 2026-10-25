@@ -3,7 +3,7 @@
  *
  * THE BUG THIS GUARDS. `task({action:'list', stage:['draft','ready']})` on the gateway
  * surface was reported to reject with "'stage': Invalid input" while the flat `task_list`
- * tool accepted the identical filter (Punch List lane A, f8fdd7fa).
+ * tool accepted the identical filter (Punch List lane A).
  *
  * ROOT CAUSE (measured, not assumed). `routes/gateway.ts` resolves (gateway,action)->opId
  * and calls the EXACT SAME `validateToolArguments(opId, ...)` the flat tool calls — see

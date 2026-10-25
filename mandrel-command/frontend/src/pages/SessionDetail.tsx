@@ -8,7 +8,7 @@
  * The five tabs are all wired to REAL data through the unified `api.sessions.*` client:
  *   Contexts / Tasks / Decisions / Timeline ← api.sessions.get(id)  (GET /api/sessions/:id)
  *   Files                                    ← api.sessions.files(id) (GET /api/v2/sessions/:id/files)
- * Each tab owns an honest empty state (policy 10397f65) — no fabricated rows.
+ * Each tab owns an honest empty state (the data-gap policy) — no fabricated rows.
  *
  * Route guard mirrors ProjectDetail's self-heal: a malformed :id (not a UUID) never
  * fires a request guaranteed to 400/404 (queries disabled) and redirects to /sessions,

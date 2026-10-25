@@ -91,11 +91,11 @@ async function read(connectionId: string): Promise<void> {
   await routeExecutor('mandrel_ping', {}, { connectionId } as any);
 }
 
-describe('38cfeb72 bug 2: a READ advances session liveness', () => {
+describe('read-path liveness bug 2: a READ advances session liveness', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(
-        `INSERT INTO projects (name, description) VALUES ($1, '38cfeb72 read-activity-touch test')
+        `INSERT INTO projects (name, description) VALUES ($1, 'read-activity-touch test')
          RETURNING id`,
         [`rat-proj-${STAMP}`]
       )

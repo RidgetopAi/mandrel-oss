@@ -361,7 +361,7 @@ describe('task-source edge minting', () => {
       //
       // The spine is a DECISION on purpose: this test asserts on MEMBERSHIP (`informs`)
       // only, keeping it independent of task-spine structural behaviour. (Position no
-      // longer mints `subtask_of` at all — ef51d3df; only the declared parentTaskId does.)
+      // longer mints `subtask_of` at all — the declared-parent change; only the declared parentTaskId does.)
       const cfg = await import('../config/tagEdgeConfig.js');
       const original = cfg.TASK_EDGE_MINT_CONFIG.enabled;
       try {

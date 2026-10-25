@@ -1,5 +1,5 @@
 -- Migration 075: PER-USER PROJECT ACCESS — the `user_project_access` table
--- Task: b3cf883b (durable F-01/F-04 fix — single trust boundary through the command backend)
+-- Task: durable F-01/F-04 fix — single trust boundary through the command backend
 --
 -- ── WHAT THIS CLOSES (F-04) ───────────────────────────────────────────────────────────
 -- The command backend's projectContextMiddleware (mandrel-command/backend/src/middleware/

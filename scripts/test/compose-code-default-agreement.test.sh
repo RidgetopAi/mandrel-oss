@@ -222,7 +222,7 @@ DEFAULT_CONTRACT=(
   # The CODE regex reaches the call site DIRECTLY — envBool('<literal name>', <default>) —
   # which is only possible because the name is a literal there. It was an
   # ATTRIBUTION_NOTICE_ENV.ENABLED indirection until STAGE 0a5 REDed it (merged ref
-  # b381b98a); had it stayed, this row could not have been written as CODE at all and the
+  # an earlier change); had it stayed, this row could not have been written as CODE at all and the
   # honest classification would have been EXEMPT, i.e. the hole. Two guards, one root cause.
   "mcp-server~MANDREL_ATTRIBUTION_NOTICE_ENABLED~MANDREL_ATTRIBUTION_NOTICE_ENABLED~CODE~mcp-server/src/config/attributionNoticeConfig.ts~envBool\\('MANDREL_ATTRIBUTION_NOTICE_ENABLED', ([a-z]*)\\)~"
   # The other five are empty passthroughs. envStr/envInt fold '' into the fallback
@@ -276,7 +276,7 @@ DEFAULT_CONTRACT=(
   "mcp-server~MANDREL_OAUTH_DCR_SWEEP_INTERVAL_MINUTES~MANDREL_OAUTH_DCR_SWEEP_INTERVAL_MINUTES~CODE~mcp-server/src/config/oauthClientConfig.ts~envInt\\('MANDREL_OAUTH_DCR_SWEEP_INTERVAL_MINUTES', *([0-9]+)\\)~"
   # Derived code default (path.join(process.cwd(), 'aidis.pid')). The compose value
   # deliberately pins a tmpfs path so a restart always starts lock-free (outage
-  # 2026-06-27, c316494d) — a derived default cannot be compared to a literal.
+  # 2026-06-27) — a derived default cannot be compared to a literal.
   "mcp-server~AIDIS_LOCK_FILE~AIDIS_LOCK_FILE~EXEMPT~~~code default is DERIVED (processLock.ts:6 path.join(process.cwd(),'aidis.pid')); compose deliberately pins tmpfs"
 
   # --- mandrel-command-backend ----------------------------------------------

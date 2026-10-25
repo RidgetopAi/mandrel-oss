@@ -8,7 +8,7 @@
  * 'embedding'. That made the generic suite STRUCTURALLY UNABLE to run under prod's real
  * config (gemma → `embedding_gemma`, vector(768)): a 1536-d fixture is rejected by the
  * 768-d column's CHECK constraint. CI could never catch a gemma-only regression (it bit us
- * on 709aca13). The fix is embedder-agnostic BY CONSTRUCTION: derive geometry from
+ * on an earlier task). The fix is embedder-agnostic BY CONSTRUCTION: derive geometry from
  * activeEmbedder() so the SAME test runs correctly under either embedder, and the CI gate exercises
  * BOTH as an axis instead of pinning one.
  *

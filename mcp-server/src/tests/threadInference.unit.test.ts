@@ -1,6 +1,6 @@
 /**
  * WRITE-TIME NO-ORPHAN INFERENCE — DB-backed contract test for inferAndMintRelatedTo
- * (branch:mandrel-reliability, task ST-4 b5dbcb94, spec §B2/B4).
+ * (branch:mandrel-reliability, task ST-4, spec §B2/B4).
  *
  * Proves the Component-B inference helper against a real migrated Postgres (the CI
  * disposable ci_* DB): the nearest NON-ORPHAN neighbor above INFERENCE_THRESHOLD earns

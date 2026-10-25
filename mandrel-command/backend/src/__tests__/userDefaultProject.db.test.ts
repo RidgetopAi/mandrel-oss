@@ -1,5 +1,5 @@
 /**
- * DB-integration guard for the PER-USER default project (epic 41293984 §A,
+ * DB-integration guard for the PER-USER default project (page-scope epic §A,
  * migration 076 `admin_users.default_project_id`).
  *
  * ── WHAT THIS GUARD IS ANCHORED ON, AND WHY ──────────────────────────────────────────

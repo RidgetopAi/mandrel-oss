@@ -2,7 +2,7 @@
  * BuildStory — the TYPED graph edges touching a task (the TreeWalker "build story" moat),
  * served by GET /api/tasks/:id/links (`useTaskLinks` → `api.tasks.links`). REAL `links`-table
  * rows (structure), NEVER the task's `dependencies` array or any semantic `related` list
- * (data-gap policy 10397f65 — never conflate). Honest empty / loading / error states.
+ * (the data-gap policy — never conflate). Honest empty / loading / error states.
  *
  * Extracted from the old below-board ThreadDetail so the task CRUD drawer reuses the exact
  * same links rendering when a task is selected — the build story moved INTO the drawer, not

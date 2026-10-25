@@ -6,7 +6,7 @@
  * screen rebuilds copy: config-driven cards, each owning its loading/empty/error state.
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  THIS PAGE IS PROJECT-SCOPED. IT USED TO CLAIM IT WASN'T. (epic 41293984)
+ *  THIS PAGE IS PROJECT-SCOPED. IT USED TO CLAIM IT WASN'T. (page-scope epic)
  * ════════════════════════════════════════════════════════════════════════════════════
  * The header said "Mandrel-wide" and two card captions repeated it. That was never true.
  * Every read on this page — `/api/dashboard/stats`, `/api/sessions`, `/api/sessions/trends`,
@@ -60,7 +60,7 @@ const Dashboard: React.FC = () => {
   const today = new Date().toLocaleDateString(undefined, DATE_FMT);
 
   // Scoped by the ONE switch in the topbar: one project at a time, opening
-  // on the user's default. No "All projects" here (walkthrough ed6ae449 F2).
+  // on the user's default. No "All projects" here (the project-switch walkthrough F2).
   const project = usePageProject();
 
   return (

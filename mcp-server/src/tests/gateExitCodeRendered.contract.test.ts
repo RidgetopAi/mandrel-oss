@@ -407,7 +407,7 @@ describe('the clip is what made this invisible', () => {
 // detector, the detector is what should have caught the sibling, so you fix the DETECTOR'S
 // POPULATION, you do not file the instance. §1–§7 covered recall_thread's two line renderers
 // and stopped there. The boot package has FOUR MORE, in project_briefing, and they rendered
-// neither the gate code (252200e1) nor the review call (d836f757) for ANY record kind.
+// neither the gate code nor the review call for ANY record kind.
 //
 // AND THE DROP WAS ONE LAYER EARLIER THAN IN RECALL, which is the part worth remembering:
 // there, the fact was on the node and the renderer ignored it. Here, no Briefing* record type
@@ -591,8 +591,8 @@ describe('project_briefing renders the same structured facts as the walk', () =>
     expect(cannotMeasure).toContain('gate-rc:2=CANNOT-MEASURE');
   });
 
-  test('THE SIBLING FACT TOO — the review call reaches the briefing (d836f757)', () => {
-    // The class is `renderer-drops-structured-fact`, not `renderer-drops-the-gate`. d836f757
+  test('THE SIBLING FACT TOO — the review call reaches the briefing', () => {
+    // The class is `renderer-drops-structured-fact`, not `renderer-drops-the-gate`. the review-call fix
     // fixed the review call on the recall lines and left it dropped here; a detector for the
     // class that only ever checked the gate would be one instance short by construction.
     expect(briefingWith({ tasks: [bTask({ verdict: 'APPROVE-PENDING-GATE' })] })).toContain(

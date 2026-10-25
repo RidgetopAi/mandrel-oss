@@ -7,7 +7,7 @@
  * its coverage line (bars + coverage from ONE payload, in ONE unit). Structural wiring
  * (no antd, unified client, reuse charts, no hex) is in Analytics.wiring.test.ts.
  *
- * ── PLUS, SINCE epic 41293984, THE PAGE'S OWN PROJECT SCOPE ──────────────────────────
+ * ── PLUS, SINCE the page-scope epic, THE PAGE'S OWN PROJECT SCOPE ──────────────────────────
  * Analytics used to open on `null` — every project — and pass that scope to its four
  * reads. It now opens on the user's DEFAULT project, keeps `?project=` in the URL as the
  * source of truth, and scopes ALL FOUR reads explicitly. Four is the number that matters:
@@ -321,7 +321,7 @@ describe('Analytics — data state', () => {
  * an onboarding prompt rather than "no data".
  *
  * jsdom has no layout, so NOTHING here proves the bars are legible — that is proved by
- * browser screenshots (reports/artifacts/actor-bars-b004dad2/). These assert the TEXT.
+ * browser screenshots. These assert the TEXT.
  */
 describe('Analytics — the actor panel is live, and states its own coverage', () => {
   it('names the real endpoint and draws a bar per attributed actor', async () => {
@@ -625,7 +625,7 @@ describe('Analytics — error state', () => {
   });
 });
 
-describe('Analytics — project scope (epic 41293984 §E)', () => {
+describe('Analytics — project scope (page-scope epic §E)', () => {
   it('opens on the USER DEFAULT project, not "every project"', async () => {
     await mount();
     await settle();

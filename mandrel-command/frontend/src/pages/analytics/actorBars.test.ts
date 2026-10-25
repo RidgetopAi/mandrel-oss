@@ -48,7 +48,7 @@ describe('rollUpActors — folded by SHARE, never dropped', () => {
   });
 
   it('folds everything BELOW the share floor into ONE bar carrying their combined count', () => {
-    // THE MEASURED DEFECT (reports/artifacts/actor-bars-b004dad2/01-…png): at topN=8 the
+    // THE MEASURED DEFECT (a prod screenshot): at topN=8 the
     // live chart drew four sub-pixel bars ABOVE an "Other (7 actors)" row. Those four are
     // `anonymous`(9) and three `builder-*`(3,2,2) against a leader of 730 — every one of
     // them under 2% of the largest, and every one of them individually invisible.
@@ -257,7 +257,7 @@ describe('valueAxisConfig — a numeric tick fits the gutter it is drawn in', ()
  * the domain ARITHMETIC — one ceiling, taken from the largest bar in either group, and
  * unaffected by the per-group roll-up floor. That the two charts are actually DRAWN
  * against it is a layout fact, proved by the matched browser pair in
- * reports/artifacts/tokens-5219eb75/08-BEFORE-… / 09-AFTER-….
+ * a BEFORE / AFTER pair of browser screenshots.
  */
 describe('sharedValueDomain — one ceiling for both groups', () => {
   it('takes the largest DRAWN bar across BOTH groups, from either side', () => {

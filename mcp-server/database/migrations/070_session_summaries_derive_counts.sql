@@ -1,5 +1,5 @@
 -- Migration 070: v_session_summaries derives its counts from the child tables
--- Task: 3f9fb289 (session counter columns render 0 once a session ends)
+-- Task: session counter columns render 0 once a session ends
 --
 -- WHY THIS VIEW IS IN SCOPE: it is the UPSTREAM of four surfaces that all rendered zeros —
 -- `/api/v2/sessions` (list), `/api/v2/sessions/:id` (detail), `/api/v2/sessions/compare`

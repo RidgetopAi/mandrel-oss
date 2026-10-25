@@ -227,7 +227,7 @@ const validateRegisterRequest = (body: any): body is RegisterRequest => {
  *     # without this override the SHIPPED SPEC told customers that the login endpoint needs
  *     # a bearer token — which is both false and impossible, and it is what a generated
  *     # client would try to attach. Found 2026-08-25 by cross-checking the live spec
- *     # against the route census (the class is ee74cd4d).
+ *     # against the route census (the class is the route-census drift class).
  *     security: []
  *     requestBody:
  *       required: true

@@ -139,7 +139,7 @@ if ((OUTCOME_OUT_EDGE_TYPES as readonly string[]).includes('related_to')) {
   );
 }
 
-// ── HARD TRUST INVARIANT (task-source edge minting, 86d56b8c Q2) ───────────────
+// ── HARD TRUST INVARIANT (task-source edge minting, the task-edge minting rule Q2) ───────────────
 // `depends_on` is task→task SCHEDULING STRUCTURE, not outcome evidence. Task A depending
 // on task B says NOTHING about whether B's outcome is A's evidence — a task routinely
 // depends on work that failed, was abandoned, or is not started. If it were an outcome

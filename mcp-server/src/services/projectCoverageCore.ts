@@ -94,7 +94,7 @@ export interface CoverageEdge {
 
 /**
  * The provenance split over the examined edges — reported BESIDE the coverage ratios, never
- * folded into them. WHY (graph audit 42dca388): edge COVERAGE held 97-98% for 15 days while
+ * folded into them. WHY (the graph audit): edge COVERAGE held 97-98% for 15 days while
  * the declared minting mechanism was dead, because a guess-edge and a declared-edge count
  * identically. The split is what makes a guess quietly replacing a fact visible.
  */

@@ -106,5 +106,5 @@ COMMENT ON TABLE belief_adjudication_attempts IS
 
 DO $$
 BEGIN
-  RAISE NOTICE '✅ belief_adjudication_attempts created (0b7d97b5): attempted AND completed are now one query.';
+  RAISE NOTICE '✅ belief_adjudication_attempts created: attempted AND completed are now one query.';
 END $$;

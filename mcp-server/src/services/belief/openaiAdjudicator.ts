@@ -5,13 +5,13 @@
  * can drive ANY OpenAI-compatible server. Its concrete use here is the desktop llama.cpp
  * server running Qwen3.6-35B-A3B on the tailnet (`run-server-eval.sh`, host 192.0.2.10:5005)
  * — a "does a BIG local model clear the case-3 scope wall?" measurement. Local-vs-API stays a
- * config flip (provider factory), never a pipeline rewrite (design ca9a33c0 §3/§9a).
+ * config flip (provider factory), never a pipeline rewrite (the belief-layer design §3/§9a).
  *
  * It reuses the SAME adjudication prompt + verdict contract + parser as the ollama provider
  * (imported from ollamaAdjudicator) so the only variable across the bake-off is the MODEL, not
  * the prompt — one source, no drift.
  *
- * SERVING HARDENING (survey 13e60f6c): greedy decode (temp 0 + top_k 1) + JSON-mode output.
+ * SERVING HARDENING: greedy decode (temp 0 + top_k 1) + JSON-mode output.
  * llama.cpp's Chat Completions honours `response_format:{type:"json_object"}` (grammar-forced
  * valid JSON) — the closest equivalent to ollama's grammar-JSON. NOTE: this pins the output to
  * *valid JSON* but does NOT token-pin the verdict ENUMS the way ollama's json-schema `format`

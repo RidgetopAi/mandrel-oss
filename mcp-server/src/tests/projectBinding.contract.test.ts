@@ -92,7 +92,7 @@ describe('rung 3 — UNBOUND with no explicit argument is byte-identical to toda
     expect(r.projectId).toBeUndefined();
   });
 
-  test('an unbound client naming a NONEXISTENT project is refused, not passed through (1ca8b181)', async () => {
+  test('an unbound client naming a NONEXISTENT project is refused, not passed through', async () => {
     const err = await resolveProjectBinding('context_store', { projectId: 'no-such-project' }).then(
       () => null,
       (e) => e
@@ -102,7 +102,7 @@ describe('rung 3 — UNBOUND with no explicit argument is byte-identical to toda
     expect(err.message).toContain('no-such-project');
   });
 
-  test('an unbound client naming a REAL project by name gets the canonical UUID (1ca8b181)', async () => {
+  test('an unbound client naming a REAL project by name gets the canonical UUID', async () => {
     const r = await resolveProjectBinding('context_store', { projectId: OTHER_PROJECT });
     expect(r.bound).toBe(false);
     expect(r.source).toBe('explicit');
@@ -223,7 +223,7 @@ describe('project_switch — the human rung, and what a BOUND client may do to i
    * classification of "which project params get canonicalised", i.e. a rule in two places that
    * agree today and drift later.
    */
-  test('UNBOUND: project_switch to any project still succeeds, via the canonical id (1ca8b181)', async () => {
+  test('UNBOUND: project_switch to any project still succeeds, via the canonical id', async () => {
     const r = await resolveProjectBinding('project_switch', { project: OTHER_PROJECT });
     expect(r.bound).toBe(false);
     expect(r.source).toBe('explicit');

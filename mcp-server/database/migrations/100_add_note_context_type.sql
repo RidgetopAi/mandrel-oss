@@ -1,4 +1,4 @@
--- Migration 100: Add 'note' context type (the auditor rec b53c213f)
+-- Migration 100: Add 'note' context type (the auditor recommendation)
 -- Date: 2026-09-08
 -- Purpose: give the GENERIC capture a real home. In the Phase-3 eval 5/7 stores guessed
 --   type='fact' — an invalid value — because no generic type existed. `note` is that type.

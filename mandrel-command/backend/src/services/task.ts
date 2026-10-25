@@ -1249,7 +1249,7 @@ export class TaskService {
    * the window then starts at the earliest task date for the scope. Days with no activity
    * read 0 (real zeros, not gaps).
    *
-   * HONEST EMPTY (policy 10397f65): we return `[]` (→ the panel's "not yet available"
+   * HONEST EMPTY (the data-gap policy): we return `[]` (→ the panel's "not yet available"
    * state) only when there is ZERO task ACTIVITY of either kind — no created AND no
    * completed — in the window. The chart plots BOTH a completed/day and a created/day
    * line, so a window with created-but-not-yet-completed tasks is real activity and lights

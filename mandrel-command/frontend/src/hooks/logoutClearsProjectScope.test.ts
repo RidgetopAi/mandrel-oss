@@ -2,7 +2,7 @@
  * THE FIFTH LADDER PATH — logout must not carry user A's project into user B's session.
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  THE DEFECT THIS EXISTS TO CATCH (Reviewer B3, reject round 1 of epic 41293984)
+ *  THE DEFECT THIS EXISTS TO CATCH (Reviewer B3, reject round 1 of the page-scope epic)
  * ════════════════════════════════════════════════════════════════════════════════════
  * `ProjectContext` asserted, in a comment, that a user switch needed no handling because
  * "the 401 path navigates to /login and a real page load drops module memory outright."

@@ -1,5 +1,5 @@
 /**
- * API & tokens section — MIXED, honestly labelled (data-gap policy 10397f65).
+ * API & tokens section — MIXED, honestly labelled (the data-gap policy).
  *
  *   • MCP bridge token rotate/read — NO Command backend endpoint yet → disabled control
  *     with a note naming the gap (never a fake "Rotate" button that no-ops).

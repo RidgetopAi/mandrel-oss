@@ -45,7 +45,7 @@ export const DecisionEditDrawer: React.FC<DecisionEditDrawerProps> = ({
   pageProjectId,
 }) => {
   /**
-   * ── THE WRITE SCOPE (epic 41293984 §A1) ────────────────────────────────────────────
+   * ── THE WRITE SCOPE (page-scope epic §A1) ────────────────────────────────────────────
    * `PUT /api/decisions/:id` is a `requireWriteProjectId` controller: it resolves a
    * project from the REQUEST (header beats body) and hands it to MCP `decision_update`,
    * which scopes the decisionId lookup by it. Send nothing and it resolves to the ambient

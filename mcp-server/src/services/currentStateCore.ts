@@ -231,7 +231,7 @@ export interface CurrentState {
    * A context has no lifecycle column, so before this existed the ONLY way one could reach a
    * section was `latestTrustedOutcomes` — which is trust-gated. Trust accrues AFTER the fact
    * (vouching), so a context written minutes ago is `unproven` BY CONSTRUCTION and fell to the
-   * `historical` omission COUNT. Measured on live prod 2026-08-22, anchor 9c47ddc6: an earlier note
+   * `historical` omission COUNT. Measured on live prod 2026-08-22, anchor 2b3c4d5e: an earlier note
    * (a run report carrying a DECLARED informs edge to the anchor) was absent from
    * `current` at depth 1 and 2, and present at `headline`. `current` is the boot altitude, so
    * the one altitude an agent wakes up on was structurally biased to the settled past.
@@ -744,7 +744,7 @@ function section(
  *
  * FAIL-OPEN ON UNKNOWN: a null/undefined implementation_status counts as UNBUILT. The
  * alternative — treating "we do not know" as "it shipped" — is precisely the direction the
- * ec1c3945 miss went, and an under-count here is the failure that has no
+ * miss went, and an under-count here is the failure that has no
  * symptom. The policy list comes from config; nothing is spelled inline.
  */
 function countUnbuilt(nodes: CurrentStateInputNode[], cfg: CurrentStateConfig): number {

@@ -168,11 +168,11 @@ paths = [
 #         uncovered deliberately rather than claimed.
 #     SQL `... PASSWORD '<literal>'`     CAUGHT since 2026-09-08 (rule
 #         mandrel-credential-sql-password, below). MEASURED MISS before that: commit
-#         8cb7b7e6 (2025-12-01) carried the LIVE postgres superuser password as
+#         (2025-12-01) carried the LIVE postgres superuser password as
 #         `ALTER USER postgres PASSWORD '<12 chars>'` in scripts/prod-host-setup.sh, and
-#         `gitleaks 8.18.4 detect --log-opts='8cb7b7e6^..8cb7b7e6' -c .gitleaks.toml`
+#         `gitleaks 8.18.4 detect --log-opts='<sha>^..<sha>' -c .gitleaks.toml`
 #         reported "no leaks found" with all three rules above in force (the auditor record
-#         86f5887a E4). The name/value separator there is a SPACE and a
+#         E4). The name/value separator there is a SPACE and a
 #         quote, not `=` or `:`, so neither assignment rule could see it. The name
 #         alternation also gained PRIVATE_KEY and AUTH the same day (0 new findings on
 #         HEAD, `gitleaks detect --no-git` over `git archive HEAD`).
@@ -226,7 +226,7 @@ keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd"
     '''(^|/)\.env\.logging$''',
     '''(^|/)ORACLE_REFRACTOR\.md$''',
     # HISTORY-ONLY pasted gate logs (2026-09-22): a lane committed four
-    # ci-clean-gate transcripts under evidence/task-f2c8cf5c/; one line quoted a fleet
+    # ci-clean-gate transcripts under an evidence/ directory; one line quoted a fleet
     # posture guard's placeholder `ANTHROPIC_API_KEY=<8-char word>` (entropy 2.75, not a
     # key). The files are DELETED from the worktree in the same commit as this line;
     # this scopes the dead history so the fleet roll's history scan is not permanently
@@ -316,7 +316,7 @@ keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd"
 
 [[rules]]
 id = "mandrel-credential-sql-password"
-description = "SQL role password literal (CREATE/ALTER ROLE|USER … PASSWORD '…') — the 8cb7b7e6 carrier"
+description = "SQL role password literal (CREATE/ALTER ROLE|USER … PASSWORD '…') — the leaked-password commit's carrier"
 # Structural, not entropy: the keyword PASSWORD, whitespace, an opening quote, then a
 # literal of >= 12 chars that does NOT begin with `$` (shell expansion: '$PW', "${PW}"),
 # `<` (a <placeholder>) or `{` ({{ template }}). Every `psql -c "ALTER ROLE … PASSWORD
@@ -351,13 +351,13 @@ keywords = ["password","passwd"]
   # 2026-09-08: `gitleaks detect --log-opts=HEAD` attributed all 6 findings to these two
   # commits + the two below; none of the four files carries a `PASSWORD '…'` line today).
   # scripts/test/gitleaks-credential-shapes.test.sh 5d strips THIS line and proves
-  # 8cb7b7e6 still scans RED without it — the allowlist is the only thing silencing it.
-  #   e9a864f7 (2026-01-25) README.md:242 + docs/DEPLOYMENT.md:121 — deployment-guide
+  # the leaked-password commit still scans RED without it — the allowlist is the only thing silencing it.
+  #   one commit (2026-01-25): README.md:242 + docs/DEPLOYMENT.md:121 — deployment-guide
   #            example passwords (lowercase snake_case words, no entropy), removed since.
-  #   8cb7b7e6 (2025-12-02) scripts/prod-host-setup.sh:50,53 — the REAL postgres superuser
+  #   the other (2025-12-02): scripts/prod-host-setup.sh:50,53 — the REAL postgres superuser
   #            password, the miss this rule was written for. ROTATED 2026-09-08
   #           ; the file no longer exists at HEAD.
-  # 70de338f / c6888058 (TS015 guide, `your_…` placeholders) need no row: the placeholder
+  # Two more commits (TS015 guide, `your_…` placeholders) need no row: the placeholder
   # regex above covers them once it actually matches.
   commits = ["e9a864f74cbfaa35c3e428497275581d238cc7fa", "8cb7b7e608583c7dc8729fdfd085abab7809532b"]
 

@@ -73,7 +73,7 @@ describe('D1 — anonymous callers share ONE session (normalize before the resol
     for (let i = 0; i < 5; i++) {
       // No actor + a DIFFERENT connection each time — legacy would mint 5; actor mode
       // normalizes to ACTOR_ANONYMOUS and shares ONE session via the resolver's newest-open
-      // step. (Since be2179a9 anonymous classifies 'agent', so that newest-open lookup is
+      // step. (Since an earlier change, anonymous classifies 'agent', so that newest-open lookup is
       // NOT day-restricted — the sharing holds regardless of the UTC day boundary.)
       const id = await SessionLifecycleService.ensureSessionForActor({
         actor: undefined,

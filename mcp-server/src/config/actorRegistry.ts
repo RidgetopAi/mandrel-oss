@@ -109,7 +109,7 @@ export const BUILTIN_ACTOR_KINDS: Record<string, ActorKind> = {
 
 /**
  * Prefix rules for parametric actor families (checked after an exact registry hit).
- * e.g. `builder-0803a2d0` → agent. Ordered; first match wins.
+ * e.g. `builder-<id>` → agent. Ordered; first match wins.
  *
  * Exported for the same reason as BUILTIN_ACTOR_KINDS above — see that note.
  */

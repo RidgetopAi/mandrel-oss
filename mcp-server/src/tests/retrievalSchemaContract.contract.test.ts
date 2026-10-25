@@ -104,7 +104,7 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
     'title', 'description', 'tags', 'metadata',
     'projectId', 'answerStatus', 'question', 'options', 'deadline'],
   // task_list (A7): `offset` added for pagination (rows beyond limit=100 were unreachable).
-  // projectId (5fd58eef strict-mode safety): the handler (tasks.routes.handleList) reads
+  // projectId (strict-mode safety): the handler (tasks.routes.handleList) reads
   // args.projectId via resolveProjectId to scope the list — a real accepted-and-used
   // param that was missing from the schema, so under strict mode a legitimate
   // project-scoped task_list call would have been wrongly rejected. Declared, not dropped.
@@ -125,7 +125,7 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
   // that counts only completions is the one that hid the 2026-08-19 cull of 107 CANCELLED
   // tasks, the largest outflow event in our history.
   task_list: ['status', 'statuses', 'priority', 'phase', 'assignedTo', 'type', 'tags', 'limit', 'offset', 'projectId', 'includeArchived', 'dueBefore', 'createdAfter', 'createdBefore', 'closedAfter', 'sort', 'stage'],
-  // task_create (36aa0549): the model-facing schema previously advertised ONLY
+  // task_create: the model-facing schema previously advertised ONLY
   // `title`, hiding `type` (+ enum) and every other accepted field — so an agent
   // asked for a "bug" silently got a `general` task. Now DERIVED from zod, so the
   // declared schema advertises exactly the validated/accepted field set.
@@ -134,7 +134,7 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
   // T5a PARITY: `links` — the first-class explicit-edge write param that
   // context_store and decision_record already had. task_create lacking it was part of why
   // tasks were born graph leaves.
-  // parentTaskId (ef51d3df): the DECLARED structural parent — position no longer mints
+  // parentTaskId: the DECLARED structural parent — position no longer mints
   // subtask_of; only this explicit param does.
   // P5.5 (migration 093): + blockedOn, dueAt — "waiting on a human" becomes a FIELD, and a
   // column no tool can write is not a feature. Purely additive; nothing was renamed or removed.
@@ -146,7 +146,7 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
   // "`notes` is intentionally ABSENT (no such column — A4)", and that absence is what
   // made `description` — a silent full replace — the only place a caller could put a
   // status note. There is still no `notes` COLUMN; it writes to the `metadata` jsonb,
-  // exactly as task_bulk_update's `notes` has since dcf8af8c.
+  // exactly as task_bulk_update's `notes` has since an earlier change.
   // projectId: scopes the SHORT-ID resolution of taskId to one project
   // (resolved via resolveProjectId). Declared so strict mode accepts it; not updatable.
   // DRIFT-CLEANUP: `metadata` is a real column (tasks.metadata jsonb) the

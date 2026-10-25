@@ -4,7 +4,7 @@
  *
  * ── WHAT THIS REPLACES ────────────────────────────────────────────────────────────────
  * buildStory used to hand-replicate "recall_thread ordering" as a bespoke 5-slot
- * narrative (audit 42dca388 PROSE finding). The REAL recall_thread order is
+ * narrative (the graph audit PROSE finding). The REAL recall_thread order is
  * mcp-server/src/services/recallThreadCore.ts: anchor pinned first, then causal rank
  * (longest-downstream-chain depth over the causal edge directions), then temporal, then
  * id — cycle-safe. This module mirrors exactly that (same constraint as

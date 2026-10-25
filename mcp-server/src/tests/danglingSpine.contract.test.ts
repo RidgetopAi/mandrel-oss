@@ -4,8 +4,8 @@
  *   graph({action:'branch_current'})
  *     -> {"ok":true,"position":null,"atTrunk":true,
  *         "revertedFrom":{"spineId":"f50b8f30-...","spineType":"task"}}
- *   task({action:'details', taskId:'f50b8f30'})  -> {"ok":true,"found":false}
- *   context({action:'search', id:'f50b8f30'})    -> "❌ Context not found"
+ *   task({action:'details', taskId:'2b3c4d5e'})  -> {"ok":true,"found":false}
+ *   context({action:'search', id:'2b3c4d5e'})    -> "❌ Context not found"
  *
  * The API asserted `spineType: "task"` for an id that is not a task and is not anything.
  *
@@ -233,7 +233,7 @@ describe('DANGLING SPINE — a position whose record no longer exists', () => {
    *
    * an earlier Task read `branch_current` naming an earlier task while `task details` answered
    * found:false, and inferred a dangling pointer. Measured on prod 2026-09-05:
-   *   SELECT id, status, archived_at IS NOT NULL FROM tasks WHERE id::text LIKE 'f50b8f30%';
+   *   SELECT id, status, archived_at IS NOT NULL FROM tasks WHERE id::text LIKE '2b3c4d5e%';
    *   -> f50b8f30-... | todo | t   (archived_at 2026-09-02 00:58:52+00)
    * The row EXISTS. It was invisible to `task details` because includeArchived:false is the
    * default on the read ops. Two different causes, one observable — so a fix that only

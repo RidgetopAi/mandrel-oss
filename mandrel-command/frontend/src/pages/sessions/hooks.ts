@@ -63,7 +63,7 @@ export interface SessionListRow {
 /**
  * GET /api/sessions — the page's sessions, newest first (Command backend, Postgres).
  *
- * ── THE PROJECT FILTER IS SERVER-SIDE (epic 41293984 §E) ─────────────────────────────
+ * ── THE PROJECT FILTER IS SERVER-SIDE (page-scope epic §E) ─────────────────────────────
  * It used to be applied CLIENT-SIDE, over whatever the un-filtered `limit`-capped page
  * happened to contain. That is not a filter, it is a filter-shaped subset: with the cap
  * at `SESSIONS_CONFIG.listLimit`, a project whose sessions are all older than the newest
@@ -159,7 +159,7 @@ export function useStartSession() {
   return useMutation({
     // A WRITE. `scope` is NOT optional decoration: a write carries no query param and the
     // backend's write precedence is HEADER > body, so an unscoped start is filed against
-    // the ambient DEFAULT project rather than the one chosen here (epic 41293984 §A1).
+    // the ambient DEFAULT project rather than the one chosen here (page-scope epic §A1).
     mutationFn: ({ input, scope }: { input?: StartSessionInput; scope: AxiosRequestConfig }) =>
       api.sessions.start(input, scope),
     onSuccess: () => {

@@ -4,7 +4,7 @@
  * the active/dormant recency threshold, the vital-tile + task-lane definitions, and the
  * recent-decision fetch size all live here so the parts stay declarative.
  *
- * DATA-GAP NOTES (policy 10397f65 — show what's REAL, never fabricate):
+ * DATA-GAP NOTES (the data-gap policy — show what's REAL, never fabricate):
  *  - `api.projects.get(id)` serves name / status / description / metadata.is_primary /
  *    context_count / session_count / last_activity.
  *  - `api.projects.insights(id)` serves the REAL task breakdown (total / in_progress /

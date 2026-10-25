@@ -60,7 +60,7 @@
  * THE FK DERIVATION IS ONE OF TWO HALVES. It reaches every column that POINTS AT an
  * identity row. This schema's other ownership idiom is a BARE STRING with no foreign key
  * — `sessions.actor`, `tasks.created_by`, `technical_decisions.decided_by` — and the FK
- * query cannot see it: measured by Reviewer on this branch (verdict ab7521b0), an
+ * query cannot see it: measured by Reviewer on this branch, an
  * actor-only table plus an owner-blind route reading it passed 16/16 with no declaration
  * demanded. That half is now derived too, by STRING_OWNER_INTENT below,
  * whose population is the DUMB ENUMERATION of every text column in the schema rather than
@@ -313,7 +313,7 @@ type PrivateTable = string;
  * The FK derivation reaches every column that POINTS AT an identity row. This schema's
  * other way of saying "whose row is this" is a BARE STRING — `sessions.actor`,
  * `tasks.created_by`, `technical_decisions.decided_by` — with no foreign key at all.
- * Reviewer proved that idiom invisible to the FK ratchet (verdict ab7521b0): an
+ * Reviewer proved that idiom invisible to the FK ratchet: an
  * actor-only table plus an owner-blind route reading it passed 16/16 and no declaration
  * was demanded. This block is the derivation that demands one.
  *
@@ -1158,8 +1158,8 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
       // happens to carry free text. A marker can only live in a column wide enough to hold
       // it, so `admin_users.theme` (a CHECK-constrained enum) and
       // `admin_users.default_project_id` (a uuid) are UNMARKABLE and the marker sweep is
-      // structurally blind to them. MEASURED by Reviewer on this branch (verdict
-      // ab7521b0): a /api/users/preferences that returned EVERY user's theme and default
+      // structurally blind to them. MEASURED by Reviewer on this branch (in review
+      // in review): a /api/users/preferences that returned EVERY user's theme and default
       // project passed this suite 16/16 — the leak class this file was written for,
       // missed, because the only perturbed table was `feedback`. This axis needs no marker;
       // its anchor is the write itself, so it is what reaches an unmarkable column.

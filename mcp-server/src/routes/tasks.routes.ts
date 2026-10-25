@@ -552,7 +552,7 @@ class TasksRoutes {
       }
 
       // POSITIONAL MEMBERSHIP (PHASE 1) — closes the
-      // write-path hole the audit (42dca388) measured: task_create consulted threading NOT
+      // write-path hole the audit measured: task_create consulted threading NOT
       // AT ALL, so a task born mid-branch was an orphan unless a human tagged it. Now:
       //   • standing on a branch → declared `informs` membership edge to the spine
       //     (created_by 'auto:positional', the 079 meter's DECLARED bucket);
@@ -638,14 +638,14 @@ class TasksRoutes {
               // array (never absent) — an absent key would leave a JSON reader unable to tell
               // "no warnings" from "this build does not report them".
               tagWarnings: tagNoteLines,
-              // 86d56b8c: the edges this task was born with, per source, plus every ref that
+              // the edges this task was born with, per source, plus every ref that
               // resolved to nothing. Mirrors how context_store/decision_record report theirs.
               edgesMinted,
               mintedBySource: {
                 tags: tagMint.minted,
                 dependencies: depMint.minted,
                 links: linkResult.minted,
-                // ef51d3df: the declared `parentTaskId` param's structural subtask_of edge.
+                // the declared `parentTaskId` param's structural subtask_of edge.
                 parent: parentMint.minted,
                 // PHASE 1: positional edges (membership/refs — never subtask_of).
                 positional: positionalMintedCount,
@@ -951,7 +951,7 @@ class TasksRoutes {
         // short ids into the `dependencies uuid[]` column is the exact cast-error defect an earlier task
         // fixed on the create path; this path must not reintroduce it.
         resolvedUpdateDependencies,
-        // 39abb203 — the append affordance. Appends to metadata.noteLog; never touches
+        // the append affordance. Appends to metadata.noteLog; never touches
         // description.
         { notes: args.notes },
         // Batch-5 lane K — RE-CLASSIFY. `type` is validated at the edge against the same
@@ -1045,7 +1045,7 @@ class TasksRoutes {
       if (args.assignedTo !== undefined) applied.push(`Assigned To: ${args.assignedTo}`);
       // T1 item 5: title/description/tags edits.
       if (args.title !== undefined) applied.push(`Title: ${rawValue(args.title)}`);
-      // 39abb203: say WHERE the replaced text went, at the moment of need. "Description
+      // say WHERE the replaced text went, at the moment of need. "Description
       // updated" alone is what let a full replace read as a harmless edit. The refusal IS
       // the instruction — and so is the confirmation.
       if (args.description !== undefined) {

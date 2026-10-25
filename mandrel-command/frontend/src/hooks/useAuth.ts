@@ -52,7 +52,7 @@ export const setStoredToken = (token: string | null) => {
  * self-heal path and the explicit logout path can never drift into clearing different
  * subsets (which is how the split-state arose — only manual logout cleared all three).
  *
- * ── THE PROJECT SCOPE IS PART OF THE IDENTITY (epic 41293984, the reviewer B3) ──────────
+ * ── THE PROJECT SCOPE IS PART OF THE IDENTITY (page-scope epic, the reviewer B3) ──────────
  * The ambient `X-Project-ID` is derived from user A's default project and cached across
  * FOUR rungs (api/http/projectHeaders.ts). None of them was cleared here, and the Logout
  * button is a react-router `navigate()` with NO page reload — so user B inherited A's

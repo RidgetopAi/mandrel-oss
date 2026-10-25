@@ -65,7 +65,7 @@ describeDb('ProjectService.deleteProject — the Command UI delete is gated, not
    */
   beforeEach(async () => {
     projectId = uuid();
-    await pool.query(`INSERT INTO projects (id, name, description) VALUES ($1, $2, 'accf37bb guard')`, [
+    await pool.query(`INSERT INTO projects (id, name, description) VALUES ($1, $2, 'guard')`, [
       projectId,
       `accf37bb-victim-${projectId.slice(0, 8)}`,
     ]);

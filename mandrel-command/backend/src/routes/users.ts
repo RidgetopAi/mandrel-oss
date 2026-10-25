@@ -279,7 +279,7 @@ router.post('/change-password', authenticateToken,
  * GET /api/users/preferences
  * Read the CURRENT user's preferences (theme + default project). The read half of
  * the pair — the Command UI's SettingsContext seeds from this and treats
- * localStorage purely as a cache (epic 41293984 §A).
+ * localStorage purely as a cache (page-scope epic §A).
  */
 router.get('/preferences', authenticateToken,
   async (req: AuthenticatedRequest, res: Response) => {
@@ -321,7 +321,7 @@ router.get('/preferences', authenticateToken,
  * PATCH /api/users/preferences
  * Update the CURRENT user's preferences: `theme` and/or `defaultProjectId`.
  *
- * `defaultProjectId` (epic 41293984 §A) is a UUID, or `null` to clear. It replaces the
+ * `defaultProjectId` (page-scope epic §A) is a UUID, or `null` to clear. It replaces the
  * instance-wide `projects.metadata.is_primary` flag as the UI's default-project source:
  * that flag was global (one user clearing it cleared everyone's) and was carried as a
  * project NAME, so a rename broke it. This is per-user and stores the id.

@@ -2,7 +2,7 @@
  * GUARD — THE BROWSER MAKES ONLY MCP *READS*.
  *
  * an earlier task (Command UI project switcher trips the scope guard) and
- * 3f5615b9 (tenant UIs 401 on /mcp/tools/*). Both are the same class: the browser talking
+ * (tenant UIs 401 on /mcp/tools/*). Both are the same class: the browser talking
  * to MCP as if it were an identified, long-lived connection, which it is not and cannot be.
  *
  * ── WHY A GUARD AND NOT A COMMENT ────────────────────────────────────────────────────────
@@ -39,7 +39,7 @@
  * WHAT THIS GUARD DOES **NOT** COVER, so nobody reads it as wider than it is:
  *   - the Command BACKEND (`mandrel-command/backend`) — it is an identified server-side
  *     caller and a different population; it was separately measured to have zero live
- *     project_switch call sites (evidence ctx 2afb338c).
+ *     project_switch call sites (evidence).
  *   - runtime scripts, hooks, the bridge, or any non-browser caller.
  *   - whether a call is AUTHENTICATED. Reads are unaffected by callerIdentityGuard (its G3
  *     is deliberately read-blind) but they still need a credential; the tenant 401s of an earlier task

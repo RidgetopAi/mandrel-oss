@@ -1,7 +1,7 @@
 /**
  * usePageProject — a page's project scope, read from THE ONE SWITCH in the topbar
- * (supersedes the per-page selectors of epic
- * 41293984 §D).
+ * (supersedes the per-page selectors of the
+ * page-scope epic §D).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  HOW TO USE THIS. This hook is the entire API for a scoped page.
@@ -39,7 +39,7 @@
  *    serves the previous project's rows after a switch.
  *
  * 4. A PAGE ALWAYS SHOWS ONE PROJECT. There is no "All projects" on the switch
- *    (walkthrough ed6ae449 F2), and a `?project=all` deep link is ignored like any other
+ *    (the project-switch walkthrough F2), and a `?project=all` deep link is ignored like any other
  *    unselectable value. Endpoints that accept the `all` sentinel still do — nothing on a
  *    page hands it to them any more. Print `projectName` in the page header: it is the
  *    truth line for what the page is showing.

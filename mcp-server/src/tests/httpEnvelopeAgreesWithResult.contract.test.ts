@@ -1,5 +1,5 @@
 /**
- * THE HTTP ENVELOPE MUST AGREE WITH THE RESULT IT WRAPS (defect 8fe64f8b).
+ * THE HTTP ENVELOPE MUST AGREE WITH THE RESULT IT WRAPS.
  *
  * `/mcp/tools/*` wraps every tool result in a bespoke `{ success, result }` envelope. That
  * `success` was the LITERAL `true` (healthServer.ts) and never consulted the result, so every
@@ -95,7 +95,7 @@ async function post(
 
 const textOf = (e: Envelope): string => e.body.result?.content?.[0]?.text ?? '';
 
-describe('the /mcp/tools/* envelope agrees with the result it wraps (defect 8fe64f8b)', () => {
+describe('the /mcp/tools/* envelope agrees with the result it wraps', () => {
   beforeAll(async () => {
     // Real express app + real executor wiring, bound WITHOUT start(): no process lock, no
     // portManager, no stdio transport.
@@ -158,7 +158,7 @@ describe('the /mcp/tools/* envelope agrees with the result it wraps (defect 8fe6
         // A POLICY REFUSAL, not a tool error: the actor gate throws before dispatch, so
         // context_store never ran and nothing was stored. 403 — authenticated, understood,
         // refused on policy; see routes/index.ts ActorRequirementError for why not 401.
-        // Pre-be3aed83 this was 200: a refused write reported to the transport as a
+        // Earlier this was 200: a refused write reported to the transport as a
         // completed one. The 200 fuse for an ordinary tool error is two tests down.
         expect(res.status).toBe(403);
         expect(textOf(res)).toContain('X-Actor-ID');
@@ -174,7 +174,7 @@ describe('the /mcp/tools/* envelope agrees with the result it wraps (defect 8fe6
       // in band by idErrorResponse (utils/idResolver.ts) with isError:true. The id is
       // well-formed but absent, so nothing is deleted and the call has no side effect.
       //
-      // THE OTHER DIRECTION OF be3aed83, and the one that would be worse to get wrong. The
+      // THE OTHER DIRECTION OF THE ENVELOPE FIX, and the one that would be worse to get wrong. The
       // tool RAN and gave a well-formed answer to a well-formed question; that is a
       // successful MCP call carrying isError, and it must not become a 4xx just because the
       // answer is negative. If this ever reads 4xx, the refusal classification has leaked

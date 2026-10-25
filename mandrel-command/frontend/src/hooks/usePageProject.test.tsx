@@ -1,6 +1,6 @@
 /**
  * usePageProject + scopedRequestConfig — a page's scope, read from THE ONE SWITCH
- * (an earlier punch over epic 41293984 §A1/§A4).
+ * (an earlier punch over the page-scope epic §A1/§A4).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE DEFECT THIS GUARD EXISTS TO CATCH

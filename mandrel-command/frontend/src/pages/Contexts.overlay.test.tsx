@@ -4,7 +4,7 @@
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE GAP THIS FILE CLOSES
  * ════════════════════════════════════════════════════════════════════════════════════
- * The overlay shipped in f463f3f7: below `RECORD_LAYOUT_STACK_MAX_WIDTH`
+ * The overlay shipped earlier: below `RECORD_LAYOUT_STACK_MAX_WIDTH`
  * the reader renders inside `Drawer` instead of the inline second column. But jsdom has no
  * `window.matchMedia`, so `useMediaQuery` — and therefore `useIsStackedRecordLayout` —
  * degraded to its fallback `false` for EVERY test, and all 72 pre-existing Contexts/

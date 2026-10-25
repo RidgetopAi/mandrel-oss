@@ -96,8 +96,8 @@ interface MergeCandidate {
      *
      * P2b needs this as a FACT rather than as an amount buried in the score, because rank
      * fusion throws scores away. MEASURED: with the identifier tier added and this flag
-     * missing, the bare-id query `4a460692` fell from rank 1 to rank 4 — records that MENTION
-     * that id8 in their text took the identifier tier, while the record whose id IS 4a460692
+     * missing, the bare-id query `2b3c4d5e` fell from rank 1 to rank 4 — records that MENTION
+     * that id8 in their text took the identifier tier, while the record whose id IS that id8
      * does not contain its own id in its text and so had no identifier hit at all. See the
      * tier ladder in fuseWithLexical().
      */
@@ -842,7 +842,7 @@ export class SmartSearchHandler {
                 // `decisionGaps` was ALSO a dead path — computed here, returned on this object,
                 // and read by NEITHER channel of the sole caller (routes/search.routes.ts
                 // renders only knowledgeGaps and puts only knowledgeGaps in structuredContent).
-                // The second instance of the b7306192 class noted below; both are gone now.
+                // The second instance of the absent-is-not-perfect fix class noted below; both are gone now.
                 coverage,
                 teamEfficiency: this.assessTeamEfficiency(taskStats)
                 // NOTE: a `recommendations: await this.getRecommendations(...)`

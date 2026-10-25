@@ -1,6 +1,6 @@
 /**
  * ONE-TIME ORPHAN BACKFILL — Component C of reliable-auto-threading (CORE logic)
- * (branch:mandrel-reliability, task ST-6 66bf6a72, spec
+ * (branch:mandrel-reliability, task ST-6, spec
  * docs/specs/reliable-auto-threading.md §C1/C2/C3, §X4).
  *
  * THE PROBLEM (measured): 49% of existing contexts are born orphans (zero edges) because
@@ -76,7 +76,7 @@ export interface BackfillSummary {
    * Un-rescuable: there was NOTHING to compare against — the project has no other threaded,
    * embedded, unarchived context. Distinct from `noNeighbor` on purpose: a zero-candidate
    * result and an honest below-floor result are different facts, and their being one string
-   * is why the 9a8c06c5 RED went unattributed for a week.
+   * is why the RED went unattributed for a week.
    */
   noCandidates: number;
   /** Un-rescuable: the orphan itself has no embedding to compare. */

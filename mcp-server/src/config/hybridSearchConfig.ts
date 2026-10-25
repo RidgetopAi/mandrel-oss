@@ -48,7 +48,7 @@ function envEnum<T extends string>(name: string, allowed: readonly T[], fallback
 }
 
 /**
- * ═══ THE RRF SMOOTHING CONSTANT, AND WHY IT IS NOT THE THING 9c47ddc6 REJECTED ═══
+ * ═══ THE RRF SMOOTHING CONSTANT, AND WHY IT IS NOT THE THING AN EARLIER REVIEW REJECTED ═══
  *
  * Reciprocal-rank fusion scores a document as Σ 1/(k + rank_c) over the channels c that
  * returned it. `k` is a constant, and an earlier decision rejected TUNED CONSTANTS, so the

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run.sh — the Phase-4 belief-eval (design ca9a33c0 §5). ONE command to score the
-# belief layer against the six-case scorecard (4a2f3e55) on a DISPOSABLE DB.
+# run.sh — the Phase-4 belief-eval (the belief-layer design §5). ONE command to score the
+# belief layer against the six-case scorecard on a DISPOSABLE DB.
 #
 # What it does (never touches prod — a ci_*-prefixed throwaway DB, dropped on exit):
 #   1. provision + migrate a throwaway Postgres (scripts/provision-test-db.sh — the

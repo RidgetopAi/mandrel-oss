@@ -35,7 +35,7 @@ export interface TaskPunchWrite {
 
 /**
  * The create-only extras a punch form sends alongside `TaskPunchWrite` (an earlier task /
- * f31a41d0): `dependencies` at task-create time, the SAME id shape (full UUID or
+ * a later follow-up): `dependencies` at task-create time, the SAME id shape (full UUID or
  * 8+-hex short id) `task_create` resolves server-side. `task_update` refuses a
  * `dependencies` change (mandrel-command backend `TaskService.updateTask`), so this is
  * declared only on `create`, never folded into `TaskPunchWrite` itself.

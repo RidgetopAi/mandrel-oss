@@ -23,7 +23,7 @@ export const searchConfig = {
    * Minimum length of a hex id-prefix before we treat a query as an id-prefix
    * lookup. Below this, a short alphanumeric query is treated as plain text only
    * (avoids e.g. "ab" matching a flood of ids). The task spec sets this floor at
-   * 6 (so `0f3906cd` — 8 chars — qualifies).
+   * 6 (so `2b3c4d5e` — 8 chars — qualifies).
    */
   idPrefixMinLength: intFromEnv('SEARCH_ID_PREFIX_MIN_LENGTH', 6),
 

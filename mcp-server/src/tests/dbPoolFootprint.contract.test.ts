@@ -25,7 +25,7 @@
  * through — so re-hardcoding the footprint is a RED, not a silent regression back to 80
  * slots and an unexplainable gate.
  *
- * It also pins the DEFAULTS, because the defaults are what PROD runs: the bb98a3d4 change
+ * It also pins the DEFAULTS, because the defaults are what PROD runs: the connection-exhaustion incident change
  * must not alter production pool behaviour, only make it boundable.
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';
@@ -69,7 +69,7 @@ describe('DB pool footprint is env-bounded', () => {
     expect(opts.connectionTimeoutMillis, 'DATABASE_POOL_CONNECTION_TIMEOUT_MS must reach the pg Pool').toBe(567);
   });
 
-  it('defaults are unchanged, so PROD pool behaviour is byte-identical to pre-bb98a3d4', async () => {
+  it('defaults are unchanged, so PROD pool behaviour is byte-identical to earlier', async () => {
     const opts = await poolOptionsUnder({
       DATABASE_POOL_MAX: undefined,
       DATABASE_POOL_IDLE_TIMEOUT_MS: undefined,

@@ -1,6 +1,6 @@
 /**
  * unauthenticatedRouteCoverage.test.ts — the WHOLE-CLASS guard for an earlier task and
- * ecb37d02: **no route reaches customers without a credential unless somebody wrote down
+ * **no route reaches customers without a credential unless somebody wrote down
  * why.**
  *
  * ## What was actually wrong
@@ -36,7 +36,7 @@
  * anonymously" are not the same property, and collapsing them is how the second one went
  * unasked for the life of the repo.
  *
- * The previous Builder on ecb37d02 explicitly declined to widen the mutating guard to all
+ * The previous Builder on the unauthenticated-route audit explicitly declined to widen the mutating guard to all
  * pre-auth GETs, reasoning that it would make the health family illegal on day one and
  * force edits into another Builder's in-flight files — "a guard that blocks correct work
  * mid-flight gets reverted." That judgement was right and it is why this file could only
@@ -160,7 +160,7 @@ describe('every served route is credential-gated or declared public', () => {
     expect(route!.classification?.kind).not.toBe('unauthenticated');
   });
 
-  it('ANCHOR — the infra-metadata routes from ecb37d02 all require a credential', () => {
+  it('ANCHOR — the infra-metadata routes from the unauthenticated-route audit all require a credential', () => {
     // These were each measured at HTTP 200 with no credential on prod and all 7 tenants.
     const mustBeGated = [
       'GET /api/db-status',
@@ -211,7 +211,7 @@ describe('the LIVE OpenAPI spec does not contradict the census on who needs a cr
    * "for every public route" loop here would iterate a one-member population and read as
    * far stronger than it is. It is written as a named assertion for that reason.
    *
-   * ee74cd4d proper — drift between the annotations, the checked-in
+   * The route-census drift class proper — drift between the annotations, the checked-in
    * `frontend/.openapi/openapi.json`, and the generated client — is NOT closed by this and
    * cannot be closed from inside `routes/**`: its own preferred fix is to generate both
    * artifacts at build time and delete the checked-in copies, which spans the frontend
@@ -239,7 +239,7 @@ describe('the LIVE OpenAPI spec does not contradict the census on who needs a cr
      * live spec — 70 operations as of 2026-08-25 — not a list anybody maintains.
      * (This is how the duplicate `bearerAuth` / `BearerAuth` schemes were found: both
      * are defined, so nothing is broken, but the two-copies-of-one-truth is real. Noted
-     * for ee74cd4d rather than churned here.)
+     * for the route-census drift class rather than churned here.)
      */
     const defined = new Set(Object.keys(spec.components?.securitySchemes ?? {}));
     expect(defined.size).toBeGreaterThan(0);
@@ -266,7 +266,7 @@ describe('the LIVE OpenAPI spec does not contradict the census on who needs a cr
 
   it('GET /openapi.json is NOT documented as anonymous — it now requires a credential', () => {
     // The mirror direction: a `security: []` left behind on a route that was CLOSED is the
-    // exact defect ee74cd4d was filed for.
+    // exact drift the route-census class was filed for.
     expect(spec.paths['/openapi.json'].get.security).toBeUndefined();
   });
 });

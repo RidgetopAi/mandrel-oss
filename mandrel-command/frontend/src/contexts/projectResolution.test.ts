@@ -203,7 +203,7 @@ describe('selectFallbackProject — (b) unresolvable name falls back to a REAL-U
     expect(fallback!.id).toBe(PI_RIVET_UUID);
   });
 
-  test('the preference is matched BY ID, so a RENAME cannot detach it (epic 41293984 §A)', () => {
+  test('the preference is matched BY ID, so a RENAME cannot detach it (page-scope epic §A)', () => {
     // Same project, new name. Under the old name-keyed preference this returned the
     // durable fallback instead — the user was silently bounced to another project with
     // no error and no way to tell why.

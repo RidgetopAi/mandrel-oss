@@ -15,8 +15,8 @@ import {
  * (centralized project scoping), the F-04 AUTHORIZATION closure, and the
  * F-04 COMPLETION.
  *
- * ── WHAT CHANGED IN 593153c2, AND WHY ────────────────────────────────────────────────
- * b3cf883b authorized THE HEADER. The check was written `if (projectIdHeader) { … }`, so
+ * ── WHAT CHANGED LATER, AND WHY ──────────────────────────────────────────────────────────
+ * The trust-boundary change authorized THE HEADER. The check was written `if (projectIdHeader) { … }`, so
  * `?project_id=…`, `?project=…`, `?projectId=…` and `body.projectId` — all of which reach
  * the very same project scope in ~20 controllers — passed with no authorization at all.
  * The authorization now hangs off the RESOLUTION, not off one door: see

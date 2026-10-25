@@ -9,7 +9,7 @@
  * hairline-separated UTILITY zone (Projects, Settings). TreeWalker carries a
  * `work` qualifier (Decision 3·A). Calendar is
  * `isNew` (no dedicated screen yet → the ComingSoon placeholder). TreeWalker is
- * now a live screen (its thread data renders honest-empty until backend 5ad1c6af).
+ * now a live screen (its thread data renders honest-empty until the backend thread endpoint shipped).
  *
  * NOTE (reconciled, flagged for the coordinator): the locked IA lists exactly 11 nav
  * entries. Existing routes NOT in the locked IA (Embedding, Profile, and every

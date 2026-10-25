@@ -203,7 +203,7 @@ class DecisionsRoutes {
       const linkWarningLines = DecisionsRoutes.linkWarningLines(linkResult.warnings);
 
       // POSITIONAL MEMBERSHIP (PHASE 1) — closes the
-      // write-path hole the audit (42dca388) measured: decision_record consulted threading
+      // write-path hole the audit measured: decision_record consulted threading
       // NOT AT ALL (born orphan unless a human tagged it), with no stated reason anywhere.
       // Now: standing on a branch → declared `informs` membership edge to the spine
       // (created_by 'auto:positional'); ≥2 task ids named in the body → TRUNK record
@@ -252,13 +252,13 @@ class DecisionsRoutes {
                 (linkWarningLines.length > 0
                   ? `\nLink notes:\n` + linkWarningLines.map(w => `   • ${w}`).join('\n')
                   : '') +
-                // da9b6bcd: the tag/links-param edges this write minted, in the PROSE. These
+                // the tag/links-param edges this write minted, in the PROSE. These
                 // two paths were invisible on success — only their failures were surfaced —
                 // which is exactly how a correctly-threaded decision read as an orphan.
                 (ledgerLines.length > 0
                   ? `\nLinked:\n` + ledgerLines.map(l => `   • ${l}`).join('\n')
                   : '') +
-                // 86d56b8c: threading tags that resolved to nothing → no edge, said out loud.
+                // threading tags that resolved to nothing → no edge, said out loud.
                 (tagMintResult.skips.length > 0
                   ? `\nTag edges skipped:\n` +
                     tagMintResult.skips.map(s => `   • ${s.reason}`).join('\n')
@@ -715,7 +715,7 @@ class DecisionsRoutes {
         throw e;
       }
 
-      // CONTRACT SYMMETRY (follow-up to 1cca7644): supersededBy accepts a
+      // CONTRACT SYMMETRY (follow-up to the dependency id8 resolver): supersededBy accepts a
       // full UUID OR an id8 short id, exactly like decisionId above — same shared resolver,
       // same project scoping, same actionable errors. Resolution happens BEFORE the UPDATE
       // so the `superseded_by` uuid column never sees a raw short id (which would leak a
@@ -783,7 +783,7 @@ class DecisionsRoutes {
       // calls were bare `await`s and the response carried no edge field of any kind. So
       // retiring a decision via `supersededBy` minted the single most decision-relevant edge
       // in the product and the tool that minted it said nothing at all. Same disease as
-      // 8fc68175 on the context side, in its most severe degree: not an under-count, a total
+      // on the context side, in its most severe degree: not an under-count, a total
       // silence. Capture them; report them below exactly as decision_record does.
       const updateDecisionMint = await autoMintFromDecision({
         decisionId: decision.id,

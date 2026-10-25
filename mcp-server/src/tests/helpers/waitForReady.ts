@@ -8,7 +8,7 @@
  * server can answer — in particular whether it can reach Postgres. Several integration
  * tests went straight from `await health.start()` to a request that hits the DB.
  *
- * That gap is not theoretical. In bb98a3d4 the host ran out of Postgres client slots, the
+ * That gap is not theoretical. In the connection-exhaustion incident the host ran out of Postgres client slots, the
  * DCR cap middleware's fail-CLOSED catch turned the resulting SQLSTATE 53300 into an HTTP
  * 503, and the failure surfaced as `expected [200,201] to include 503` on a business
  * assertion about registration caps — pointing at OAuth code that was entirely innocent.
@@ -30,7 +30,7 @@
  *
  * IMPORTANT — this is defence in depth, NOT a fix for connection exhaustion. It makes the
  * failure legible and correctly attributed; it does not create capacity. The actual fix
- * for bb98a3d4 is bounding the suite's connection footprint (DATABASE_POOL_* pins in
+ * for the connection-exhaustion incident is bounding the suite's connection footprint (DATABASE_POOL_* pins in
  * scripts/lib/gate-env.sh) plus the capacity controls in the CI gate.
  *
  * AND IT IS NOT VERDICT-NEUTRAL — say it plainly, because the surrounding work is. Every

@@ -1,6 +1,6 @@
 /**
  * actorProjectStateConfig — the named config for ACTOR-KEYED CURRENT-PROJECT state
- * (an earlier decision — the permanent fix the 31406b4b caller-identity
+ * (an earlier decision — the permanent fix the caller-identity
  * guards point at: "the deletion of the Map and both literals is an earlier task").
  *
  * WHY IT EXISTS: "current project" is keyed on TRANSPORT identity (the connection id), with

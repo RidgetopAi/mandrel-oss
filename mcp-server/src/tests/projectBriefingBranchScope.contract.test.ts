@@ -694,7 +694,7 @@ describe('SK5 — PART B: the cap is the BACKSTOP, not the selector', () => {
 
   test('APPROXIMATE members are marked FROM THE FIELD and counted, and `exact` is never claimed', () => {
     // Prod reality (measured 2026-08-16): 107 of 130 membership rows fleet-wide are
-    // legacy-approx, and the worked example ddba6ec7 is 8 of 8. A section printing the
+    // legacy-approx, and the worked example branch is 8 of 8. A section printing the
     // strongest possible count over that set, with the field in hand, is the defect this
     // whole file exists to delete.
     const members = [

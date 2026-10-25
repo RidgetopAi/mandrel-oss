@@ -11,10 +11,10 @@
  *      (mandrelApiClient.ts) consumes the mcp-server's envelope ({success, result})
  *      verbatim, so this transport forwards status + body byte-for-byte.
  *   2. MERGE SEAM. services/mcp.ts is concurrently owned by the structured-channel
- *      branch (6022c321) — this file introduces NO edit there. It reuses the PUBLIC
+ *      branch — this file introduces NO edit there. It reuses the PUBLIC
  *      McpService.authHeader() (one token source, no drifting copies) but re-derives
  *      the target host/port locally because resolveMcpTarget() is private.
- *      >>> SEAM FOR COORDINATOR AT MERGE: if 6022c321 makes resolveMcpTarget public,
+ *      >>> SEAM FOR COORDINATOR AT MERGE: if the text-scrape removal makes resolveMcpTarget public,
  *      >>> delete resolveTarget() below and call it instead.
  *
  * ── WHAT IT ADDS TO EVERY FORWARDED REQUEST ──────────────────────────────────────────

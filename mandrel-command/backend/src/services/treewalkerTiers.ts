@@ -1,14 +1,14 @@
 /**
  * TreeWalker TIERS — trunk / roots / branch list, all RESOLVED FROM DATA (PHASE 2,
- * tree model a4f8886d). Replaces the literal tier strings the audit
- * called PROSE (42dca388: the trunk and roots tiers were config strings with no
+ * the tree model). Replaces the literal tier strings the audit
+ * called PROSE (the graph audit: the trunk and roots tiers were config strings with no
  * id and no query behind them).
  *
  * THE TRUNK (a): the project's handoff-context TIMELINE, ordered by created_at DESC.
  * TIME IS THE ORDERING — ALWAYS. `supersedes` edges appear only as per-entry
  * CORROBORATION metadata (does a declared handoff-supersession edge point at this
  * entry?), read in ONE flat batched query. This module contains no recursive query and
- * never walks the supersedes graph: a4f8886d measured a naive recursive supersedes
+ * never walks the supersedes graph: the tree model measured a naive recursive supersedes
  * walk at 22,482,181 rows. Bounded: LIMIT trunkMaxEntries; the count reports the full
  * total.
  *
@@ -23,7 +23,7 @@
  * the LOOSE declared+informs predicate off link_provenance and over-counted; see the
  * measured numbers on getBranches below. Newest-active
  * first. A branch is NAMED by its once-on-the-spine `branch:<name>` tag, else by the
- * spine record's title (a4f8886d membership/identity split). Open positions
+ * spine record's title (the tree model membership/identity split). Open positions
  * (branch_positions) mark which branches sessions are standing on right now.
  */
 import type { Pool } from 'pg';

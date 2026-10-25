@@ -1,5 +1,5 @@
 /**
- * STRICT-MODE + ACTIONABLE-ERROR Contract Guard  (folds in 3a14aa4a)
+ * STRICT-MODE + ACTIONABLE-ERROR Contract Guard  (folds in an earlier change)
  *
  * Two best-MCP invariants this locks shut:
  *
@@ -82,7 +82,7 @@ describe('PART A: strict-mode tool contracts', () => {
 });
 
 // ── PART B: ACTIONABLE ERRORS ────────────────────────────────────────────────
-describe('PART B: actionable, self-correcting, secure errors (3a14aa4a)', () => {
+describe('PART B: actionable, self-correcting, secure errors', () => {
   test('B1: a bad ENUM names the field + allowed values + a corrected EXAMPLE', () => {
     let msg = '';
     try {

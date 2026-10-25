@@ -8,7 +8,7 @@
  * `pages/treewalker/`. Data rides the unified `api.treewalker.*` client through
  * `useTreeWalkerThread`. Zero antd; colour is 100% token-driven (guard-tested).
  *
- * SCOPE: this page owns its own project selector (epic 41293984). The thread read pins
+ * SCOPE: this page owns its own project selector (page-scope epic). The thread read pins
  * X-Project-ID from that selection per request (`usePageProject().scope()`), and the
  * head-note names the same project — previously it rode the global switcher, so the same
  * screen could walk a different project's thread with nothing on screen changing.
@@ -42,7 +42,7 @@ const TreeWalker: React.FC = () => {
   const [onlyProven, setOnlyProven] = useState(false);
   const [activeStepId, setActiveStepId] = useState<string | null>(null);
 
-  // THE PAGE OWNS ITS SCOPE (epic 41293984). This screen had no control of its own and
+  // THE PAGE OWNS ITS SCOPE (page-scope epic). This screen had no control of its own and
   // rode whatever the deleted global switcher last pointed at — so "which thread am I
   // walking" was answered somewhere off-screen. No `allowAll`: the resume-anchor read
   // resolves a single project's newest `ref:resume` context, and an unscoped call is not

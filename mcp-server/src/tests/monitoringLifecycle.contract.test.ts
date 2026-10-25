@@ -108,7 +108,7 @@ function expectChildRan(res: ChildResult): void {
 }
 
 describe('utils/monitoring.ts background timer lifecycle', () => {
-  test('importing the module starts NOTHING (a66b3b70)', () => {
+  test('importing the module starts NOTHING', () => {
     const res = runChild('import-only');
     expectChildRan(res);
 
@@ -116,7 +116,7 @@ describe('utils/monitoring.ts background timer lifecycle', () => {
     expect(res.fields.LOOP_HOLDING_TIMEOUTS).toBe('0');
   });
 
-  test('a process that only imports the module exits on its own (a66b3b70)', () => {
+  test('a process that only imports the module exits on its own', () => {
     const res = runChild('import-only');
     expectChildRan(res);
 
@@ -125,7 +125,7 @@ describe('utils/monitoring.ts background timer lifecycle', () => {
     expect(res.status).toBe(0);
   });
 
-  test('a process that explicitly STARTS monitoring still exits on its own (1f6b32aa)', () => {
+  test('a process that explicitly STARTS monitoring still exits on its own', () => {
     const res = runChild('explicit-start');
     expectChildRan(res);
 

@@ -1,6 +1,6 @@
 /**
  * useRecordProjectSync — keep a record page's `?project=` pointed at the record it is
- * SHOWING (epic 41293984 §A4, the `/r/<id8>` short-link case).
+ * SHOWING (page-scope epic §A4, the `/r/<id8>` short-link case).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE WEDGE THIS EXISTS TO PREVENT

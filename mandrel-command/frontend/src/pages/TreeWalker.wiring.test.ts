@@ -8,7 +8,7 @@
  *      themed GraphView baseline — rather than re-copying them (a past incident / P0.6 intent);
  *   4. carry no hardcoded hex colours in the stylesheet (token-driven);
  *   5. define the NEW trust vocabulary in the module config (not scattered);
- *   6. HONOUR the data-gap policy (10397f65): the backend thread endpoint is now LIVE (Mandrel
+ *   6. HONOUR the data-gap policy: the backend thread endpoint is now LIVE (Mandrel
  *      an earlier task), so the config flag is true and the hook reads through the unified client
  *      (no-arg resume endpoint / explicit anchor) — and STILL renders an honest empty state for
  *      a genuinely-empty thread (it never fabricates a thread).
@@ -91,7 +91,7 @@ describe('TreeWalker rebuild — the NEW trust vocabulary lives in config', () =
   });
 });
 
-describe('TreeWalker rebuild — live backend + honest empty policy (10397f65, no fabricated thread)', () => {
+describe('TreeWalker rebuild — live backend + the data-gap policy (no fabricated thread)', () => {
   it('the backend-ready flag is now TRUE (endpoint shipped)', () => {
     const config = readFileSync(resolve(modDir, 'config.ts'), 'utf8');
     expect(config).toMatch(/backendReady:\s*true/);

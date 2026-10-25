@@ -4,7 +4,7 @@
  * week anchor, history cap, list caps, query staleness, and the priority→token
  * palette all live here.
  *
- * WHAT THIS SCREEN IS (grounded to the data, per data-gap policy 10397f65):
+ * WHAT THIS SCREEN IS (grounded to the data, per the data-gap policy):
  * Mandrel records are HISTORICAL — sessions/contexts/tasks carry timestamps, not a
  * planning schedule. So this Calendar is the **activity-by-date** view: each day
  * cell shows that day's MOMENTUM score (ring + number, from `/api/momentum-series`)

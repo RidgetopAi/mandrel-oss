@@ -2,7 +2,7 @@
 -- structural edge, and D1 (demote the retired anchor's strong `informs` mints).
 -- (PHASE 1 of the positional-membership plan.)
 --
--- WHY (audit 42dca388): branch membership was GUESSED (embedding
+-- WHY: branch membership was GUESSED (embedding
 -- similarity, TTL windows) or depended on a human remembering thread_set — a habit measured
 -- decaying to zero (anchor set in 25 of 288 sessions; the mechanism starved to death
 -- 2026-07-28 and a 97-98% coverage metric hid it for 15 days). Membership is now POSITIONAL,
@@ -14,12 +14,12 @@
 --   1. `branch_positions` — the per-(project, session) current-branch position. Same keying
 --      shape as `active_thread_anchors` (the X-Connection-ID isolation model), but NO TTL
 --      semantics: a position lives until branch_close / re-open. The spine may be a context,
---      decision, OR task (spine-first, not task-first — the ee160aad fold-in), so spine_id
+--      decision, OR task (spine-first, not task-first — the fold-in), so spine_id
 --      is a soft reference (no FK; endpoints span three tables, same reasoning as links).
 --
 --   2. `subtask_of` edge type — the structural parent edge (task → task), minted at
 --      task_create while POSITIONED ON A TASK SPINE. Closes the epic→subtask hole from
---      an earlier decision follow-up 3 (`886d138b` was lost because nothing structural links
+--      an earlier decision follow-up 3 (`2b3c4d5e` was lost because nothing structural links
 --      epics to subtasks). Migration 066 deliberately declined `subtask_of` because a
 --      `task:` TAG is an ambiguous signal; POSITION is not — you are standing on the parent
 --      when you create the child. A strong edge earns its strength from a strong signal, and
@@ -35,13 +35,13 @@
 --      stays 'auto:active_thread' (so the 079 meter still classifies them GUESSED) and
 --      the original edge_type + demotion timestamp land in metadata. Records stay
 --      REACHABLE — recall_thread walks related_to — they just no longer carry
---      trust-bearing strength (the c33a17ba requirement: demotion must not silently
+--      trust-bearing strength (the requirement: demotion must not silently
 --      delete what blanket-P6 would have).
 --      SCOPE (the coordinator ruling 2026-08-13, widening the task text's informs-only wording):
 --      the task's D1 line said `informs` because the audit counted informs, but a
 --      trust-bearing `decided_by` minted by the same similarity guess is the same defect
 --      in a different edge type — "the anchor mints nothing strong" (an earlier decision /
---      9c037a95) covers both. Measured on prod 2026-08-13 before this migration:
+--      the position design) covers both. Measured on prod 2026-08-13 before this migration:
 --      SELECT edge_type, count(*) FROM links WHERE created_by='auto:active_thread' GROUP BY 1
 --      → informs 157, decided_by 111.
 --      DEDUP COLLISION: links dedups on UNIQUE(from_id, to_id, edge_type); where a

@@ -1,5 +1,5 @@
 /**
- * BranchRail — the RESUME SURFACE (PHASE 2 item c, a4f8886d): DRAWERS only
+ * BranchRail — the RESUME SURFACE (PHASE 2 item c): DRAWERS only
  * (P2), newest-active first. "Come back two days later,
  * click to re-anchor": clicking a branch re-anchors the walk on its spine.
  *

@@ -3,7 +3,7 @@
  * createRoot + async act into jsdom, behind QueryClientProvider + MemoryRouter,
  * with the UNIFIED `api` client mocked. Proves the four required states
  * (data / loading / empty / error), the Live-now vs Earlier grouping, the expanded
- * timeline, the search-filter behaviour, and — new with epic 41293984 — the page's own
+ * timeline, the search-filter behaviour, and — new with the page-scope epic — the page's own
  * PROJECT SCOPE. Structural wiring (no antd, unified client, no hex) is asserted in
  * Sessions.wiring.test.ts.
  *
@@ -394,7 +394,7 @@ describe('Sessions — actor filter', () => {
   });
 });
 
-describe('Sessions — project scope (epic 41293984 §E)', () => {
+describe('Sessions — project scope (page-scope epic §E)', () => {
   it('opens on the USER DEFAULT project, not "all"', async () => {
     await mount();
     await settle();

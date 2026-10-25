@@ -1,6 +1,6 @@
 /**
  * RENDER-SITE PERMALINKS — THE BEHAVIOURAL HALF, at the real surface.
- * an earlier task (follows 31dd078e).
+ * an earlier task (follows an earlier change).
  *
  * =============================================================================
  * WHY THIS FILE EXISTS ALONGSIDE renderSitePermalinkCoverage.contract.test.ts
@@ -11,7 +11,7 @@
  *
  * It is the WRONG instrument for "does a user actually see a clickable link", and the whole
  * lineage of this task is a chain of three corrections in which every wrong answer came from
- * reading an instrument one layer too high (an earlier note -> 2d08fbd8 -> 7c1465d3;
+ * reading an instrument one layer too high (an earlier note, then two follow-ups;
  * CLASSES.md C1's layer ladder). A `${formatRecordRef(` in the source is CODE-layer evidence.
  * The claim being made is about OBSERVED OUTPUT. So this file drives the REAL tools through
  * the REAL `routeExecutor` against a REAL migrated Postgres and asserts on the text a caller

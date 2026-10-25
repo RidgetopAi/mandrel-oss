@@ -1,5 +1,5 @@
 /**
- * Split-state regression (incident 1bf8b0a5).
+ * Split-state regression.
  *
  * Reproduces the exact silent-lockout bug and proves the fix. Before the fix the
  * router consumed `isAuthenticated = !!profile && !error` from a CACHED profile

@@ -43,7 +43,7 @@
  *   - intermediate variable:  `const block = res.content[0]; ... block.text`
  * Catching those requires AST/type-directed analysis (an ESLint rule over the
  * TypeScript program), which is a different instrument than a source grep. The miss
- * is accepted because (a) every scrape DELETED by 6022c321 used the direct-accessor
+ * is accepted because (a) every scrape DELETED by the text-scrape removal used the direct-accessor
  * shape, (b) the split forms are conspicuous in review precisely because they take
  * two lines to do what one banned line would, and (c) a half-strength lexical guard
  * that runs on every test invocation beats an AST guard that never ships. If a

@@ -545,7 +545,7 @@ describe('SCOPE OVERRIDE — an all-projects flag NARROWS to the binding, and is
    * The narrowing is NOT silent: it is stamped on the write audit. The class we keep killing
    * is the silent override, not the override itself.
    *
-   * The schema injected here is the EXACT shape 76dfd903 declares, so this is measured
+   * The schema injected here is the EXACT shape the session-identity change declares, so this is measured
    * against the real thing rather than a convenient stand-in — but note it is still an
    * INJECTION, not the merged ref. The merged-ref verification is the coordinator's gate.
    */

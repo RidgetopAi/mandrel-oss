@@ -1,7 +1,7 @@
 // GUARDS-CLASS: backwards-belief-edge
 /**
  * Migration 096 — `belief_adjudications.minted_edge_id` FOREIGN KEY contract test
- * (follow-on from the fde9bdaf retraction).
+ * (follow-on from the direction retraction).
  *
  * ── THE DEFECT THIS PINS ─────────────────────────────────────────────────────────────
  * `minted_edge_id` claimed to point at a `links` row and carried no foreign key, so

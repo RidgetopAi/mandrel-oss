@@ -1,5 +1,5 @@
 -- Migration 071: mark sessions whose persisted productivity_score predates the counter fix
--- Task: 3f9fb289 §10 — "Decide explicitly: recompute, or mark epoch-tainted. Do not drift."
+-- Session-counter task §10 — "Decide explicitly: recompute, or mark epoch-tainted. Do not drift."
 --
 -- ── THE DECISION: MARK EPOCH-TAINTED. DO NOT RECOMPUTE. DO NOT NULL. ────────────────────
 --

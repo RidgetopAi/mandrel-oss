@@ -1,7 +1,7 @@
 /**
  * BELIEF LAYER v1 — the config (Phase 4, Increment 1: supersession detection).
  *
- * THE MOAT (belief-layer design ca9a33c0, locked 535d76e0): cosine gives us the
+ * THE MOAT (the belief-layer design, as locked): cosine gives us the
  * RELEVANCE axis; the belief layer adds the TRUTH-NOW axis — it adjudicates whether a
  * relevant record still holds, or has been SUPERSEDED / CONTESTED. "Everyone retrieves;
  * we adjudicate." This module is the SINGLE home for every belief knob.
@@ -142,7 +142,7 @@ export interface SupersessionModeResolution {
  * SUPERSESSION MODE FOLLOWS THE KEYS YOU SET. When the operator did NOT set
  * MANDREL_BELIEF_ADJUDICATOR_PROVIDER:
  *   SUBQ_API_KEY + ANTHROPIC_API_KEY → tiered (tier 1 Snap, tier 2 Sonnet) · SUBQ only → subq
- *   single-tier · ANTHROPIC only → anthropic single-tier · neither → off (a659ffe3).
+ *   single-tier · ANTHROPIC only → anthropic single-tier · neither → off.
  * An explicit provider always wins over the keys. Pure: reads only `env`, returns names, never values.
  */
 export function resolveSupersessionMode(
@@ -213,7 +213,7 @@ function adjudicatorCredentialPresent(): boolean {
 }
 
 /**
- * THE BELIEF KNOBS (design ca9a33c0 §3, locked defaults per 535d76e0).
+ * THE BELIEF KNOBS (the belief-layer design §3, locked defaults per the belief-layer lock).
  *
  * Two-stage detection: Stage-1 (cosine) NOMINATES candidate pairs cheaply; Stage-2 (the
  * adjudicator LLM) is the only thing that ADJUDICATES. Cosine never decides a verdict
@@ -229,7 +229,7 @@ export interface BeliefConfig {
    * it the pair is not even sent to the adjudicator (noise floor). Tuned to gemma geometry
    * (embeddingConfig similarityThresholds: gemma floor 0.35 / strong 0.55). The design's
    * provisional 0.75 was a MiniLM-era guess and nominated NOTHING under gemma. RAISED from
-   * 0.40 → 0.60 (measured 2026-07-06 on the decision-run 137c26bf oracle-labelled sample):
+   * 0.40 → 0.60 (measured 2026-07-06 on the decision-run oracle-labelled sample):
    * the LOWEST true supersession sat at cos 0.614, while EVERY nominated pair below 0.60 was
    * `unrelated` junk (a floor of 0.40 dragged in 113 sub-0.60 pairs, all noise). 0.60 sits
    * just under the weakest observed true pair — it clears the low-cosine noise while keeping
@@ -239,7 +239,7 @@ export interface BeliefConfig {
   pairMinCosine: number;
   /**
    * pair_max_cosine — Stage-1 candidate CEILING (picker anti-junk, measured 2026-07-06 on
-   * the decision-run 137c26bf sample). A neighbour whose cosine is ABOVE this is dropped
+   * the decision-run sample). A neighbour whose cosine is ABOVE this is dropped
    * from nomination: near-identical pairs (~0.95+) are DUPLICATE RESTATEMENTS of the same
    * record (a handoff re-stored, a decision re-affirmed), not "this replaced that". In the
    * oracle-labelled sample EVERY pair ≥0.95 was `restates` (n=5, cos 0.988–0.999) while the
@@ -317,7 +317,7 @@ export interface BeliefConfig {
   contestMinConfidence: number;
   /**
    * adjudicator_concurrency — how many adjudications run at once. LOCKED at 1 (design §4 +
-   * capacity recon 94b38d57): the adjudicator shares the Ollama daemon + CPUs with the LIVE
+   * an earlier capacity recon): the adjudicator shares the Ollama daemon + CPUs with the LIVE
    * embedder, so it runs SERIAL, off any write critical path, embedder-priority. Raising
    * this contends with customer write embeddings — do not, without a dedicated box. Env:
    * MANDREL_BELIEF_ADJUDICATOR_CONCURRENCY. Default 1.
@@ -410,7 +410,7 @@ export interface BeliefAdjudicatorConfig {
    */
   temperature: number;
   /**
-   * SERVING HARDENING (survey 13e60f6c cross-cutting finding): our #1 pain — a verdict that
+   * SERVING HARDENING (the serving survey cross-cutting finding): our #1 pain — a verdict that
    * FLIPS when the prompt is nudged — is partly a SERVING-CONFIG bug, not model capacity. The
    * fix (independent of model choice) is greedy decode + grammar-constrained JSON + no
    * thinking-mode CoT for the verdict. These four knobs bake that in, config-driven.
@@ -456,7 +456,7 @@ export interface BeliefAdjudicatorConfig {
    * `chat_template_kwargs` request field. Its concrete use: DISABLE thinking on a Qwen3-family
    * reasoning model served by llama.cpp — `{"enable_thinking":false}` — so the model emits the
    * verdict JSON directly instead of burning the completion budget on a `<think>` stream (the
-   * measured "thinking hurts this task" finding, bdb46616). Only sent by the openai-compat
+   * measured "thinking hurts this task" finding). Only sent by the openai-compat
    * provider and ONLY when it parses to a non-empty object (empty default → field omitted, so
    * Groq / other hosts are unaffected). Env: MANDREL_BELIEF_ADJUDICATOR_CHAT_TEMPLATE_KWARGS.
    * Default '' (omitted).

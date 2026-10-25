@@ -7,7 +7,7 @@
  * "100" rather than the number 100. Every numeric param this server DECLARES must therefore
  * accept its own stringified form — and must still reject garbage.
  *
- * WHY A NEW GUARD, GIVEN dda7cf02 ALREADY EXISTS
+ * WHY A NEW GUARD, GIVEN AN EARLIER GUARD ALREADY EXISTS
  * ----------------------------------------------
  * validateToolArguments() runs coerceArgsToDeclaredTypes(), which rescues a
  * stringified value by looking up its DECLARED type. That central seam is why most of the bare
@@ -33,7 +33,7 @@
  *   - a list of param names   (`offset` alone would have missed 8 of the 11 known instances),
  *   - a regex over the file   (Coordinator's `^\s+name: z.number()` missed 3 real shapes: the two
  *                              shared consts baseLimit/baseRelevanceScore and the union above),
- *   - the top-level shape     (that is the very scope limit that let this survive dda7cf02).
+ *   - the top-level shape     (that is the very scope limit that let this survive the earlier guard).
  * `validationSchemas` is the single object that every tool call resolves its schema from
  * (validation.ts:1362 and :1553), so it is the choke point every instance must pass through.
  * A new numeric param is covered the moment it is declared; nobody has to remember this file.

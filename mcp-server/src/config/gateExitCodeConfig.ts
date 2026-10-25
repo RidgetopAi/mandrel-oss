@@ -50,7 +50,7 @@
  * corpus is the same doctrine, not a departure from it.
  *
  * ⚠️ `refToGate` IS DELIBERATELY NOT AN ALIAS. It means "the ref that SHOULD be gated"
- * (measured: "merge of batch10/belief-failopen@9305a39a into mandrel main") — an
+ * (measured: "merge of batch10/belief-failopen@<sha> into mandrel main") — an
  * intention, not a ref a run executed on. Rendering it as the latter is exactly the
  * substitution this task exists to stop. `refChecked` is a boolean and is not a ref either.
  *
@@ -154,7 +154,7 @@ export const GATE_RC_LABEL = 'gate-rc' as const;
 /** Separates the code from its label: `gate-rc:1=RED`. */
 export const GATE_RC_LABEL_SEPARATOR = '=' as const;
 
-/** Introduces the ref the run executed on: `gate-rc:1=RED@9305a39a`. */
+/** Introduces the ref the run executed on: `gate-rc:1=RED@<sha>`. */
 export const GATE_REF_SEPARATOR = '@' as const;
 
 /**

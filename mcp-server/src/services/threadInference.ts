@@ -1,6 +1,6 @@
 /**
  * WRITE-TIME NO-ORPHAN INFERENCE — Component B of reliable-auto-threading
- * (branch:mandrel-reliability, task ST-4 b5dbcb94, spec
+ * (branch:mandrel-reliability, task ST-4, spec
  * docs/specs/reliable-auto-threading.md §B2/B4).
  *
  * THE PROBLEM (measured): 49% of contexts are born orphans because auto-threading only
@@ -65,13 +65,13 @@ export const INFERENCE_EDGE_TYPE = 'related_to' as const;
  *   - ZERO CANDIDATES (`!best`): nothing was evaluated at all — the project has no
  *     non-orphan, embedded, unarchived context to attach to. Reporting "no neighbour above
  *     threshold" is a claim about a comparison that never happened. This is exactly why the
- *     `9a8c06c5` RED sat unattributed for a week: a broken candidate query and an honest
+ *     `2b3c4d5e` RED sat unattributed for a week: a broken candidate query and an honest
  *     below-floor result produced the identical string. → `no-candidates`.
  *
  *   - DEGENERATE SOURCE: the row's own vector is present but zero-norm, so pgvector returns
  *     NaN for every comparison. Measured verdict of the OLD code with a real 0.9-similar
  *     neighbour in the pool: `{reason:'no-neighbor-above-threshold', similarity:null,
- *     candidateId:'e320bbaa…'}` — three lies in one object. It named a "best" candidate that
+ *     candidateId:'3c4d5e6f…'}` — three lies in one object. It named a "best" candidate that
  *     was never ranked (all distances were NaN, so the row order was arbitrary), it reported
  *     `similarity: null` over the wire (NaN JSON-serialises to null, reading as "no score"),
  *     and it blamed the neighbourhood for a defect in the capture's own vector. The truth is
@@ -356,7 +356,7 @@ export async function inferAndMintRelatedTo(
       // ZERO CANDIDATES — the query returned no rows, so NOTHING was compared. This is its
       // OWN reason: reporting it as 'no-neighbor-above-threshold' asserted a
       // comparison that never happened and made a broken candidate query indistinguishable
-      // from an honest below-floor result, which is precisely why the 9a8c06c5 RED went
+      // from an honest below-floor result, which is precisely why the RED went
       // unattributed for a week.
       return { minted: false, reason: 'no-candidates' };
     }

@@ -2,7 +2,7 @@
  * SessionsToolbar — the mock's pivot/filter bar, built from P0.3 Select + Input.
  * Actor + project + status + free-text filters.
  *
- * WHAT RUNS WHERE (this changed with epic 41293984): the PROJECT filter and the ACTOR
+ * WHAT RUNS WHERE (this changed with the page-scope epic): the PROJECT filter and the ACTOR
  * filter are SERVER-SIDE — each re-fetches `api.sessions.list` with a narrower request.
  * Status and free-text search stay client-side over the loaded page; they are display
  * refinements, not scope.

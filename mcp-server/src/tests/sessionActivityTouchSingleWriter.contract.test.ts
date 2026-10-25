@@ -17,7 +17,7 @@
  *   the read path : "UPDATE volume is a function of wall clock"     (throttled)
  *   the write path: "UPDATE volume is a function of traffic"        (unthrottled)
  *
- * The first sentence was the column's DOCUMENTED contract after 38cfeb72, and it was
+ * The first sentence was the column's DOCUMENTED contract after the read-path liveness change, and it was
  * false of the system. `writeBurst` below is the measurement that shows it: pre-fix,
  * N writes cost N+1 UPDATEs; post-fix they cost 1.
  *
@@ -27,7 +27,7 @@
  * A behavioural test proves the throttle works for the writers that exist TODAY. It
  * cannot fail when a THIRD writer appears next quarter, because that writer's call site
  * is not in the population the behavioural test drives — which is exactly how this defect
- * was born: 38cfeb72's suite was green the whole time the write path was bypassing it.
+ * was born: the read-path liveness change's suite was green the whole time the write path was bypassing it.
  *
  * So the anti-regression artifact is the SOURCE-LEVEL guard: `SessionRepo.touchActivity`
  * has exactly ONE caller in runtime source, and it is the helper. A future direct caller
@@ -125,11 +125,11 @@ async function countTouchUpdates(body: () => Promise<void>): Promise<number> {
   return touches;
 }
 
-describe('5401b89f: session liveness has ONE writer and ONE throttle', () => {
+describe('session liveness has ONE writer and ONE throttle', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(
-        `INSERT INTO projects (name, description) VALUES ($1, '5401b89f single-writer activity touch')
+        `INSERT INTO projects (name, description) VALUES ($1, 'single-writer activity touch')
          RETURNING id`,
         [`atsw-proj-${STAMP}`]
       )
@@ -174,7 +174,7 @@ describe('5401b89f: session liveness has ONE writer and ONE throttle', () => {
       for (let i = 0; i < BURST; i++) {
         const r = await routeExecutor(
           'context_store',
-          { content: `5401b89f write burst ${i}`, type: 'completion', tags: ['atsw'] },
+          { content: `single-writer write burst ${i}`, type: 'completion', tags: ['atsw'] },
           { connectionId: c, actor: 'builder' } as any
         );
         expect(r.isError, 'the write itself must succeed — a failed write proves nothing').not.toBe(true);
@@ -319,7 +319,7 @@ describe('5401b89f: session liveness has ONE writer and ONE throttle', () => {
   });
 
   // ───────────────────────────────────────────────────────────────────────────────────
-  // THE INVARIANT 38cfeb72 DOCUMENTED, NOW ENFORCED FOR THE WRITE PATH TOO
+  // THE INVARIANT the read-path liveness change DOCUMENTED, NOW ENFORCED FOR THE WRITE PATH TOO
   // A touch can make a live session look live. It can NEVER revive a parked one.
   // ───────────────────────────────────────────────────────────────────────────────────
   for (const parked of ['dormant', 'interrupted', 'ended', 'inactive', 'disconnected']) {
@@ -382,7 +382,7 @@ describe('5401b89f: session liveness has ONE writer and ONE throttle', () => {
  * state is routing through `activityTouch`. That is the difference between "the second
  * writer is currently absent" and "a second writer is unreachable".
  */
-describe('5401b89f guard: SessionRepo.touchActivity has exactly ONE caller in runtime source', () => {
+describe('single-writer guard: SessionRepo.touchActivity has exactly ONE caller in runtime source', () => {
   const HERE = path.dirname(fileURLToPath(import.meta.url));
   const SRC_ROOT = path.resolve(HERE, '..');           // mcp-server/src
   const TESTS_DIR = path.join(SRC_ROOT, 'tests');

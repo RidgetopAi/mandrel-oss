@@ -1,7 +1,7 @@
 /**
  * BELIEF PAIRING — FIRST-FAILURE-WINS under DOUBLE failure (NIT-1).
  *
- * WHY THIS EXISTS. The merged fail-open fix (9305a39a) establishes an exactly-one invariant:
+ * WHY THIS EXISTS. The merged fail-open fix establishes an exactly-one invariant:
  * a neighbourhood books EXACTLY ONE ledger row, whatever fails inside it. The follow-on branch
  * removed the unreachable catch in beliefAdjudicator and replaced it with bookPairingFailure,
  * whose first-failure-wins guard is the `&& !pairingFailure` at the clock-read site.
@@ -10,7 +10,7 @@
  * shipped belief suite GREEN (9/9) while the invariant is broken — two rows for one
  * neighbourhood. The product code was correct; nothing asserted it, so the next author to touch
  * that line gets no signal. This is the C3 class: a guard is a product, and only a mutation
- * proves it. Verdict 1da12a18.
+ * proves it (an earlier review verdict).
  *
  * WHAT IT PROVES, against a REAL migrated Postgres and the REAL shipped path:
  *   Both the candidate query AND the clock read throw. Then:

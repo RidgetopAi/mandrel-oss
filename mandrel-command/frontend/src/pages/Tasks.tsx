@@ -61,7 +61,7 @@ const Tasks: React.FC = () => {
   const navigate = useNavigate();
   const { id: routeId } = useParams<{ id: string }>();
 
-  // THE PAGE OWNS ITS PROJECT (epic 41293984). The global header
+  // THE PAGE OWNS ITS PROJECT (page-scope epic). The global header
   // selector this page used to follow is GONE — every scoped page carries its own, backed
   // by `?project=` and opening at the user's default. Every read below additionally
   // carries `project.scope()`, which pins X-Project-ID to this page's project per request

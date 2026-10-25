@@ -4,7 +4,7 @@
  * default" → this user's default-project preference). Presentational: the page owns the
  * handlers so this stays testable without the providers.
  *
- * THE SECOND ACTION USED TO BE "Switch to project" (epic 41293984 §C). There is no
+ * THE SECOND ACTION USED TO BE "Switch to project" (page-scope epic §C). There is no
  * app-wide project to switch any more: scope is per-page and explicit, and the ambient
  * scope is PINNED to the user's default. The button was repurposed rather than deleted
  * because the intent behind it — "I want to work in this project" — is still real; it

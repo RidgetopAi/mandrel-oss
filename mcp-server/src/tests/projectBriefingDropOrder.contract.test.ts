@@ -56,7 +56,7 @@ const CFG = (maxChars: number, over: Partial<BriefingConfig> = {}): BriefingConf
   handoffStampEnabled: true,
   handoffStampFormat: ' [now: {status}]',
   // OFF for this suite, for the same reason backfillEnabled/altitudeEnabled are: these cases
-  // assert the pre-cfd2ec6c document and its char arithmetic, and the recording directive is
+  // assert the earlier document and its char arithmetic, and the recording directive is
   // ~1k chars of frame that would shift every cap assertion here without being what they
   // measure. The directive's own behaviour — including that it is ON by default in the
   // shipped config — is asserted by projectBriefingRecordingDirective.contract.test.ts.
@@ -71,7 +71,7 @@ const CFG = (maxChars: number, over: Partial<BriefingConfig> = {}): BriefingConf
   protectionRankBranchMember: 4,
   protectionRankAlwaysSurface: 3,
   protectionRankConvention: 3,
-  // f176d8a5's measurement knob, restated at its SHIPPED default (the floor) like the ranks
+  // the briefing-budget decision's measurement knob, restated at its SHIPPED default (the floor) like the ranks
   // above it: a decision gets no band of its own until a measurement says it should.
   protectionRankDecision: 0,
   protectionRankStalePriority: 2,
@@ -457,7 +457,7 @@ describe('briefing drop order — a convention is a standing constraint, not a s
   });
 
   /**
-   * THE OFF PATH (added 2026-08-24, Reviewer verdict bb40624b).
+   * THE OFF PATH (added 2026-08-24, after a review verdict).
    *
    * WHAT THIS EXISTS TO CATCH, and it is not hypothetical: the first version of this band was
    * left OUT of applySelectionFlag. With MANDREL_BRIEFING_BRANCH_SCOPE_ENABLED off, that flag

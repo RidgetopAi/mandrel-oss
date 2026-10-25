@@ -603,7 +603,7 @@ describe('implementation_status is READABLE: filter + breakdown + real paginatio
 
   test('D1c: an UNKNOWN implementation_status counts as UNBUILT, never as shipped', () => {
     // C3's absent population. "We do not know whether it was built" rendering as "it shipped"
-    // is the direction the ec1c3945 miss went; the projector must fail OPEN. Asserted on the
+    // is the direction the miss went; the projector must fail OPEN. Asserted on the
     // pure projector so a null is reachable at all (the DB column is default-'planned').
     const decision = (implementationStatus: string | null) => ({
       id: `d-${implementationStatus ?? 'null'}`,

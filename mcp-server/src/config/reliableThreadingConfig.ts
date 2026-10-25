@@ -1,6 +1,6 @@
 /**
  * RELIABLE AUTO-THREADING — the durable/honest-anchor + no-orphan-inference config
- * (branch:mandrel-reliability, task ST-2 b8c64ee4, spec
+ * (branch:mandrel-reliability, task ST-2, spec
  * docs/specs/reliable-auto-threading.md §X1).
  *
  * THE PRINCIPLE (the operator, standing rule): NO HARDCODED VARIABLES. Every threshold / TTL /

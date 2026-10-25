@@ -213,7 +213,7 @@ services:
       # EDGE-PROVENANCE ALARM: explicitly DISABLED on tenants — per-tenant
       # alerting is future work, not silently off. The code default is NODE_ENV==production
       # (true here), and a quiet tenant (<floor declared edges/window) would page the operator
-      # daily through prod's channel. Declared per audit 42dca388 finding 6: alarm state
+      # daily through prod's channel. Declared per the graph audit finding 6: alarm state
       # must be readable off the compose. Per-tenant flip: set it in that tenant's env file
       # (delivery would also need the notify mounts docker-compose.prod file carries).
       MANDREL_PROVENANCE_ALARM_ENABLED: "${MANDREL_PROVENANCE_ALARM_ENABLED:-false}"
@@ -417,7 +417,7 @@ services:
       # environment where `docker inspect` reads it back. Out of class on purpose.
       # Keep the singleton lock on tmpfs so a container restart always starts
       # lock-free (mirrors the image default; see mcp-server/Dockerfile and the
-      # start-time disambiguation in processLock.ts — outage 2026-06-27, c316494d).
+      # start-time disambiguation in processLock.ts — outage 2026-06-27).
       AIDIS_LOCK_FILE: ${AIDIS_LOCK_FILE:-/dev/shm/aidis.pid}
       # ---------------------------------------------------------------------------
       # FOLDED IN from the per-tenant overrides. These keys used to
@@ -430,7 +430,7 @@ services:
       # ---------------------------------------------------------------------------
       # Static bridge bearer credential (value: tenant env file, never a literal).
       MCP_AUTH_TOKEN: "${MCP_AUTH_TOKEN:-}"
-      # OPTION-1 SHARED SECRET RETIRED (an earlier task — supersedes ed33c89e/3f5615b9).
+      # OPTION-1 SHARED SECRET RETIRED (an earlier task — supersedes the interim shield and the tenant-UI 401 fix).
       # MANDREL_JWT_SECRET is deliberately NO LONGER delivered to the mcp-server: the
       # browser's tool calls now ride the authenticated command backend (/api/mcp/*),
       # which attaches MCP_AUTH_TOKEN internally, so bridgeAuth()'s login-JWT credential

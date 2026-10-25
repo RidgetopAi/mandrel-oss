@@ -312,7 +312,7 @@ export function extractProseField(field: string, text: string): string | null {
  *     cannot manufacture a match that was not textually there.
  *
  * WHAT IT STILL REFUSES, deliberately: an UNRECOGNISED word where the type belongs
- * (`(spine session e6170769)` does not match — the id8 window must start immediately after
+ * (`(spine session 1a2b3c4d)` does not match — the id8 window must start immediately after
  * `(spine ` or after a recognised type word). And it NEVER guesses a spine from a
  * `branch:<slug>` name: a slug is a name, not an id, and an auto-open onto a guessed spine
  * is exactly the confidently-wrong declared edge this work exists to prevent.

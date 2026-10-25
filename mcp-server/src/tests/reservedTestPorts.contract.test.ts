@@ -215,7 +215,7 @@ describe('reserved test ports — the fleet-bound ranges are a guard, not a comm
       expect(scanForReservedPorts('b=16999;').map(v => v.port)).toEqual([16999]); // reserved-port-ok: fixture
       expect(scanForReservedPorts('c=18080;').map(v => v.port)).toEqual([18080]); // reserved-port-ok: fixture
       expect(scanForReservedPorts('d=18099;').map(v => v.port)).toEqual([18099]); // reserved-port-ok: fixture
-      // Prod singleton pins (f16c5cd5): each port's neighbours stay clean…
+      // Prod singleton pins: each port's neighbours stay clean…
       expect(scanForReservedPorts('p=4999; q=5001; r=8079; s=8081; t=11999; u=12001;')).toEqual([]); // reserved-port-ok: fixture
       // …while the pinned ports themselves are caught.
       expect(scanForReservedPorts('e=5000;').map(v => v.port)).toEqual([5000]); // reserved-port-ok: fixture

@@ -168,7 +168,7 @@ describe('creating a project grants its creator access', () => {
     expect(viaQuery.status).toBe(200);
     expect(viaQuery.body.projectId).toBe(projectId);
 
-    // READ through the header door (the one b3cf883b closed).
+    // READ through the header door (the one the trust-boundary change closed).
     const viaHeader = await request(app)
       .get('/api/probe')
       .set('Authorization', 'Bearer nonadmin.a.b')

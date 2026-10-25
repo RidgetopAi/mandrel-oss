@@ -1,6 +1,6 @@
 /**
  * scopeConfig — the ONE merge between a page's per-request scope and a domain method's
- * own request config (epic 41293984 §A1).
+ * own request config (page-scope epic §A1).
  *
  * ── WHY THIS EXISTS ──────────────────────────────────────────────────────────────────
  * A scoped page calls `api.<domain>.<method>(args, project.scope())`. `scope()` returns an

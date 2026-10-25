@@ -27,7 +27,7 @@ import { CONTEXTS_CONFIG, SORT_OPTIONS, type SortValue } from './config';
 export type RequestScope = UsePageProject['scope'];
 
 /**
- * ── SCOPE IS AN ARGUMENT, NOT AN AMBIENT (epic 41293984 §A1) ─────────────────────────
+ * ── SCOPE IS AN ARGUMENT, NOT AN AMBIENT (page-scope epic §A1) ─────────────────────────
  * Every read below takes BOTH `projectId` (the value that goes in the query key and the
  * `project_id` query param) and `scope` — `usePageProject().scope`, passed as a FUNCTION
  * so it is called inside the queryFn rather than during render. That matters: `scope()`
@@ -209,7 +209,7 @@ export function useRestoreContext() {
  * GET /api/contexts/:id/related — the SEMANTIC "related contexts" list (vector
  * similarity). This is DELIBERATELY DISTINCT from the typed thread box (useContextLinks
  * / ThreadBox), which renders REAL `links`-table edges — the two are never conflated
- * (data-gap policy 10397f65). Lazy: only fetched when the reader's Related section is
+ * (the data-gap policy). Lazy: only fetched when the reader's Related section is
  * expanded, so opening a context doesn't pay for a similarity query it may never show.
  */
 export function useRelatedContexts(id: string | null, enabled: boolean) {

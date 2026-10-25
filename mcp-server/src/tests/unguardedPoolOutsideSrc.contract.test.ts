@@ -1,6 +1,6 @@
 // GUARDS-CLASS: unguarded-pg-pool
 /**
- * NO UNGUARDED pg POOL OUTSIDE `src/` — contract test (tightened by 56e69839).
+ * NO UNGUARDED pg POOL OUTSIDE `src/` — contract test (tightened by an earlier change).
  *
  * WHY THIS FILE EXISTS AT ALL
  * ---------------------------
@@ -17,7 +17,7 @@
  * NOT enumerate — everything in this package that is not `src/` — and fails if a pg Pool
  * appears there again.
  *
- * THERE IS NO ALLOWLIST, AND THAT IS THE POINT (56e69839)
+ * THERE IS NO ALLOWLIST, AND THAT IS THE POINT
  * ------------------------------------------------------
  * The first version of this guard shipped GREEN while four more files of the identical
  * class were still on disk, because it listed them by name as accepted debt. A named

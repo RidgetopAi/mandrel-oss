@@ -8,7 +8,7 @@
  *    each as its assignee actor chip → the task title. This is REAL (status + assigned_to
  *    columns).
  *
- * DATA-GAP POLICY (10397f65): the mock's richer "→ builder-0803a2d0" / branch substate
+ * DATA-GAP POLICY: the mock's richer "→ builder-<id>" / branch substate
  * is NOT in the Command DB, so it is NOT fabricated here — we show only the real assignee
  * and the real in-progress state. When nothing is in progress, an honest empty line.
  */

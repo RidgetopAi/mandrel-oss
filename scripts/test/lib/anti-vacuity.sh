@@ -4,7 +4,7 @@
 # -----------------------------------------------------------------------------
 # NOT A TEST. Sourced by suites under scripts/test/. One function.
 #
-# THE CLASS IT CLOSES (defect record 1e09e3ab)
+# THE CLASS IT CLOSES (an earlier defect record)
 #   A fixture that must clear a PRODUCT RESOLVER to reach the behaviour it tests
 #   is encoding an IMPLICIT ANSWER to that resolver. When the resolver's subject
 #   moves — which is exactly what a CORRECTNESS FIX to a resolver looks like —

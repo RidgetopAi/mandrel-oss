@@ -133,7 +133,7 @@
 #     awk (`{... exit}`) as a CONSUMER stage is NOT recognised. That is a named
 #     hole, not a claim of completeness.
 #   * HEREDOC bodies ARE scanned. A script that writes out another script and runs
-#     it is generating code, and the two heredoc-body hits on this tree at 38ee428a
+#     it is generating code, and the two heredoc-body hits on this tree at an earlier revision
 #     were exactly that (fixture-harness.sh's SHIM block, executed as
 #     $FH_DIR/bin/.fh-shim). The cost is that a fixture which deliberately carries
 #     the banned shape must be built with printf or carry a marker.
@@ -620,7 +620,7 @@ fi
 
 # --- 4g. THE POISONING CLASS ITSELF — the one that got past round 1. ---------
 # `if X; then` on one line, a banned pipeline on the next. The shipped detector at
-# d9c42c81 carried " then" into the next segment, so seg_is_bool() stopped seeing
+# carried " then" into the next segment, so seg_is_bool() stopped seeing
 # the leading `if` and THE FIRST PIPELINE-BOOLEAN INSIDE ANY then/do BLOCK WAS
 # INVISIBLE. Bisected on a schema-audit script: dark from the `; then` at
 # one line, hiding the next — while the suite reported 25/25 GREEN over it. Three shapes,
@@ -676,7 +676,7 @@ fi
 # --- 4j. THE PROBE THAT GUARDS THE NEW GUARD: blind instrument A, keep C. -----
 # Reintroduce the ROUND-1 BUG into a copy of the detector — `then`/`do` back in the
 # end-of-line continuation set — and point the suite at that copy. Instrument A goes
-# dark exactly as it did at d9c42c81; instrument C, reading the same line alone, does
+# dark exactly as it did at the earlier pipefail scan; instrument C, reading the same line alone, does
 # not. The reconciliation must turn that difference into a RED. If this probe ever
 # passes for the wrong reason the whole cross-check is decorative.
 MUT_SCANNER_ABS="$TMPD/pipefail-boolean-scan.MUTANT.awk"

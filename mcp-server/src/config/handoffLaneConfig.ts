@@ -1,5 +1,5 @@
 /**
- * HANDOFF WORKSTREAM LANE config (found by the workstreams smoke test 175f270a).
+ * HANDOFF WORKSTREAM LANE config (found by the workstreams smoke test).
  *
  * THE DEFECT THIS CONFIGURES AGAINST. Runtime workstreams tag each handoff `ws:<name>`
  * (coordinator / research / proj-<name>) and the runtime treats an UNTAGGED handoff as workstream

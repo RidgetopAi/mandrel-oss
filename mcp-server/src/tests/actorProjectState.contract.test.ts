@@ -65,7 +65,7 @@ function parseId(resp: any): string {
 async function newProject(label: string): Promise<{ id: string; name: string }> {
   const name = `${PROJ_PREFIX}-${label}`;
   const r = await db.query(
-    `INSERT INTO projects (name, description) VALUES ($1, 'actor-project-state e912b354 test') RETURNING id`,
+    `INSERT INTO projects (name, description) VALUES ($1, 'actor-project-state test') RETURNING id`,
     [name]
   );
   return { id: r.rows[0].id, name };

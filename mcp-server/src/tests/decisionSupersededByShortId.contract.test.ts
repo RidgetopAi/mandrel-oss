@@ -1,10 +1,10 @@
 /**
- * decision_update `supersededBy` short-id resolution contract  ( * contract-symmetry follow-up to 1cca7644 / the task_create dependencies fuse).
+ * decision_update `supersededBy` short-id resolution contract (contract-symmetry follow-up to the task_create dependencies fuse).
  *
- * THE BUG (flagged 2026-07-18 during the 1cca7644 resolver sweep): supersededBy was
+ * THE BUG (flagged 2026-07-18 during the dependency id8 resolver sweep): supersededBy was
  * validated as a bare `z.string().uuid()`, so it rejected the id8 short form — the handle
  * every OTHER id-accepting arg (decisionId on the same tool, task deps, link endpoints)
- * accepts via the ONE shared resolver. Unlike 1cca7644 it failed with a CLEAN zod error
+ * accepts via the ONE shared resolver. Unlike the dependency id8 resolver it failed with a CLEAN zod error
  * (not a leaked Postgres cast), but the asymmetry broke the id8-everywhere contract the
  * moat is built around.
  *
@@ -76,7 +76,7 @@ async function recordDecision(title: string): Promise<string> {
   return parseId(resp);
 }
 
-describe('decision_update supersededBy id8 resolution (74218558, symmetry with 1cca7644)', () => {
+describe('decision_update supersededBy id8 resolution (symmetry with the dependency id8 resolver)', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(
@@ -116,7 +116,7 @@ describe('decision_update supersededBy id8 resolution (74218558, symmetry with 1
     expect(text).not.toMatch(/invalid input syntax for type uuid/i);
 
     // Authoritative: the uuid column holds the RESOLVED full UUID, not the id8; and
-    // supersededBy implies status='superseded' (existing 1a43bdf3 contract, unchanged).
+    // supersededBy implies status='superseded' (an existing contract, unchanged).
     const row = (
       await db.query(
         'SELECT superseded_by::text AS superseded_by, status FROM technical_decisions WHERE id = $1',

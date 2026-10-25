@@ -1,5 +1,5 @@
 /**
- * STAGE-1 CANDIDATE PAIRING (design ca9a33c0 §2/§3).
+ * STAGE-1 CANDIDATE PAIRING (the belief-layer design §2/§3).
  *
  * Cosine NOMINATES; it never adjudicates (the relevance-vs-truth axiom). For a given
  * record, find its top-K same-project neighbours whose gemma cosine is WITHIN the belief
@@ -7,7 +7,7 @@
  * the Stage-2 adjudicator. This bounds adjudicator load (embedder stays priority) and is
  * the cheap gate that keeps the expensive LLM off obvious non-pairs.
  *
- * ANTI-JUNK (measured 2026-07-06 on decision-run 137c26bf — the picker, not the model, was
+ * ANTI-JUNK (measured 2026-07-06 on the decision-run oracle-labelled sample — the picker, not the model, was
  * the flag-storm source): the band has BOTH ends — a floor cuts low-cosine `unrelated`
  * noise, and a CEILING (~0.95+) cuts near-identical DUPLICATE RESTATEMENTS (a record
  * re-stored, not "this replaced that") that the adjudicator false-fired supersedes on. And

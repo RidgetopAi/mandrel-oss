@@ -202,7 +202,7 @@ export class MandrelApiClient {
 
     // The login JWT is THE credential for these calls: they land on the
     // authenticated Command backend (/api/mcp/*), whose authenticateToken requires it —
-    // no token, no call. (Historically this header was the ed33c89e interim shield for
+    // no token, no call. (Historically this header was the interim shield for
     // direct-to-mcp-server fetches; that direct path is retired.) getValidToken() returns
     // the present, unexpired token (or null). A caller-supplied Authorization in
     // options?.headers still wins.
@@ -375,7 +375,7 @@ export class MandrelApiClient {
   //   - switchProject  (project_switch, effect 'scope-switch') → G1. Replaced by the UI's
   //     OWN selected-project state: the per-user default project (contexts/SettingsContext
   //     `defaultProjectId`) plus each page's own `usePageProject()` selection. (This line
-  //     used to point at ProjectContext.selectProjectByName, deleted by epic 41293984.)
+  //     used to point at ProjectContext.selectProjectByName, deleted by the page-scope epic.)
   //   - storeContext   (context_store,  effect 'write')        → G2. UI error telemetry
   //     belongs in services/errorReporter.ts (Sentry + /api/monitoring/errors), not in the
   //     user's context knowledge base scoped to a slot nobody owns.

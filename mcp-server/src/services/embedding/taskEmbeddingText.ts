@@ -1,7 +1,7 @@
 /**
  * THE TASK EMBED TEXT — the single definition of what a `tasks` row means to the embedder.
  *
- * an earlier task (tranche B of the smart_search complete fix, parent 7b8a66f4).
+ * an earlier task (tranche B of the smart_search complete fix).
  * Counterpart of buildContextEmbeddingText (handlers/context.ts) and
  * buildDecisionEmbeddingText (handlers/decisions.ts), and shaped deliberately like the
  * latter so all three tables present the same "labelled header lines, then free text" form

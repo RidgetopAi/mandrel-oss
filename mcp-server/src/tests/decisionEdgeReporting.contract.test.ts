@@ -1,7 +1,7 @@
 /**
  * DECISION EDGE-REPORTING HONESTY — contract tests.
  *
- * THE DISEASE, AND WHY IT IS THE SAME ONE AS 8fc68175
+ * THE DISEASE, AND WHY IT IS THE SAME ONE AS the edge-reporting change
  * ---------------------------------------------------
  * `context_store` used to report `linksMinted: 0` for a write that had minted real edges;
  * an earlier task fixed it with a per-write LEDGER (`edgesMinted`, one row per edge, each

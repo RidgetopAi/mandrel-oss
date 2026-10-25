@@ -98,7 +98,7 @@ rubber-stamping):
   Sonnet-5 baseline, or `tiered` (Snap tier-1 → Sonnet tier-2) over the 80 pairs; the scorer
   reports recall/precision vs the oracle and vs the Sonnet majority, the 4-verdict confusion,
   calibration buckets, p50/p95 latency and $/1k pairs. Recorded runs: `decision-run/subq-37b2040f/`.
-- `decision-run/heldout-37b2040f/` — the confirmation round's 150 HELD-OUT pairs (`select.sql`,
+- `decision-run/heldout-*/` — the confirmation round's 150 HELD-OUT pairs (`select.sql`,
   read-only from prod), configs frozen in `frozen-configs.json` before any run, runs + blind Opus
   judgements in `runs/`; score with `decision-run/score-heldout.py decision-run/heldout-37b2040f/runs`.
   `judge-pairs-blind.py` is the blind pair judge (no adjudicator output shown).

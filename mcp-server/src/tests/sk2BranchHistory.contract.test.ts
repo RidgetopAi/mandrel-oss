@@ -185,7 +185,7 @@ describe('branch_history reports three separate bands, and exact is forward-only
 
     // THE BAIT: an UNPOSITIONED session tags the spine. On prod this is the shape left behind
     // by every write whose positional mint was swallowed by its own tag mint before 086 —
-    // ~10 such records on ddba6ec7 against 8 recorded members (measured 2026-08-15). Whether
+    // ~10 such records on the worked-example branch against 8 recorded members (measured 2026-08-15). Whether
     // its author was standing here is UNKNOWABLE: positions are hard-deleted on branch_close.
     const baitConn = await joinConn(projectId, 'bands-bait');
     const bait = ctxId(await viaTool('context_store', {

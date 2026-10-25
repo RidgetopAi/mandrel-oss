@@ -17,7 +17,7 @@
  * the SSE subscription, `api/embeddingsClient.ts`, every `requireWriteProjectId` write
  * that nobody scoped, and both client interceptors.
  *
- * ── THE FALLBACK LADDER (epic 41293984 §A2) ──────────────────────────────────────────
+ * ── THE FALLBACK LADDER (page-scope epic §A2) ──────────────────────────────────────────
  * The old implementation had ONE rung — the `aidis_selected_project` key — and returned
  * `undefined` the moment that key was missing or corrupt. That is not a safe default: a
  * missing project is read by several backend controllers as "EVERY project", so an

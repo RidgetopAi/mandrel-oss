@@ -102,7 +102,7 @@ describe('the token never leaves through a server error body', () => {
   it.each([
     ['URL-encoded', (t: string) => encodeURIComponent(t)],
     ['JSON-escaped', (t: string) => JSON.stringify(t).slice(1, -1)],
-  ])('a base64 token with + / = and a quote echoed %s is clean (Reviewer e9953e12 n2)', async (_form, encode) => {
+  ])('a base64 token with + / = and a quote echoed %s is clean (review nit n2)', async (_form, encode) => {
     const token = 'ab+c/d=e"f\\g==';
     const fake = new FakeMandrel({ token, intercept: () => new Response(`echo ${encode(token)}`, { status: 401 }) });
     const board = new MandrelBoard({ url: FAKE_URL, authToken: token, connectionId: 'c', actorId: 'a', project: 'p', fetch: fake.fetch });

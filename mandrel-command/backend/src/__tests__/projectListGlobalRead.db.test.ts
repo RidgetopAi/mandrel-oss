@@ -1,5 +1,5 @@
 /**
- * THE PROJECT LIST MUST BE GLOBAL — `GET /api/projects` (Reviewer B4, epic 41293984).
+ * THE PROJECT LIST MUST BE GLOBAL — `GET /api/projects` (Reviewer B4, the page-scope epic).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE DEFECT THIS EXISTS TO CATCH

@@ -79,7 +79,7 @@ class ApiClient {
         // attached; a corrupt/synthetic/UNASSIGNED id is never sent AND the stored keys
         // are purged so the dashboard heals without the user clearing site data.
         //
-        // ── "MENTIONED" IS THE TEST, NOT "TRUTHY" (epic 41293984 §A1) ──────────────
+        // ── "MENTIONED" IS THE TEST, NOT "TRUTHY" (page-scope epic §A1) ──────────────
         // This used to read `if (!config.headers[header])`, which cannot distinguish
         // "the caller said nothing" from "the caller explicitly said NO project". A
         // page choosing the All-projects view sets the header to undefined on purpose;

@@ -438,7 +438,7 @@ describe('the recency door — new work is visible before it is vouched', () => 
   /**
    * THE MEASURED DEFECT this door exists to close, restated as an executable probe.
    *
-   * On live prod 2026-08-22 (v0.44.1, anchor 9c47ddc6) an earlier note — a run report written
+   * On live prod 2026-08-22 (v0.44.1, anchor 2b3c4d5e) an earlier note — a run report written
    * ~30 minutes earlier, band `unproven`, carrying a DECLARED informs edge to the anchor — was
    * ABSENT from `recall_thread altitude:'current'` at depth 1 and 2 and PRESENT at `headline`.
    * A context's only door was `latestTrustedOutcomes`, which is trust-gated, and trust accrues

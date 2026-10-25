@@ -1,5 +1,5 @@
 /**
- * ProjectContext — the PINNED ambient scope (epic 41293984 §C, amended §A2).
+ * ProjectContext — the PINNED ambient scope (page-scope epic §C, amended §A2).
  *
  * ── WHAT THIS GUARD IS FOR ───────────────────────────────────────────────────────────
  * ONE invariant, stated as the thing that must never happen:

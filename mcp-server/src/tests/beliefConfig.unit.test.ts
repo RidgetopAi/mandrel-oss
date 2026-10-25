@@ -71,7 +71,7 @@ afterEach(clearEnv);
 // REAL Anthropic/Groq call the suite must never make — and beliefConfig.ts defaults
 // beliefEnabled to TRUE when the var is unset. So leaving it deleted re-ARMS the hook for
 // any file that runs afterwards without re-running setup. Snapshot at the file boundary and
-// restore, so the intra-file semantics above are unchanged and nothing escapes (ecc3a0a5).
+// restore, so the intra-file semantics above are unchanged and nothing escapes.
 const ENV_SNAPSHOT: Record<string, string | undefined> = {};
 beforeAll(() => {
   for (const k of ENV_KEYS) ENV_SNAPSHOT[k] = process.env[k];
@@ -175,7 +175,7 @@ describe('beliefConfig — tiered config (BL-11: Groq prescreen → Sonnet confi
     expect(g.omitTemperature).toBe(false); // Groq accepts temperature
   });
 
-  it("the subq provider's same-subject source defaults to the verdict (held-out confirmed, 37b2040f)", async () => {
+  it("the subq provider's same-subject source defaults to the verdict (held-out confirmed)", async () => {
     const c = await freshConfig();
     expect(c.BELIEF_SUBQ_CONFIG.sameSubjectFrom).toBe('verdict');
   });

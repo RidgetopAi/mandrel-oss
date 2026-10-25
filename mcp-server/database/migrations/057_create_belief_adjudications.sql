@@ -1,6 +1,6 @@
 -- Migration 057: BELIEF LAYER — the `belief_adjudications` table (Phase 4, Increment 1).
 --
--- WHY (belief-layer design ca9a33c0 §1, locked 535d76e0): the belief layer adds the
+-- WHY (the belief-layer design §1, as locked): the belief layer adds the
 -- TRUTH-NOW axis on top of cosine's relevance axis. A small-LLM adjudicator judges
 -- candidate pairs (supersedes / contests / restates / unrelated); this table records
 -- EVERY pairwise verdict — including the ones that mint no edge. That gives us three

@@ -110,7 +110,7 @@ export const EDGE_TYPE_SPECS: readonly EdgeTypeSpec[] = [
     reverse: 'outcome_of',
   },
   {
-    // TASK SCHEDULING STRUCTURE (task-source edge minting, 86d56b8c Q2). The ONE strong
+    // TASK SCHEDULING STRUCTURE (task-source edge minting, the task-edge minting rule Q2). The ONE strong
     // task→task type added with this work, justified by an UNAMBIGUOUS signal that already
     // exists: the typed, resolver-validated, capped `dependencies` field on task_create.
     // A strong edge earns its strength from a strong signal.
@@ -135,7 +135,7 @@ export const EDGE_TYPE_SPECS: readonly EdgeTypeSpec[] = [
     // `subtask_of` is a record-intrinsic containment claim, and session position
     // — "standing on" a branch — cannot support it, so the positional mint was deleted.
     //
-    // WHY THIS EARNS A VOCABULARY SLOT where 86d56b8c's `subtask_of` was declined: that
+    // WHY THIS EARNS A VOCABULARY SLOT where the task-edge minting rule's `subtask_of` was declined: that
     // refusal was about the `task:<id8>` TAG being an AMBIGUOUS signal (subtask-of /
     // follow-up-of / blocks / duplicates). A first-class `parentTaskId` param is not
     // ambiguous — it names the parent outright. A strong edge earns its strength from a

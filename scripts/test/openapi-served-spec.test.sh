@@ -30,7 +30,7 @@
 #   1. DELETES dist/ and then runs the SHIPPED build (`npm run build`), and asserts the
 #      emitter's own witness line is in the build output. Both halves are load-bearing
 #      and both were missing until Reviewer produced a false green (round 1, verdict
-#      615f7ea2): the guard used to just run the build, and with the emission step
+#      an earlier change): the guard used to just run the build, and with the emission step
 #      removed from package.json it still passed — because a LEFTOVER artifact from an
 #      earlier build was sitting in the warm tree's dist/ and tsc does not remove it.
 #      Deleting dist/ makes this the Docker builder's actual condition (a fresh

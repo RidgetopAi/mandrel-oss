@@ -7,7 +7,7 @@
  * is honest and the ordering is behaving as built — a decision simply has no protection band,
  * so it sits at the floor with ~300 other records and loses.
  *
- * WHAT SHIPPED IS A KNOB, NOT A RULING, and these tests are written to that. f176d8a5 says
+ * WHAT SHIPPED IS A KNOB, NOT A RULING, and these tests are written to that. the briefing-budget decision says
  * MEASURE which loses less rather than guess, and the cap is already dropping 339 whole
  * records, so any budget a decision band wins comes out of something else. So:
  *   - the SHIPPED DEFAULT is the floor and the document is unchanged (asserted below);
@@ -111,8 +111,8 @@ describe('decision protection band (an earlier task defect B)', () => {
     expect(briefingConfig().protectionRankDecision).toBe(0);
   });
 
-  test('at the default, the saturated document is byte-identical to the pre-f176d8a5 one', () => {
-    // "Pre-f176d8a5" is the floor rank spelled explicitly. If the default ever drifts off the
+  test('at the default, the saturated document is byte-identical to the earlier one', () => {
+    // "Earlier" is the floor rank spelled explicitly. If the default ever drifts off the
     // floor without a measurement, these two documents stop matching and this says so. Run
     // with the master switch ON, or applySelectionFlag would flatten both sides to the floor
     // and the comparison would hold for a reason that has nothing to do with the default.
@@ -125,7 +125,7 @@ describe('decision protection band (an earlier task defect B)', () => {
 
   test('THE KNOB IS WIRED: raising it serves decisions the floor loses', () => {
     // The corpus is saturated on purpose — at the floor the older, less-trusted decisions are
-    // evicted first and the document serves NONE of them, which is the f176d8a5 symptom
+    // evicted first and the document serves NONE of them, which is the briefing-budget decision symptom
     // (0 of 162) reproduced in miniature.
     const data = fabData(40, 40);
     const base = { maxChars: 5000, branchScopeEnabled: true }; // reserved-port-ok: a briefing CHARACTER budget (maxChars), never a socket
@@ -134,8 +134,8 @@ describe('decision protection band (an earlier task defect B)', () => {
     expect(atFloor.included.tasks).toBeGreaterThan(0);
 
     // Raised above the unprotected tasks, the SAME corpus at the SAME cap serves decisions.
-    // Stated as a SWAP, which is what it is (scoring rule a2243a8d): the budget did not grow,
-    // so every decision admitted here displaced a task. That is the trade f176d8a5 says to
+    // Stated as a SWAP, which is what it is (the scoring rule): the budget did not grow,
+    // so every decision admitted here displaced a task. That is the trade the briefing-budget decision says to
     // MEASURE — this test proves the knob moves the trade, never that the trade is worth it.
     const raised = renderBriefing(data, cfg({ ...base, protectionRankDecision: 2 }));
     expect(decisionsServed(raised.markdown)).toBeGreaterThan(0);

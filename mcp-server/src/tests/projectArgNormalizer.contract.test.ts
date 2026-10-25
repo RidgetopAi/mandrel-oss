@@ -155,7 +155,7 @@ afterAll(async () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('1ca8b181 — a project NAME in an explicit scope arg still mints the edge', () => {
+describe('a project NAME in an explicit scope arg still mints the edge', () => {
   /**
    * THE EXACT FILED REPRODUCER. Pre-fix this produced ZERO rows in `links` and a skip
    * blaming the task; the task existed the whole time.
@@ -237,7 +237,7 @@ describe('1ca8b181 — a project NAME in an explicit scope arg still mints the e
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('1ca8b181 — an unresolvable project scope fails LOUD, never silently', () => {
+describe('an unresolvable project scope fails LOUD, never silently', () => {
   /**
    * The other half of the fix. Pre-fix an unresolvable value produced FOUR different
    * outcomes depending on which handler received it (a clean not-found, a raw Postgres cast
@@ -317,7 +317,7 @@ describe('1ca8b181 — an unresolvable project scope fails LOUD, never silently'
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('1ca8b181 — the BOUND path was already safe and must stay that way', () => {
+describe('the BOUND path was already safe and must stay that way', () => {
   /**
    * Claim verified before the fix was written: a client bound BY NAME already got a canonical
    * UUID materialised into its scope argument, so its edges always minted. These two cases
@@ -345,7 +345,7 @@ describe('1ca8b181 — the BOUND path was already safe and must stay that way', 
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('1ca8b181 — the normalizer is anchored on the schema, not on a tool list', () => {
+describe('the normalizer is anchored on the schema, not on a tool list', () => {
   /**
    * FAIL-CLOSED COVERAGE. The fix must not be "the tools we thought of". The
    * normalizer keys off each tool's OWN declared scope parameter, so this walks EVERY tool in

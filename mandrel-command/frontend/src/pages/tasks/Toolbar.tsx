@@ -1,7 +1,7 @@
 /**
  * Toolbar — the Tasks filter row: a client-side search box over the loaded tasks.
  *
- * No project selector here. Epic 41293984 put one on every page; an earlier punch (the operator,
+ * No project selector here. The page-scope epic put one on every page; an earlier punch (the operator,
  * an earlier decision) moved it back to the ONE switch in the topbar (shell/ProjectSwitch),
  * which the page reads through `usePageProject`.
  *

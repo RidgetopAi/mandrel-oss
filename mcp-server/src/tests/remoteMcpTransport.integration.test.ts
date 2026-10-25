@@ -116,7 +116,7 @@ beforeAll(async () => {
   TEST_PORT = await reserveEphemeralPort();
   // vi.stubEnv (not raw assignment) so vi.unstubAllEnvs in afterAll restores ALL of them.
   // Previously afterAll deleted ONLY MCP_AUTH_TOKEN, so MCP_ALLOWED_HOSTS /
-  // MANDREL_AIDIS_MCP_PORT / AIDIS_PORT_REGISTRY leaked into every later file (ecc3a0a5).
+  // MANDREL_AIDIS_MCP_PORT / AIDIS_PORT_REGISTRY leaked into every later file.
   for (const [key, value] of Object.entries(TEST_ENV)) vi.stubEnv(key, value);
   vi.stubEnv('MCP_AUTH_TOKEN', TEST_TOKEN);
   vi.stubEnv('MCP_ALLOWED_HOSTS', `127.0.0.1:${TEST_PORT},localhost:${TEST_PORT},127.0.0.1,localhost`);
@@ -308,7 +308,7 @@ describe('Remote MCP transport — two-session isolation', () => {
 });
 
 describe('Remote MCP transport — unknown session id is REHYDRATED, not 404 (rehydrate-on-miss)', () => {
-  // an earlier Task / branch:mcp-session-persistence (supersedes the old 2ed788de papercut):
+  // an earlier Task / branch:mcp-session-persistence (supersedes an old papercut):
   // a lost session (idle-evicted, LRU-evicted, or — the big one — wiped by a server
   // restart/deploy) causes the client's NEXT tool call to arrive with a valid bearer token
   // + a session id no longer in the map. Real MCP clients (Amp, Claude Code, Codex, …)

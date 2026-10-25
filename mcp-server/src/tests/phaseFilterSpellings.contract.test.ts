@@ -221,7 +221,7 @@ describe('task_list phase filter: every spelling of a phase, and only that phase
   // ══════════════════════════════════════════════════════════════════════════════════════
   // THE SECOND PHASE READ PATH — task_progress_summary(groupBy:'phase').
   //
-  // ADDED IN REJECT ROUND 1 (Reviewer verdict 7c2977e2, F1). The first version of this
+  // ADDED IN REJECT ROUND 1 (review verdict, F1). The first version of this
   // file guarded the task_list FILTER and nothing else, while the same commit also changed
   // the SUMMARY's grouping SQL. That half shipped guarded by NOTHING, and it is the tool's
   // DEFAULT grouping — routes/tasks.routes.ts `args.groupBy || 'phase'` and

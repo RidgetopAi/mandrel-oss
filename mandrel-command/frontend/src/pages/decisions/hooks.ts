@@ -24,7 +24,7 @@ import { DECISIONS_CONFIG } from './config';
 export type RequestScope = UsePageProject['scope'];
 
 /**
- * ── SCOPE IS AN ARGUMENT, NOT AN AMBIENT (epic 41293984 §A1) ─────────────────────────
+ * ── SCOPE IS AN ARGUMENT, NOT AN AMBIENT (page-scope epic §A1) ─────────────────────────
  * Every read takes `scope` — `usePageProject().scope`, passed as a FUNCTION so it is
  * called inside the queryFn. `scope()` THROWS when the page has no project rather than
  * falling back, and a throw during render would white-screen the page; every read is

@@ -8,7 +8,7 @@
  * them (`invalid input syntax for type uuid`). an earlier Task closed the BEHAVIOURAL half at
  * the routeExecutor choke point. Two halves were still open when this file was written:
  *
- *   1. NOTHING TIED THE DOCUMENTATION TO THE BEHAVIOUR, in either direction. The 1ca8b181
+ *   1. NOTHING TIED THE DOCUMENTATION TO THE BEHAVIOUR, in either direction. The project-name normalizer
  *      coverage sweep walks the params the RESOLVER handles (`classifyProjectParam ===
  *      'scoped'`). A parameter can promise "or name" and sit OUTSIDE that population — the
  *      three `exempt` administration params (project_info/project_update/project_delete
@@ -171,7 +171,7 @@ function unaccountedExemptions(
 beforeAll(async () => {
   projectId = (
     await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, 'c13ba669 name-contract fixture') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'name-contract fixture') RETURNING id`,
       [PROJECT_NAME]
     )
   ).rows[0].id;
@@ -192,7 +192,7 @@ afterAll(async () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('c13ba669 — the population is closed (so the sweeps below mean something)', () => {
+describe('the population is closed (so the sweeps below mean something)', () => {
   test('OP_REGISTRY and validationSchemas yield the SAME project-reference population', () => {
     const regOps = new Set((OP_REGISTRY as any[]).map((o) => o.opId));
     // Every registry op is validated, and every extra schema is a deprecated alias with no
@@ -240,7 +240,7 @@ describe('c13ba669 — the population is closed (so the sweeps below mean someth
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('c13ba669 — DOC ⇒ every project reference DOCUMENTS that it accepts a name', () => {
+describe('DOC ⇒ every project reference DOCUMENTS that it accepts a name', () => {
   test('every project-reference param carries the canonical contract phrase', () => {
     const undocumented = undocumentedRefs();
     expect(
@@ -265,7 +265,7 @@ describe('c13ba669 — DOC ⇒ every project reference DOCUMENTS that it accepts
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('c13ba669 — BEHAVIOUR ⇒ a scoped project reference really resolves a NAME', () => {
+describe('BEHAVIOUR ⇒ a scoped project reference really resolves a NAME', () => {
   test('every scoped param canonicalises the NAME to the project UUID at the choke point', async () => {
     const checked: string[] = [];
     for (const { op, param, cls } of population()) {
@@ -350,7 +350,7 @@ const EXEMPT_EXERCISERS: Record<
     return { expectId, raw: text(r), isError: r?.isError === true };
   },
   // project_move_record.toProject is the DESTINATION of a record move (an earlier task /
-  // ce92ceb8). Exercised against a DISPOSABLE record created in a DISPOSABLE source project,
+  // an earlier task). Exercised against a DISPOSABLE record created in a DISPOSABLE source project,
   // for the same reason project_delete is: proving the handle resolved must not consume or
   // relocate the shared fixture the other cases read. On success the handler names the
   // destination project's UUID, which is the observable this file asserts on.
@@ -380,7 +380,7 @@ const EXEMPT_EXERCISERS: Record<
   },
 };
 
-describe('c13ba669 — BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-to-end', () => {
+describe('BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-to-end', () => {
   test('every exemption has an end-to-end exerciser (deny-by-default)', () => {
     expect(
       unaccountedExemptions(PROJECT_PARAM_EXEMPTIONS, EXEMPT_EXERCISERS),
@@ -427,7 +427,7 @@ describe('c13ba669 — BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-
  * (9930d1a): task_list({projectId:'   '}) → [DATASTORE_ERROR] with the advice "This is a
  * server-side fault, not a problem with the arguments you sent" — false, and unretryable.
  */
-describe('c13ba669 — a BLANK project reference is refused loudly, everywhere', () => {
+describe('a BLANK project reference is refused loudly, everywhere', () => {
   test.each([
     ['empty string', ''],
     ['whitespace only', '   '],
@@ -485,7 +485,7 @@ describe('c13ba669 — a BLANK project reference is refused loudly, everywhere',
  * later narrows the doc sweep to a hand-kept list, or drops the exempt-exerciser accounting,
  * THIS block stops failing — and a permanently-passing probe is itself the signal.
  */
-describe('c13ba669 — a NEW op that claims the contract without honouring it is CAUGHT', () => {
+describe('a NEW op that claims the contract without honouring it is CAUGHT', () => {
   const STEM = `__c13ba669_probe_${STAMP}`;
 
   /** Inject a fake op into the REAL registries the product reads, run body, always clean up. */
@@ -501,7 +501,7 @@ describe('c13ba669 — a NEW op that claims the contract without honouring it is
       effect: 'read',
       kind: 'flat',
       category: 'System Health',
-      description: 'fake op injected by the c13ba669 mutation probe',
+      description: 'fake op injected by the name-contract mutation probe',
       humanDescriptions,
     });
     try {

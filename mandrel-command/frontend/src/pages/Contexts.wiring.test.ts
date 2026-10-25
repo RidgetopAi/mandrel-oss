@@ -4,7 +4,7 @@
  *   1. import ZERO antd (migrated fully off the old component lib);
  *   2. wire data through the UNIFIED `api.*` client (not axios/generated);
  *   3. surface the TYPED thread box from real graph edges — NOT the semantic `related`
- *      list (data-gap policy 10397f65: never conflate the two);
+ *      list (the data-gap policy: never conflate the two);
  *   4. carry no hardcoded hex colours in the stylesheet (token-driven).
  * Source-level invariants — cheap, deterministic, drift-proof.
  */
@@ -53,7 +53,7 @@ describe('Contexts rebuild — typed thread box, not semantic related (the moat)
     expect(hooks).toMatch(/api\.contexts\.links\(/);
     // The moat's teeth: ThreadBox (the thread-box render) must render typed ContextLink
     // edges and NEVER the semantic `related` data — the two are never conflated
-    // (data-gap policy 10397f65). The separate, clearly-labelled "Related" section
+    // (the data-gap policy). The separate, clearly-labelled "Related" section
     // (ContextDetail, semantic similarity) is a DISTINCT feature and may call related() —
     // the invariant is that the THREAD BOX itself is links-only.
     const threadBox = readFileSync(resolve(modDir, 'ThreadBox.tsx'), 'utf8');

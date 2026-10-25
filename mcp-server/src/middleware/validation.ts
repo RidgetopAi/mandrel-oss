@@ -1074,7 +1074,7 @@ const decisionSchemas = {
     implementationStatus: implementationStatusEnum.optional(),
     successCriteria: artifactFreeText(z.string().max(cap('technical_decisions.success_criteria'))).optional(),
     problemStatement: artifactFreeText(z.string().max(cap('technical_decisions.problem_statement'))).optional(),
-    // CONTRACT SYMMETRY (follow-up to 1cca7644): supersededBy was the LAST
+    // CONTRACT SYMMETRY (follow-up to the dependency id8 resolver): supersededBy was the LAST
     // decision id arg still demanding a full `.uuid()` — it rejected the id8 short form
     // every other id-accepting arg (decisionId here, task deps, link endpoints) accepts.
     // Now uuidOrShortId(); the handler resolves an id8 → full UUID (resolveEntityId,
@@ -1411,7 +1411,7 @@ const taskSchemas = {
     // ── THE APPEND AFFORDANCE ────────────────────────────────────
     // `notes` was previously REMOVED from this schema, reasoning "there is no `notes`
     // column on `tasks`, so advertising it would be a promise the handler cannot keep".
-    // The promise IS keepable — `task_bulk_update` has kept it since dcf8af8c by writing
+    // The promise IS keepable — `task_bulk_update` has kept it since an earlier change by writing
     // to the `metadata` jsonb column — and removing it here is what left "record where
     // this task now stands" with no home at all. MEASURED 2026-08-21: two independent
     // actors in one session reached for `notes`, were correctly rejected by strict mode,
@@ -1502,13 +1502,13 @@ const taskSchemas = {
             data.metadata !== undefined || data.title !== undefined ||
             data.description !== undefined || data.tags !== undefined ||
             data.blockedOn !== undefined || data.dueAt !== undefined ||
-            // 83fd88b0: a DEPENDENCIES-ONLY update is the whole point of making the column
+            // a DEPENDENCIES-ONLY update is the whole point of making the column
             // writable — "this task now waits on that one" must be a legal call on its own,
             // or the channel is advertised and then rejected. Omitting it here would have
             // reproduced the declared-but-unreachable defect one layer up from the one this
             // change exists to fix, which is precisely how this file's catalogue got long.
             data.dependencies !== undefined ||
-            // 39abb203: a note ALONE is the whole point — "just record a status note" must
+            // a note ALONE is the whole point — "just record a status note" must
             // be a legal call, or the affordance is advertised and then rejected, which is
             // the "declared but unreachable" defect this file has catalogued repeatedly.
             data.notes !== undefined ||
@@ -2458,7 +2458,7 @@ function normalizeDecisionSynonyms(toolName: string, args: any): any {
     // alternativesConsidered synonyms.
     //
     // `options` is now ALSO a REAL, distinctly-shaped param (THE DECISION INBOX
-    // /f41f8b97): `[{key, label, pros, cons, recommended?}]`. Only treat it as the
+    // and its follow-up): `[{key, label, pros, cons, recommended?}]`. Only treat it as the
     // legacy alternativesConsidered synonym when it does NOT look like a decision-inbox
     // options array — i.e. no entry carries `key` (the field decision_answer selects on,
     // and the one thing the legacy shape — bare strings, or {name, reasonRejected} — never

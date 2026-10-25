@@ -35,7 +35,7 @@
  *             0 of 84 projects; the 942 guessed hard edges bought nothing on that path
  *             while putting 421 live contexts in the dead-ends section on a guess alone.
  *
- * Design ca9a33c0 §3 + §4 (contests is NOT an outcome edge — guarded like related_to in
+ * the belief-layer design §3 + §4 (contests is NOT an outcome edge — guarded like related_to in
  * trust.ts) + §8 (Inc-1 = supersession only).
  *
  * THE INVARIANTS this module guarantees:

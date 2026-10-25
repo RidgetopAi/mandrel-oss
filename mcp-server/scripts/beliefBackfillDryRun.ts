@@ -2,7 +2,7 @@
 /**
  * beliefBackfillDryRun — FULL-PIPELINE pre-prod dry-run of the belief layer (UNCOMMITTED).
  *
- * Purpose (the coordinator/the builder dry-run, ref:adjudicator-locked 64e410fb): run the CURRENT committed
+ * Purpose (the coordinator/the builder dry-run, the adjudicator lock): run the CURRENT committed
  * pipeline (picker fix 0.60/0.95 + auto-record filter → Groq gpt-oss-120b → reconcile/mint)
  * over the REAL riverbend corpus into a DISPOSABLE DB, and MEASURE how many supersedes edges
  * it would actually mint + whether they are right. NEVER touches prod (writes only the ci_*

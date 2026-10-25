@@ -180,7 +180,8 @@ refs_load() {
 # The line-aware matcher: stdin is `git grep -z -n -e ''` (every line), argv[1] hash.tsv (word: and
 # sha256 lines), argv[2] regex.tsv. Emits <class><TAB><path><TAB><line><TAB><text> for (a) a line
 # holding a listed word or hashed token and
-# (b) a regex class matching ACROSS two consecutive lines (the continuation's comment marker stripped)
+# (b) a regex class matching ACROSS two consecutive lines of the same kind (both comment lines, or
+# neither; the continuation's comment marker stripped)
 # that neither line matches alone — "decision" at a line end, its id on the next line. A regex that
 # JavaScript cannot compile exits 3 (the stage reports could-not-measure, never a pass).
 REFS_LINESCAN_JS="$(cat <<'JS'
@@ -211,6 +212,10 @@ const sha = (t) => {
 const out = [];
 const emit = (c, path, ln, txt) => out.push(`${c}\t${path}\t${ln}\t${txt.replace(/\t/g, ' ')}\n`);
 const LEAD = /^[ \t]*(?:\/\/|\*|#|--|<!--)?[ \t]*/;
+// A wrap continues prose of the SAME kind: comment onto comment, or text onto text (a heredoc, a
+// paragraph). A comment line followed by a code line is not one sentence, and joining them would
+// read the code's fixture values as if the comment had said them.
+const MARK = /^[ \t]*(?:\/\/|\/?\*|#|--|<!--)/;
 let pPath = null, pLn = -1, pTxt = '';
 const handle = (rec) => {
   const a = rec.indexOf('\0'); const b = a < 0 ? -1 : rec.indexOf('\0', a + 1);
@@ -224,7 +229,7 @@ const handle = (rec) => {
     }
     for (const c of hit) emit(c, path, ln, txt);
   }
-  if (path === pPath && ln === pLn + 1 && pTxt.trim() && txt.trim()) {
+  if (path === pPath && ln === pLn + 1 && pTxt.trim() && txt.trim() && MARK.test(pTxt) === MARK.test(txt)) {
     const joined = pTxt.replace(/\s+$/, '') + ' ' + txt.replace(LEAD, '');
     for (const [c, r] of rx) if (r.test(joined) && !r.test(pTxt) && !r.test(txt)) emit(c, path, ln, `${pTxt.trim()} ⏎ ${txt.trim()}`);
   }

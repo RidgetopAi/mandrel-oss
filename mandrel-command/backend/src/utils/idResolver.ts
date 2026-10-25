@@ -2,7 +2,7 @@
  * UNIFIED navigation id resolver (SPINE of branch:mandrel-navigation).
  *
  * THE PROBLEM THIS SOLVES: a human or agent has a bare id — a full UUID or the
- * 8-hex short-id form every Mandrel reference uses (e.g. `b822dfcb`) — and wants to
+ * 8-hex short-id form every Mandrel reference uses (e.g. `2b3c4d5e`) — and wants to
  * navigate to that record WITHOUT already knowing what KIND of record it is. This
  * resolver takes the bare id, discovers its TYPE by looking in every navigable table
  * at once, and returns the canonical record ({type, id, title, url}) so a route can

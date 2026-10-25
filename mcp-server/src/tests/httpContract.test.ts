@@ -49,7 +49,7 @@ const errorSchema = {
   additionalProperties: true,
 };
 
-// IN-BAND TOOL ERROR (defect 8fe64f8b). The THIRD legitimate envelope shape, and the one
+// IN-BAND TOOL ERROR. The THIRD legitimate envelope shape, and the one
 // this file could not express before: the tool ran, the executor caught its error and returned
 // it as an MCP error result, so the HTTP status stays 200 (the correct MCP shape) and there is
 // no top-level `error` string — the failure lives in `result.isError`. Before the fix the
@@ -95,7 +95,7 @@ function expectSuccessEnvelope(body: unknown) {
 function expectInbandErrorEnvelope(body: unknown) {
   expect(validateResponse(body)).toBe(true);
   const typed = body as { success: boolean; result: { isError?: boolean } };
-  // THE INVARIANT (defect 8fe64f8b): the envelope and the result it wraps must AGREE.
+  // THE INVARIANT: the envelope and the result it wraps must AGREE.
   expect(typed.success).toBe(false);
   expect(typed.result?.isError).toBe(true);
   return typed;
@@ -149,7 +149,7 @@ describe('HTTP ↔ MCP contract', () => {
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'aidis-contract-'));
     // stubEnv (not raw assignment) so the afterAll unstubAllEnvs restores these too — these
     // point at this file's TEMP dir, which is deleted in afterAll, so leaking one left later
-    // files pointed at a path that no longer exists (ecc3a0a5).
+    // files pointed at a path that no longer exists.
     vi.stubEnv('AIDIS_LOCK_FILE', path.join(tempDir, 'aidis-server.lock'));
     vi.stubEnv('AIDIS_SKIP_DATABASE', 'true');
     vi.stubEnv('AIDIS_SKIP_BACKGROUND', 'true');
@@ -254,7 +254,7 @@ describe('HTTP ↔ MCP contract', () => {
         expect(res.status, toolName).toBe(200);
         expectSuccessEnvelope(body);
       } else if (res.status === 200) {
-        // Defect 8fe64f8b: `success: false` at 200 is NOT a contradiction — it is an in-band
+        // the envelope-agreement defect: `success: false` at 200 is NOT a contradiction — it is an in-band
         // MCP tool error, and the envelope now says so instead of claiming success. This
         // branch did not exist because the shape could not occur: the envelope hardcoded
         // `success: true`, so every one of these responses took the success branch above.

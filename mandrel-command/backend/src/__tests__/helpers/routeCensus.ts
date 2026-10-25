@@ -24,7 +24,7 @@
  *
  * ## Auth is read from the CLASSIFICATION, never from a middleware NAME
  *
- * The first version of the ecb37d02 census keyed on `authenticateToken` appearing in the
+ * The first version of the unauthenticated-route census keyed on `authenticateToken` appearing in the
  * chain and reported `/api/events`, `/api/events/stats` and `/api/events/clients` as
  * unauthenticated. They are not — they are guarded by `ensureAuthForSse`. A name-keyed
  * sweep over-reports today and UNDER-reports the day somebody writes a fourth

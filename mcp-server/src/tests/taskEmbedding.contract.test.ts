@@ -1,6 +1,6 @@
 /**
  * TASK EMBEDDINGS — DB CONTRACT (tranche B of the smart_search
- * complete fix; parent 7b8a66f4). Migration 088 + the task write path + the backfill registry.
+ * complete fix; the smart_search fix). Migration 088 + the task write path + the backfill registry.
  *
  * Runs against the disposable migrated CI DB, because every claim below is a claim about what
  * the real schema and the real handler do.

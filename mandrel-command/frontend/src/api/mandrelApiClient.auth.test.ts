@@ -5,7 +5,7 @@
  * so the JWT is THE credential: authenticateToken 401s without it. This proves
  * MandrelApiClient attaches the header from the canonical getValidToken() source, hits
  * the /api/mcp/* paths, and omits the header (unchanged) when no token exists.
- * (Originally written as the ed33c89e interim-shield proof for direct fetches.)
+ * (Originally written as the interim-shield proof for direct fetches.)
  */
 import { MandrelApiClient } from './mandrelApiClient';
 

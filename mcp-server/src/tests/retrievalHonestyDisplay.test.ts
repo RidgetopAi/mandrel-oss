@@ -1,15 +1,15 @@
 /**
  * Retrieval HONESTY FLOOR + DISPLAY CONSISTENCY — unit contract
- * (an earlier task honesty floor, e520d129 display consistency)
+ * (the honesty floor and the display-consistency fix)
  *
  * THE TWO BEHAVIORS UNDER TEST (no DB; pure formatting/labeling logic):
  *
- *   1. HONESTY FLOOR (b02446d7): when the BEST result's relevance is below the
+ *   1. HONESTY FLOOR: when the BEST result's relevance is below the
  *      configurable floor (MANDREL_SEARCH_MIN_SIMILARITY, default 0.35), the route
  *      response prepends an honest header ("⚠️ No strong match — best NN%; …").
  *      Above the floor → NO header. Rows are never suppressed (recall untouched).
  *
- *   2. DISPLAY CONSISTENCY (e520d129): context_search displays `relevance` — the
+ *   2. DISPLAY CONSISTENCY: context_search displays `relevance` — the
  *      sort-key score the row actually ranked on — labeled "relevance: NN%", NOT raw
  *      vector "similarity". So row #1 always shows the HIGHEST number, in agreement
  *      with the order. (Ordering itself is UNCHANGED; only the displayed number.)
@@ -79,7 +79,7 @@ beforeEach(() => {
   fakeCountContext.mockClear();
 });
 
-describe('buildHonestyHeader (b02446d7 floor logic, default 0.35)', () => {
+describe('buildHonestyHeader (the honesty floor logic, default 0.35)', () => {
   test('fires below the floor and quotes the SAME number it was given', () => {
     const header = buildHonestyHeader(20); // 20% < 35%
     expect(header).not.toBeNull();
@@ -97,7 +97,7 @@ describe('buildHonestyHeader (b02446d7 floor logic, default 0.35)', () => {
   });
 });
 
-describe('context_search route (b02446d7 + e520d129)', () => {
+describe('context_search route (the honesty floor + the display-consistency fix)', () => {
   test('ABOVE floor: no header, and displayed number == sort order (relevance, not raw similarity)', async () => {
     // Sorted DESC by the sort key (relevance). similarity is the raw vector value
     // and intentionally DISAGREES with the order (boost/blend can move it) — the
@@ -157,7 +157,7 @@ describe('context_search route (b02446d7 + e520d129)', () => {
   });
 });
 
-describe('smart_search route (b02446d7 floor; already display-consistent)', () => {
+describe('smart_search route (the honesty floor; already display-consistent)', () => {
   test('BELOW floor: honest header prepended using best relevanceScore', async () => {
     fakeSmartSearchDetailed.mockResolvedValue({ degradedSources: [], results: [
       { type: 'context', id: 's1', title: 'A', summary: 'a', relevanceScore: 0.20, metadata: {}, source: 'semantic_search' },

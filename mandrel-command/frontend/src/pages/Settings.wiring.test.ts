@@ -5,7 +5,7 @@
  *   2. wire every WRITE through the UNIFIED `api.*` client (not axios / generated / raw fetch);
  *   3. carry no hardcoded hex colours in the stylesheet (token-driven);
  *   4. keep tunables in config.ts (configs-not-hardcoded) — the section rail lives there;
- *   5. honour the data-gap policy (10397f65) — the honest-empty sections name their gap.
+ *   5. honour the data-gap policy — the honest-empty sections name their gap.
  * Source-level invariants — cheap, deterministic, drift-proof.
  */
 import { readdirSync, readFileSync } from 'node:fs';
@@ -68,7 +68,7 @@ describe('Settings rebuild — every live write maps to a real backend route', (
   });
 
   /**
-   * The INSTANCE-WIDE default-project writes must not come back (epic 41293984 §A).
+   * The INSTANCE-WIDE default-project writes must not come back (page-scope epic §A).
    * `set-primary` / `clear-primary` set `projects.metadata.is_primary`, a flag on the
    * SHARED projects table: one user setting "their" default set it for every user, and
    * `clearPrimary`'s UPDATE carries no user scoping whatsoever. The default project is

@@ -4,7 +4,7 @@
 -- WHY: `task_update` is an unconditional last-writer-wins write — the UPDATE's WHERE is
 -- `id` ONLY (handlers/tasks.ts:331), with no project, status, or assignee guard. A second
 -- worker that OBSERVES an active assignment can overwrite it and BOTH calls return success
--- (externally reproduced: Amp-orb evaluation probe 5e43a9de). Independent agents therefore
+-- (externally reproduced by an Amp-orb evaluation probe). Independent agents therefore
 -- cannot safely coordinate THROUGH Mandrel — every multi-agent topology is forced back onto
 -- a single trusted scheduler. We already patched around this once with a file lock
 -- (runtime/control-plane/dispatch-claim.ts, which says verbatim "since a bare task_update

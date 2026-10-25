@@ -1,7 +1,7 @@
 /**
  * BELIEF EDGE RECONCILIATION (Phase 4 — Inc-1 reversibility fix, generalized in BL-3).
  *
- * WHY (the auditor foundation-review finding #7, ref:foundation-review 4c0a50ad): the belief
+ * WHY (the auditor foundation-review finding #7, in the foundation review): the belief
  * layer's core promise is "verdicts are DATA and re-adjudication is REVERSIBLE" — the
  * property that justifies shipping on top of an API-model adjudicator (a model swap /
  * re-run must be able to WITHDRAW a claim, not just add one). Before this module, the
@@ -16,7 +16,7 @@
  *   - `supersedes`          — NEVER minted here. It is an exclusion predicate in
  *                             projectBriefing.ts, and belief adjudication is a confidence-
  *                             scored guess. It stays in the RETRACTION sweep, which is what
- *                             WITHDRAWS a hard edge minted by the pre-57f35350 code when its
+ *                             WITHDRAWS a hard edge minted by the earlier code when its
  *                             pair is re-adjudicated. Migration 087 converted the rest and
  *                             makes a guessed `supersedes` unwritable.
  * A pair carries AT MOST ONE belief edge at a time. The reconciler mints the single edge the
@@ -124,7 +124,7 @@ function desiredEdge(
   }
   // The ONLY edge type this reconciler can mint. `supersedes` is NOT reachable here — it is
   // an exclusion predicate downstream, and belief adjudication is a guess.
-  // It remains in the RETRACTION sweep below, which is what withdraws the pre-57f35350 hard
+  // It remains in the RETRACTION sweep below, which is what withdraws the earlier hard
   // edges on re-adjudication.
   const edgeType: EdgeType = 'possibly_supersedes';
   const fromType = outcome.fromId === a.id ? a.type : b.type;

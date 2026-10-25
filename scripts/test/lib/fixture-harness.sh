@@ -448,7 +448,7 @@ fh_run_subject() {
   return 0
 }
 
-# fh_assert_loaded <file-or-text> — THE ONE-LINE ADOPTION of the bb89c09f check
+# fh_assert_loaded <file-or-text> — THE ONE-LINE ADOPTION of the check
 # for a suite that already captures its subject's combined output. rc 1, naming
 # the file and the unresolved path, if bash reported it could not open something
 # a `source`/`.` asked for. Under `set -uo pipefail` WITHOUT `-e` that failure

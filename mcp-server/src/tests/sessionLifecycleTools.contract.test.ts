@@ -1,6 +1,6 @@
 /**
  * Session-Rework SR-2 — explicit user-controlled session lifecycle MCP tools.
- * builds on SR-1 (model ctx a5e6620c).
+ * builds on SR-1 (the operator's session model).
  *
  * WHAT THIS PROVES — drives the REAL tools END TO END through routeExecutor (the same
  * dispatch the HTTP bridge calls), the REAL SessionLifecycleService + SessionRepo, and a

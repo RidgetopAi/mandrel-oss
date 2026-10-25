@@ -3,7 +3,7 @@
  *
  * WHAT THIS PROVES: that `task_update`'s unconditional last-writer-wins write (WHERE id ONLY)
  * has been replaced, for OWNERSHIP, by a real compare-and-swap + lease that two workers cannot
- * both win. Externally reproduced bug (Amp-orb evaluation, probe 5e43a9de): worker 2 OBSERVED
+ * both win. Externally reproduced bug (Amp-orb evaluation): worker 2 OBSERVED
  * worker 1's active assignment and its write still succeeded, silently evicting worker 1.
  *
  * ALL 11 SPEC §8 CASES ARE HERE, in order, each labelled with what it defends:
@@ -1370,7 +1370,7 @@ describe('11. mutation probe — the guards are proven capable of failing', () =
  * Driven through the PUBLIC tool path with a real RouteContext and asserted on the DB COLUMN,
  * not on a return value — the observable is the row that was actually written.
  */
-describe('task_claim — attribution actor cannot be forged (a7e922bd / 7e851623)', () => {
+describe('task_claim — attribution actor cannot be forged', () => {
   const FLAG = ACTOR_IDENTITY_ENV.COMPOSITE_ENABLED;
   let savedFlag: string | undefined;
 

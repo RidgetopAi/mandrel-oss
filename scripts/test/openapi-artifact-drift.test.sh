@@ -8,7 +8,7 @@
 #   frontend/.openapi/openapi.json and frontend/src/api/generated/** — and until this
 #   stage NOTHING regenerated or compared them. The only thing keeping the shipped
 #   artifacts equal to the code was a human remembering to run a script, and measured
-#   on 3626ea62 (v0.50.0) they were not equal: the spec was missing 4 whole paths,
+#   on an earlier release (v0.50.0) they were not equal: the spec was missing 4 whole paths,
 #   disagreed on 9 more, and 5 generated service files differed. The drift had
 #   accumulated across several unrelated tasks. The artifact a customer reads to
 #   understand our API — including which routes require a credential — could, and did,

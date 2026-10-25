@@ -1,7 +1,7 @@
 /**
  * Contract test: the Activity Score is UNIFIED across surfaces.
  *
- * The bug (SR-4 / bug-6 ee8ac4e0): getSessionDetail computed the score from LIVE
+ * The bug (SR-4 / bug-6): getSessionDetail computed the score from LIVE
  * counts (contexts/decisions/tasks via session_id) while getSessionSummaries
  * (list / analytics) computed from denormalized counter columns — and
  * `decisions_created` is 0 on every prod row — so the SAME session showed a higher

@@ -8,7 +8,7 @@
  * dispatched by a single event loop, on connections from a single pool, in one client's
  * statement-issue order. The property under test — "two INDEPENDENT clients cannot both own
  * one task" — is exactly the thing the eval reproduced against real, separate Amp orbs
- * (probe 5e43a9de). So the acceptance harness runs N real OS processes, each with its OWN
+ * (an external evaluation probe). So the acceptance harness runs N real OS processes, each with its OWN
  * pg Pool and its OWN connections, released simultaneously by a wall-clock barrier. If the
  * guarantee lives anywhere but the database's isolation behaviour, this is what finds it.
  *

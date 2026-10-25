@@ -38,7 +38,7 @@
  * sectionCount field, and getBranches returned a bare BranchSummary[] with no total/cap —
  * so `{ branches, total, cap } = await getBranches(...)` destructures `branches` itself as
  * undefined and every field access throws or reads undefined. The nested-spine test also
- * fails against the P1-only code (pre-686a1698): there, childA/childB were PRESENT in
+ * fails against the earlier, P1-only code: there, childA/childB were PRESENT in
  * `branches` with `isTopLevel: false` rather than absent, and `total` counted all 4
  * spines rather than the 2 true drawers.
  */
@@ -193,7 +193,7 @@ describeDb('TreeWalker branches: isTopLevel / sectionCount / honest total+cap (P
     // childA/childB (sections of parent) are more recently active than BOTH top-level
     // drawers in this scope (parent: daysAgo(1); extra: `new Date()` — wait, extra is
     // actually the newest of all. To isolate the selection bug from ordering, cap at 3:
-    // under the pre-686a1698 code, ordering by last_active across drawers AND sections
+    // under the earlier code, ordering by last_active across drawers AND sections
     // mixed would rank [extra(now), parent(daysAgo1), childA(daysAgo4)] into the top 3,
     // silently including a SECTION on the page. The fix must never let a section occupy a
     // slot at all, regardless of its recency relative to a drawer.

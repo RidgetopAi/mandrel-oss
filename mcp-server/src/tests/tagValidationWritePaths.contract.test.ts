@@ -5,7 +5,7 @@
  * ═══ THE DEFECT ═══
  * `validateAndNormalizeTags` had exactly two callers — `handlers/context.ts:302` and `:1414`.
  * `decision_record` and `task_create/task_update` stored tags COMPLETELY RAW: unvalidated,
- * un-normalized, unwarned. That is why the `tranche:` census (Mandrel `066c7a42`) found 60%
+ * un-normalized, unwarned. That is why the `tranche:` census found 60%
  * of values out-of-enum: two of the three write surfaces had no boundary at all.
  *
  * ═══ 🔴 THE ASSERTION THAT MATTERS MOST IS THE ONE ABOUT *NOT* REJECTING ═══

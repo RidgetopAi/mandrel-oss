@@ -8,7 +8,7 @@ export interface User {
   role: string;
   theme?: string;
   /**
-   * This user's default project (epic 41293984 §A) — a UUID, or null when they have set
+   * This user's default project (page-scope epic §A) — a UUID, or null when they have set
    * none. Per-user and stored as an ID, replacing the instance-wide, name-keyed
    * `projects.metadata.is_primary` flag the UI used to read.
    */

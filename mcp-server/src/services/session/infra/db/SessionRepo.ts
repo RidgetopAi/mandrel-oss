@@ -554,7 +554,7 @@ export const SessionRepo = {
    * check getActiveSession uses to validate an
    * in-RAM cached id: a cached id whose row has since been reaped/ended is treated
    * as a MISS so the caller re-attaches or mints a real session, instead of writing
-   * no-ops against a dead session (the "stale-but-ended" bug, ctx 81901e32). Fails
+   * no-ops against a dead session (the "stale-but-ended" bug). Fails
    * safe: returns false (never throws) on a DB error.
    */
   async existsActive(sessionId: string): Promise<boolean> {

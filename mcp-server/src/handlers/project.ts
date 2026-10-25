@@ -405,7 +405,7 @@ class ProjectHandler {
    * showing the interactive slot alongside the effective one). Everything else wants
    * getCurrentProjectId.
    *
-   * Body is byte-for-byte the pre-707f0c53 getCurrentProjectId, including the stale-cache
+   * Body is byte-for-byte the earlier getCurrentProjectId, including the stale-cache
    * eviction — so rung 3 is unchanged by this task (legacy == today).
    *
    * PROJECT-SCOPE: accessor-definition — the rung-3 accessor itself; deliberately
@@ -502,7 +502,7 @@ class ProjectHandler {
       }
     }
 
-    // ROOT FIX (b6c18866): keep the connection's session DB row in sync with its
+    // ROOT FIX: keep the connection's session DB row in sync with its
     // current project. Previously project_switch only mutated the in-memory
     // sessionStates map, so a session's stored project_id diverged from the
     // project its newly-stored contexts landed in (cross-project misattribution).
@@ -515,7 +515,7 @@ class ProjectHandler {
 
   /**
    * Sync the DB `sessions` row to the current project for a SINGLE connection's
-   * active session only (per-connection isolation — b6c18866).
+   * active session only (per-connection isolation — the session-isolation fix).
    *
    * `connectionId` is the key used throughout the project handler (the route layer
    * passes context.connectionId as `sessionId`). The DB session that belongs to that
@@ -648,7 +648,7 @@ class ProjectHandler {
    * used to prefer that resolved session id as the position key, so two concurrent Builders
    * (distinct X-Connection-IDs, same X-Actor-ID) shared one position row: a task claim by
    * one stamped false DECLARED-tier `informs` edges onto the other's completion writes
-   * (edges cf9911a9, 2c8c796d — both pruned), and one branch_close cleared both. Keying by
+   * (two edges — both pruned), and one branch_close cleared both. Keying by
    * the connection id keeps every key the caller's OWN in every resolver mode.
    *
    * The old session-id preference existed to bridge lazy session creation (a branch_open

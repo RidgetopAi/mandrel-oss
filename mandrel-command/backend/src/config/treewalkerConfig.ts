@@ -44,7 +44,7 @@ export interface TreewalkerConfig {
     /** Honest trunk label when the project has no handoff contexts yet. */
     trunkEmptyLabel: string;
     /** Tag prefix that carries a branch's once-on-the-spine NAME (`branch:<name>` on the
-     *  spine record). A spine with no name tag is labeled by its title (a4f8886d
+     *  spine record). A spine with no name tag is labeled by its title (the tree model
      *  membership/identity split — the `branch:` TITLE-prefix hack is gone). */
     branchNameTagPrefix: string;
     /** The context-tag prefix that carries the real `tree:<x>` lineage tier. */

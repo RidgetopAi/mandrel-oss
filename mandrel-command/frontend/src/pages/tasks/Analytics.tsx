@@ -4,7 +4,7 @@
  * Tasks.tsx renders it when the view toggle is on `analytics`. Composes the KPI row, the
  * full-width throughput trend, and the 2×2 breakdown grid (status / priority / actor /
  * aging). Each panel owns its loading / empty / error state and is REAL-or-honest-empty
- * (data-gap policy 10397f65) — the time-based panels (throughput trend, actor breakdown)
+ * (the data-gap policy) — the time-based panels (throughput trend, actor breakdown)
  * are fed by real range-scoped endpoints (/api/tasks/throughput, /completed-by-actor) and
  * render an honest empty state only when the endpoint returns no data — never a fabricated series.
  */

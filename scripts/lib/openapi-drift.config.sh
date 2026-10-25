@@ -12,7 +12,7 @@
 #     2. mandrel-command/frontend/src/api/generated/**        (frontend codegen)
 #
 #   Nothing regenerated or verified either one, so both drifted silently. Measured on
-#   3626ea62 (v0.50.0), by regenerating and diffing: the checked-in spec was missing 4
+#   (v0.50.0), by regenerating and diffing: the checked-in spec was missing 4
 #   whole paths and disagreed on 9 more, and 5 generated service files differed. The
 #   drift had accumulated across several unrelated tasks, because the only thing
 #   keeping the artifacts equal to the source was a human remembering to run a script.

@@ -4,8 +4,8 @@
 --
 -- WHY (the measured gap, not a theory): the first customer-shaped session against v0.22.0
 -- prod — the operator's Pi agent "rivet", a small model with zero house habits, building a weather
--- app in project `rivet-weather` — ended with its decision (fcfff7dc) and its task
--- (2f82d1b0) each carrying ZERO inbound edges. "What this decision shaped" rendered empty,
+-- app in project `rivet-weather` — ended with its decision and its task
+-- each carrying ZERO inbound edges. "What this decision shaped" rendered empty,
 -- correctly, because nothing pointed at it. Two independent legs caused it: the agent never
 -- read the `branch_open <id8>` OFFER (small models do not read response prose), so no
 -- position ever existed; and the weak inference fallback is context->context only, so a

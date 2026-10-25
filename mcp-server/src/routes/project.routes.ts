@@ -603,7 +603,7 @@ class ProjectRoutes {
   }
 
   /**
-   * PROJECT BRIEFING (WS2 "living summary", plan 4333eaae).
+   * PROJECT BRIEFING (WS2 "living summary").
    * Deterministic current-state briefing markdown — the whole renderer lives in
    * services/projectBriefing.ts; this route only resolves the project and ships the
    * result on both channels. `project` optional → the caller's current project.

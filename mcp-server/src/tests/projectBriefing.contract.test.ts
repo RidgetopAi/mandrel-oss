@@ -1,5 +1,5 @@
 /**
- * PROJECT BRIEFING — WS2 "living summary" (plan 4333eaae).
+ * PROJECT BRIEFING — WS2 "living summary".
  *
  * Contract tests ADVERSARIAL TO THE RENDERER (the spec's list, verbatim):
  *   - full handoff, untruncated;
@@ -345,7 +345,7 @@ const CFG = (maxChars: number, deadEndReservedChars = 4000): BriefingConfig => (
   handoffStampEnabled: true,
   handoffStampFormat: ' [now: {status}]',
   // OFF for this suite, for the same reason backfillEnabled/altitudeEnabled are: these cases
-  // assert the pre-cfd2ec6c document and its char arithmetic, and the recording directive is
+  // assert the earlier document and its char arithmetic, and the recording directive is
   // ~1k chars of frame that would shift every cap assertion here without being what they
   // measure. The directive's own behaviour — including that it is ON by default in the
   // shipped config — is asserted by projectBriefingRecordingDirective.contract.test.ts.
@@ -364,7 +364,7 @@ const CFG = (maxChars: number, deadEndReservedChars = 4000): BriefingConfig => (
   protectionRankBranchMember: 4,
   protectionRankAlwaysSurface: 3,
   protectionRankConvention: 3,
-  // f176d8a5's measurement knob, restated at its SHIPPED default (the floor) like the ranks
+  // the briefing-budget decision's measurement knob, restated at its SHIPPED default (the floor) like the ranks
   // above it: a decision gets no band of its own until a measurement says it should.
   protectionRankDecision: 0,
   protectionRankStalePriority: 2,

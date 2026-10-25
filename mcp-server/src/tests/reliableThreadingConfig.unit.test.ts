@@ -1,6 +1,6 @@
 /**
  * reliableThreadingConfig — PURE-logic unit tests (branch:mandrel-reliability, task ST-2
- * b8c64ee4, spec docs/specs/reliable-auto-threading.md §X1).
+ * spec docs/specs/reliable-auto-threading.md §X1).
  *
  * Tests are the rock. This module reads its knobs from env AT MODULE LOAD, so every case
  * gets a FRESH module instance (vi.resetModules + dynamic import) under a controlled env —

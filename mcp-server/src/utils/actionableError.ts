@@ -1,5 +1,5 @@
 /**
- * ACTIONABLE, SELF-CORRECTING ERROR RESPONSES (folds in 3a14aa4a).
+ * ACTIONABLE, SELF-CORRECTING ERROR RESPONSES (folds in an earlier change).
  *
  * THE CLASS THIS FIXES: an MCP error that only says WHAT is wrong forces the model to
  * guess the fix and re-fail. Best-MCP practice is to make every error self-correcting:

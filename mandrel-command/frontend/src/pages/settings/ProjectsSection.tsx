@@ -1,5 +1,5 @@
 /**
- * Projects section — the user's DEFAULT PROJECT (epic 41293984 §A).
+ * Projects section — the user's DEFAULT PROJECT (page-scope epic §A).
  *
  * ── WHAT THIS WRITES NOW ─────────────────────────────────────────────────────────────
  *   PATCH /api/users/preferences { defaultProjectId: "<uuid>" | null }

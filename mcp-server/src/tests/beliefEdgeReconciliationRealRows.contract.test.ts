@@ -3,7 +3,7 @@
  *
  * ── WHY THIS FILE EXISTS ─────────────────────────────────────────────────────────────
  * `ADJRUN_RECONCILE_TEST` in scripts/beliefBackfillDryRun.ts was deleted in 6ddf3ac: it
- * constructed a `mint_supersedes` outcome (unconstructible since 57f35350) and counted
+ * constructed a `mint_supersedes` outcome (unconstructible since the no-hard-tier change) and counted
  * `edge_type='supersedes'` rows the pipeline can no longer create, so it would have
  * reported FAIL forever. Deleting it was right. What it EXERCISED was not covered anywhere
  * else: reconcileBeliefEdge's retraction sweep against REAL `links` rows.

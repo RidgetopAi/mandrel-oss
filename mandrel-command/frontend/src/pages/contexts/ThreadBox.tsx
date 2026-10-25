@@ -4,7 +4,7 @@
  * ("decided by →" / "informs →" / "supersedes →"), the target's kind dot, its title, and
  * its id8 as a live /r/:id link. Owns its loading / empty / error state.
  *
- * DATA-GAP POLICY (10397f65): these are the TYPED graph edges ONLY — never semantic
+ * DATA-GAP POLICY: these are the TYPED graph edges ONLY — never semantic
  * `related` results dressed up as thread edges. When a context has no typed edges we show
  * an honest empty state, not a fabricated thread. "Walk the story" is a clearly-inert
  * follow-up affordance (no recall/thread route exists in this UI yet) — surfaced, not faked.

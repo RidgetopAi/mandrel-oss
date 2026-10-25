@@ -1,6 +1,6 @@
 /**
  * bulkByIdWriteScope.db.test.ts — every BULK-BY-ID WRITE on the Command backend is
- * constrained to the caller's project scope (REALIGN step 9 lane AUTHZ,  * sibling of the UI lane's FOUND-NOT-FIXED f6c5f364).
+ * constrained to the caller's project scope (REALIGN step 9 lane AUTHZ, sibling of the UI lane's FOUND-NOT-FIXED item).
  *
  * THE DEFECT THIS GUARDS — one class, three surfaces
  *   The single-record routes authorize `:id` via `router.param('id', authorizeIdParam)`.

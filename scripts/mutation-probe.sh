@@ -49,7 +49,7 @@
 #   with no escape processing and no numeric coercion. (CLASSES.md C3: never enumerate
 #   with a foreign recognizer what the language you are already in will do exactly.)
 #
-# WHY IT WAS HARDENED AGAIN (defect 8e74e121) — the witness
+# WHY IT WAS HARDENED AGAIN — the witness
 # itself, which is the pre-condition every other assertion rests on, could be forged
 # in one direction and swallowed in the other. Both were measured, not theorized.
 #
@@ -472,8 +472,8 @@ $(grep -nF -- "$WITNESS" "$RUNLOG" | head -3 | sed 's/^/    /')
       HINT="  THE COMMAND LOOKS LIKE A TEST RUNNER, so check the channel before the mutation.
   mcp-server's vitest.setup.ts replaces console.log/error/warn/info/debug with no-op
   spies in a beforeEach for EVERY test, so a witness printed with console.* from inside
-  test-run code emits NOTHING even though the mutation landed perfectly (defect
-  8e74e121 — it cost two probe rounds). Do NOT weaken the probe until something prints.
+  test-run code emits NOTHING even though the mutation landed perfectly (an earlier
+  defect — it cost two probe rounds). Do NOT weaken the probe until something prints.
   Use --witness-file, which no spy can reach:
     --witness $(printf '%q' "$WITNESS") --witness-file \"\$SOME_TMP/witness.txt\"
   and have the mutated code write it:

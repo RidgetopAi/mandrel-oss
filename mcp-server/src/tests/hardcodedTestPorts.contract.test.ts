@@ -20,7 +20,7 @@
  * It fails as an EADDRINUSE inside a beforeAll — i.e. as a hook timeout with the file's
  * tests SKIPPED, not as an assertion — so it reads as infrastructure noise and gets waved
  * through. Establishing that one such failure was NOT a real regression cost an Reviewer
- * five independent lines of evidence (verdict feb3f313).
+ * five independent lines of evidence.
  *
  * WHY NOT "PICK A BIGGER NUMBER" OR "DERIVE ONE PER WORKTREE"
  * ----------------------------------------------------------

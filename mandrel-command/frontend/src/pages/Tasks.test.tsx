@@ -33,7 +33,7 @@ vi.mock('../api', () => ({
 }));
 
 /**
- * PAGE PROJECT (epic 41293984). The page owns its project now — there is no global
+ * PAGE PROJECT (page-scope epic). The page owns its project now — there is no global
  * selector to follow. These render tests need SOME concrete project so the reads are
  * enabled (`scope()` throws rather than silently sending unscoped), so a single fixture
  * project is provided and is BOTH the user's default and the only selectable one. The

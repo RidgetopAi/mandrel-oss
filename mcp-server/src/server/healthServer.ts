@@ -138,7 +138,7 @@ export class HealthServer {
   private setupRoutes(): void {
     // Mount session analytics REST API routes.
     //
-    // SECURITY (an earlier task / trust boundary b3cf883b): this family serves AND mutates
+    // SECURITY (an earlier task / the trust-boundary change): this family serves AND mutates
     // real session data (ids, project names, timestamps, modified files, lifecycle) and was
     // reachable UNAUTHENTICATED on the public internet — both via an nginx bypass on
     // command.example.com and directly on mandrel.example.com (:8080). Gate the WHOLE
@@ -168,7 +168,7 @@ export class HealthServer {
 
     // THE DECISION INBOX — REST half.
     //
-    // Same posture as /api/v2/sessions (an earlier task / trust boundary b3cf883b): this
+    // Same posture as /api/v2/sessions (an earlier task / the trust-boundary change): this
     // surface serves and MUTATES real decision data (decision_answer/decision_discuss), so
     // it is gated at the mount with the SAME static Bearer guard — UNCONDITIONAL +
     // FAIL-CLOSED, never behind the dark bridge flag. ONE guard here = every current AND
@@ -255,7 +255,7 @@ export class HealthServer {
 
     // Project API.
     //
-    // SECURITY (sibling sweep of 4eaf055c / trust boundary b3cf883b):
+    // SECURITY (sibling sweep of the trust-boundary change):
     // POST /api/v2/projects/:id/set-primary MUTATES prod state — it flips which project is
     // primary for every new session — and was reachable UNAUTHENTICATED directly on
     // mandrel.*:8080, so an anonymous caller could change that state. Gate it with the SAME
@@ -594,7 +594,7 @@ export class HealthServer {
       const loopId = req.header(LOOP_ID_HEADER);
 
       const result = await this.mcpToolExecutor(toolName, args, { connectionId, identified, actor, projectBinding, loopId });
-      // THE ENVELOPE MUST AGREE WITH THE RESULT IT WRAPS (defect 8fe64f8b).
+      // THE ENVELOPE MUST AGREE WITH THE RESULT IT WRAPS.
       //
       // WAS: an unconditional `success: true`. Every error raised INSIDE routeExecutorInner is
       // caught there and returned as an in-band error result (`formatMcpError` -> isError:true),

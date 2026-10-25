@@ -1,6 +1,6 @@
 /**
  * ONE-TIME ORPHAN BACKFILL — CLI parsing + usage (DB-FREE)
- * (branch:mandrel-reliability, task ST-6 66bf6a72, spec §C1/C2/C3, §X4).
+ * (branch:mandrel-reliability, task ST-6, spec §C1/C2/C3, §X4).
  *
  * WHY A SEPARATE, DB-FREE MODULE: the DB logic (orphanBackfill.ts) transitively imports
  * config/database.ts, which THROWS at module load if DATABASE_NAME is unset. Arg parsing and

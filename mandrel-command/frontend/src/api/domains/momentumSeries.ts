@@ -17,7 +17,7 @@
  * into "omit the param" would silently change its meaning from EXPLICITLY UNSCOPED to
  * "scoped by whatever the header happens to say", which is a different request.
  *
- * ── THE `config` PARAMETER IS REQUIRED, ON PURPOSE (epic 41293984 §A1) ────────────────
+ * ── THE `config` PARAMETER IS REQUIRED, ON PURPOSE (page-scope epic §A1) ────────────────
  * This method used to hand-roll `X-Project-ID` from the `project` argument. That is now
  * the shared primitive's job: the caller passes `usePageProject().scope()`, which pins the
  * header for a uuid and BLANKS it for `'all'` (so an All-projects view is not silently

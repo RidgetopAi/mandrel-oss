@@ -205,7 +205,7 @@ export async function assertBlockerNamed(
   //       exercised door (b) again. Door (c) is now asserted by a test that OMITS the status
   //       key ("ABSENT: clearing … with NO status key at all"). A one-token term on a
   //       customer-visible breaking rule had nothing holding it.
-  //   (d) WAS NOT found here either — it came from the coordinator's fleet measurement (75b1ea3d).
+  //   (d) WAS NOT found here either — it came from the coordinator's fleet measurement.
   //
   // ⚠️ F6, STATED RATHER THAN LEFT IMPLIED: this gate is APP-LAYER and NON-TRANSACTIONAL.
   // It SELECTs, then the caller's UPDATE runs as a separate statement, so two concurrent

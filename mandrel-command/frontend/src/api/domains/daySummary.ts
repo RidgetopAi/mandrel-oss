@@ -12,7 +12,7 @@
  * `project` is sent RAW — the literal `'all'` included. Turning `'all'` into "omit the
  * param" would change its meaning from EXPLICITLY UNSCOPED to "scoped by the header".
  *
- * ── THE `config` PARAMETER IS REQUIRED, ON PURPOSE (epic 41293984 §A1) ────────────────
+ * ── THE `config` PARAMETER IS REQUIRED, ON PURPOSE (page-scope epic §A1) ────────────────
  * The hand-rolled `X-Project-ID` this used to build is now the shared primitive's job:
  * the Day summary inherits Calendar's selection and is called with that page's
  * `usePageProject().scope()`. Required, not optional, so an unscoped call site cannot

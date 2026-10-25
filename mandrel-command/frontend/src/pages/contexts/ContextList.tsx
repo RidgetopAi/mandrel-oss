@@ -21,7 +21,7 @@ export interface ContextListProps {
   /**
    * True when the page has NO project to scope to and is not merely still loading one.
    *
-   * HISTORY (an earlier task → epic 41293984): this used to be `needsProject` — "you typed a
+   * HISTORY (the page-scope epic): this used to be `needsProject` — "you typed a
    * search while the global selector was on All Projects", which 400s because the canonical
    * engine scopes matching by project. That state is now UNREACHABLE: the page owns its own
    * selector, opens on a concrete project, and offers no All-projects option. What remains

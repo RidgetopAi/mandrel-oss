@@ -178,15 +178,15 @@ export interface ThreadConfig {
    *
    * WHY 2 AND NOT 3 (the original spec §4 value). Measured on five real anchors in the dev
    * snapshot; distinct nodes reachable at depth 1/2/3 (anchor included):
-   *   b0479950 11/36/83 · f16c5cd5 50/109/231 · 5d0b9ebc 4/9/41 · 6d1c546d 7/19/94 ·
-   *   ed33c89e 17/46/92.
+   *   2b3c4d5e 11/36/83 · 3c4d5e6f 50/109/231 · 4d5e6f7a 4/9/41 · 5e6f7a8b 7/19/94 ·
+   *   6f7a8b9c 17/46/92.
    * The third hop is where the subgraph stops being a branch: on the P0-security anchor
-   * `ed33c89e`, depth 3 admitted an unrelated Calendar PNG-export handoff (`4e91ea25`) that
+   * `6f7a8b9c`, depth 3 admitted an unrelated Calendar PNG-export handoff (`1a2b3c4d`) that
    * then ordered SECOND and THIRD in the returned story, ahead of the security work the
    * caller asked for. It is absent at depth 2 on all five. The hop that admitted it was a
    * `decided_by` edge off a depth-2 decision — NOT the handoff `supersedes` chain, which was
    * the standing hypothesis; excluding supersedes+possibly_supersedes was measured and moves
-   * ed33c89e's depth-3 population only 92 → 87, so depth is the lever and an edge-type
+   * 6f7a8b9c's depth-3 population only 92 → 87, so depth is the lever and an edge-type
    * exclusion is not. Env: MANDREL_THREAD_DEFAULT_DEPTH. Default 2.
    */
   defaultDepth: number;
@@ -207,7 +207,7 @@ export interface ThreadConfig {
    * and an honest report of a missing 74% is not a resumable thread. Measured at the new
    * default depth 2, cap 150 returns all five branches COMPLETE (0 truncated). The cost is
    * not uniform: 4 of the 5 anchors are BYTE-IDENTICAL because the cap never bites for them
-   * (36/9/19/46 nodes), and only the hub anchor f16c5cd5 grows, 50→109 nodes and ~13.4k→
+   * (36/9/19/46 nodes), and only the hub anchor 3c4d5e6f grows, 50→109 nodes and ~13.4k→
    * ~29.1k response tokens. Summed over the five anchors the response is SMALLER than the
    * shipped depth-3/cap-50 default, because depth 2 removes far more than cap 150 adds.
    * A caller who wants a different budget passes the per-call `maxNodes` argument — no env

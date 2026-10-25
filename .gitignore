@@ -234,7 +234,7 @@ config/environments/.env.development
 
 # Deploy runbooks — versioned with the config they operate (overrides docs/ ignore).
 # These are OPERATIONAL: a runbook that is not in the repo cannot be cited by the
-# files it operates. b3cf883b's runbook was written here, silently swallowed by the
+# files it operates. The trust-boundary change's runbook was written here, silently swallowed by the
 # docs/* rule above, and had to be rescued to another repo — while five files kept
 # citing the dead path.
 !docs/deploy/

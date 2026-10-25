@@ -9,7 +9,7 @@
  *   two halves of one panel were cut on two populations. Nothing fails; the numbers
  *   just stop meaning the same thing the moment anyone archives a completed task.
  *
- *   The d21ec7bd sweep (`grep -n "FROM tasks" src/services/*.ts src/controllers/*.ts`)
+ *   The sweep (`grep -n "FROM tasks" src/services/*.ts src/controllers/*.ts`)
  *   found the omission in THREE reads, not one: `getLeadTimeDistribution`,
  *   `getThroughputSeries` (all three of its CTEs) and `getCompletedByActor`. All three
  *   are asserted here, because fixing one instance and missing a sibling is the shape
@@ -20,7 +20,7 @@
  *   a POSITIVE CONTROL that reads that row back with raw SQL — proving the row exists,
  *   is `status='completed'`, carries a non-null `archived_at`, and would be selected by
  *   the pre-fix predicate. Without that control the suite would pass against an empty
- *   fixture, which is exactly the hole found on `fb10aa52` (Reviewer probe 1b).
+ *   fixture, which is exactly the hole found on an earlier revision (Reviewer probe 1b).
  *
  *   The archived row's numbers are chosen to be LOUD: its lead time (22d) is an order
  *   of magnitude off the live row's (2d), its actor name appears nowhere else, and its
@@ -80,7 +80,7 @@ describeDb('Task analytics reads share ONE population: live tasks', () => {
       [
         id,
         projectId,
-        `d21ec7bd probe ${id.slice(0, 8)}`,
+        `probe ${id.slice(0, 8)}`,
         opts.assignedTo,
         opts.createdDaysAgo,
         opts.completedDaysAgo,

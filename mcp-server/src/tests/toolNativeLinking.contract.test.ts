@@ -105,7 +105,7 @@ describe('tool-native linking: threading grammar (pure)', () => {
     expect(warnings.join(' ')).toContain('scope:product');
   });
 
-  test('a malformed value is WARNED and QUARANTINED, never dropped/rejected (2ab1fef4)', () => {
+  test('a malformed value is WARNED and QUARANTINED, never dropped/rejected', () => {
     // task: id that is not 8 hex, and an unknown scope value.
     const { tags, warnings } = validateAndNormalizeTags(['task:9e25', 'scope:prod', 'keep-me']);
     // The VALUES survive — nothing is dropped — but not in a form that pretends to thread.
@@ -126,7 +126,7 @@ describe('tool-native linking: threading grammar (pure)', () => {
     expect(warnings.join(' ')).toMatch(/scope:/);
   });
 
-  test('a context:<id8> tag is VALID and still MINTS ITS EDGE (regression, 2ab1fef4)', () => {
+  test('a context:<id8> tag is VALID and still MINTS ITS EDGE (regression)', () => {
     // THE NEAR-MISS THIS EXISTS FOR. Quarantine rewrites an invalid threading value so it no
     // longer wears its prefix -- which means anything that MINTS from that prefix stops
     // seeing it. `context:` used to demand a full UUID here, while tagEdgeConfig's

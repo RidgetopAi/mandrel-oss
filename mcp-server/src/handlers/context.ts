@@ -280,7 +280,7 @@ function envFloat(name: string, fallback: number): number {
  *     does NOT fire on answerable Qs → no recall/QA regression. It SHOULD help
  *     abstention on unanswerable Qs, where even the best row is weak.
  *   - Env-overridable (MANDREL_SEARCH_MIN_SIMILARITY) following the RANK_WEIGHTS
- *     pattern, so the eval gate (d63803c2) can sweep it without a code edit. Bad /
+ *     pattern, so the eval gate can sweep it without a code edit. Bad /
  *     missing values fall back to the default. Accepts either a fraction (0.35) or a
  *     percentage (35) — values > 1 are read as a percentage.
  */
@@ -917,7 +917,7 @@ class ContextHandler {
         // `boost` above adjusts the displayed `similarity` but NOT the SQL sort key,
         // so a boosted row is not re-ranked. Whether the substring boost SHOULD feed
         // the ranking/order is a ranking change that must go through the eval gate
-        // (d63803c2); it is intentionally out of scope for this display-only fix.
+        // (the eval gate); it is intentionally out of scope for this display-only fix.
         const sortKeyFraction = row.combined_score !== undefined && row.combined_score !== null
           ? parseFloat(row.combined_score)
           : (rawSimilarity && !isNaN(parseFloat(rawSimilarity)) ? parseFloat(rawSimilarity) : 0);
@@ -986,7 +986,7 @@ class ContextHandler {
    * retrieval GATE it relaxes (an earlier task — the Contexts half of the class-fix
    * whose Decisions half shipped in 7014f77).
    *
-   * THE BUG (RANKING, not retrieval): an id8 (`e26aee99`) typed in the Contexts search box
+   * THE BUG (RANKING, not retrieval): an id8 (`2b3c4d5e`) typed in the Contexts search box
    * matched NOTHING. Hex has no semantic content, so the embedder yields a meaningless vector
    * and the target ranks below unrelated prose — no threshold or model tuning can ever fix
    * that. The FIX that matters on prod is therefore the same one Decisions needed: an exact
@@ -997,7 +997,7 @@ class ContextHandler {
    *   - prod runs `MANDREL_EMBEDDER=gemma` (verified in the RUNNING process's /proc/environ,
    *     not just .env) → activeEmbeddingColumn() = 'embedding_gemma';
    *   - `SELECT count(*) FILTER (WHERE embedding_gemma IS NULL) FROM contexts` → **0** of 8077;
-   *   - `e26aee99` itself: has_gemma = t (768 dims), has_legacy = f.
+   *   - `2b3c4d5e` itself: has_gemma = t (768 dims), has_legacy = f.
    * So on the ACTIVE column the gate `embedding_gemma IS NOT NULL` is TRUE for every row: the
    * target was ALWAYS in the candidate set, and the relaxation below changes NOTHING on prod.
    * The legacy `embedding` (minilm, 1536-d) column is the one with 586 NULLs — a column prod

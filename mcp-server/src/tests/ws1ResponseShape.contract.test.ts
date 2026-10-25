@@ -1,6 +1,6 @@
 /**
  * WS1 "CLEAN THE PIPES" — MCP response shape (defect register
- * 0b077f1d, tool-output audit 7282379a).
+ * an earlier tool-output audit).
  *
  * THE THREE MEASURED DEFECTS THIS PINS CLOSED:
  *   D1 — truncation stubs ("…[truncated; fetch the full record…]") in 6/13 read-tool
@@ -80,7 +80,7 @@ function expectEmojiFree(text: string, surface: string): void {
  * PART B's SCANNER — pure over a source string so the probes below can attack it.
  *
  * POPULATION (stated per C3, and WHY it is the whole audited one): the SIX route files
- * the WS1 audit (7282379a) measured as noise sources — context, tasks, decisions,
+ * the WS1 audit measured as noise sources — context, tasks, decisions,
  * search, recall, project. session/branch/links/artifact routes were NOT in the audit's
  * scope and still carry their old styling; widening the population is a deliberate
  * follow-up, not a silent scope creep here.

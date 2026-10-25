@@ -169,7 +169,7 @@ describe('recording directive — the WRITE half of the injected block', () => {
     expect(markdown.endsWith(BRIEFING_RECORDING_DIRECTIVE_DEFAULT)).toBe(true);
   });
 
-  test('THE COMPONENT COST is stated as a number a reader can check (scoring rule a2243a8d)', () => {
+  test('THE COMPONENT COST is stated as a number a reader can check (the scoring rule)', () => {
     // Not an assertion about goodness — an assertion that the block is BOUNDED and that the
     // number quoted in briefingConfig.ts and in the task report is the number that ships.
     // A directive that grows silently is paid for in evicted records on every saturated
@@ -185,7 +185,7 @@ describe('recording directive — the WRITE half of the injected block', () => {
     expect(on.length - off.length).toBe(1030);
   });
 
-  test('OFF is byte-identical to the pre-cfd2ec6c document', () => {
+  test('OFF is byte-identical to the earlier document', () => {
     // The kill switch has to be a real one: everything else in the render must be untouched
     // by this change. `off` is what the renderer produced before the block existed.
     const on = renderBriefing(fabData(3), cfg()).markdown;

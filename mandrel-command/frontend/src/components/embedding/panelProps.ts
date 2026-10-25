@@ -1,6 +1,6 @@
 /**
  * The ONE prop every Embedding panel takes: the project the Embedding PAGE is scoped to
- * (epic 41293984 §E).
+ * (page-scope epic §E).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY A PROP AND NOT A HOOK IN EACH PANEL

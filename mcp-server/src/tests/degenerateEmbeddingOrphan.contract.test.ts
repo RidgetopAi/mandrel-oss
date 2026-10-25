@@ -11,7 +11,7 @@
  *     zero row sim=NaN → dropped by any min-similarity filter. Invisible to recall.
  *   - `inferAndMintRelatedTo` on a zero-embedding source, with a genuine 0.9-similar
  *     neighbour in the pool, returned
- *       {minted:false, candidateId:'e320bbaa…', similarity:null, reason:'no-neighbor-above-threshold'}
+ *       {minted:false, candidateId:'2b3c4d5e…', similarity:null, reason:'no-neighbor-above-threshold'}
  *     — it named a "best" candidate that was never ranked (every distance was NaN, so the row
  *     order was arbitrary), reported `similarity:null` over the wire, and blamed the
  *     neighbourhood for a defect in the capture's own vector.

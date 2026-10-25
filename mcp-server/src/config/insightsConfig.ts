@@ -7,7 +7,7 @@
  * config-driven patterns in the tree (config/recallConfig.ts, config/searchConfig.ts).
  *
  * WHY THIS FILE EXISTS: assessCodeHealth() carried six bare magic numbers (3, 5, 8, 10,
- * 20, 100) inline. The fix for b7306192 rewrites that function, so the literals it
+ * 20, 100) inline. The fix for the absent-is-not-perfect fix rewrites that function, so the literals it
  * governs move here rather than being re-buried. The DEFAULTS below are the EXACT
  * values the pre-fix handler used — this is a mechanical extraction, NOT a re-tuning.
  * Scoring behaviour for a project WITH components is byte-identical to before.

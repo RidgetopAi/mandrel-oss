@@ -110,11 +110,11 @@ describe('navConfig — the LOCKED IA', () => {
     const treewalker = ALL_NAV_ITEMS.find((i) => i.id === 'treewalker');
     expect(calendar?.isNew).toBe(true);
     // TreeWalker shipped in Phase 3 (moat graph visualizer) — no longer isNew.
-    // Its thread data renders honest-empty until backend 5ad1c6af lands.
+    // Its thread data renders honest-empty until the backend thread endpoint lands.
     expect(treewalker?.isNew).toBeUndefined();
   });
 
-  it('has 14 nav entries total (11 content + 3 utility)', () => {
+  it('has 13 nav entries total (10 content + 3 utility)', () => {
     // 10 content + 3 utility (Projects, Settings, Feedback) = 13 (Surveyor left the locked 11).
     // The locked IA reference is 11; Feedback, Punch List
     // and Decision Inbox are the

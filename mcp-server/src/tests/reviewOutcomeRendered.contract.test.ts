@@ -2,7 +2,7 @@
  * THE REVIEW CALL MUST SURVIVE THE RENDER — contract.
  *
  * THE DEFECT THIS LOCKS, measured before the fix rather than imagined: on prod 2026-08-26,
- * `recall_thread anchor:4660f1aa altitude:headline` rendered SEVEN Reviewer verdict
+ * `recall_thread anchor:2b3c4d5e altitude:headline` rendered SEVEN Reviewer verdict
  * contexts and the word APPROVE or REJECT appeared on the line of ONE of them — the one
  * whose author happened to put the call early enough in the first sentence to survive the
  * title clip. Every other verdict was rendered as `[context] ★ REVIEWER VERDICT

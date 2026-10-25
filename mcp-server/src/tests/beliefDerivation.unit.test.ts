@@ -6,7 +6,7 @@
  * RED if the corresponding logic is reverted (see the belief-eval proof for the mutation
  * demonstration).
  *
- * Guards the design invariants (ca9a33c0 §3/§4/§8 + an earlier task):
+ * Guards the design invariants (the belief-layer design §3/§4/§8 + an earlier task):
  *   - NO HARD TIER: `soft_possibly_superseded` is the ONLY supersession outcome, at EVERY
  *     confidence. This is the executable form of "an inferred edge must never be able to
  *     make a record invisible" — a `supersedes` edge is an exclusion predicate in
@@ -19,7 +19,7 @@
  *     produce a supersession outcome;
  *   - the adjudicator JSON normaliser coerces incoherent direction/mode to `none`.
  *
- * WHAT THE PRE-57f35350 VERSION OF THIS FILE COVERED THAT THIS ONE NO LONGER DOES: the
+ * WHAT THE EARLIER VERSION OF THIS FILE COVERED THAT THIS ONE NO LONGER DOES: the
  * two-tier threshold arithmetic — that conf just below the dial, cosine just below the gate,
  * a null cosine, or both-below fell to SOFT while at-or-above both HARD-minted. Those dials
  * no longer exist, so that arithmetic is not under-tested, it is absent. What replaces it is
@@ -99,7 +99,7 @@ describe('deriveBeliefOutcome — the ONLY supersession outcome is SOFT', () => 
   });
 });
 
-describe('deriveBeliefOutcome — NO HARD TIER AT ANY CONFIDENCE (the 57f35350 invariant)', () => {
+describe('deriveBeliefOutcome — NO HARD TIER AT ANY CONFIDENCE (the no-hard-tier change invariant)', () => {
   // THE POINT OF THIS BLOCK. The bug was not "the dial was set too low" — it was that a dial
   // existed at all, so that SOME confidence promoted a guess into an exclusion predicate.
   // These assertions therefore sweep confidence to its ceiling INCLUSIVE, and past it, so a
@@ -155,7 +155,7 @@ describe('deriveBeliefOutcome — SCOPE-FENCE INVARIANT (nothing ever reaches th
   });
 
   test('across EVERY verdict × confidence × direction, the ONLY non-none outcome is SOFT', () => {
-    // The exhaustive sweep. Its job after 57f35350 is to prove a NEGATIVE — that no
+    // The exhaustive sweep. Its job after the no-hard-tier change is to prove a NEGATIVE — that no
     // combination of inputs reaches a hard mint — so it asserts on the action of EVERY
     // iteration rather than only inside a hard-mint branch (a branch that can no longer be
     // entered would make this loop vacuous, and a vacuous sweep is the classic hollow guard).
@@ -193,8 +193,8 @@ describe('deriveBeliefOutcome — SCOPE-FENCE INVARIANT (nothing ever reaches th
 });
 
 describe('deriveBeliefOutcome — CHRONOLOGY GATE: an inferred supersession never points backwards', () => {
-  // The prod defect: handoff `fe3a81fc` (12:16:41Z) carried an inbound possibly_supersedes
-  // from `49858772` (12:10:13Z) — the OLDER record minted as superseding the NEWER one, so
+  // The prod defect: handoff `2b3c4d5e` (12:16:41Z) carried an inbound possibly_supersedes
+  // from `3c4d5e6f` (12:10:13Z) — the OLDER record minted as superseding the NEWER one, so
   // the briefing showed the CURRENT handoff as superseded_by a stale record. 55 of 1906
   // belief-minted edges on prod had that shape.
 

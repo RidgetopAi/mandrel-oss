@@ -1,9 +1,9 @@
 /**
  * HANDOFF SUPERSESSION MINTING — the trunk's own declared-edge feed (PHASE 2 item g,
- * folded from 8f218f17 / D5-A; tree model a4f8886d).
+ * folded from D5-A; the tree model).
  *
  * THE MODEL: the TRUNK is the project's handoff TIMELINE — time orders it, always
- * (a4f8886d: a naive supersedes walk measured 22,482,181 rows; supersedes is
+ * (the tree model: a naive supersedes walk measured 22,482,181 rows; supersedes is
  * CORROBORATION, never ordering). But the corroboration itself was starved: at the
  * measured baseline only 177 of 1,249 handoff-chain links (14.2%) were DECLARED. This
  * service closes that at the WRITE: storing a new handoff deterministically mints ONE

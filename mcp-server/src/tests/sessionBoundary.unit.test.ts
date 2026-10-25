@@ -132,7 +132,7 @@ describe('lifecycle thresholds are CONFIG-DRIVEN into the sweep/SQL path (no har
       // `const { db } = await import('../config/database.js'); await db.query('SELECT 1')`.
       // `../services/sessionTimeout.js` imports it transitively (via SessionLifecycleService),
       // so that tick resolved the MOCKED module and landed on this spy. an earlier Task and
-      // 1f6b32aa made that start explicit, so that particular tick is gone — but the reasoning
+      // made that start explicit, so that particular tick is gone — but the reasoning
       // below is why this assertion is shaped the way it is, and it holds against ANY other
       // module in a registry-wide mock's graph, which is the general case.
       //

@@ -1,6 +1,6 @@
 /**
  * Punch form — the STRUCTURED contract proof (an earlier decision /
- * 1e53165a; DEPENDS ON the API shape from an earlier task). This is the literal
+ * the Punch List loop decision; DEPENDS ON the API shape from an earlier task). This is the literal
  * acceptance-criteria walkthrough for the punch author's DONE WHEN clauses, run against
  * a MOCKED unified api client so the wire payload — never a screenshot — is the proof
  * of what actually gets sent:

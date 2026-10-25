@@ -5,7 +5,7 @@
  * considered, Success criteria, Outcome/learning loop), and a footer (Affects chips + tags
  * + the typed-edge ThreadBox — the moat). Owns its loading / empty / error state.
  *
- * DATA-GAP POLICY (10397f65): every section renders ONLY from real fields. Empty
+ * DATA-GAP POLICY: every section renders ONLY from real fields. Empty
  * `rationale` / `successCriteria` / `alternatives` / `affected_components` render an honest
  * "not recorded" state or are omitted — never fabricated. `created_by` is not serialised by
  * the backend today, so the "by X" chip is omitted (not faked).

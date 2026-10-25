@@ -1,5 +1,5 @@
 /**
- * Tasks page project-scoping (an earlier task → 7d68e918 → epic 41293984).
+ * Tasks page project-scoping (the page-scope epic).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHAT CHANGED, AND WHY THIS FILE IS A REWRITE RATHER THAN AN EDIT
@@ -174,7 +174,7 @@ afterEach(() => {
   container?.remove();
 });
 
-describe('Tasks — the page owns its project (epic 41293984)', () => {
+describe('Tasks — the page owns its project (page-scope epic)', () => {
   it('renders NO project selector of its own — THE switch is in the shell', async () => {
     await render(`/tasks?project=${PROJ_A}`);
     expect(container.querySelector('[aria-label="Project"]')).toBeNull();

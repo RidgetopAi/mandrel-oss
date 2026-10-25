@@ -1,6 +1,6 @@
 /**
  * insightPagesProjectScope — the DB-backed guard for the four INSIGHT pages' project scope
- * (epic 41293984, amendment "the guard construction", which supersedes §F).
+ * (page-scope epic, amendment "the guard construction", which supersedes §F).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY THESE FOUR PAGES SPECIFICALLY

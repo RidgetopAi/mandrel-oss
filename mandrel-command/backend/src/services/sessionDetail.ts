@@ -435,7 +435,7 @@ export class SessionDetailService {
         FROM sessions s
         LEFT JOIN projects p ON s.project_id = p.id
         ${whereClause}
-        -- TOTAL ORDER (the MCP-server half is 14dff41a). s.started_at is
+        -- TOTAL ORDER (the MCP-server half is the search total-order fix). s.started_at is
         -- NOT UNIQUE — sessions started in the same instant tie, and this list is
         -- LIMIT/OFFSET paged below. Page 1 and page 2 are two independent sorts of the same
         -- tied block, so a partial order can hand the caller one session twice and never

@@ -33,7 +33,7 @@ vi.mock('../api', () => ({
 }));
 
 /**
- * PAGE PROJECT (epic 41293984). The page owns its project now — there is no global
+ * PAGE PROJECT (page-scope epic). The page owns its project now — there is no global
  * selector to follow, and no "All Projects" option on this screen. `projectState.projects`
  * is MUTABLE per test so the genuine no-project state (an instance with no projects at
  * all) can be exercised; the default is one concrete project, which is what every render
@@ -226,7 +226,7 @@ describe('Contexts — rail + reader (the initial view)', () => {
     // very drift an earlier decision is about (a second copy that silently disagrees).
     expect(mockApi.contexts.search).toHaveBeenCalledWith(
       expect.objectContaining({ limit: CONTEXTS_CONFIG.listLimit, offset: 0 }),
-      // The second argument is the page's own request scope (epic 41293984); every read on
+      // The second argument is the page's own request scope (page-scope epic); every read on
       // this screen carries it.
       expect.objectContaining({
         headers: expect.objectContaining({ 'X-Project-ID': PAGE_PROJECT.id }),
@@ -331,7 +331,7 @@ describe('Contexts — error state', () => {
 describe('Contexts — search', () => {
   it('re-queries with the typed search term (semantic dispatch), scoped to the page project', async () => {
     // Search is project-scoped in the canonical engine. The page now guarantees a concrete
-    // project, so this is the ONLY search path there is (an earlier task → epic 41293984).
+    // project, so this is the ONLY search path there is (the page-scope epic).
     await mount('/contexts');
     await settle();
     const input = container.querySelector('input[aria-label="Search contexts"]') as HTMLInputElement;
@@ -352,7 +352,7 @@ describe('Contexts — search', () => {
 
   it('the "search under All Projects" dead end is UNREACHABLE — the page offers no such option', async () => {
     /**
-     * HISTORY (an earlier task → epic 41293984). This test used to reproduce a real bug: with
+     * HISTORY (the page-scope epic). This test used to reproduce a real bug: with
      * the GLOBAL selector on "All Projects", typing a search fired /api/contexts?query=…,
      * which fails closed with a 400 that the UI rendered as a red "Couldn't load contexts"
      * toast. The fix at the time was a `needsProject` gate that suppressed the request and

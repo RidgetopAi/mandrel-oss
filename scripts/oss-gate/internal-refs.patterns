@@ -22,6 +22,27 @@
 # and agents of the team that built it and of its customers, its company brand outside the public
 # repository URL, its private repositories, its hosts, addresses and host paths, its private
 # notification channel, and references into its private task tracker.
+#
+# THE hexref CLASS — an internal record id or commit sha written without a keyword. A token is a
+# candidate when it is EXACTLY 8 lowercase hex characters carrying at least one digit AND one letter
+# (an all-digit run is a number or a date, an all-letter run is a word such as `deadbeef`), is not
+# part of a longer [0-9A-Za-z_] run or a uuid segment (no `-` after it), and is not a hex constant
+# (`#a1b2c3d4` colour, `0x…`, `%…` escape, `\x…`, `.ext`). Shape alone is not enough: the tree holds
+# hundreds of fixture ids, because ids are what this product handles. So a candidate is a hit only
+# in an id-ish CONTEXT:
+#   - a comment or doc line: one that STARTS with `//` `/*` `*` `#` `--` `<!--`, or a `- ` / `> `
+#     bullet (a trailing `// …` after code is not one: it added only fixture hits);
+#   - right after `(` `[` or a backtick, or inside a parenthetical after whitespace: "(see x)";
+#   - inside a test title: describe('…x…') / it(…) / test(…);
+#   - prose: between a lowercase word and a following word or sentence punctuation
+#     ("fixed in x last week", "the x carrier");
+#   - leading a string label: 'x fixture', `[x] running`.
+# Like every regex class it is also tested across each pair of consecutive lines, which is what
+# catches an id wrapped onto the next comment line (" * x"), or a keyword at one line's end and
+# its id at the start of the next in a heredoc.
+# A fixture id a test genuinely needs is allowed in scripts/oss-gate/internal-refs.allow, by file
+# and literal, with the reason. The documented synthetic examples (1a2b3c4d, 2b3c4d5e, …) are
+# allowed everywhere: use one of them in prose that needs an example id.
 person	sha256:f3fe5a51a2be8c6dc715028858fcba82ee021be7687e4f95b45086b8ffb1a23f
 agent	word:ridge
 agent	word:foreman
@@ -46,5 +67,6 @@ host	(?i)hetzner|\bovh\b	ssh hetzner
 ip	\b(?:100\.122|100\.74\.187|178\.156|135\.148)\.\d	curl http://100.122.0.1:8080
 path	/opt/mandrel|/etc/mandrel|/etc/ridge|\.mandrel-bridge\.env|(?<![\w.~$}-])/root/	cd /opt/mandrel/app
 service	(?i)telegram	page via Telegram
-id	(?i)\b(?:task|decision|context|punch|milestone|spine)s?(?:[ \t]+|[ \t]*`)(?=[0-9a-f]{0,7}[0-9])[0-9a-f]{8}\b	fixed in task 1a2b3c4d
+id	(?i)\b(?:task|decision|context|punch|milestone|spine|defect|tranche|epic|commit|audit|walkthrough|verdict|incident|finding|outage|refile)s?(?:[ \t]+|[ \t]*`)(?=[0-9a-f]{0,7}[0-9])[0-9a-f]{8}\b	fixed in task 1a2b3c4d
+hexref	(?:^[ \t]*(?://|/\*|\*|#|--|<!--|[->][ \t]).*?|[(\[`]|\([^()'"`]*?[ \t]|\b(?:describe|it|test)\b[^(]*\([ \t]*['"`][^'"`]*?)(?<![0-9A-Za-z_#%\\])(?<![0-9A-Za-z_]\.)(?=[0-9a-f]{0,7}[0-9])(?=[0-9]{0,7}[a-f])[0-9a-f]{8}(?![0-9A-Za-z_-]|\.[0-9A-Za-z])|(?<=[a-z][ \t])(?<![0-9a-f]{8}[ \t])(?<![0-9A-Za-z_#%\\])(?<![0-9A-Za-z_]\.)(?=[0-9a-f]{0,7}[0-9])(?=[0-9]{0,7}[a-f])[0-9a-f]{8}(?![0-9A-Za-z_-]|\.[0-9A-Za-z])(?=[ \t]+(?:[a-z(-]|—|–)|[.,;:)!?][ \t]|[.,;:)!?]?$)|['"`](?<![0-9A-Za-z_#%\\])(?<![0-9A-Za-z_]\.)(?=[0-9a-f]{0,7}[0-9])(?=[0-9]{0,7}[a-f])[0-9a-f]{8}(?![0-9A-Za-z_-]|\.[0-9A-Za-z])[ \t]+[A-Za-z]	bisected to (9f8e7d6c)
 lesson	(?i)\blessons?[ \t]+\d{3}\b	per Lesson 027

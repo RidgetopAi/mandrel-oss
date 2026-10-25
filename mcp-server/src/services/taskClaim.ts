@@ -385,7 +385,7 @@ RETURNING id::text AS id
  *   • no token        → `(claim_id IS NULL OR claim_expires_at <= now())`. A live claim
  *     blocks the write; a dead one does not (an expired lease is not ownership).
  *
- * BEARER POLICY — DECIDED, do not relitigate (an earlier task pin; b3bfd5f3 accepted residual):
+ * BEARER POLICY — DECIDED, do not relitigate (an earlier task pin; the bearer-policy decision accepted residual):
  * the claim token is a BEARER SECRET. A VALID token presented by a DIFFERENT resolved actor
  * IS authorized — the actor string is attribution, never the lock key (D2: binding exclusion
  * to a free-form varchar with no registry is a decorative lock; two workers sharing a name

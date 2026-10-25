@@ -1,7 +1,7 @@
 /**
  * THE HANDOFF STALENESS STAMP — contract tests.
  *
- * THE DEFECT THESE PIN (finding bf1980d5). The boot package prints the latest handoff as
+ * THE DEFECT THESE PIN. The boot package prints the latest handoff as
  * FULL frozen prose next to a LIVE walk of the same database, and marks neither as current.
  * Two independent blind readers hit it unprompted; reader B, verbatim: "Acting on the
  * handoff's list could mean rebuilding finished work."

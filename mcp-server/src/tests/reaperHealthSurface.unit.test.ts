@@ -2,7 +2,7 @@
  * reaperHealthSurface.unit.test.ts — the ALERTING SEAM contract.
  *
  * WHY THIS EXISTS
- *   bc8e4c7e built REAPER-DOWN *detection* and proved it fires. But it fires into
+ *   built REAPER-DOWN *detection* and proved it fires. But it fires into
  *   `logger.error`, which is only loud to someone already reading logs. The page is
  *   delivered out-of-process by an external monitor, and the two halves meet at
  *   GET /health/reaper — i.e. at buildReaperHealthPayload().

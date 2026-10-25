@@ -1,6 +1,6 @@
 /**
  * THE GLOBAL READS — the two requests that must NOT be narrowed by the pinned default
- * (Reviewer B4, epic 41293984 §A4).
+ * (Reviewer B4, the page-scope epic §A4).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE DEFECT THIS EXISTS TO CATCH

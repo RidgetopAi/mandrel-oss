@@ -112,7 +112,7 @@ describe('task_details returns the deadline fields', () => {
   });
 
   test('a deadline set by task_UPDATE is readable too, not just one set at create', async () => {
-    // Both write paths, per CLASSES.md C5. ac99b905's deadline was set by an update.
+    // Both write paths, per CLASSES.md C5. The reported task's deadline was set by an update.
     await viaTool('task_update', { taskId: taskWithout, dueAt: '2026-12-01T00:00:00.000Z', blockedOn: 'external' });
     const res = await viaTool('task_details', { taskId: taskWithout });
     expect(res.structuredContent.task.dueAt).toBe('2026-12-01T00:00:00.000Z');

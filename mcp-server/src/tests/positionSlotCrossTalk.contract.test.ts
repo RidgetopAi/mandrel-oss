@@ -5,7 +5,7 @@
  * confirmations in an earlier task's noteLog, plus a live re-measurement 2026-08-27).
  * Nine agents — Coordinator plus eight Builders — ran concurrently and their writes minted
  * DECLARED-tier `informs` membership edges onto EACH OTHER'S spines: a Builder working
- * `908f3c37` became a member of `f96494b5` on one call and `28c354ea` on the next.
+ * `2b3c4d5e` became a member of `3c4d5e6f` on one call and `4d5e6f7a` on the next.
  *
  * WHY, measured rather than theorised (see the run report for the commands):
  *   - ALL of those agents live inside ONE `claude` process, which multiplexes them over
@@ -209,10 +209,10 @@ describe('one transport, many agents: a position belongs to ONE loop', () => {
 
   test('PROBE 4 — a subagent does NOT inherit its COORDINATOR\'s DECLARED position', async () => {
     // THE FIFTH CONFIRMATION, and the most diagnostic (measured 2026-08-27, and measured
-    // again by this task's own Builder on itself): Coordinator ran `branch_open 83bb4bcd` in the
+    // again by this task's own Builder on itself): Coordinator ran `branch_open 1a2b3c4d` in the
     // coordinating session at 01:31:27Z with origin='declared' and then dispatched eight
     // subagents. A subagent working an unrelated task reported BOTH of its writes minting a
-    // position edge to 83bb4bcd — "a branch position I never opened" — and `branch_current`
+    // position edge to 1a2b3c4d — "a branch position I never opened" — and `branch_current`
     // from inside a subagent returned the coordinator's spine verbatim.
     //
     // THIS IS A STRONGER CLAIM THAN THE PEER-TO-PEER CASE, and it is why it gets its own

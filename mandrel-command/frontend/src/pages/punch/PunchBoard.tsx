@@ -9,7 +9,7 @@
  * `columnFor`/stage.ts renders a blocked-status task in the blocked lane regardless of its
  * stage) and `useTaskColumnPage({ status:'blocked' })` for the blocked lane — instead of
  * splitting one shared, LIMIT-bound fetch client-side. That single fetch is exactly what let
- * the terminal-order fix (d186ff4f) starve Merged/Deployed once a project passed the old
+ * the terminal-order fix starve Merged/Deployed once a project passed the old
  * list cap: every completed-implying row (which both terminal stages imply,
  * `STATUS_FOR_STAGE`) sorts after every open one, so the LIMIT cut the tail first — and
  * only. PUNCH_COLUMNS is a fixed, compile-time-constant set (never variable at runtime), so

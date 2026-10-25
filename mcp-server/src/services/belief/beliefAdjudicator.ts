@@ -6,8 +6,8 @@
  *   → mint a `supersedes` edge (links.mintEdge) ONLY for a high-confidence supersession
  *   → record EVERY verdict in belief_adjudications (audit + idempotency).
  *
- * Design ca9a33c0 §3/§4. Runs ASYNC, off any write critical path, SERIAL (concurrency from
- * beliefConfig, locked at 1 — the embedder shares the box, capacity recon 94b38d57). This
+ * the belief-layer design §3/§4. Runs ASYNC, off any write critical path, SERIAL (concurrency from
+ * beliefConfig, locked at 1 — the embedder shares the box, an earlier capacity recon). This
  * module is the exercised-end-to-end surface the belief-eval drives; the live post-store
  * BullMQ hook + gated backfill scan are the Inc-2 activation seam (not wired into the live
  * write path here, to keep embedder priority + zero prod blast radius this increment).
@@ -110,12 +110,12 @@ export async function adjudicatePair(
     // drops the pair (→ none/unrelated/restates) WITHDRAWS the stale edge instead of leaving
     // it to survive (the auditor #7: re-adjudication must be reversible). The retraction sweep still
     // covers `supersedes` as well as `possibly_supersedes`, so a hard edge minted by the
-    // pre-57f35350 code is WITHDRAWN when its pair is re-adjudicated. Metadata is only
+    // earlier code is WITHDRAWN when its pair is re-adjudicated. Metadata is only
     // meaningful when an edge is minted.
     let edgeMetadata: Record<string, unknown> = {};
     if (outcome.action === 'soft_possibly_superseded') {
       // The `reason[]` key (below_confidence / below_cosine) was DELETED with the two-tier bar
-      // in 57f35350 — it recorded WHICH threshold a candidate missed, and there are no
+      // in the no-hard-tier change — it recorded WHICH threshold a candidate missed, and there are no
       // thresholds. `rationale` is the adjudicator's own WHY and is what trust.ts's
       // readEdgeReason prefers; it still reads reason[] off the historical rows that carry it.
       edgeMetadata = {

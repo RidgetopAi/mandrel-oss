@@ -280,7 +280,7 @@ export const DATASTORE_POOL_ERROR_COUNTER = 'datastore_pool_errors_total';
  * bearing: `utils/monitoring.ts` started three uncleared `setInterval`s as an IMPORT-TIME side
  * effect, one of which did `db.query('SELECT 1')` every 60s, so a static import here — in a
  * module `config/database.ts` loads — started those timers in nearly every test process. an earlier Task
- * and 1f6b32aa removed that: starting is now an explicit `startMonitoring()` call made
+ * and the explicit-start change removed that: starting is now an explicit `startMonitoring()` call made
  * by `services/backgroundServices.ts`, and the timers are unref'd. The lazy import is kept
  * anyway because this module sits under `config/database.ts` and the counter is only ever
  * needed on a pool fault, so there is no reason to widen that graph; it is now a preference,

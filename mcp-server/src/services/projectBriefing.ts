@@ -32,12 +32,12 @@
  * only trace was a GLOBAL footer that never said WHICH section it emptied. The served count
  * was printed in the position a reader reads as the population, so the renderer's silence
  * manufactured "there is no open work".
- * RULING 6 of e67bafb3 is the invariant: THE DISPLAY MAY ONLY ASSERT WHAT A RECORD CARRIES
+ * RULING 6 of the display-honesty rulings is the invariant: THE DISPLAY MAY ONLY ASSERT WHAT A RECORD CARRIES
  * IN A FIELD. So the population is now a FIELD — every section carries a SectionCensus, the
  * heading prints `(served of population)`, and `none` may be emitted ONLY when the census
  * says the population is genuinely zero. The census is a REQUIRED member of BriefingData
  * (never optional, never defaulted): delete it and the GREEN path stops compiling, which is
- * the property e67bafb3 RULING 4 says to select for in a guard.
+ * the property the display-honesty rulings RULING 4 says to select for in a guard.
  *
  * TWO INDEPENDENT NARROWINGS, NEVER CONFLATED. (1) the per-query `LIMIT sectionMaxRecords`
  * at fetch time — when it binds, the population is a FLOOR and renders `N+` with a note
@@ -358,7 +358,7 @@ export interface BriefingBranchMember {
  *
  * NO `spineType` AND NO SPINE TITLE: the section labels the spine by id, because neither is
  * needed to select and neither is carried by the membership read. Rendering a kind or a
- * headline here would mean inferring one — the exact move e67bafb3 RULING 6 forbids.
+ * headline here would mean inferring one — the exact move the display-honesty rulings RULING 6 forbids.
  */
 export interface BriefingBranch {
   spineId: string;
@@ -492,7 +492,7 @@ export interface BriefingConfig {
   protectionRankConvention: number;
   /**
    * A non-superseded decision's band. SHIPPED DEFAULT IS THE FLOOR — see briefingConfig.ts:
-   * this is the f176d8a5 measurement knob, not a ruling, and turning it up is the experiment.
+   * this is the briefing-budget decision measurement knob, not a ruling, and turning it up is the experiment.
    */
   protectionRankDecision: number;
   protectionRankStalePriority: number;
@@ -511,7 +511,7 @@ export interface BriefingConfig {
   handoffStampDeletedLabel: string;
   /**
    * THE RECORDING DIRECTIVE's kill switch (briefingConfig.ts). Default TRUE. OFF renders the
-   * document byte-identical to pre-cfd2ec6c — the block is the last thing assemble() pushes
+   * document byte-identical to earlier — the block is the last thing assemble() pushes
    * and nothing else reads it, so `false` removes it and changes nothing else.
    */
   recordingDirectiveEnabled: boolean;
@@ -600,10 +600,10 @@ export function applySelectionFlag(config: BriefingConfig): BriefingConfig {
     alwaysSurfaceTaskStatuses: [],
     protectedTaskPriorities: [],
     protectionRankConvention: BRIEFING_PROTECTION_RANK_NONE,
-    // Same move, same reason (f176d8a5): a decision band reorders which records survive the
+    // Same move, same reason: a decision band reorders which records survive the
     // cap, so it is collapsed to the floor with the master switch off. Its SHIPPED default is
     // already the floor, so today this line changes nothing — it is here so that an operator
-    // running the f176d8a5 measurement cannot obtain a reordered document from a flag-off
+    // running the briefing-budget decision measurement cannot obtain a reordered document from a flag-off
     // deployment, which is the hole the comment above says to close or explain.
     protectionRankDecision: BRIEFING_PROTECTION_RANK_NONE,
   };
@@ -1399,13 +1399,13 @@ function shapeLine(
  * THE STRUCTURED-FACT STAMPS, rendered inside the id bracket for all four record kinds.
  *
  * WHY THIS IS IN shapeLine AND NOT IN THE THREE CALLERS (guard class
- * `renderer-drops-structured-fact`, sibling d836f757): this function's own
+ * `renderer-drops-structured-fact`): this function's own
  * header calls itself "THE ONE SHAPE-LINE GRAMMAR — spelled here and nowhere else, for all
  * four record kinds". A fact added per-caller is a fact three callers can each forget, which
  * is how the class recurs. One place, every population, present and future.
  *
  * THE DEFECT MEASURED, 2026-09-03: the recall renderers were fixed to carry the review call
- * (d836f757) and the gate's exit code (252200e1), and the OTHER half of the same boot package
+ * and the gate's exit code, and the OTHER half of the same boot package
  * — this briefing — rendered neither, for any record kind, because no Briefing* record type
  * carried `metadata` at all. The fact was not dropped at the render; it was never gathered.
  * Same reader outcome, one layer earlier: the fact is on the record and absent from the
@@ -1515,7 +1515,7 @@ const DEAD_END_LABEL: Record<DeadEndBasis, string> = {
 
 function renderDeadEnd(e: BriefingDeadEnd): string {
   // No "because": the reason is a cause only on the refuted/deprecated branches. On the
-  // other two it is the signal itself ("superseded by 84ea8af0"), and "because superseded
+  // other two it is the signal itself ("superseded by 1a2b3c4d"), and "because superseded
   // by X" after a "superseded:" label is both redundant and reads as a justification the
   // record does not carry.
   return `- ${DEAD_END_LABEL[e.basis]}: ${e.headline} — ${e.reason} [${e.kind}:${short(e.id)}]`;
@@ -1962,7 +1962,7 @@ export function renderBriefing(
   /**
    * A DECISION has neither a status nor a priority column the briefing reads, so the two
    * bands available to it are branch membership and its own kind band. `protectionRankDecision`
-   * SHIPS AT THE FLOOR, which makes this line behave exactly as it did before f176d8a5 — it is
+   * SHIPS AT THE FLOOR, which makes this line behave exactly as it did before the briefing-budget decision — it is
    * the measurement knob for "the package serves 0 of 162 decisions", not a ruling that they
    * should be protected. See briefingConfig.ts. (Conventions used to share this function; they
    * have their own band, below.)

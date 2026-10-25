@@ -5,7 +5,7 @@
  *   2. wire data through the UNIFIED `api.*` client (not axios/generated);
  *   3. surface the TYPED build-story box from real graph edges — NOT the task
  *      `dependencies` array and NOT any semantic `related` list (data-gap policy
- *      10397f65: never conflate structure with either);
+ *      the data-gap policy: never conflate structure with either);
  *   4. carry no hardcoded hex colours in the stylesheet (token-driven).
  * Source-level invariants — cheap, deterministic, drift-proof.
  */

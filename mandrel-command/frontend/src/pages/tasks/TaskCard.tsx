@@ -4,7 +4,7 @@
  * chip (or an "unassigned" chip) + a relative timestamp. Clicking it opens the task
  * thread detail (selection is driven by the parent via the route).
  *
- * DATA-GAP POLICY (10397f65): an in-progress task honestly shows its assignee + an "in
+ * DATA-GAP POLICY: an in-progress task honestly shows its assignee + an "in
  * progress" affordance from REAL columns (status + assigned_to). It does NOT fabricate a
  * "builder building on branch builder/xxxx" substate — that live-build/branch data is not
  * in the Command DB. The link-count glyph is shown only when a REAL count is known (the

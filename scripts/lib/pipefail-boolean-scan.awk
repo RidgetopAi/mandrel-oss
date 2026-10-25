@@ -25,7 +25,7 @@
 #                       inside it is a value, so its status is discarded.
 #   HEREDOC bodies are NOT skipped. They read as data to THIS shell, so skipping
 #   them is defensible — and it was wrong here. MEASURED on this tree: the only two
-#   heredoc-body hits at 38ee428a were inside scripts/test/lib/fixture-harness.sh's
+#   heredoc-body hits at an earlier revision were inside scripts/test/lib/fixture-harness.sh's
 #   `<<'"'"'SHIM'"'"'` block, which is WRITTEN OUT to $FH_DIR/bin/.fh-shim and then EXECUTED.
 #   A generated script is code; the fact that it is quoted at rest does not make its
 #   pipefail boolean safe. Scanning heredoc bodies costs a small amount of
@@ -243,7 +243,7 @@ function pop(   dd) {
 # This parser carries state across lines, and three separate bugs have proved it
 # can LOSE that state and go silently dark over the rest of a file (a herestring
 # read as a heredoc, `$(( a << b ))` read as a heredoc, a heredoc body with an
-# unbalanced `$(`). Measured by the reviewer at d9c42c81: 25 of 252 files ended the
+# unbalanced `$(`). Measured by the reviewer at the earlier pipefail scan: 25 of 252 files ended the
 # scan with an unclosed nesting level, up to d=34, and the ban reported GREEN.
 #
 # An unbalanced end-of-scan means the parse is not trustworthy for that file. Say

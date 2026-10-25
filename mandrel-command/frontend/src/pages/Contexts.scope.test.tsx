@@ -1,5 +1,5 @@
 /**
- * Contexts page project-scoping (epic 41293984 §A1/§A4).
+ * Contexts page project-scoping (page-scope epic §A1/§A4).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHAT THIS GUARDS

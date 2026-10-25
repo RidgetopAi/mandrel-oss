@@ -2,7 +2,7 @@
  * TreeWalker data hook — the whole-thread read rides the UNIFIED client (`api.treewalker.*`)
  * through react-query, mirroring the Decisions/Contexts reference. NO axios/generated client.
  *
- * DATA-GAP POLICY (10397f65): the read is gated on TREEWALKER_CONFIG.backendReady (now LIVE).
+ * DATA-GAP POLICY: the read is gated on TREEWALKER_CONFIG.backendReady (now LIVE).
  * With NO explicit anchor the hook calls the no-arg resume endpoint (the backend resolves the
  * newest `ref:resume` context for the active project); with an explicit anchor it reads that
  * anchor's thread. A genuinely-empty thread comes back as an honest empty graph — never

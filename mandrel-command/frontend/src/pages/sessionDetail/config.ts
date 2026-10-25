@@ -4,7 +4,7 @@
  * the live/dormant recency threshold, the tab set, and the per-tab list caps all live
  * here so the parts stay declarative.
  *
- * DATA MAP (policy 10397f65 — show what's REAL, never fabricate). Every one of the five
+ * DATA MAP (the data-gap policy — show what's REAL, never fabricate). Every one of the five
  * tabs is wired to a REAL endpoint through the unified `api.sessions.*` client:
  *  - Contexts  → `api.sessions.get(id).contexts`   (GET /api/sessions/:id)
  *  - Tasks     → `api.sessions.get(id).tasks`       (GET /api/sessions/:id)

@@ -30,19 +30,19 @@
  * detected. A bare JWT with no `Authorization:` header in front of it is NOT detected. Those
  * are bought, on purpose, in exchange for the sentence above.
  *
- * ── 2026-09-08: the `NAME=<literal>` shape (the auditor record 86f5887a E5) ──────
+ * ── 2026-09-08: the `NAME=<literal>` shape (audit finding E5) ──────
  * Both historical secret values found in the prod DB (SURVEYOR_LLM_API_KEY=…,
  * JWT_SECRET=…), the 2026-09-01 transcript leak (…_GROQ_API_KEY=gsk_…) and the one untriaged
  * task body were ALL `CREDENTIAL_NAME=value` lines out of env files — the one shape this
  * vocabulary did not have. It is added below as `env-assignment-literal`, plus `gsk_` (Groq)
- * and the SQL `PASSWORD '<literal>'` carrier that let ra-an earlier commit through.
+ * and the SQL `PASSWORD '<literal>'` carrier that let an earlier commit's leaked password through.
  *
- * WHY THIS DOES NOT REOPEN THE e7866f20 RULING. Option (c) was rejected because ENTROPY fires
+ * WHY THIS DOES NOT REOPEN THE EARLIER NO-ENTROPY RULING. Option (c) was rejected because ENTROPY fires
  * on legitimate evidence — shas, uuids, base64, diff hunks — regardless of what surrounds them.
  * The env-assignment rule reads NONE of the value's statistics. It is anchored on STRUCTURE the
  * writer supplied: an UPPER_SNAKE name whose last word is PASSWORD/SECRET/TOKEN/API_KEY/… and
- * an `=` immediately followed by a literal. A sha in `merged at 00b940bd…` has no such name; a
- * uuid in `an earlier task-… was dispatched` has no `=`; `token=a3f9a3f9…` (the accepted-miss
+ * an `=` immediately followed by a literal. A sha in `merged at 2b3c4d5e…` has no such name; a
+ * uuid in `job 4d5e6f7a-… was dispatched` has no `=`; `token=3c4d5e6f…` (the accepted-miss
  * control) is lower-case and stays an accepted miss. What the rule fires on is a line whose
  * AUTHOR labelled the value a credential. `$VAR`, `${VAR}`, `<placeholder>`, `{{tpl}}`,
  * `***REDACTED***` and SCREAMING_SNAKE / your-*-here placeholders are not literals and are
@@ -272,7 +272,7 @@ export const CREDENTIAL_SIGNATURES: readonly CredentialSignature[] = [
     extraPlaceholderPattern: ENV_ASSIGNMENT_PLACEHOLDER_PATTERN,
   },
   // SQL role password: `CREATE/ALTER ROLE|USER … PASSWORD '<literal>'` — the carrier of the
-  // live postgres superuser password in ra-an earlier commit (the auditor 86f5887a E4).
+  // live postgres superuser password in an earlier commit (audit finding E4).
   // Keyword, whitespace, quote, then a body that does not begin with `$ < { *`. SQL is
   // case-insensitive, so this one is too — the keyword PASSWORD followed by a QUOTED value
   // is not a shape prose produces.

@@ -1,6 +1,6 @@
 /**
  * projectSetPrimaryAuth — SECURITY gate for the mcp-server's POST /api/v2/projects/:id/set-primary
- * MUTATION endpoint (sibling sweep of 4eaf055c / trust boundary b3cf883b).
+ * MUTATION endpoint (sibling sweep of the session-routes auth fix / the trust-boundary change).
  *
  * Regression guard for an unauthenticated MUTATION: this route flips which project is primary for
  * every new session and was mounted on :8080 with NO auth middleware, so an anonymous caller could (reserved-port-ok: doc comment naming prod's :8080, binds nothing)

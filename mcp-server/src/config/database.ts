@@ -83,7 +83,7 @@ try {
  * UNCHANGED, so prod behaviour is byte-identical; what changes is that a caller can now
  * BOUND the pool's footprint.
  *
- * WHY THIS MATTERS (the bb98a3d4 root cause). A Postgres server's client-connection
+ * WHY THIS MATTERS (the connection-exhaustion incident root cause). A Postgres server's client-connection
  * slots (`max_connections` minus `superuser_reserved_connections`) are a BOX-WIDE shared
  * resource — every database and every process on the host draws from the same pool of
  * slots. The mcp-server test suite runs all ~170 files in ONE process (vitest

@@ -1,5 +1,5 @@
 /**
- * Embedding panel scope test — REWRITTEN for the page-owned selector (epic 41293984 §E).
+ * Embedding panel scope test — REWRITTEN for the page-owned selector (page-scope epic §E).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHAT THIS USED TO ASSERT, AND WHY IT COULD NOT SURVIVE

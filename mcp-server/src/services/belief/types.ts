@@ -5,7 +5,7 @@
  * so the pure derivation logic, the ollama provider, the store, and the belief-eval all
  * speak the same shapes and cannot drift.
  *
- * Design ca9a33c0 §3 (adjudication verdicts) + §5 (harness). Increment-1 scope:
+ * the belief-layer design §3 (adjudication verdicts) + §5 (harness). Increment-1 scope:
  * supersession only — CONTESTS is a valid VERDICT the adjudicator may return (and we
  * RECORD it), but Increment 1 mints NO contests edge (that is Inc-2). See beliefDerivation.
  */

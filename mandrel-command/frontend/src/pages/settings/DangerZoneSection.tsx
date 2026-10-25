@@ -39,7 +39,7 @@ const DeleteProjectModal: React.FC<{
     mutation.mutate(projectId, {
       onSuccess: async () => {
         // No hand-clearing of the ambient project: it is DERIVED from the project list
-        // (epic 41293984 §C), so refreshing the list is what re-resolves it. The old
+        // (page-scope epic §C), so refreshing the list is what re-resolves it. The old
         // `setCurrentProject(null)` here was one of the paths that could leave the app
         // with no ambient scope at all.
         try {
@@ -96,7 +96,7 @@ export const DangerZoneSection: React.FC = () => {
   const [open, setOpen] = React.useState(false);
 
   // The CONCRETE project the delete targets: the ambient scope, which is now PINNED to
-  // the user's default project and is ALWAYS a real UUID or nothing (epic 41293984 §C).
+  // the user's default project and is ALWAYS a real UUID or nothing (page-scope epic §C).
   // The old global "All Projects" sentinel branch is gone with the sentinel — it could
   // never reach a UUID route anyway, and there is no longer a state in which the app has
   // a scope that is not a real project.

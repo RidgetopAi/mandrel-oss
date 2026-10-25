@@ -1,7 +1,7 @@
 /**
  * sessionsProxyToken.test.ts — SECURITY: the Command backend presents the INTERNAL SERVICE
  * TOKEN on every proxied call to the mcp-server's now-gated /api/v2/sessions/* family
- * (an earlier task / trust boundary b3cf883b).
+ * (an earlier task / the trust-boundary change).
  *
  * The trust boundary: the Command backend (:5000) authenticates the USER (JWT), then proxies (reserved-port-ok: doc comment naming prod's :5000, binds nothing)
  * to the mcp-server (:8080) which requires the internal service token (MCP_AUTH_TOKEN). This (reserved-port-ok: doc comment naming prod's :8080, binds nothing)

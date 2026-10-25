@@ -13,7 +13,7 @@
  * task_create) stamps a declared `informs` edge (created_by 'auto:positional') to the spine
  * via services/positionalMint.ts.
  *
- * ee160aad fold-in: branch_open always resolves to a REAL spine record — an id that
+ * The spine-first fold-in: branch_open always resolves to a REAL spine record — an id that
  * resolves to nothing in any of the three tables is an actionable error, so "current
  * branch" can never be unnamed or dangling.
  *
@@ -293,7 +293,7 @@ class BranchRoutes {
       // THE SPINE MUST STILL EXIST (signal 2). `branch_positions.spine_id`
       // is a soft reference — migration 080 — so the record can be deleted out from under
       // an open position and nothing removes the row. Measured on prod: this endpoint
-      // reported `spineType: "task"` for f50b8f30, an id its own by-id lookup resolves to
+      // reported `spineType: "task"` for an id its own by-id lookup resolves to
       // nothing. Reproduced from a clean DB in tests/danglingSpine.contract.test.ts, where
       // the pre-fix render was an ORDINARY OPEN BRANCH — origin 'declared', spineType
       // 'task' — separable from a healthy one only by a null title, and `spineTitle()`
@@ -339,7 +339,7 @@ class BranchRoutes {
       }
 
       // ARCHIVED IS A THIRD STATE, AND IT IS THE ONE THE BUG WAS FILED ON.
-      // an earlier Task reported that this endpoint claimed `spineType:'task'` for f50b8f30
+      // an earlier Task reported that this endpoint claimed `spineType:'task'` for such an id
       // while `task details` answered found:false, and read that as a dangling pointer.
       // Measured on prod 2026-09-05, the row EXISTS (status 'todo', archived_at
       // 2026-09-02) — `task details` could not see it because includeArchived:false is the
@@ -352,8 +352,8 @@ class BranchRoutes {
       // AT TRUNK emitted a `spineType` and no archived signal whatsoever, leaving the coordinator's
       // originally-reported observation byte-for-byte reproducible after two commits that
       // claimed to have addressed it. That is the same error those commits warn against, one
-      // arm over: a51a62f2's own comment calls trunk "the half the bug report was actually
-      // filed on", and 933b495d's whole argument is that a fix which changes nothing on the
+      // arm over: the bug report's own comment calls trunk "the half the bug report was actually
+      // filed on", and the follow-up's whole argument is that a fix which changes nothing on the
       // case that produced the report is inadequate. ONE source, consumed by BOTH arms, is
       // why that can no longer drift apart — a second copy is a second chance to fix one and
       // not the other.

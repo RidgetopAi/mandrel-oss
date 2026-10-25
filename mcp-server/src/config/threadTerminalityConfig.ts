@@ -1,6 +1,6 @@
 /**
  * THREAD TERMINALITY — the named config for recall_thread's `can_expand` rule
- * (BRANCH-2, an earlier decision Phase 2; flag mechanism 3bcb2f1c).
+ * (BRANCH-2, an earlier decision Phase 2; flag mechanism from a later change).
  *
  * =============================================================================
  * WHAT THE RULE IS
@@ -88,7 +88,7 @@ export const THREAD_TERMINALITY_THETA_DEFAULT = 0.01;
  * names nothing) cannot vouch for the walk continuing, so it is a destination too.
  *
  * This is the COVERAGE FLOOR, and it is the clause that does most of the work. Measured
- * cost of NOT having it: on anchor `20e71fca` the an earlier milestone names nothing
+ * cost of NOT having it: on anchor `2b3c4d5e` an earlier milestone names nothing
  * resolvable and is the single corridor through which all five sibling tasks of its epic
  * enter — 7 of that anchor's 8 false positives.
  * Env: MANDREL_THREAD_TERMINALITY_UNASSIGNABLE_TERMINAL. Default true.

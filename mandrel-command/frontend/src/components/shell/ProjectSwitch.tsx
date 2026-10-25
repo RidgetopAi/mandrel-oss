@@ -1,7 +1,7 @@
 /**
  * ProjectSwitch — THE project switch, in the topbar.
  *
- * It replaces the read-only DefaultProjectLabel that stood here after epic 41293984 §B,
+ * It replaces the read-only DefaultProjectLabel that stood here after the page-scope epic §B,
  * and the per-page selectors that epic put on every screen. The operator's rule: "All pages are
  * controlled by single project switch from top menu bar." So this is the ONE control
  * that moves the ambient scope; every project-scoped page reads it via `usePageProject`.
@@ -14,7 +14,7 @@
  *
  * ── WHAT IT SHOWS ────────────────────────────────────────────────────────────────────
  *   • the selected project's name — the shared `ProjectSelect` primitive, ONE project
- *     at a time. No "All projects" entry (walkthrough ed6ae449 F2): the punch did not ask
+ *     at a time. No "All projects" entry (the project-switch walkthrough F2): the punch did not ask
  *     for it, and a page that cannot render "all" would show the default while the
  *     topbar said otherwise — the disagreement this punch exists to end;
  *   • a small "default" marker ONLY while the selection equals the Settings default —

@@ -81,7 +81,7 @@ export const FLAT_LAZY_DESCRIPTIONS: Record<string, string> = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
- * LAZY+CORE classification (MCP-2026 rebuild Phase 3, the auditor rec b53c213f).
+ * LAZY+CORE classification (MCP-2026 rebuild Phase 3, the auditor recommendation).
  *
  * The plain lazy envelope advertises ONLY `{action:{enum}}`, which HIDES which params a WRITE
  * action requires + which closed enums are valid — so a model guessing the first call fails

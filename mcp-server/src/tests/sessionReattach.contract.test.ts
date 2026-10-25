@@ -1,6 +1,6 @@
 /**
  * Session-Rework SR-1 — per-connection identity + re-attach-on-restart contract test.
- * model ctx a5e6620c, root cause ctx 81901e32.
+ * the operator's session model and the stale-but-ended root cause.
  *
  * WHAT THIS PROVES (drives the REAL SessionLifecycleService + SessionRepo + reaper +
  * a REAL Postgres; NO wall-clock sleeps — timestamps are injected directly and the

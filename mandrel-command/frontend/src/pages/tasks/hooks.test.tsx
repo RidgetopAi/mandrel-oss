@@ -1,5 +1,5 @@
 /**
- * Tasks analytics-hooks wiring (extended by epic 41293984) — proves the
+ * Tasks analytics-hooks wiring (extended by the page-scope epic) — proves the
  * RANGE-AWARE reads call the right unified-client endpoint with the right params AND with
  * the page's own request scope:
  *   - useTaskThroughput → api.tasks.throughput({ range, project_id? }, scope)
@@ -11,7 +11,7 @@
  *
  * ── WHY THE SECOND ARGUMENT IS ASSERTED, NOT JUST THE PARAMS ────────────────────────
  * The params alone were sufficient while the ambient X-Project-ID always equalled what the
- * page displayed. Epic 41293984 breaks that equality by design: the ambient header is
+ * page displayed. The page-scope epic breaks that equality by design: the ambient header is
  * pinned to the user's DEFAULT project while each page selects its own. A read that names
  * the project ONLY in the query param is still correct today (query beats header in the
  * backend resolver) — but these hooks are also the shape the write surfaces copy, and a

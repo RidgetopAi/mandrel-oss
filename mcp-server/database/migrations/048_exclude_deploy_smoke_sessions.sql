@@ -1,6 +1,6 @@
 -- Migration: Exclude deploy-smoke sessions from session analytics
 -- Date: 2026-06-20
--- Task: bc819ae5 (deploy-smoke leaves litter sessions)
+-- Task: deploy-smoke leaves litter sessions
 -- Purpose:
 --   The fleet deploy smoke (fleet-deploy script) POSTs /api/v2/sessions/start
 --   to every instance on every deploy to prove the session write-path is alive.

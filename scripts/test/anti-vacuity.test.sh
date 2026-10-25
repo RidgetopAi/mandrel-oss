@@ -13,7 +13,7 @@
 # CREATE tags and refuses to ADD an origin remote, and execs the real git for
 # everything else — which is precisely what the fixture experiences when a
 # product resolver's SUBJECT moves out from under it (2026-08-27 and 2026-08-29,
-# defect record 1e09e3ab).
+# an earlier defect record).
 #
 # NO NETWORK, NO DB, NO DOCKER, NO PROD.
 #

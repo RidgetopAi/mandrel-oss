@@ -1,5 +1,5 @@
 /**
- * PROJECT BRIEFING config — WS2 "living summary" (plan 4333eaae).
+ * PROJECT BRIEFING config — WS2 "living summary".
  *
  * STANDING PRINCIPLE (the operator, configs-not-hardcoded): every tunable the briefing renderer
  * uses lives HERE — a named value with a sane default + a one-line comment + an env
@@ -426,7 +426,7 @@ export const READ_BRIEFING_STALE_TASK_DAYS = (): ReturnType<typeof envInt> => en
 export const READ_BRIEFING_BACKFILL_ENABLED = (): ReturnType<typeof envBool> => envBool('MANDREL_BRIEFING_BACKFILL_ENABLED', true);
 
 // ─────────────────────────────────────────────────────────────────────────────
-// THE HANDOFF STALENESS STAMP (finding bf1980d5)
+// THE HANDOFF STALENESS STAMP
 //
 // The renderer annotates each task id NAMED IN THE HANDOFF TEXT with that task's CURRENT
 // status, at render time, without ever modifying the stored record. Rationale, the uniform-
@@ -452,7 +452,7 @@ export const HANDOFF_STAMP_STATUS_PLACEHOLDER = '{status}';
  * is already reading). Everything else this renderer ships behind a flag defaults OFF because
  * it changes SELECTION — what survives the cap. This changes no selection; it annotates.
  *
- * OFF is byte-identical to pre-4660f1aa: the gather resolves nothing (no queries at all) and
+ * OFF is byte-identical to earlier: the gather resolves nothing (no queries at all) and
  * the render applies nothing. Both halves check it — the same two-choke-point rule
  * branchScopeEnabled follows, for the same reason (a caller reaching either exported entry
  * point directly must not obtain the behaviour from a flag-off deployment).
@@ -524,7 +524,7 @@ export const READ_BRIEFING_HANDOFF_STAMP_DELETED_LABEL = (): ReturnType<typeof e
  * ⚠️ IT IS NOT CAP-EXEMPT. This block is frame, so it is rendered on every pass of the cap
  * loop and the cap is still honoured — which means on a saturated project it is paid for by
  * evicting records. That is a real cost and it is why the default is kept short; measure it
- * as a component cost, never as a free increment (scoring rule a2243a8d).
+ * as a component cost, never as a free increment (the scoring rule).
  * (env: MANDREL_BRIEFING_RECORDING_DIRECTIVE_ENABLED)
  */
 export const READ_BRIEFING_RECORDING_DIRECTIVE_ENABLED = (): ReturnType<typeof envBool> =>
@@ -581,12 +581,12 @@ export const READ_BRIEFING_RECORDING_DIRECTIVE = (): ReturnType<typeof envStr> =
  *
  * IT IS A KNOB AND NOT A RULING BECAUSE THE ANSWER IS A MEASUREMENT WE HAVE NOT TAKEN. The
  * cap is already dropping 339 whole records, so any budget a decision band wins is taken
- * from something else, and f176d8a5 says in as many words: MEASURE which loses less, do not
+ * from something else, and the briefing-budget decision says in as many words: MEASURE which loses less, do not
  * guess. A default above the floor would be that guess. Raising this to 1..3 and re-rendering
- * the same project is the experiment; scoring rule a2243a8d governs how the result is stated
+ * the same project is the experiment; the scoring rule governs how the result is stated
  * (component cost, or the whole package, or a swap stated as a swap — never an increment).
  *
- * WHY A RANK RATHER THAN A RESERVED SUB-BUDGET, which is the other candidate f176d8a5 names:
+ * WHY A RANK RATHER THAN A RESERVED SUB-BUDGET, which is the other candidate the briefing-budget decision names:
  * a rank is one term in an existing comparator and is exactly reversible by setting it back
  * to 0, so the experiment can be run and unrun on a live instance with an env var. A reserved
  * sub-budget removes decisions from the global pool and is a structural change that cannot be

@@ -491,7 +491,7 @@ export class ContextRoutes {
           : null;
       const inferenceLine = inference ? ContextRoutes.inferenceLineFor(inference) : null;
 
-      // 8a64c16e: the fallback ran BECAUSE the stated intent did not land. (It does not run
+      // the fallback ran BECAUSE the stated intent did not land. (It does not run
       // when the writer opted out, or when the positional layer already threaded the record —
       // in both of those the floor is met without a guess.)
       const threadFallbackEngaged = threadIntentUnresolved && inference !== null;
@@ -533,12 +533,12 @@ export class ContextRoutes {
                 (linkWarningLines.length > 0
                   ? `\nLink notes:\n` + linkWarningLines.map(w => `   - ${w}`).join('\n')
                   : '') +
-                // 86d56b8c: threading tags that resolved to nothing → no edge, said out loud.
+                // threading tags that resolved to nothing → no edge, said out loud.
                 (tagMintResult.skips.length > 0
                   ? `\nTag edges skipped:\n` +
                     tagMintResult.skips.map(s => `   - ${s.reason}`).join('\n')
                   : '') +
-                // 8fc68175: tag/links-param edges that DID mint, said out loud too — success
+                // tag/links-param edges that DID mint, said out loud too — success
                 // must be as visible as failure or a threaded write reads as an orphan.
                 (linkedLines.length > 0
                   ? `\nLinked:\n` + linkedLines.map(l => `   - ${l}`).join('\n')
@@ -570,7 +570,7 @@ export class ContextRoutes {
                 (positional.offer
                   ? `\nNo branch open — to start one on this record: ${positional.offer}`
                   : '') +
-                // 8a64c16e: an explicit threading reference that minted nothing, said out
+                // an explicit threading reference that minted nothing, said out
                 // loud with its CONSEQUENCE — placed immediately before the threading line
                 // it explains.
                 (threadingIntentLines.length > 0 ? `\n${threadingIntentLines.join('\n')}` : '') +
@@ -589,19 +589,19 @@ export class ContextRoutes {
               // T5a: structured per-link rejections (reason + the offending spec) so a
               // machine reader sees exactly which explicit links were dropped + why.
               linkWarnings: linkResult.warnings,
-              // 8fc68175 — THE no-orphan honesty number: NEW edges this write created across
+              // THE no-orphan honesty number: NEW edges this write created across
               // ALL mint paths (tag + links-param + positional + inference), NOT just the
               // explicit `links` param. Invariant, contract-tested per path
               // (storeEdgeReporting.contract.test.ts): equals what get_links reports.
               linksMinted: totalLinksMinted,
-              // 8fc68175 — the unified per-edge ledger backing that number, each labeled with
+              // the unified per-edge ledger backing that number, each labeled with
               // its provenance (via: 'tag' | 'links-param' | 'anchor' | 'inference').
               edgesMinted,
-              // 86d56b8c: COUNT of edges minted FROM THREADING TAGS + every tag that resolved
+              // COUNT of edges minted FROM THREADING TAGS + every tag that resolved
               // to nothing (with the reason). Subsumed by edgesMinted but kept — consumers read it.
               tagEdgesMinted: tagMintResult.minted,
               tagEdgeSkips: tagMintResult.skips,
-              // 8a64c16e — WHAT HAPPENED TO THE THREADING THE WRITER ASKED FOR (stated /
+              // WHAT HAPPENED TO THE THREADING THE WRITER ASKED FOR (stated /
               // landed / fallbackEngaged / unresolved). See the loud text line it mirrors.
               threadingIntent: {
                 stated: threadIntentStated,

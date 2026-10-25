@@ -111,14 +111,14 @@ import { onEmbedFailure } from '../services/embedResilience.js';
 import { buildTaskEmbeddingTextFromRow } from '../services/embedding/taskEmbeddingText.js';
 // SCOPE §3.3, folded into P5.5. Until now `validateAndNormalizeTags` was called ONLY from
 // handlers/context.ts:302 and :1414 — `task_create`/`task_update` stored tags COMPLETELY
-// RAW: unvalidated, un-normalized, unwarned. That is why the tranche: census (066c7a42)
+// RAW: unvalidated, un-normalized, unwarned. That is why the tranche: census
 // found 60% of values out-of-enum. It WARNS AND STORES: the function's own contract says
 // "NEVER throws, NEVER rejects, NEVER drops a tag" (utils/threadingTags.ts:137-138), and
 // that is load-bearing here — this change rides inside a schema migration, and a validator
 // that started REJECTING would be a breaking change for every customer in the worst
 // possible packaging (SCOPE §8.6).
 import { validateAndNormalizeTags } from '../utils/threadingTags.js';
-// 98662108 — the write-time half of the tag-spelling collision check. Structural, carries
+// TAG SPELLING — the write-time half of the tag-spelling collision check. Structural, carries
 // no vocabulary, and warns without changing the tag. See services/tagSpellingWriteCheck.ts.
 import { tagSpellingWriteWarnings, tagSpellingWriteWarningsForTask } from '../services/tagSpellingWriteCheck.js';
 // P5.5 / migration 093. The write path must tolerate a database that does not have the
@@ -500,7 +500,7 @@ class TasksHandler {
             // A warning only an operator can see is a warning the author of the tag never
             // reads, and the author is the only person who can fix the tag.
             const created = this.mapTask(result.rows[0]);
-            // 98662108 — SPELLING COLLISIONS RIDE THE SAME CHANNEL as the grammar warnings,
+            // SPELLING COLLISIONS RIDE THE SAME CHANNEL as the grammar warnings,
             // for the same reason: only the tag's author can fix the tag, and only if they
             // are told. Appended AFTER the grammar warnings because a malformed threading
             // value is a broken join and a colliding spelling is a split queue — the broken
@@ -700,7 +700,7 @@ class TasksHandler {
             // membership and no tag was counted as belonging to NOTHING. Measured by
             // The reviewer by running runtime's branch-board: its "no-branch open = 100",
             // labelled a drift signal, counted 14 declared spine members as branchless.
-            // task_details has returned both carriers since 078f9f9f; the LIST could not,
+            // task_details has returned both carriers since an earlier change; the LIST could not,
             // and the list is what a board reads.
             //
             // A JOIN, NOT A PER-ROW READ. The obvious workaround — call readMembershipOf per
@@ -1072,7 +1072,7 @@ class TasksHandler {
             if (v.warnings.length > 0) {
                 logger.warn(`🏷️  task_update linking-grammar normalization: ${v.warnings.join(' ')}`);
             }
-            // 98662108 — the UPDATE path too. task_update REPLACES the tag set, so a re-tag
+            // Tag spelling — the UPDATE path too. task_update REPLACES the tag set, so a re-tag
             // introduces a colliding spelling exactly as readily as a create does; warning
             // only on create would fix the reported half and leave the other open
             // (CLASSES.md C5 — if you fixed one path, show the others).

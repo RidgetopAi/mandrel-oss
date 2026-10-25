@@ -21,6 +21,11 @@
 #                        as a plain word, camelCase, UPPER_SNAKE and percent-escaped;
 #        split probes  — every regex probe split at its last space across two comment lines:
 #                        still RED; the split id probe must be caught by the cross-line pass;
+#        hexref shapes — a bare 8-hex id in each claimed context (comment, wrapped comment line,
+#                        prose, keyword, parenthetical, test title, string label, heredoc wrap):
+#                        RED; legitimate hex (colour, 0x constant, uuid, sha256, a quoted fixture,
+#                        all-letter / all-digit runs, a comment followed by a fixture line),
+#                        each confirmed in the scanned population: GREEN;
 #        allow scope   — the allowed literal in a DIFFERENT path: RED (the path glob is enforced);
 #                        the allowed path but a DIFFERENT class's probe: RED (the class is enforced);
 #        allow hygiene — an entry with no reason: RED; an entry that covers no hit: RED;
@@ -157,6 +162,46 @@ for cls in "${HASHED[@]}"; do
   reset_scratch
 done
 refs "$S"; [[ "$RC" -eq 0 ]] && pass "control is GREEN again after the per-class probes" || fail "control did not return to GREEN (rc=$RC)"
+
+# A bare 8-hex id in every context the hexref class claims, and the legitimate hex it must leave
+# alone. The id is assembled at run time so this file never carries one.
+HID="$(printf '9f8e%s' 7d6c)"
+# shape_red <file> <class-alternation> <content…> — the content, planted alone, is RED naming a class.
+shape_red() {
+  local f="probe/$1" cls="$2"; shift 2
+  mkdir -p "$S/probe"; printf '%s\n' "$@" > "$S/$f"; git -C "$S" add -A
+  if ! git -C "$S" grep --cached -q -F -e "$HID" -- "$f"; then fail "[shape $f] mutation did not LAND in the index"; reset_scratch; return; fi
+  refs "$S"
+  if [[ "$RC" -eq 1 ]] && grep -qE "\[(${cls})\] $f:" <<<"$OUT"; then pass "[shape $f] LANDED -> RED, named [$(grep -oE "\[(${cls})\] $f:" <<<"$OUT" | head -1 | cut -d']' -f1 | tr -d '[')]"
+  else fail "[shape $f] did not go RED naming ${cls} (rc=$RC): $(tail -n1 <<<"$OUT")"; fi
+  reset_scratch
+}
+# shape_green <file> <content…> — legitimate hex, planted alone and SCANNED (it is in --list-scanned), is GREEN.
+shape_green() {
+  local f="probe/$1"; shift
+  mkdir -p "$S/probe"; printf '%s\n' "$@" > "$S/$f"; git -C "$S" add -A
+  if ! (cd "$S" && bash "$GATE_SCRIPT" --list-scanned) | grep -qxF "$f"; then fail "[decoy $f] is not in the scanned population"; reset_scratch; return; fi
+  refs "$S"
+  if [[ "$RC" -eq 0 ]]; then pass "[decoy $f] scanned and left GREEN"
+  else fail "[decoy $f] went RED (rc=$RC): $(grep -F "$f" <<<"$OUT" | head -2 | tr '\n' ' ')"; fi
+  reset_scratch
+}
+shape_red  comment.ts        hexref    "// $HID: the cause of the regression"
+shape_red  wrapped.ts        hexref    "/**" " * this was fixed by the change" " * $HID" " */"
+shape_red  prose.md          hexref    "Reverted in $HID after the review."
+shape_red  keyword.ts        'id|hexref' "const m = \"see task $HID\";"
+shape_red  paren.ts          hexref    "throw new Error('the export failed ($HID)');"
+shape_red  title.test.ts     hexref    "it('$HID — keeps the order', () => {});"
+shape_red  label.ts          hexref    "const d = '$HID fixture';"
+shape_red  heredoc.sh        'id|hexref' "cat <<EOF" "the probe landed perfectly (defect" "$HID — it cost two rounds)" "EOF"
+shape_green colour.css       "a { color: #$HID; }"
+shape_green constant.ts      "const MASK = 0x$HID;"
+shape_green uuid.ts          "const ID = '$HID-1111-4111-8111-111111111111';"
+shape_green sha256.ts        "// pinned: sha256 ${HID}${HID}${HID}${HID}${HID}${HID}${HID}${HID}"
+shape_green fixture.ts       "const ID = '$HID';"
+shape_green words.ts         "// deadbeef is a word; released 20261024"
+shape_green comment-code.ts  "// the next value is a fixture the test asserts on" "const ID = '$HID';"
+refs "$S"; [[ "$RC" -eq 0 ]] && pass "control is GREEN again after the shape probes" || fail "control did not return to GREEN after the shape probes (rc=$RC)"
 
 # Allow-list scope: the allowed literal elsewhere, and another class at the allowed path.
 mkdir -p "$S/probe"; printf '%s %s\n' "$ALLOWED_PROBE" "$ALLOWED_LITERAL" > "$S/probe/elsewhere.md"; git -C "$S" add -A

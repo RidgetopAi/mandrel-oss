@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # schema-contract-static.config.sh — single source of truth for STAGE 0c's
-# static-mode trigger (refile (c) of c62ba14e).
+# static-mode trigger (refile (c) of an earlier task).
 #
 # WHY THIS EXISTS
 #   STAGE 0c (the CI gate) needs the ONE path prefix that, when touched by a

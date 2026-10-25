@@ -96,7 +96,7 @@ const id8 = (uuid: string) => uuid.replace(/-/g, '').slice(0, 8);
 async function freshCase(label: string): Promise<{ projectId: string; conn: string }> {
   const projectId = (
     await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, '8a64c16e fixture') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'unresolvable-tag fixture') RETURNING id`,
       [`uthread-${label}-${STAMP}`]
     )
   ).rows[0].id;

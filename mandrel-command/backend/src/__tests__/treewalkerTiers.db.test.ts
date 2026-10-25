@@ -163,7 +163,7 @@ describeDb('TreeWalker derived tiers (PHASE 2, DB integration)', () => {
       // A SOFT (belief-adjudicator) supersession onto the NEWEST handoff: the trunk's
       // corroboration flag promises DECLARED, so this must NOT flip h3 (Reviewer NIT 1).
       //
-      // 57f35350: this row used to be edge_type='supersedes' with the adjudicator stamp. That
+      // this row used to be edge_type='supersedes' with the adjudicator stamp. That
       // combination is now UNWRITABLE — links_supersedes_declared_only (migration 087) rejects
       // any `supersedes` whose GENERATED provenance_class is not 'declared' — so the fixture
       // carries the channel an inferred supersession can actually occupy. The assertion is

@@ -1,5 +1,5 @@
 /**
- * projectHeaders — the AMBIENT fallback ladder (epic 41293984 §A2).
+ * projectHeaders — the AMBIENT fallback ladder (page-scope epic §A2).
  *
  * The axios interceptor (services/api.ts) and the generated-client header resolver
  * (api/client.ts) BOTH delegate here, so this one suite guards the rule for both.

@@ -1,5 +1,5 @@
 /**
- * Actors & identity section — HONEST NOT-YET-CONFIGURABLE (data-gap policy 10397f65).
+ * Actors & identity section — HONEST NOT-YET-CONFIGURABLE (the data-gap policy).
  *
  * The actor-mode session foundation (sessions keyed by actor × project, X-Actor-ID
  * enforced) is REAL and locked — but it is managed by the Runtime, and Command has no

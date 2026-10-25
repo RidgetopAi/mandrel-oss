@@ -1,6 +1,6 @@
 /**
  * ClauseRows — the structured `doneWhen` editor (an earlier decision /
- * 1e53165a): one row per clause, each with text / owner (lane|human, no default) / proof
+ * the Punch List loop decision): one row per clause, each with text / owner (lane|human, no default) / proof
  * (shown only when owner is lane, since only a lane owes the gate a producible artifact).
  * Inline errors only appear once a row is STARTED (`clauseStarted`) — a fresh blank row
  * does not scream "required" before the user has typed anything into it.

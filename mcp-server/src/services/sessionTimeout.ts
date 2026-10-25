@@ -8,7 +8,7 @@
  *   legacy | shadow (DEFAULT) — UNCHANGED idle==end reaper. A single sweep every
  *     SESSION_CONFIG.reaperSweepIntervalSec calls timeout_inactive_sessions (active|interrupted
  *     idle past idleTimeoutSec → status='inactive' + ended_at stamped) and evicts matching RAM
- *     entries (the stale-but-ended fix, ctx 81901e32). BYTE-IDENTICAL to pre-Phase-3.
+ *     entries (the stale-but-ended fix). BYTE-IDENTICAL to pre-Phase-3.
  *
  *   actor — idle == DORMANT, not end. The single reaper SPLITS into two sweeps:
  *     • dormanter (every dormanterSweepIntervalSec): active|interrupted idle past idleDormantSec

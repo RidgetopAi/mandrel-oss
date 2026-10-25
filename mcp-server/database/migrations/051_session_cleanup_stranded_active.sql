@@ -1,6 +1,6 @@
 -- Migration 051: ONE-TIME CLEANUP of stranded 'active' sessions (Session-Rework SR-1).
 --
--- WHY (root cause ctx 81901e32): before SR-1, graceful shutdown ended only the 'stdio'
+-- WHY (root cause): before SR-1, graceful shutdown ended only the 'stdio'
 -- session and the idle sweep never wrote ended_at, so bridge/http/remote sessions
 -- accumulated as status='active' with ended_at NULL FOREVER ("Active" really meant "never
 -- closed"). After migration 050 the live machinery (shutdown→interrupted, the 1h reaper,

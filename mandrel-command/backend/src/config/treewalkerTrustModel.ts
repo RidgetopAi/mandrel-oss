@@ -3,7 +3,7 @@
  *
  * ── WHAT THIS REPLACES ────────────────────────────────────────────────────────────────
  * TreeWalker used to hand-replicate a private trust vocabulary (proven/soaking/unproven/
- * stale) from raw columns (audit 42dca388 — "the same record can read proven on one
+ * stale) from raw columns (the graph audit — "the same record can read proven on one
  * screen and stale on another", with no parity test). That derivation is DELETED. This
  * module carries the canonical model — the same bands, the same math, the same config
  * knobs as mcp-server/src/services/trustModel.ts + config/trustConfig.ts — so a record

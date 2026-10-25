@@ -398,7 +398,7 @@ SQL
   #
   # THIS USED TO BE INFERRED — "psql failed AND the pre-read says someone else owns it"
   # — and that was wrong in both directions (the reviewer findings 2 and 3, verdict
-  # 09c58d9d). It lost rc=3 down to rc=1 whenever the pre-read returned `unknown`, i.e.
+  # an earlier fix). It lost rc=3 down to rc=1 whenever the pre-read returned `unknown`, i.e.
   # in exactly the could-not-measure case the four-state design exists for; and it
   # blamed an ordinary SQL failure on ownership whenever the DB happened to be foreign.
   # Both were a guess about the CAUSE dressed as a measurement of it.

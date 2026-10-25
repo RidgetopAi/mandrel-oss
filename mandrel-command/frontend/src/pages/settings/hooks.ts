@@ -11,7 +11,7 @@
  *   • useRevokeSessions  → POST  /api/users/revoke-sessions  (api.users.revokeSessions)
  *   • useDeleteProject   → DELETE /api/projects/:id          (api.projects.remove)
  *
- * DELETED HERE (epic 41293984 §A): `useSetPrimaryProject` / `useClearPrimaryProject`.
+ * DELETED HERE (page-scope epic §A): `useSetPrimaryProject` / `useClearPrimaryProject`.
  * They wrote `projects.metadata.is_primary` — an INSTANCE-WIDE flag, so one user setting
  * "their" default set it for everyone, and `clearPrimary` cleared it for everyone with no
  * user scoping in the SQL at all. The default project is now a per-user preference

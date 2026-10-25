@@ -7,7 +7,7 @@
  * nodes; (3) a genuinely-empty thread still renders the HONEST empty state (never fabricated);
  * (4) the Graph/Story view toggle works.
  *
- * ── WHAT THE SELECTOR WORK CHANGED (epic 41293984) ───────────────────────────────────
+ * ── WHAT THE SELECTOR WORK CHANGED (page-scope epic) ───────────────────────────────────
  * The page used to take its project from `useEffectiveProjectId()` — i.e. from the global
  * switcher this epic deletes — so these tests stubbed that hook and never asserted what the
  * REQUEST carried. It now owns a selector, and the assertions moved with it: the thread read

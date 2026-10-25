@@ -1,7 +1,7 @@
 /**
  * mcpAmbientScope.route.test.ts — behavioural proof that the /api/mcp passthrough's
  * deny-by-default now covers the AMBIENT (ref-less) path (Reviewer
- * nit 1 on b3cf883b).
+ * nit 1 on the trust-boundary change).
  *
  * THE GAP THIS PINS SHUT: the arguments door only authorized project refs that were
  * PRESENT. A tool call with NO ref forwarded unbound, and the proxy sends no

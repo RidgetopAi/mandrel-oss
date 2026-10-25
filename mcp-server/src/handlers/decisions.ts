@@ -32,7 +32,7 @@ import { logger } from '../utils/logger.js';
 // inside a schema migration, and a validator that began REJECTING would be a breaking change
 // for every customer in the worst possible packaging (SCOPE §8.6).
 import { validateAndNormalizeTags } from '../utils/threadingTags.js';
-// 98662108 — see services/tagSpellingWriteCheck.ts. Decisions are the other write path
+// Tag-spelling collisions — see services/tagSpellingWriteCheck.ts. Decisions are the other write path
 // that stored tags unvalidated, so they get the same warning as tasks.
 import { tagSpellingWriteWarnings } from '../services/tagSpellingWriteCheck.js';
 import { recordWriteWithoutSession } from '../utils/sessionObservability.js';

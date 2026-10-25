@@ -2,7 +2,7 @@
  * candidatePairing (Stage-1 picker) — PURE unit tests, NO DB, NO LLM.
  *
  * Locks the ANTI-JUNK nomination logic added 2026-07-06 after the
- * decision-run (137c26bf) proved the PICKER — not the model — was the flag-storm source:
+ * decision-run proved the PICKER — not the model — was the flag-storm source:
  * the raw nomination was dominated by periodic auto-records + near-identical restatements,
  * and the over-eager judge false-fired supersedes on that junk. Three config-driven guards
  * were added; these tests go RED if any is reverted:

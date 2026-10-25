@@ -2,7 +2,7 @@
 --
 -- WHY: smart_search's source union has listed 'task' since commit 1 (smartSearch.ts:21) but
 -- `tasks` has never carried an embedding column, so the task source could never be enabled —
--- defect D3 of the smart_search complete fix (an earlier task / tranche 180faa38).
+-- defect D3 of the smart_search complete fix (an earlier task and tranche).
 -- Measured baseline on prod: record-hit@1 0/10, and 5 of the 10 home records are TASKS,
 -- unreachable by construction.
 --

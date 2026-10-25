@@ -114,7 +114,7 @@ router.get('/healthz', declareIntentionallyUnauthenticated(
   const checks: any = {};
 
   // Database check.
-  // REDUCED (ecb37d02): `pool: getPoolStats()` used to ride along here — total/idle/waiting
+  // REDUCED: `pool: getPoolStats()` used to ride along here — total/idle/waiting
   // connection counts, served to anyone. The verdict is `status`; the pool numbers were
   // never part of the answer, only next to it. Likewise the caught error's `.message`,
   // which can carry a host, a port, or a role name straight out of pg.
@@ -129,7 +129,7 @@ router.get('/healthz', declareIntentionallyUnauthenticated(
   // (heap_size_limit), NOT the lazily-grown heapTotal. See evaluateMemoryCheck.
   const memUsage = process.memoryUsage();
   const heapLimit = v8.getHeapStatistics().heap_size_limit;
-  // REDUCED (ecb37d02): evaluateMemoryCheck still computes heapUsed/heapLimit/utilization
+  // REDUCED: evaluateMemoryCheck still computes heapUsed/heapLimit/utilization
   // — healthzMemoryCheck.test.ts covers that logic unchanged — but only its VERDICT is
   // served. Absolute heap figures tell a prober how the process is provisioned.
   checks.memory = {
@@ -176,7 +176,7 @@ router.get('/readyz', declareIntentionallyUnauthenticated(
       database: dbHealth.healthy ? 'ready' : 'not ready'
     });
   } catch {
-    // REDUCED (ecb37d02): the raw error message went out over the wire. A pg connection
+    // REDUCED: the raw error message went out over the wire. A pg connection
     // failure names the host, port and role. 503 is the whole answer.
     res.status(503).json({ ready: false, timestamp: new Date().toISOString() });
   }
