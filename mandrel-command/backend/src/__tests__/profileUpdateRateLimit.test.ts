@@ -1,5 +1,5 @@
 /**
- * profileUpdateRateLimit.test.ts — issue 2.
+ * profileUpdateRateLimit.test.ts — an earlier task, issue 2.
  *
  * ## The defect
  *

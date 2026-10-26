@@ -1,5 +1,6 @@
 /**
- * GRAPH-AWARE PROJECT INSIGHTS — the coverage config ( * Amp-orb eval Lane B P2, report lines 558-581).
+ * GRAPH-AWARE PROJECT INSIGHTS — the coverage config
+ * (Amp-orb eval Lane B P2, report lines 558-581).
  *
  * WHAT THIS REPLACES. `identifyKnowledgeGaps()` / `identifyDecisionGaps()` were raw COUNT
  * thresholds with zero edge reads:

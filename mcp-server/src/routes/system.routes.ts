@@ -97,7 +97,8 @@ class SystemRoutes {
           // statusShape is `.passthrough()`, so this is additive and breaks no caller.
           //
           // Built by config/liveFeatureFlags.ts, NOT inlined — the aidis://status MCP
-          // resource answers the same question from the same builder.           // that resource used to answer it from the deleted JSON FeatureFlagStore, i.e.
+          // resource answers the same question from the same builder. an earlier Task:
+          // that resource used to answer it from the deleted JSON FeatureFlagStore, i.e.
           // from a permanently-empty map, so the two surfaces contradicted each other.
           featureFlags: liveFeatureFlags(),
         },

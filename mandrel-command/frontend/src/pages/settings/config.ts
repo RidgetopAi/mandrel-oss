@@ -24,9 +24,10 @@ export interface SettingsSection {
 }
 
 export const SETTINGS_CONFIG = {
-  // Settings hooks are mutations-only (no useQuery) — no staleTime tunable needed.
   /** The section shown first when the page mounts. */
   defaultSectionId: 'account',
+  /** How long the API-token list is fresh. Short: last-used times move while a loop runs. */
+  apiTokensStaleMs: 15_000,
 } as const;
 
 /**
@@ -39,14 +40,14 @@ export const SETTINGS_CONFIG = {
  *   • danger        → DELETE /projects/:id                                                          (LIVE)
  *   • identity      → runtime-managed actor mode; NO Command config endpoint                        (honest)
  *   • notifications → chat alert prefs; NO backend endpoint                                     (honest)
- *   • tokens        → MCP bridge token rotate/read; NO backend endpoint                             (honest)
+ *   • tokens        → GET/POST /api-tokens, DELETE /api-tokens/:id (per-user API tokens)            (LIVE)
  */
 export const SETTINGS_SECTIONS: SettingsSection[] = [
   { id: 'account', label: 'Account', icon: 'user', live: true },
   { id: 'projects', label: 'Projects', icon: 'cube', live: true },
   { id: 'identity', label: 'Actors & identity', icon: 'identity', live: false },
   { id: 'notifications', label: 'Notifications', icon: 'bell', live: false },
-  { id: 'tokens', label: 'API & tokens', icon: 'key', live: false },
+  { id: 'tokens', label: 'API tokens', icon: 'key', live: true },
   { id: 'appearance', label: 'Appearance', icon: 'appearance', live: true },
   { id: 'danger', label: 'Danger zone', icon: 'warning', live: true, danger: true },
 ];
@@ -88,9 +89,20 @@ export const DATA_GAPS = {
     'Actor-mode session identity is managed by the Runtime, not from Command. These values are shown for reference and are not configurable here yet.',
   notifications:
     'Alerts already route to chat from the Runtime, but per-event notification preferences have no Command backend endpoint yet — so these controls are read-only for now.',
-  tokens:
-    'MCP bridge token rotation has no Command backend endpoint yet. Rotation is done from the server; this panel will wire up when the endpoint ships.',
+  // `tokens` was removed when Settings → API tokens went LIVE: per-user
+  // tokens are created, listed and revoked here. The instance-wide MCP_AUTH_TOKEN is still
+  // rotated from the server, but a customer no longer needs it — their own token replaces it.
 } as const;
+
+/**
+ * API tokens are ADMIN-ONLY (Reviewer F1): a token opens /mcp with full
+ * read/write access to every project, which a non-admin dashboard user is deliberately
+ * denied. The backend enforces it (403) and the mcp-server refuses a non-admin owner's
+ * token; this copy is what a non-admin sees instead of the controls. Grant-scoped tokens
+ * for non-admins are a possible future option (the operator decides).
+ */
+export const API_TOKENS_ADMIN_ONLY =
+  'API tokens give full access to every project over MCP, so only an admin can create them. Ask an admin of this workspace if you need one.';
 
 /**
  * Reference-only descriptors for the Actors & identity section. These describe the REAL,

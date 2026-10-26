@@ -44,7 +44,7 @@ export interface TreewalkerConfig {
     /** Honest trunk label when the project has no handoff contexts yet. */
     trunkEmptyLabel: string;
     /** Tag prefix that carries a branch's once-on-the-spine NAME (`branch:<name>` on the
-     *  spine record). A spine with no name tag is labeled by its title (the tree model
+     *  spine record). A spine with no name tag is labeled by its title (an earlier change
      *  membership/identity split — the `branch:` TITLE-prefix hack is gone). */
     branchNameTagPrefix: string;
     /** The context-tag prefix that carries the real `tree:<x>` lineage tier. */
@@ -60,7 +60,7 @@ export interface TreewalkerConfig {
    *  the count still reports the FULL total). */
   trunkMaxEntries: number;
   /** Hard cap on branch-list entries (newest-active first). Unchanged default (P1,
-   *  an earlier decision deliberately does not touch it) — but the value
+   *  an earlier decision / an earlier task deliberately does not touch it) — but the value
    *  actually applied is now ECHOED in the branches response as `cap`, alongside the
    *  full pre-cap `total`, so a caller can tell a truncated page from the whole set
    *  instead of inferring it from this env var. */

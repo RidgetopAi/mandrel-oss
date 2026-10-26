@@ -35,6 +35,37 @@
 import { db } from '../config/database.js';
 import { LEXICAL_TABLES, LEXICAL_SEARCH_CONFIG } from '../config/lexicalSearchConfig.js';
 import { extractIdentifiers } from '../utils/lexicalTokens.js';
+import { nearMissMaxDistance } from './absentTermVeto.js';
+
+/**
+ * THE WHOLE-PROJECT NEAR-MISS FALLBACK. The project's prose lexemes within
+ * near-miss LENGTH range of any of `lexemes`, read from every lexical table. Called ONLY on the
+ * would-empty path (see nearMissFallbackLexemes in services/absentTermVeto.ts): three per-table
+ * word-list reads that unnest every live row's tsvector (~350 ms on contexts alone for a
+ * 7.6k-context project), which is why it is not the default near-miss vocabulary. The length window is the only filter pushed into SQL;
+ * the edit-distance rule itself stays in one place (absentTermVeto.findNearMiss).
+ */
+export async function fetchProjectNearMissVocabulary(
+  projectId: string,
+  lexemes: readonly string[],
+): Promise<Set<string>> {
+  const vocab = new Set<string>();
+  if (lexemes.length === 0) return vocab;
+  const minLen = Math.min(...lexemes.map((l) => l.length - nearMissMaxDistance(l)));
+  const maxLen = Math.max(...lexemes.map((l) => l.length + nearMissMaxDistance(l)));
+  // CONCURRENT, one read per table; Promise.all rejects if ANY table fails, so a partial
+  // vocabulary is never returned — the caller's veto stands and the failure is named.
+  const results = await Promise.all(LEXICAL_TABLES.map((t) => db.query(
+    `SELECT DISTINCT w AS word
+       FROM (SELECT unnest(tsvector_to_array(x.${t.tsvColumn})) AS w
+               FROM ${t.table} x
+              WHERE x.${t.projectColumn} = $1 AND x.${t.archivedColumn} IS NULL) v
+      WHERE length(w) BETWEEN $2 AND $3`,
+    [projectId, minLen, maxLen],
+  )));
+  for (const r of results) for (const row of r.rows) vocab.add(row.word as string);
+  return vocab;
+}
 
 /** Which tsvector a term is checked against — the prose one or the verbatim-identifier one. */
 export type TermKind = 'prose' | 'identifier';
@@ -188,6 +219,7 @@ export async function findAbsentTerms(
     terms.push(term);
     if (row.is_absent === true) absent.push(term);
   }
+
   return { terms, absent };
 }
 

@@ -872,7 +872,8 @@ ${metadata}
   static async getContextLinks(contextId: string): Promise<ContextLink[]> {
     // Delegates to the ONE canonical typed-edge resolver (LinkService.getLinksForRecord).
     // The query keys only on the id, so a context id works unchanged; keeping this public
-    // method + its route means nothing upstream changes. See services/links.ts (    // one resolver, not three copies).
+    // method + its route means nothing upstream changes. See services/links.ts (
+    // one resolver, not three copies).
     return LinkService.getLinksForRecord(contextId);
   }
 

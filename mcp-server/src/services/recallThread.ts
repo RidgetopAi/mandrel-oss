@@ -228,7 +228,7 @@ export async function resolveAnchor(
     // `id DESC` makes "newest wins" DECIDABLE. Two contexts stamped in the
     // same instant tie on created_at, and this LIMIT then picks one arbitrarily — so a cold
     // session booting on `ref:resume` could land on a different handoff depending on which
-    // row was written first. Same tiebreaker the handoff-head resolver already uses.
+    // row was written first. Same tiebreaker the handoff head resolver already uses.
     sql += ` ORDER BY created_at DESC, id DESC LIMIT 2`;
     const rows = (await pool.query(sql, params)).rows;
     if (rows.length === 0) {
@@ -689,7 +689,7 @@ async function traverse(
 export interface BuildThreadArgs {
   anchor: string;
   /**
-   * A CONTENT altitude — the type, not just the doc comment (the reviewer N1). buildThread
+   * A CONTENT altitude — the type, not just the doc comment (Reviewer N1). buildThread
    * renders an ordered STORY at a zoom level; a PROJECTION altitude (`current`) is a
    * different read model with a different answer shape and belongs to buildCurrentState().
    *

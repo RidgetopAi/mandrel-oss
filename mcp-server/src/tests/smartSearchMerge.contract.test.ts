@@ -1,5 +1,5 @@
 /**
- * smart_search MERGE + SCORING CONTRACT
+ * smart_search MERGE + SCORING CONTRACT (parent 7b8af00d)
  *
  * Drives the REAL handlers against a REAL migrated Postgres. Guards G1-G7 of the build
  * plan, one describe block each, each naming the mutation that must turn it RED.

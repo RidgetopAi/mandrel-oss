@@ -14,7 +14,7 @@
  * The mismatch case is not asserted for a hand-picked tool or two. It is asserted for EVERY
  * member of `ACTION_TOOLS` — the product's OWN single source of truth for "this tool persists
  * user-authored content". Adding a write tool to that set automatically puts it under this
- * guard; there is no list here to forget to update (a past incident / a past incident #1).
+ * guard; there is no list here to forget to update (a past incident #1).
  *
  * Run inside the CI gate disposable migrated Postgres (Stage 1).
  */
@@ -365,7 +365,7 @@ describe('LEGACY == TODAY — the unbound (human) path is untouched', () => {
 
 /**
  * The number of tools the binding gate materialises into — i.e. `projectScopeParam(tool)` is
- * defined — MEASURED on this tree (43 as of 2026-07-26; it had drifted to 43
+ * defined — MEASURED on this tree (43 as of an earlier task, 2026-07-26; it had drifted to 43
  * while the comment below still said 42). Adding a project-scoped tool is expected to move
  * this: bump it in the same commit, deliberately.
  */
@@ -388,7 +388,7 @@ describe('LEGACY == TODAY — the unbound (human) path is untouched', () => {
 // 51 -> 53: the decision inbox adds
 // decision_answer / decision_discuss, each declaring a `projectId` scope param (it scopes
 // the short-id resolution of `decisionId`) — both join the gate's blast radius.
-// 53 -> 48: the five code-scan ops leave the registry.
+// 53 -> 48: the five code-scan ops (each declared a `projectId`) removed.
 const SWEPT_SCOPE_TOOL_COUNT = 48;
 
 describe('MATERIALISATION COMPATIBILITY — every tool the gate injects into accepts a canonical UUID', () => {
@@ -545,7 +545,7 @@ describe('SCOPE OVERRIDE — an all-projects flag NARROWS to the binding, and is
    * The narrowing is NOT silent: it is stamped on the write audit. The class we keep killing
    * is the silent override, not the override itself.
    *
-   * The schema injected here is the EXACT shape the session-identity change declares, so this is measured
+   * The schema injected here is the EXACT shape declares, so this is measured
    * against the real thing rather than a convenient stand-in — but note it is still an
    * INJECTION, not the merged ref. The merged-ref verification is the coordinator's gate.
    */

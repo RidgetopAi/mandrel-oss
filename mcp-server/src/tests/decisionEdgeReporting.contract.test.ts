@@ -1,7 +1,7 @@
 /**
  * DECISION EDGE-REPORTING HONESTY — contract tests.
  *
- * THE DISEASE, AND WHY IT IS THE SAME ONE AS the edge-reporting change
+ * THE DISEASE, AND WHY IT IS THE SAME ONE AS an earlier change
  * ---------------------------------------------------
  * `context_store` used to report `linksMinted: 0` for a write that had minted real edges;
  * an earlier task fixed it with a per-write LEDGER (`edgesMinted`, one row per edge, each
@@ -9,7 +9,7 @@
  * `storeEdgeReporting.contract.test.ts` locks that in for the context write path.
  *
  * The decision write path had the same disease in two different degrees, both MEASURED on
- * ref 61df00d before this file existed:
+ * ref 61d4f00 before this file existed:
  *
  *   decision_record  — reported a correct `linksMinted` TOTAL (an earlier task summed the
  *                      three sources) but NO itemization at all. A caller could see "4"

@@ -14,7 +14,7 @@ import { request as __request } from '../core/request';
 export class AuthenticationService {
     /**
      * User login
-     * Authenticate a user with username and password
+     * Sign in with a dashboard username and password, or with the email address and password of this instance's sign-in (the one set from the welcome email's set-password link). The `username` field accepts either.
      * @returns LoginResponse Login successful
      * @throws ApiError
      */
@@ -31,8 +31,10 @@ export class AuthenticationService {
             errors: {
                 400: `Invalid request`,
                 401: `Invalid credentials`,
+                403: `The sign-in is valid but has no dashboard access on this instance`,
                 429: `Too many login attempts`,
                 500: `Server error`,
+                503: `The sign-in could not be checked right now (not a wrong password)`,
             },
         });
     }

@@ -31,7 +31,7 @@ const PROJECT_SCOPE_SELECTORS = [
     //     `headers.project`, the exact live door this branch deleted, in its
     //     destructured spelling: the round that taught the destructure SHAPE and the
     //     round that taught the header NAMES never crossed. This is that cell.
-    //   params  — a `:projectId` path param is a real door (it needed
+    //   params  — a `:projectId`/`:id` path param is a real door (it needed
     //     authorizeProjectPathParam), and the deleted text layer covered this shape.
     //     Keeping it here is what makes the deletion lose no coverage.
     selector: 'ObjectPattern:has(Property[key.name=/^(x-project-id|project_id|projectId|project)$/i])[parent.init.object.name=/^(req|request)$/i][parent.init.property.name=/^(query|body|headers|params)$/i]',
@@ -47,11 +47,11 @@ const PROJECT_SCOPE_SELECTORS = [
   {
     // `req.params.projectId` — the path-param door in its dotted/computed spelling.
     selector: 'MemberExpression[object.object.name=/^(req|request)$/i][object.property.name="params"][property.name=/^(project_id|projectId|project)$/i]',
-    message: 'A project PATH PARAM must be authorized (routes/projects.ts uses router.param + authorizeProjectPathParam).',
+    message: 'A project PATH PARAM must be authorized (routes/projects.ts uses router.param + authorizeProjectPathParam) — an earlier task.',
   },
   {
     selector: 'MemberExpression[object.object.name=/^(req|request)$/i][object.property.name="params"][property.value=/^(x-project-id|project_id|projectId|project)$/i]',
-    message: 'A project PATH PARAM must be authorized (routes/projects.ts uses router.param + authorizeProjectPathParam).',
+    message: 'A project PATH PARAM must be authorized (routes/projects.ts uses router.param + authorizeProjectPathParam) — an earlier task.',
   },
   {
     // THE OTHER SHAPE THE REGEX MISSED: the idiomatic Express header read.
@@ -170,7 +170,7 @@ module.exports = {
     //
     // THIS FILE DOES NOT STATE WHAT THE RULE COVERS. That is deliberate and it is the
     // whole design. A written division-of-labour statement was the single
-    // highest-defect artifact on this task: it was false in the reviewer round 2, still
+    // highest-defect artifact on this task: it was false in Reviewer round 2, still
     // false in round 3 with a new shape, and in round 4 it survived here in this very
     // file — citing a test that had just been deleted and asserting that alias reads
     // were covered by a layer that no longer existed. Four rounds, one component.

@@ -1,6 +1,7 @@
 /**
  * completedAtUnforgettable.db.test.ts — `tasks.completed_at` cannot be forgotten
- * (migration 094) and cannot be FABRICATED ( * migration 099).
+ * (migration 094) and cannot be FABRICATED
+ * (migration 099).
  *
  * THE DEFECT THIS GUARDS
  *   The completion-stamp rule lived ONLY in application code, in TWO codebases and four
@@ -57,7 +58,7 @@ describeDb('tasks.completed_at is UNFORGETTABLE — trigger + CHECK', () => {
     await db.query(
       `INSERT INTO tasks (id, project_id, title, description, type, status, priority, completed_at)
        VALUES ($1, $2, $3, 'seeded by completedAtUnforgettable.db.test', 'general', $4, 'medium', $5::timestamptz)`,
-      [id, projectId, `probe ${id.slice(0, 8)}`, opts.status ?? 'todo', opts.completedAt ?? null],
+      [id, projectId, `an earlier change probe ${id.slice(0, 8)}`, opts.status ?? 'todo', opts.completedAt ?? null],
     );
     return id;
   }
@@ -168,7 +169,7 @@ describeDb('tasks.completed_at is UNFORGETTABLE — trigger + CHECK', () => {
     const before = await rawRow(id);
     expect(before!.completedAt!.toISOString()).toBe(historic);
 
-    await db.query(`UPDATE tasks SET title = $2 WHERE id = $1`, [id, 'renamed by probe']);
+    await db.query(`UPDATE tasks SET title = $2 WHERE id = $1`, [id, 'renamed by an earlier change probe']);
 
     const after = await rawRow(id);
     expect(after!.completedAt!.toISOString()).toBe(historic);

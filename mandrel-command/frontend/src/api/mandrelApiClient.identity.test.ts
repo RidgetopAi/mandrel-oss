@@ -2,7 +2,7 @@
  * GUARD — THE BROWSER MAKES ONLY MCP *READS*.
  *
  * an earlier task (Command UI project switcher trips the scope guard) and
- * (tenant UIs 401 on /mcp/tools/*). Both are the same class: the browser talking
+ * an earlier change (tenant UIs 401 on /mcp/tools/*). Both are the same class: the browser talking
  * to MCP as if it were an identified, long-lived connection, which it is not and cannot be.
  *
  * ── WHY A GUARD AND NOT A COMMENT ────────────────────────────────────────────────────────
@@ -39,12 +39,12 @@
  * WHAT THIS GUARD DOES **NOT** COVER, so nobody reads it as wider than it is:
  *   - the Command BACKEND (`mandrel-command/backend`) — it is an identified server-side
  *     caller and a different population; it was separately measured to have zero live
- *     project_switch call sites (evidence).
+ *     project_switch call sites (evidence ctx).
  *   - runtime scripts, hooks, the bridge, or any non-browser caller.
  *   - whether a call is AUTHENTICATED. Reads are unaffected by callerIdentityGuard (its G3
  *     is deliberately read-blind) but they still need a credential; the tenant 401s of an earlier task
  *     were an auth gap (MANDREL_JWT_SECRET missing on the tenant mcp-servers), not
- *     an identity gap, and no repo-side assertion can see a prod-side env var.
+ *     an identity gap, and no repo-side assertion can see a prod host-side env var.
  *
  * ── HOW THE REJECTABLE SET IS DERIVED ────────────────────────────────────────────────────
  * From `mcp-server/src/config/opRegistry.ts` — the product's own single source for op

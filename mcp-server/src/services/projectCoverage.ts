@@ -13,7 +13,7 @@
  *   - current state    → projectCurrentState(), called by the core. NO frontier query, no
  *                        supersession query and no "latest trusted outcome" query is written
  *                        here or anywhere in part C. That question belongs to part B
- *                        and is asked exactly once in this codebase.
+ * and is asked exactly once in this codebase.
  *   - every ratio/rule → projectCoverageCore.ts.
  *
  * FAIL LOUD (an earlier task's rule, inherited): if the underlying data cannot be read, this

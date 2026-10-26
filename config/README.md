@@ -19,18 +19,6 @@ The configuration system uses a hierarchical load order:
 - Verbose logging enabled
 - All feature flags disabled for stability
 
-### `/config/environments/.env.staging`
-- Used when `NODE_ENV=staging`
-- Mix of fixed and dynamic ports for testing
-- Moderate logging levels
-- Feature flags enabled for testing
-
-### `/config/environments/.env.production`
-- Used when `NODE_ENV=production`
-- Dynamic port assignment (PORT=0)
-- Minimal logging for performance
-- Conservative feature flag settings
-
 ## Required Secrets (Set via Environment Variables)
 
 The following sensitive values MUST be set as environment variables and are NOT included in the config files:

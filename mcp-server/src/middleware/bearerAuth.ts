@@ -22,6 +22,12 @@ import { logger } from '../utils/logger.js';
 import { verifyAccessToken } from 'better-auth/oauth2';
 import { BETTER_AUTH_CONFIG, oauthJwksUrl, oauthIssuerIdentifier } from '../config/betterAuthConfig.js';
 import { bridgeAuthEnabled, commandJwtSecret } from '../config/bridgeAuthConfig.js';
+import {
+  defaultApiTokenVerifier,
+  looksLikeApiToken,
+  type ApiTokenPrincipal,
+  type ApiTokenVerifier,
+} from '../services/apiTokenAuth.js';
 
 /** JSON-RPC error codes (subset). -32001 ≈ unauthorized in common MCP usage. */
 const JSONRPC_AUTH_ERROR_CODE = -32001;
@@ -78,8 +84,18 @@ function checkStaticToken(presented: string): 'ok' | 'mismatch' | 'unconfigured'
  * This is the pre-existing, backward-compatible behavior used whenever OAuth is disabled.
  * Its responses are UNCHANGED (503 unconfigured / 401 missing / 401 invalid).
  */
-export function bearerAuth() {
-  return (req: Request, res: Response, next: NextFunction): void => {
+export function bearerAuth(deps?: {
+  /**
+   * OPT-IN: also accept a per-user API token (`mdl_…`). Passed ONLY by the
+   * `/mcp` mount when OAuth is disabled. Every other mount (the Command backend's service
+   * routes: /api/v2/sessions, /api/decisions, provenance, set-primary) calls bearerAuth()
+   * with no argument and stays static-token-only, byte-for-byte — a customer's loop token
+   * must never reach those cross-project service surfaces.
+   */
+  apiTokens?: ApiTokenVerifier;
+}) {
+  const verifyApiToken = deps?.apiTokens;
+  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const expected = process.env.MCP_AUTH_TOKEN;
 
     // FAIL CLOSED: never serve the guarded route without a configured token.
@@ -107,6 +123,18 @@ export function bearerAuth() {
     }
 
     if (!constantTimeEqual(presented, expected)) {
+      if (verifyApiToken && looksLikeApiToken(presented)) {
+        const outcome = await verifyApiToken(presented);
+        if (outcome.kind === 'ok') {
+          attachApiTokenPrincipal(req, outcome.principal);
+          next();
+          return;
+        }
+        if (outcome.kind === 'unavailable') {
+          sendCredentialCheckUnavailable(res);
+          return;
+        }
+      }
       logger.warn('🔒 MCP auth rejected: invalid Bearer token');
       res.status(401).json(
         jsonRpcError(JSONRPC_AUTH_ERROR_CODE, 'Unauthorized: invalid Bearer token.')
@@ -124,8 +152,46 @@ export interface OAuthSubject {
   sub?: string;
   /** Space-or-array scopes granted to the token, if present. */
   scope?: string;
-  /** The full verified JWT payload (for downstream use). */
+  /** The full verified JWT payload (for downstream use). For an API token: its row ids. */
   claims: Record<string, unknown>;
+  /**
+   * Which credential produced this subject. Absent = an OAuth JWT (every pre-existing
+   * producer). 'api_token' = a per-user API token, whose `sub` is the
+   * owner's better-auth user id when their dashboard row is linked (an earlier task — the
+   * same `sub` their OAuth tokens carry), else the owner's admin_users.username.
+   */
+  via?: 'oauth' | 'api_token';
+}
+
+/**
+ * Attach an accepted API token's owner as the request's VERIFIED principal.
+ *
+ * WHY THROUGH `req.oauthSubject` and not a new field: every consumer that turns a verified
+ * principal into an actor already reads `req.oauthSubject.sub` — healthServer#actorFor,
+ * remoteMcpTransport#actorFor and #rehydratePrincipalKey, sessionAnalyticsController — and
+ * hands it to deriveActor, which owns the one precedence rule (verified principal over a
+ * declared X-Actor-ID; composite `<principal>/<handle>` when that flag is on). Using the
+ * same channel means an API-token request is attributed EXACTLY as an OAuth request is,
+ * with no second copy of the rule to drift. The project-scope guard keys on X-Connection-ID
+ * / X-Mandrel-Project, which this does not touch.
+ */
+function attachApiTokenPrincipal(req: Request, principal: ApiTokenPrincipal): void {
+  req.oauthSubject = {
+    sub: principal.principal,
+    via: 'api_token',
+    claims: { api_token_id: principal.tokenId, user_id: principal.userId },
+  };
+  logger.debug(`🔓 authorized via API token ${principal.tokenId}`);
+}
+
+/**
+ * The THIRD state of an API-token check: the server could not look the token up (database
+ * error). 503, never 401 — a 401 would tell a customer their working token is wrong.
+ */
+function sendCredentialCheckUnavailable(res: Response): void {
+  res.status(503).json(
+    jsonRpcError(JSONRPC_AUTH_ERROR_CODE, 'Credential check unavailable; try again shortly.')
+  );
 }
 
 declare global {
@@ -172,8 +238,11 @@ function buildWwwAuthenticate(): string {
 export function dualBearerAuth(deps?: {
   /** Override the verifier (tests). Default: better-auth verifyAccessToken against JWKS. */
   verifyOAuth?: (token: string) => Promise<OAuthSubject | null>;
+  /** Override the API-token verifier (tests). Default: SHA-256 lookup in api_tokens. */
+  verifyApiToken?: ApiTokenVerifier;
 }) {
   const verifyOAuth = deps?.verifyOAuth ?? defaultVerifyOAuth;
+  const verifyApiToken = deps?.verifyApiToken ?? defaultApiTokenVerifier;
 
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     const presented = extractBearer(req);
@@ -186,19 +255,34 @@ export function dualBearerAuth(deps?: {
         return;
       }
 
-      // (b) OAuth JWT path — only attempt if the static token did not match. A token that
-      // is not the static secret may be a valid OAuth access token.
-      try {
-        const subject = await verifyOAuth(presented);
-        if (subject) {
-          req.oauthSubject = subject;
-          logger.debug(`🔓 /mcp authorized via OAuth token (sub=${subject.sub ?? 'unknown'})`);
+      // (a2) per-user API token — only a bearer carrying the `mdl_` prefix
+      // reaches the database; it is never a JWT, so it does not fall through to (b).
+      if (looksLikeApiToken(presented)) {
+        const outcome = await verifyApiToken(presented);
+        if (outcome.kind === 'ok') {
+          attachApiTokenPrincipal(req, outcome.principal);
           next();
           return;
         }
-      } catch (err) {
-        // Verification failure is an auth failure, not a server error — fall through to 401.
-        logger.warn(`🔒 OAuth token verification failed: ${(err as Error).message}`);
+        if (outcome.kind === 'unavailable') {
+          sendCredentialCheckUnavailable(res);
+          return;
+        }
+      } else {
+        // (b) OAuth JWT path — only attempt if the static token did not match. A token that
+        // is not the static secret may be a valid OAuth access token.
+        try {
+          const subject = await verifyOAuth(presented);
+          if (subject) {
+            req.oauthSubject = subject;
+            logger.debug(`🔓 /mcp authorized via OAuth token (sub=${subject.sub ?? 'unknown'})`);
+            next();
+            return;
+          }
+        } catch (err) {
+          // Verification failure is an auth failure, not a server error — fall through to 401.
+          logger.warn(`🔒 OAuth token verification failed: ${(err as Error).message}`);
+        }
       }
     }
 
@@ -303,8 +387,8 @@ export function verifyCommandJwt(token: string, secret: string): boolean {
  *   GET  /mcp/tools/schemas
  *   GET  /mcp/tools
  *   POST /mcp/tools/:toolName
- * (SECURITY P0 interim shield, an earlier task PHASE 1; default flipped fail-CLOSED in PHASE 2,
- * an earlier task). This is the SAME single guard for all three routes — NO drifting second
+ * (SECURITY P0 interim shield, an earlier task PHASE 1; default flipped fail-CLOSED in PHASE 2).
+ * This is the SAME single guard for all three routes — NO drifting second
  * validator. It reuses the exact primitives the /mcp guards use
  * (extractBearer / checkStaticToken / defaultVerifyOAuth).
  *
@@ -329,8 +413,11 @@ export function verifyCommandJwt(token: string, secret: string): boolean {
  */
 export function bridgeAuth(deps?: {
   verifyOAuth?: (token: string) => Promise<OAuthSubject | null>;
+  /** Override the API-token verifier (tests). Default: SHA-256 lookup in api_tokens. */
+  verifyApiToken?: ApiTokenVerifier;
 }) {
   const verifyOAuth = deps?.verifyOAuth ?? defaultVerifyOAuth;
+  const verifyApiToken = deps?.verifyApiToken ?? defaultApiTokenVerifier;
 
   return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     // EXPLICITLY DISABLED (MCP_BRIDGE_AUTH_ENABLED falsey): pass-through, byte-identical to the
@@ -369,6 +456,21 @@ export function bridgeAuth(deps?: {
       if (staticConfigured && checkStaticToken(presented) === 'ok') {
         next();
         return;
+      }
+      // (1b) per-user API token — the Punch List loop's MANDREL_TOKEN. The
+      // loop talks to THIS surface (POST /mcp/tools/<tool>), so a token that only opened
+      // /mcp would be useless to it.
+      if (looksLikeApiToken(presented)) {
+        const outcome = await verifyApiToken(presented);
+        if (outcome.kind === 'ok') {
+          attachApiTokenPrincipal(req, outcome.principal);
+          next();
+          return;
+        }
+        if (outcome.kind === 'unavailable') {
+          sendCredentialCheckUnavailable(res);
+          return;
+        }
       }
       // (2) command HS256 login JWT — the browser (Command UI) path.
       if (jwtSecret && verifyCommandJwt(presented, jwtSecret)) {

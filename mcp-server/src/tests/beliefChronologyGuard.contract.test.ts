@@ -2,8 +2,8 @@
  * AN INFERRED SUPERSESSION MAY NOT POINT BACKWARDS THROUGH TIME.
  *
  * ── THE DEFECT THIS REPRODUCES ───────────────────────────────────────────────────────
- * Found live on prod (project eval3-m-r1): handoff `2b3c4d5e` (created 12:16:41Z) carried
- * an inbound `possibly_supersedes` from `3c4d5e6f` (created 12:10:13Z) via
+ * Found live on prod (project eval3-m-r1): handoff an earlier change (created 12:16:41Z) carried
+ * an inbound `possibly_supersedes` from `49858772` (created 12:10:13Z) via
  * `belief-adjudication`. The OLDER record was minted as superseding the NEWER one, so the
  * briefing rendered the CURRENT handoff as `superseded_by:<the stale record>`.
  *

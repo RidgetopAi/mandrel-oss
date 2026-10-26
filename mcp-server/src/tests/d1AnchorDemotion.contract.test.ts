@@ -1,6 +1,6 @@
 /**
  * D1 — ANCHOR DEMOTION (migration 080 §3) — the PHASE 1 acceptance-5 contract
- * (scope WIDENED to decided_by by Coordinator's 2026-08-13
+ * (scope WIDENED to decided_by by the coordinator's 2026-08-13
  * ruling: "the anchor mints nothing strong" covers both edge types — prod held
  * informs 157 + decided_by 111 at measurement).
  *
@@ -190,7 +190,7 @@ describe('D1 — demote auto:active_thread strong informs (migration 080, accept
     expect(twin[0].metadata.d1_absorbed_informs).toBe(true);
     expect(twin[0].metadata.pre).toBe('existing twin');
 
-    // control: the anchor's decided_by is DEMOTED too (Coordinator's widening ruling) — same
+    // control: the anchor's decided_by is DEMOTED too (the coordinator's widening ruling) — same
     // provenance preservation, original type recorded as decided_by.
     const control = (
       await db.query(`SELECT edge_type, created_by, metadata FROM links WHERE from_id = $1`, [ids.control])

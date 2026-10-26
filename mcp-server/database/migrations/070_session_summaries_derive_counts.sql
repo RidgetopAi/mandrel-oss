@@ -1,5 +1,5 @@
 -- Migration 070: v_session_summaries derives its counts from the child tables
--- Task: session counter columns render 0 once a session ends
+-- Task: an earlier change (session counter columns render 0 once a session ends)
 --
 -- WHY THIS VIEW IS IN SCOPE: it is the UPSTREAM of four surfaces that all rendered zeros —
 -- `/api/v2/sessions` (list), `/api/v2/sessions/:id` (detail), `/api/v2/sessions/compare`
@@ -61,7 +61,7 @@
 -- a replace cannot change a view column's data type, and COUNT(*) returns bigint where the
 -- underlying columns are integer. No dependent objects rely on this view.
 --
--- ── WHY EVERY COUNT CARRIES AN EXPLICIT ::int (the reviewer B2) ───────────────────────────
+-- ── WHY EVERY COUNT CARRIES AN EXPLICIT ::int (Reviewer B2) ───────────────────────────
 -- `COUNT(*)` returns **bigint**. node-pg has no int8 parser by default (there is no
 -- setTypeParser anywhere in this repo — both packages grepped), so it hands int8 back to
 -- JavaScript as a **STRING**. Left uncast, this migration would have silently flipped four

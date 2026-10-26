@@ -294,7 +294,8 @@ export const StreamCard: React.FC<{
         <span className={styles.stRight}>
           <span className={styles.stMetrics}>
             {/* Same derived fields as the expanded card above, so the collapsed row and
-                the expanded card can never disagree (a UI acceptance criterion). `row.total_tokens` had no fallback at all and never needed one
+                the expanded card can never disagree (a UI acceptance criterion of an earlier task).
+                `row.total_tokens` had no fallback at all and never needed one
                 — it is the only durable token record. */}
             <Metric teal value={formatCount(row.context_count)} label="ctx" />
             <Metric value={formatCount(row.task_count)} label="tasks" />

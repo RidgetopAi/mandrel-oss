@@ -535,7 +535,7 @@ const branchPositionShape = z
  *   `exact`                                — none of the above; the answer is a fact, and a
  *                                            FORWARD-ONLY claim (true for post-086 branches).
  *
- * The advertised set MATCHES the response exactly (the reviewer F6): `depthLimitReached` and
+ * The advertised set MATCHES the response exactly (Reviewer F6): `depthLimitReached` and
  * `walkCapReached` are GONE, along with the walk that could produce them. A schema that
  * advertises a field nothing emits teaches a client to branch on a signal that never fires.
  */

@@ -28,7 +28,7 @@ export interface SessionVitalsProps {
 export const SessionVitals: React.FC<SessionVitalsProps> = ({ session }) => {
   // Derived counts only — see the `??` note in pages/sessions/StreamCard.tsx. The old
   // `session.contexts_created ?? session.context_count` preferred the denormalized
-  // counter, which reads 0 on every session finalized before and
+  // counter, which reads 0 on every session finalized before an earlier task, and
   // `decisions_created` below was a GUARANTEED 0 (that column has no runtime writer
   // anywhere in the tree). Both are now served derived from the child tables.
   const contexts = session.context_count;

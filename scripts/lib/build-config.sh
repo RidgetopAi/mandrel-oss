@@ -10,7 +10,7 @@
 #   Our bundle grew past that: on 2026-07-09 the CI frontend-build stage died with
 #   `FATAL ERROR: Ineffective mark-compacts near heap limit / JavaScript heap out of
 #   memory` at ~2078MB — even though the host had ~10G free. That OOM aborted the
-#   fleet-deploy CI gate and blocked EVERY deploy (staging + tenant roll). Vite/
+#   deploy CI gate and blocked EVERY deploy (staging + tenant roll). Vite/
 #   esbuild+rollup is far more memory-frugal and is not expected to hit this, but we
 #   RETAIN the raised NODE_OPTIONS=--max-old-space-size as a harmless safety margin
 #   so a future heavy build can't silently re-trip the same OOM class.
@@ -19,10 +19,9 @@
 #   Every place we build the frontend ON THE HOST sources THIS file and runs the
 #   build as `NODE_OPTIONS="$FRONTEND_BUILD_NODE_OPTIONS" npm run build`:
 #     * the CI gate                          (STAGE 5 — CI compile gate)
-#     * a version-drift check          (thresholds live here too)
-#   (scripts/lib/prod-install.sh + fleet-deploy's deploy_prod on-box build were
-#   RETIRED at T3.5, an earlier task — containerized prod runs the release images
-#   and builds nothing on the host; the CI gate STAGE 5 is the remaining host build.)
+#   (The on-host prod builds were RETIRED at T3.5, an earlier task — containerized
+#   prod runs the release images and builds nothing on the host; the CI gate STAGE 5 is
+#   the remaining host build.)
 #   Defining it once here (not N drifting copies) is the whole point — change the
 #   headroom in ONE place and every host build site moves together.
 #
@@ -57,7 +56,7 @@ if [[ -z "${_MANDREL_BUILD_CONFIG_SOURCED:-}" ]]; then
   # === VERSION-DRIFT GATE THRESHOLDS =======================================
   # Tagging a release is a MANUAL step (scripts/release.sh, dry-run by default,
   # never auto-pushed) — so untagged commits accrue on main and the runtime keeps
-  # reporting a stale version. a version-drift check (run in CI) counts
+  # reporting a stale version. A CI version-drift check counts
   # commits since the latest `vX.Y.Z` tag and surfaces the backlog instead of
   # letting it silently grow. These two thresholds define its bands:
   #

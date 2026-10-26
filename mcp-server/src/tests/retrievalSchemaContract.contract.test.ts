@@ -83,7 +83,8 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
   // so they join the advertised+accepted set.
   // T5a: `links` — the first-class explicit-edge write param (declared,
   // accepted, minted post-persist; robust — a bad link warns, never breaks the record).
-  // answerStatus/question/options/deadline (THE DECISION INBOX,   // an earlier task): answerStatus:'open' files the decision in the inbox — REFUSED (typed
+  // answerStatus/question/options/deadline (THE DECISION INBOX):
+  // answerStatus:'open' files the decision in the inbox — REFUSED (typed
   // error, nothing written) unless question is non-empty and options has >=2 well-formed
   // entries. Omitted, behaves exactly as before (answer_status defaults to 'decided').
   decision_record: ['decisionType', 'title', 'description', 'rationale', 'impactLevel',
@@ -96,7 +97,8 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
   // mode accepts it; it is NOT an updatable field (excluded from the update .refine).
   // CURATE (T1 item 5/6): title/description/tags/metadata are now editable
   // (metadata is MERGED, not replaced). Added to the advertised+accepted set.
-  // answerStatus/question/options/deadline (THE DECISION INBOX,   // an earlier task): setting answerStatus:'open' validates the MERGED row (this call's
+  // answerStatus/question/options/deadline (THE DECISION INBOX):
+  // setting answerStatus:'open' validates the MERGED row (this call's
   // question/options if supplied, else the existing row's) against the same invariant
   // decision_record enforces.
   decision_update: ['decisionId', 'status', 'outcomeStatus', 'outcomeNotes', 'lessonsLearned',
@@ -104,7 +106,7 @@ const EXPECTED_PARAMS: Record<string, string[]> = {
     'title', 'description', 'tags', 'metadata',
     'projectId', 'answerStatus', 'question', 'options', 'deadline'],
   // task_list (A7): `offset` added for pagination (rows beyond limit=100 were unreachable).
-  // projectId (strict-mode safety): the handler (tasks.routes.handleList) reads
+  // projectId (an earlier change strict-mode safety): the handler (tasks.routes.handleList) reads
   // args.projectId via resolveProjectId to scope the list — a real accepted-and-used
   // param that was missing from the schema, so under strict mode a legitimate
   // project-scoped task_list call would have been wrongly rejected. Declared, not dropped.

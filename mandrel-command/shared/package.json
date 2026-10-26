@@ -1,6 +1,6 @@
 {
   "name": "mandrel-command-shared",
-  "version": "1.0.0",
+  "version": "0.70.0",
   "description": "Shared TypeScript types and interfaces for Mandrel Command",
   "main": "index.ts",
   "types": "index.ts",

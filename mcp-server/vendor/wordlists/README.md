@@ -1,6 +1,7 @@
 # Vendored English word list (`english-words.txt`)
 
-The discriminator behind `isEnglishWord()` (services/englishWords.ts). It separates **"you asked about a thing we do not have"**
+The discriminator behind `isEnglishWord()` (services/englishWords.ts, an earlier task
+/ SEARCH P2a). It separates **"you asked about a thing we do not have"**
 (Kubernetes, Terraform, PagerDuty, gibberish — not English words) from **"you phrased it
 your own way"** (encyclopedia, unsound, anybody — ordinary English that simply is not in
 this corpus). Absent-AND-not-a-word is a far safer veto than absent alone.

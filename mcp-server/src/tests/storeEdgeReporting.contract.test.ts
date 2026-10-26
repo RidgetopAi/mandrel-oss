@@ -1,6 +1,6 @@
 /**
  * STORE EDGE-REPORTING HONESTY — contract tests (dogfood snag #2,
- * no-orphan guarantee an earlier decision).
+ * an earlier context; no-orphan guarantee an earlier decision).
  *
  * THE BUG THIS LOCKS OUT: a context_store that minted tag-derived edges returned
  * linksMinted:0, autoThreaded:[], anchor:null, inference:null — the RESPONSE read as a
@@ -145,7 +145,7 @@ describe('store edge-reporting honesty (an earlier task — linksMinted === grap
 
     // The EXACT dogfood shape: threading tags only — no links arg, no anchor.
     const resp = await viaTool('context_store', {
-      content: 'a capture threaded purely by tags (the tags-only shape)',
+      content: 'a capture threaded purely by tags (the shape)',
       type: 'completion',
       tags: [`task:${id8(task)}`, `decision:${id8(decId)}`],
     }, conn);

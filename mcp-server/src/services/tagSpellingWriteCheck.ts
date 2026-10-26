@@ -22,7 +22,7 @@
  * and — worse — it could only ever catch the spellings we already knew about, which is the
  * definition of a guard that has not fixed the class. So the rule is STRUCTURAL: two tags
  * collide when they differ ONLY in separators and case. `needs-operator`, `needs:operator`,
- * `needs_operator` and `Needs the operator` fold to one key; `needs-operator` and `needs-coordinator` do not.
+ * `needs_operator` and `Needs Operator` fold to one key; `needs-operator` and `needs-coordinator` do not.
  * A spelling nobody has invented yet is caught on the day it is invented.
  *
  * The SUGGESTED spelling is the one THIS PROJECT already uses most. That is a fact about
@@ -39,7 +39,7 @@
  * excluded because a spelling nobody can reach is not a live collision — a deliberate
  * narrowing, stated here rather than left for a reader to discover.
  *
- * THE WRITE'S OWN TAGS WERE MISSING FROM THAT POPULATION AND IT WAS A REAL HOLE (the reviewer
+ * THE WRITE'S OWN TAGS WERE MISSING FROM THAT POPULATION AND IT WAS A REAL HOLE (Reviewer
  * N1). Measured: `findWriteTimeTagClashes(['foo-x','foo:x'], [])` returned `[]` — a single
  * write introducing BOTH spellings of a brand-new concept was silent, because neither
  * spelling existed in the project yet and each was only ever compared against the stored
@@ -82,7 +82,7 @@ export function findWriteTimeTagClashes(
   written: readonly string[],
   existing: readonly { tag: string; count: number }[],
 ): TagSpellingClash[] {
-  // THE COMPARISON POPULATION IS THE STORED TAGS *PLUS THIS WRITE'S OWN* (the reviewer N1).
+  // THE COMPARISON POPULATION IS THE STORED TAGS *PLUS THIS WRITE'S OWN* (Reviewer N1).
   // A tag the caller is writing right now is not yet in `existing`, so a write carrying two
   // spellings of a brand-new concept compared each of them against a population that
   // contained neither, and said nothing.

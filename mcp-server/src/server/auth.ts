@@ -111,6 +111,14 @@ export function createAuth(cfg: BetterAuthConfig = BETTER_AUTH_CONFIG, pool?: Po
     rateLimit: {
       enabled: OAUTH_CLIENT_CONFIG.rateLimitEnabled,
     },
+    // Client IP for rate-limit keys: the edge nginx sets X-Real-IP $remote_addr; Traefik now
+    // forwards it. Without this better-auth reads x-forwarded-for, which any client can
+    // prepend to, and the per-IP limits would key on a forgeable value.
+    advanced: {
+      ipAddress: {
+        ipAddressHeaders: ['x-real-ip'],
+      },
+    },
     // Email+password is the minimal credential a user needs to exist for the consent
     // flow to complete. The sign-in/consent PAGES (oauthRoutes.ts) drive these endpoints.
     emailAndPassword: {
@@ -124,6 +132,12 @@ export function createAuth(cfg: BetterAuthConfig = BETTER_AUTH_CONFIG, pool?: Po
       // (MANDREL_OAUTH_ALLOW_SIGNUP, default false → disableSignUp true). SIGN-IN + the consent
       // flow are unaffected; only the sign-up endpoint is closed.
       disableSignUp: !cfg.allowSignUp,
+      // Sign-up S5: spending a one-time set-password link (POST
+      // <basePath>/reset-password) ends every other session of that user. Supported by the
+      // installed better-auth 1.6.20: option declared at @better-auth/core
+      // dist/types/init-options.d.mts:652, honoured at better-auth dist/api/routes/password.mjs:163
+      // (deleteUserSessions after the password update).
+      revokeSessionsOnPasswordReset: true,
     },
     plugins: [
       // JWT access tokens, verified in-process via JWKS (no DB hit on the /mcp hot path).

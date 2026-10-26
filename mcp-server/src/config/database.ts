@@ -83,7 +83,7 @@ try {
  * UNCHANGED, so prod behaviour is byte-identical; what changes is that a caller can now
  * BOUND the pool's footprint.
  *
- * WHY THIS MATTERS (the connection-exhaustion incident root cause). A Postgres server's client-connection
+ * WHY THIS MATTERS (the root cause). A Postgres server's client-connection
  * slots (`max_connections` minus `superuser_reserved_connections`) are a BOX-WIDE shared
  * resource — every database and every process on the host draws from the same pool of
  * slots. The mcp-server test suite runs all ~170 files in ONE process (vitest
@@ -98,7 +98,7 @@ try {
  *
  * `idleTimeoutMillis` is the dominant term (it sets how long a dead pool squats on its
  * connections), not `max` — the suite is sequential, so each pool only ever opens a
- * couple. CI pins both down (see GATE_ENV_STAGE1_PINS in scripts/lib/gate-env.sh).
+ * couple. CI pins both down.
  */
 /** Max connections a single pool may open. Default 20 (unchanged). */
 const POOL_MAX = parseInt(process.env.DATABASE_POOL_MAX || '20', 10);

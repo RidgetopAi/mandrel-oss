@@ -7,7 +7,7 @@
  *   3. it carries NO hardcoded hex colour literal (tones resolve via chartTheme);
  *   4. it reads its tunables from config (RANGE_OPTIONS / ANALYTICS_CONFIG) — no magic
  *      thresholds inline (configs-not-hardcoded);
- *   5. the gap panels render an HONEST "not yet available" state (the data-gap policy).
+ *   5. the gap panels render an HONEST "not yet available" state (data policy).
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -80,7 +80,7 @@ describe('Analytics — tunables live in config (configs-not-hardcoded)', () => 
   });
 });
 
-describe('Analytics — real data or honest empty, never fabricated (the data-gap policy)', () => {
+describe('Analytics — real data or honest empty, never fabricated (data policy)', () => {
   it('throughput + actor panels feed off REAL server props and drive a data-derived empty state', () => {
     const throughput = read('ThroughputChart.tsx');
     const actor = read('ActorBreakdown.tsx');

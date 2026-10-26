@@ -17,7 +17,7 @@
  *   the read path : "UPDATE volume is a function of wall clock"     (throttled)
  *   the write path: "UPDATE volume is a function of traffic"        (unthrottled)
  *
- * The first sentence was the column's DOCUMENTED contract after the read-path liveness change, and it was
+ * The first sentence was the column's DOCUMENTED contract after an earlier change, and it was
  * false of the system. `writeBurst` below is the measurement that shows it: pre-fix,
  * N writes cost N+1 UPDATEs; post-fix they cost 1.
  *
@@ -27,7 +27,7 @@
  * A behavioural test proves the throttle works for the writers that exist TODAY. It
  * cannot fail when a THIRD writer appears next quarter, because that writer's call site
  * is not in the population the behavioural test drives — which is exactly how this defect
- * was born: the read-path liveness change's suite was green the whole time the write path was bypassing it.
+ * was born: an earlier change's suite was green the whole time the write path was bypassing it.
  *
  * So the anti-regression artifact is the SOURCE-LEVEL guard: `SessionRepo.touchActivity`
  * has exactly ONE caller in runtime source, and it is the helper. A future direct caller
@@ -62,6 +62,20 @@ const conn = (label: string) => `${CONN_PREFIX}-${label}`;
 
 /** Big enough that "1" versus "N" is unmistakably a throttle and not a coincidence. */
 const BURST = 20;
+
+/**
+ * Per-test budget for the context_store burst: each write runs a local embedding plus DB
+ * round-trips (1-4 s per write on a box at load ~16: a minute or more for the burst), which
+ * blew the 10 s vitest default (nightly 2026-10-21).
+ */
+const CONTEXT_STORE_BURST_TIMEOUT_MS = 300_000;
+
+/**
+ * The throttle window held for the burst. It must outlast the whole burst, or a slow box would
+ * let the window expire mid-burst and legitimately issue a second UPDATE — a wall-clock flake,
+ * not a throttle bug. The window length is not what the test asserts; the COUNT is.
+ */
+const CONTEXT_STORE_BURST_WINDOW_SEC = CONTEXT_STORE_BURST_TIMEOUT_MS / 1000 + 60;
 
 /**
  * The ONE statement whose volume this task governs. Deliberately anchored on
@@ -125,11 +139,11 @@ async function countTouchUpdates(body: () => Promise<void>): Promise<number> {
   return touches;
 }
 
-describe('session liveness has ONE writer and ONE throttle', () => {
+describe('an earlier change: session liveness has ONE writer and ONE throttle', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(
-        `INSERT INTO projects (name, description) VALUES ($1, 'single-writer activity touch')
+        `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change single-writer activity touch')
          RETURNING id`,
         [`atsw-proj-${STAMP}`]
       )
@@ -170,16 +184,23 @@ describe('session liveness has ONE writer and ONE throttle', () => {
     resetActivityTouchState();
     ActiveSessionStore.set(sessionId, c);
 
-    const touches = await countTouchUpdates(async () => {
-      for (let i = 0; i < BURST; i++) {
-        const r = await routeExecutor(
-          'context_store',
-          { content: `single-writer write burst ${i}`, type: 'completion', tags: ['atsw'] },
-          { connectionId: c, actor: 'builder' } as any
-        );
-        expect(r.isError, 'the write itself must succeed — a failed write proves nothing').not.toBe(true);
-      }
-    });
+    const savedWindowSec = SESSION_CONFIG.activityTouchMinIntervalSec;
+    SESSION_CONFIG.activityTouchMinIntervalSec = CONTEXT_STORE_BURST_WINDOW_SEC;
+    let touches: number;
+    try {
+      touches = await countTouchUpdates(async () => {
+        for (let i = 0; i < BURST; i++) {
+          const r = await routeExecutor(
+            'context_store',
+            { content: `an earlier change write burst ${i}`, type: 'completion', tags: ['atsw'] },
+            { connectionId: c, actor: 'builder' } as any
+          );
+          expect(r.isError, 'the write itself must succeed — a failed write proves nothing').not.toBe(true);
+        }
+      });
+    } finally {
+      SESSION_CONFIG.activityTouchMinIntervalSec = savedWindowSec;
+    }
 
     // PRE-FIX this was BURST (one unthrottled write-path UPDATE per call) + 1 (the read
     // hook's throttled one). The whole point of the task is that it is now 1.
@@ -188,7 +209,7 @@ describe('session liveness has ONE writer and ONE throttle', () => {
       `${BURST} writes in one throttle window must issue ONE UPDATE; ${BURST + 1} means the write path bypasses the helper`
     ).toBe(1);
     expect(await lastActivityMs(sessionId), 'the one UPDATE must still have landed').toBeGreaterThan(0);
-  });
+  }, CONTEXT_STORE_BURST_TIMEOUT_MS);
 
   test('SessionTracker.updateSessionActivity — the write-handler seam — is itself throttled', async () => {
     const c = conn('tracker');
@@ -319,7 +340,7 @@ describe('session liveness has ONE writer and ONE throttle', () => {
   });
 
   // ───────────────────────────────────────────────────────────────────────────────────
-  // THE INVARIANT the read-path liveness change DOCUMENTED, NOW ENFORCED FOR THE WRITE PATH TOO
+  // THE INVARIANT an earlier change DOCUMENTED, NOW ENFORCED FOR THE WRITE PATH TOO
   // A touch can make a live session look live. It can NEVER revive a parked one.
   // ───────────────────────────────────────────────────────────────────────────────────
   for (const parked of ['dormant', 'interrupted', 'ended', 'inactive', 'disconnected']) {
@@ -382,7 +403,7 @@ describe('session liveness has ONE writer and ONE throttle', () => {
  * state is routing through `activityTouch`. That is the difference between "the second
  * writer is currently absent" and "a second writer is unreachable".
  */
-describe('single-writer guard: SessionRepo.touchActivity has exactly ONE caller in runtime source', () => {
+describe('an earlier change guard: SessionRepo.touchActivity has exactly ONE caller in runtime source', () => {
   const HERE = path.dirname(fileURLToPath(import.meta.url));
   const SRC_ROOT = path.resolve(HERE, '..');           // mcp-server/src
   const TESTS_DIR = path.join(SRC_ROOT, 'tests');
@@ -411,8 +432,8 @@ describe('single-writer guard: SessionRepo.touchActivity has exactly ONE caller 
    * Read a file with COMMENTS REMOVED. Necessary because this guard's whole subject —
    * `SessionRepo.touchActivity`, `last_activity_at` — is discussed at length in the doc
    * comments of the very modules it governs, and a scanner that counted prose would be
-   * RED for describing the rule (which is how a guard gets deleted for being wrong,
-   * A past incident). Deliberately crude and NOT a TypeScript parser: it strips /*…*\/ and
+   * RED for describing the rule (which is how a guard gets deleted for being wrong).
+   * Deliberately crude and NOT a TypeScript parser: it strips /*…*\/ and
    * //… only. The `scan itself is not broken` control below is what stops that crudeness
    * from failing OPEN — it asserts the stripped text still contains the real statements.
    */
@@ -489,7 +510,7 @@ describe('single-writer guard: SessionRepo.touchActivity has exactly ONE caller 
     //                             (REST analytics path).                    ← see FINDING
     //   4. applyCounterDelta()  — the 30s counter flush / endSession finalize.
     //                                                                        ← see FINDING
-    // FINDING (an earlier task report, raised to Coordinator, NOT fixed here): 3 and 4 also
+    // FINDING (an earlier task report, raised to the coordinator, NOT fixed here): 3 and 4 also
     // advance last_activity_at, unthrottled and with NO `status = 'active'` predicate,
     // so they can freshen a dormant/ended row. They are counter-persistence statements,
     // not heartbeats; splitting the liveness bump out of them changes REST analytics and

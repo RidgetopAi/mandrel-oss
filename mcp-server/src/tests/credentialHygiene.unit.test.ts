@@ -22,14 +22,13 @@
  * secret scanner (or a human skimming a diff) to trip over. The tripwire test below asserts it.
  *
  * NO REGISTERED GUARD CLASS, deliberately. This is a PRODUCT input-boundary guard, not a
- * detector for one of our own engineering failure classes, so it has no row in
- * scripts/config/guard-classes.conf and it carries no class marker.
+ * detector for one of our own engineering failure classes, so it has no registry row and it
+ * carries no class marker.
  *
  * This file deliberately does not spell that marker out, not even to explain itself: the
  * marker is a MACHINE TOKEN swept by STAGE 0a22d out of these directories, and the sweep
  * cannot tell a declaration from a sentence about one. An earlier draft wrote the token
  * followed by "n/a" and the stage parsed the class id as `n`, correctly emitting a FINDING.
- * If you need the marker's spelling, read scripts/lib/guard-class-registry.sh.
  */
 
 import { describe, test, expect } from 'vitest';
@@ -203,7 +202,7 @@ describe('THE WRITE BOUNDARY — the shipped validator refuses a credential, by 
     ],
     ['project_create', { name: 'p-cred-probe', description: CREDENTIAL }],
     ['session_start', { title: 'clean', goal: CREDENTIAL }],
-    ['task_update', { taskId: '440ff00d-1111-2222-3333-444455556666', notes: CREDENTIAL }],
+    ['task_update', { taskId: '440f0091-1111-2222-3333-444455556666', notes: CREDENTIAL }],
   ])('%s refuses a credential in its prose fields', (tool, args) => {
     expect(() => validateToolArguments(tool, args as never)).toThrow(/live credential/i);
   });
@@ -245,7 +244,7 @@ describe('TAGS — the last unscanned stored free-text field (baseTags split)', 
     ],
     ['decision_update', (tags: string[]) => ({ decisionId: 'aaaaaaaa1111', tags })],
     ['task_create', (tags: string[]) => ({ title: 't', tags })],
-    ['task_update', (tags: string[]) => ({ taskId: '440ff00d-1111-2222-3333-444455556666', tags })],
+    ['task_update', (tags: string[]) => ({ taskId: '440f0091-1111-2222-3333-444455556666', tags })],
   ])('%s WRITES tags with hygiene: a credential and a raw leak are both refused', (tool, build) => {
     expect(() => validateToolArguments(tool, build([CREDENTIAL]) as never)).toThrow(/live credential/i);
     expect(() => validateToolArguments(tool, build([RAW_LEAK]) as never)).toThrow(/tool-call XML/i);

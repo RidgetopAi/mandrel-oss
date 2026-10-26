@@ -105,7 +105,7 @@ describe('buildAdjudicationPrompt — status-flip ≠ restatement hardening (BL-
   });
 });
 
-describe('buildAdjudicationPrompt — direction hardening (the direction retraction)', () => {
+describe('buildAdjudicationPrompt — direction hardening (the retraction)', () => {
   /**
    * 58 supersedes edges were retracted on 2026-08-28 because the adjudicator named the OLDER
    * record as superseder in 57 of them. The prompt invited exactly that: it said "Explicit

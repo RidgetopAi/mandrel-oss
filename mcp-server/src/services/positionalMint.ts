@@ -1,5 +1,6 @@
 /**
- * POSITIONAL MEMBERSHIP — the write-path integration (PHASE 1,  * an earlier task). ONE service all three write paths call (context_store, decision_record,
+ * POSITIONAL MEMBERSHIP — the write-path integration (PHASE 1).
+ * ONE service all three write paths call (context_store, decision_record,
  * task_create), so the membership rule cannot drift per-route (a past incident / C3).
  *
  * THE MODEL (the operator's ruling 2026-08-13): membership = POSITION, like git. A session stands
@@ -7,7 +8,7 @@
  * a DECLARED `informs` edge (created_by 'auto:positional' — the 079 meter's DECLARED
  * bucket) to the branch spine. NAMING ≠ MEMBERSHIP; STANDING THERE = MEMBERSHIP.
  *
- * THE MULTI-NAME POLICY (spec item f, an earlier decision §2; E3 caveat from an earlier review):
+ * THE MULTI-NAME POLICY (spec item f, an earlier decision §2; E3 caveat from an earlier change):
  *   - a record naming ≥2 REAL task ids in its body is TRUNK material: NO single-branch
  *     membership edge (even when positioned), and a declared weak reference edge
  *     (`related_to`, created_by 'auto:positional') to EACH named task so every touched
@@ -23,7 +24,7 @@
  * the identifier is ambient, copying is free. A CREATE no longer offers: it auto-opens (R1
  * below), because the offer assumed a reader and the measured session had none.
  *
- * ── AUTO-OPEN POSITIONS ─────────────
+ * ── AUTO-OPEN POSITIONS (design) ─────────────
  *
  * THE MEASURED GAP: rivet — a small model with zero house habits, first customer-shaped
  * session — did the RIGHT first acts (task_create, decision_record, contexts) and its
@@ -61,7 +62,7 @@
  * All auto-open edges keep created_by='auto:positional', so they land in the DECLARED
  * bucket of the 079 meter exactly as P1's do. NO new config, NO env var, NO TTL.
  *
- * THE ACCEPTED RISK (an earlier design, do not redesign around it): R2 misclassifies a worker
+ * THE ACCEPTED RISK (design, do not redesign around it): R2 misclassifies a worker
  * that fans out two sibling records back-to-back before any other write. That session lands
  * at trunk and its later writes get floor-only edges. Bounded and accepted — the failure
  * direction is MISSING edges, never WRONG ones; one declared act recovers; and the Q3 meter
@@ -823,7 +824,7 @@ export async function mintPositional(input: MintPositionalInput): Promise<Positi
     //    and discards it unrecoverably — nothing downstream can tell the membership ever
     //    existed. Keeping it costs a little precision (a coordination note citing several
     //    tasks is also a member of the branch its author opened), and that is recoverable by
-    //    one explicit act. Measured 2026-08-15: an earlier decision were both
+    //    one explicit act. Measured 2026-08-15: an earlier decision and an earlier task were both
     //    written while standing on the strong-bones spine and both were demoted to weak
     //    trunk-refs for citing other ids in prose — exactly the records a later reader most
     //    needs to find on that branch.
@@ -978,7 +979,7 @@ export async function mintPositional(input: MintPositionalInput): Promise<Positi
       // is NOT recoverable from `target`. When the tip has advanced, target is an earlier
       // member, and a row in that shape is indistinguishable from a NESTED branch's write
       // (a different session standing on that member). SK2 round 1 tried to tell them apart
-      // by walking, and could not: measured by the reviewer, branch_history returned 4 members
+      // by walking, and could not: measured by Reviewer, branch_history returned 4 members
       // with truncated:false for a branch with 2.
       //
       // IT IS WRITTEN BEFORE, AND INDEPENDENTLY OF, THE EDGE — the round-3 fix. Rounds 1-3
@@ -987,7 +988,7 @@ export async function mintPositional(input: MintPositionalInput): Promise<Positi
       // TAG mint already ran on this write path, so a record that is positioned on S and
       // also TAGS S loses this mint to the tag row. Measured on prod 2026-08-15 that had
       // silently unmembered roughly half of every active branch (an earlier decision and
-      // one of them on an earlier spine). Order matters here for one reason only: the
+      // an earlier change on an earlier spine among them). Order matters here for one reason only: the
       // membership must be recorded even if the edge mint throws.
       const recordedMembership = await recordMembership(
         {
@@ -1051,8 +1052,8 @@ export async function mintPositional(input: MintPositionalInput): Promise<Positi
       //     Only auto positions carry this state: a declared position must stay tipless and
       //     byte-identical (R0), and 082's CHECK would reject a tip on one anyway.
       //
-      //     A HANDOFF NO LONGER REACHES THIS BLOCK, AND THAT IS THE DELIBERATE CALL (P1,
-      //     an earlier task). It is blocked as 'trunk-record' above, so it no longer marks an
+      //     A HANDOFF NO LONGER REACHES THIS BLOCK, AND THAT IS THE DELIBERATE CALL (P1).
+      //     It is blocked as 'trunk-record' above, so it no longer marks an
       //     auto position as non-virgin. CONCRETELY: task_create auto-opens (virgin) →
       //     handoff → a second task_create now sees a still-virgin position and R2 reverts
       //     the session to trunk, where before the handoff would have kept the branch alive.

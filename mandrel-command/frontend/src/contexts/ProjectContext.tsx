@@ -27,7 +27,7 @@ const LEGACY_STORED_PROJECT_KEY = 'aidis_current_project';
 
 /**
  * ProjectContext — the AMBIENT project scope: the topbar switch's selection, falling
- * back to the user's default project (an earlier punch over the page-scope epic §C).
+ * back to the user's default project (an earlier punch over an earlier epic §C).
  *
  * ── WHAT THIS CONTEXT IS ─────────────────────────────────────────────────────────────
  * It is not a UI widget's state. The project it holds is written to localStorage
@@ -36,7 +36,7 @@ const LEGACY_STORED_PROJECT_KEY = 'aidis_current_project';
  * (contexts/SseContext.tsx). It is the app's ambient scope.
  *
  * ── ONE SWITCH, IN THE SHELL ─────────────────────────────────────────────────────────
- * The page-scope epic replaced the topbar switcher with a selector on every page, because two
+ * an earlier Epic replaced the topbar switcher with a selector on every page, because two
  * competing mechanisms (ambient + per-page) left users unable to tell which governed the
  * page in front of them. an earlier Punch (the operator) settles it the OTHER
  * way: there is exactly ONE switch, in the topbar (shell/ProjectSwitch), and every page
@@ -63,7 +63,7 @@ const LEGACY_STORED_PROJECT_KEY = 'aidis_current_project';
  * the header on every cold start — the exact silent widening above, on every reload.
  *
  * ── NO "ALL PROJECTS" ON THE SWITCH ──────────────────────────────────────────────────
- * The switch offers ONE project at a time (the project-switch walkthrough F2): the punch did not
+ * The switch offers ONE project at a time (an earlier walkthrough F2): the punch did not
  * ask for a global "all", and a page that cannot render it would silently show the
  * default under a topbar saying "All". The old localStorage-key-removing sentinel is
  * gone too; `currentProject` is always a real project while one exists.

@@ -12,7 +12,7 @@ import type {
 } from './generated';
 
 /**
- * PROJECT RESOLUTION HERE GOES THROUGH THE SHARED PATH (page-scope epic §E).
+ * PROJECT RESOLUTION HERE GOES THROUGH THE SHARED PATH (an earlier epic §E).
  *
  * This module used to carry its OWN localStorage reader: two keys, three parse shapes,
  * its own UNASSIGNED check — a second, drifting copy of the rule that lives in

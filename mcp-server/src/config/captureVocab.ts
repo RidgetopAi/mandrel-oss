@@ -1,7 +1,8 @@
 /**
  * AGENT CAPTURE VOCABULARY — the single source of truth for `metadata.capture`.
  *
- * P4 LAYER 1 of the agent-work-capture plan (spec  * an earlier task). Written against a MEASUREMENT, not a hunch — see P2's result
+ * P4 LAYER 1 of the agent-work-capture plan (spec an earlier context).
+ * Written against a MEASUREMENT, not a hunch — see P2's result
  *: of 13 records written by agents that had been told to say how they
  * knew, 11/11 runs wrote SOMETHING and only 5/13 carried a STRUCTURED status. The other
  * eight put their confidence in honest, readable prose. Prose is not aggregatable: "which

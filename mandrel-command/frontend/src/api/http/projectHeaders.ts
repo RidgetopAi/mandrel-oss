@@ -17,7 +17,7 @@
  * the SSE subscription, `api/embeddingsClient.ts`, every `requireWriteProjectId` write
  * that nobody scoped, and both client interceptors.
  *
- * ── THE FALLBACK LADDER (page-scope epic §A2) ──────────────────────────────────────────
+ * ── THE FALLBACK LADDER (an earlier epic §A2) ──────────────────────────────────────────
  * The old implementation had ONE rung — the `aidis_selected_project` key — and returned
  * `undefined` the moment that key was missing or corrupt. That is not a safe default: a
  * missing project is read by several backend controllers as "EVERY project", so an
@@ -109,7 +109,7 @@ export const __resetRememberedAmbientProject = (): void => {
  * CLEAR EVERY RUNG OF THE LADDER. Call this when the identity behind the ambient project
  * changes — i.e. on logout, from `resetAuthState`.
  *
- * ── THE DEFECT THIS CLOSES (the reviewer B3, reject round 1) ────────────────────────────
+ * ── THE DEFECT THIS CLOSES (Reviewer B3, reject round 1) ────────────────────────────
  * `ProjectContext` claimed a user switch needed no handling because "the 401 path
  * navigates to /login, and a real page load drops module memory outright." That is true
  * of the 401 SELF-HEAL (services/api.ts does `window.location.href = '/login'`). It is

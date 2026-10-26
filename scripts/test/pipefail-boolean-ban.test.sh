@@ -15,19 +15,19 @@
 #     grep -q . < <(seq 1 100000)       -> 200/200   (correct)
 #   The rate is a function of PRODUCER OUTPUT SIZE and MATCH POSITION, not luck.
 #   Four measurements of the same defect came back 0%, 2.75%, 94% and 100%, each
-#   true of its own environment (in one ~402KB environment a
+#   true of its own environment (Reviewer: in one ~402KB environment a
 #   match at byte 402,451 was caught 20/20 and a match at byte 221,324 was caught
 #   0/20). So a small producer is LATENT, not safe, and "N green runs" is not
 #   evidence a site is fixed. That is exactly why every one of these reviewed clean.
 #
-#   It reached a DEPLOY PRE-FLIGHT GATE: fleet-deploy script's origin-ref check asked
+#   It reached a DEPLOY PRE-FLIGHT GATE: a deploy script's origin-ref check asked
 #   `git branch -r --contains "$PROD_REF" | grep -q .` — a gate that would refuse to
 #   ship perfectly pushed code, confidently and wrongly, the day the remote branch
 #   list got large.
 #
 # WHY A BAN AND NOT A FIX LIST
 #   A list of fixed sites has no floor; a ban does. The predecessor assertion
-#   (S10d in fleet-drift-seam-report.test script) was the right shape and
+#   was the right shape and
 #   the wrong scope: one file, one spelling (`env | grep`). This is that same
 #   assertion widened to the whole tree.
 #
@@ -43,8 +43,7 @@
 #   never a silent pass — the population is not allowed to shrink quietly
 #   (a coverage test is an allow-list unless it fails closed).
 #
-#   The marker is CO-LOCATED, not a central registry — the same call
-#   test-wiring-coverage.test.sh made, for the same reason: a registry drifts, a
+#   The marker is CO-LOCATED, not a central registry, for one reason: a registry drifts, a
 #   co-located marker means deleting the fix without adding the marker is a visible
 #   RED in the same review as the deletion. An empty/whitespace reason does NOT
 #   satisfy it ("absent/zero/empty are the values that slip through").
@@ -52,9 +51,8 @@
 # IT SCANS FILES THAT DO NOT SET pipefail, DELIBERATELY
 #   Measured on this tree: 17 of the 69 findings at the time this guard was written
 #   were in files that never say `set -o pipefail` — and six of those are LIBRARIES
-#   under scripts/lib/ that are SOURCED into scripts which do (gate-cannot-measure.sh,
-#   gate-harness-crash.sh, env-caller-restore.sh, canary-registry.sh,
-#   preflight-db-password script, test/lib/fixture-harness.sh). pipefail is a property of
+#   under scripts/lib/ that are SOURCED into scripts which do (test/lib/fixture-harness.sh
+#   among them). pipefail is a property of
 #   the SHELL, inherited by everything sourced into it, and a file gains
 #   `set -o pipefail` in a one-line diff that nobody reviews for pipelines. Scoping
 #   the ban to files that declare pipefail today would have left that whole class
@@ -97,9 +95,9 @@
 #   DO NOT SHARPEN INSTRUMENT B. Its dumbness is load-bearing.
 #
 # THE ANCHOR IS WHERE THIS REPO'S GUARDS HAVE FAILED TWICE
-#   db-capacity-gate.test.sh (cb2f00d) was satisfied by a COMMENTED-OUT copy of the
-#   line it checked for. Then the first version of test-wiring-coverage.test.sh
-#   (ebef00d) stripped comments with a rule requiring WHITESPACE before the `#` —
+#   A DB-capacity suite (cb2df00) was satisfied by a COMMENTED-OUT copy of the
+#   line it checked for. Then the first version of a test-wiring check
+#   (ebeef00) stripped comments with a rule requiring WHITESPACE before the `#` —
 #   but bash starts a comment at the start of any WORD, and metacharacters delimit
 #   words, so `:;#`, `x &#` and `y |#` all parse as comments and slipped through.
 #   scripts/lib/pipefail-boolean-scan.awk therefore strips comments with that same
@@ -124,7 +122,7 @@
 #     result block. That is the encoding; there is deliberately no separate
 #     assertion restating it. One was tried and it was a tautology (both branches
 #     of its `&&`/`||` incremented the same counter), so it certified coverage even
-#     with instrument B disabled entirely. the reviewer caught it by deleting
+#     with instrument B disabled entirely. Reviewer caught it by deleting
 #     the feature and watching the assertion still pass. Deleted rather than
 #     rewritten: restating a structural property as a runtime check is what created
 #     the false green in the first place.
@@ -133,7 +131,7 @@
 #     awk (`{... exit}`) as a CONSUMER stage is NOT recognised. That is a named
 #     hole, not a claim of completeness.
 #   * HEREDOC bodies ARE scanned. A script that writes out another script and runs
-#     it is generating code, and the two heredoc-body hits on this tree at an earlier revision
+#     it is generating code, and the two heredoc-body hits on this tree at an earlier change
 #     were exactly that (fixture-harness.sh's SHIM block, executed as
 #     $FH_DIR/bin/.fh-shim). The cost is that a fixture which deliberately carries
 #     the banned shape must be built with printf or carry a marker.
@@ -162,7 +160,7 @@ PIPEFAIL_BAN_MARKER_WINDOW="${PIPEFAIL_BAN_MARKER_WINDOW:-6}"
 # ...and the PIN for it. Section 4c builds its out-of-window fixture from THIS
 # literal, so widening the window is a deliberate TWO-LINE diff rather than a
 # one-line drift that the guard would follow in lockstep (a past incident rule 8; the
-# measured precedent is test-wiring-coverage.test.sh, where reading the constant
+# measured precedent is a test-wiring check, where reading the constant
 # let 50 -> 100000 pass with 48/48 green). Not env-overridable, on purpose.
 PIPEFAIL_BAN_MARKER_WINDOW_PIN=6
 # INSTRUMENT B — the DUMB, STATELESS, LINE-LOCAL pass. See "TWO INSTRUMENTS" above.
@@ -180,9 +178,13 @@ PIPEFAIL_BAN_DUMB_RE="${PIPEFAIL_BAN_DUMB_RE:-\|[[:space:]]*([A-Za-z_][A-Za-z0-9
 PIPEFAIL_BAN_STATE_LOST_CEILING="${PIPEFAIL_BAN_STATE_LOST_CEILING:-30}"
 # Sanity FLOOR on the discovered population — a broken-discovery detector (wrong
 # dir, empty checkout, a find that silently returned nothing), NOT an anti-shrink
-# guarantee. Measured 77 shell files after the hosted-fleet scripts were removed from this
-# repository; the floor sits below that so it catches broken discovery, not a deletion.
-PIPEFAIL_BAN_MIN_POPULATION="${PIPEFAIL_BAN_MIN_POPULATION:-60}"
+# guarantee. The value is per-repository and lives in the floors config.
+_PFB_FLOORS="$REPO_DIR/scripts/test/lib/population-floors.config.sh"
+# shellcheck source=scripts/test/lib/population-floors.config.sh
+. "$_PFB_FLOORS" 2>/dev/null || { echo "CANNOT MEASURE: floors config $_PFB_FLOORS is unreadable" >&2; exit 2; }
+PIPEFAIL_BAN_MIN_POPULATION="${PIPEFAIL_BAN_MIN_POPULATION:-${POPULATION_FLOOR_SHELL_FILES:-}}"
+[[ "$PIPEFAIL_BAN_MIN_POPULATION" =~ ^[1-9][0-9]*$ ]] \
+  || { echo "CANNOT MEASURE: shell-file floor '$PIPEFAIL_BAN_MIN_POPULATION' is not a positive integer" >&2; exit 2; }
 
 # Resolve the scanner ONCE. Absolute paths are accepted so a probe can point the
 # anchor at a mutated copy under its own mktemp dir instead of writing a file into
@@ -452,9 +454,10 @@ hdr "4. MUTATION PROBES — the guard is only worth its sensitivity"
 FIX="$TMPD/fix"; mkdir -p "$FIX"
 
 # --- 4a. A REAL, PREVIOUSLY-DEFECTIVE SITE, PUT BACK. -------------------------
-# A log-management setup script once carried this exact line three times. `crontab -l`
-# is small, which is why it survived review for years — latent, not safe. The subject is
-# written here (it is no longer in the tree), so the probe does not depend on that script.
+# A log-management script carried this exact line three times. `crontab -l`
+# is small, which is why it survived review for years — latent, not safe. The subject
+# is WRITTEN here, so the probe ships wherever the guard does and does not depend on
+# that script still being in the tree.
 SUBJ_REL="scripts/example-log-cron.sh"
 SUBJ_FIXED='if grep -q "aidis.*log" < <(crontab -l 2>/dev/null); then'
 SUBJ_BANNED='if crontab -l 2>/dev/null | grep -q "aidis.*log"; then'
@@ -620,10 +623,9 @@ fi
 
 # --- 4g. THE POISONING CLASS ITSELF — the one that got past round 1. ---------
 # `if X; then` on one line, a banned pipeline on the next. The shipped detector at
-# carried " then" into the next segment, so seg_is_bool() stopped seeing
+# an earlier change carried " then" into the next segment, so seg_is_bool() stopped seeing
 # the leading `if` and THE FIRST PIPELINE-BOOLEAN INSIDE ANY then/do BLOCK WAS
-# INVISIBLE. Bisected on a schema-audit script: dark from the `; then` at
-# one line, hiding the next — while the suite reported 25/25 GREEN over it. Three shapes,
+# INVISIBLE: dark from a `; then`, hiding the next line — while the suite reported 25/25 GREEN over it. Three shapes,
 # because `do` and a bare `then` on its own line are the same construct.
 rm -rf "$FIX"; mkdir -p "$FIX"
 printf '%s\n' '#!/usr/bin/env bash' 'set -euo pipefail' \
@@ -676,7 +678,7 @@ fi
 # --- 4j. THE PROBE THAT GUARDS THE NEW GUARD: blind instrument A, keep C. -----
 # Reintroduce the ROUND-1 BUG into a copy of the detector — `then`/`do` back in the
 # end-of-line continuation set — and point the suite at that copy. Instrument A goes
-# dark exactly as it did at the earlier pipefail scan; instrument C, reading the same line alone, does
+# dark exactly as it did at an earlier change; instrument C, reading the same line alone, does
 # not. The reconciliation must turn that difference into a RED. If this probe ever
 # passes for the wrong reason the whole cross-check is decorative.
 MUT_SCANNER_ABS="$TMPD/pipefail-boolean-scan.MUTANT.awk"

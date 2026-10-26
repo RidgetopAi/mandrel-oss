@@ -22,7 +22,7 @@ import type { TaskStats, TaskLeadTime } from '../../types/task';
 import { ANALYTICS_CONFIG, type RangeValue } from './config';
 
 /**
- * THE PAGE'S PROJECT SCOPE, passed to every hook below (page-scope epic §A1/§E).
+ * THE PAGE'S PROJECT SCOPE, passed to every hook below (an earlier epic §A1/§E).
  *
  * `projectId` is sent RAW as the endpoint's `project_id` query param, the literal `'all'`
  * included: the backend reads `'all'` on a query source as EXPLICITLY UNSCOPED

@@ -308,7 +308,7 @@ describe('Remote MCP transport — two-session isolation', () => {
 });
 
 describe('Remote MCP transport — unknown session id is REHYDRATED, not 404 (rehydrate-on-miss)', () => {
-  // an earlier Task / branch:mcp-session-persistence (supersedes an old papercut):
+  // an earlier Task / branch:mcp-session-persistence (supersedes the old papercut):
   // a lost session (idle-evicted, LRU-evicted, or — the big one — wiped by a server
   // restart/deploy) causes the client's NEXT tool call to arrive with a valid bearer token
   // + a session id no longer in the map. Real MCP clients (Amp, Claude Code, Codex, …)

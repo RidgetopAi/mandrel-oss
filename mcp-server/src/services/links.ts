@@ -417,7 +417,7 @@ export async function unlinkEdge(
   // a value the domain does not recognize becomes null (honest), never a fabricated type.
   const toType = row && isEdgeNodeType(row.to_type) ? (row.to_type as EdgeNodeType) : null;
   // The DELETE already knows the provenance of the row it removed — the same reason the
-  // A later minor change added id + to_type here. A removal that cannot say WHAT it removed is a
+  // an earlier change minor added id + to_type here. A removal that cannot say WHAT it removed is a
   // repair with no receipt, and `unlink` ADVERTISES both fields in its output schema.
   return {
     removed: result.rows.length > 0,

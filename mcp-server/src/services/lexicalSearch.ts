@@ -15,7 +15,7 @@
  *   * The PROSE tsquery is built from lexemes that came out of `to_tsvector` — i.e. ALREADY
  *     STEMMED — so it is assembled with `quote_literal` + `::tsquery` too. Handing a stemmed
  *     lexeme back to a `*_tsquery` function stems it AGAIN ('databas' → 'databa'), which
- *     matches nothing. That is the double-stemming trap from and it is the
+ *     matches nothing. That is the double-stemming trap from an earlier context, and it is the
  *     same trap in the retrieval path that services/absentTerms.ts closes in the probe path.
  *
  * ═══ VISIBILITY IS THE SEMANTIC PATH'S, EXACTLY ═══

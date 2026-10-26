@@ -155,7 +155,7 @@ const SPINE_TABLES: Record<SpineType, string> = {
  * citing an earlier task that `task({action:'details'})` answered `found:false` for, and read
  * that as a dangling pointer. Measured on prod 2026-09-05, it is not:
  *
- *   SELECT id, status, archived_at IS NOT NULL FROM tasks WHERE id::text LIKE '2b3c4d5e%';
+ *   SELECT id, status, archived_at IS NOT NULL FROM tasks WHERE id::text LIKE 'an earlier change%';
  *   -> f50bf00d-... | todo | t   (archived_at 2026-09-02 00:58:52+00)
  *
  * The row EXISTS. `task details` could not see it because `includeArchived:false` is the

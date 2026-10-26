@@ -10,8 +10,8 @@
  *   - clearsMinTrust()     — the band/score floor (reuses the T2b band vocabulary).
  *
  * Keeping it here (no db) means the unit tests hammer it with ZERO database — deterministic,
- * offline, fast — exactly like trustModel.ts splits the pure math out of trust.ts (a past incident
- * : one definition of the rule, testable in isolation). The DB/graph GATHERING lives in
+ * offline, fast — exactly like trustModel.ts splits the pure math out of trust.ts
+ * (one definition of the rule, testable in isolation). The DB/graph GATHERING lives in
  * services/recallThread.ts, which imports these.
  */
 
@@ -56,7 +56,7 @@ import {
  * math fired, who superseded the record, at what tier, at what confidence. It then rendered it
  * into a TEXT line and threw the structure away — so the only way to get it back was to
  * string-split the server's own prose. Our runtime shell does exactly that, in ~230 lines of
- * awk (`runtime/lib/boot-recall.sh`), splitting each node line at the LAST ` — trust:` and
+ * awk, splitting each node line at the LAST ` — trust:` and
  * scanning key:value tokens out of the tail. Its own comments enumerate how fragile that is:
  * a record TITLE containing the words `superseded_by:deadbeef` once made a merely-stale record
  * render as `SUPERSEDED → read deadbeef instead`, pointing at a record that does not exist
@@ -503,7 +503,7 @@ export function reviewOutcomeOf(metadata: unknown): string | null {
  * instrument has THREE states and "could not measure" never shares a value with "no"):
  *
  *   `0=GREEN@<sha>`      a MEASURED pass, on a named ref
- *   `1=RED@<sha>`        a MEASURED failure — a bug to fix
+ *   `1=RED@9305f00d`        a MEASURED failure — a bug to fix
  *   `2=CANNOT-MEASURE@…`    NOT a verdict on the commit — an instrument to repair
  *   `3=SKIP`                not applicable to this ref
  *   `40=STATIC-GREEN`       the subset passed; NOT the ship condition

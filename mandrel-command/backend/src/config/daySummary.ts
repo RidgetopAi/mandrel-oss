@@ -79,8 +79,8 @@ export const DAY_SUMMARY_CONFIG = {
   },
 
   /**
-   * Tunables for the Calendar per-cell MOMENTUM-SERIES endpoint (`GET /api/momentum-series`,
-   * an earlier task) — the batch read that paints each day cell's momentum ring/number.
+   * Tunables for the Calendar per-cell MOMENTUM-SERIES endpoint (`GET /api/momentum-series`)
+   * — the batch read that paints each day cell's momentum ring/number.
    */
   momentumSeries: {
     /**

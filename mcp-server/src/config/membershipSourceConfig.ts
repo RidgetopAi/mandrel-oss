@@ -28,7 +28,8 @@ export const MEMBERSHIP_SOURCE = {
    */
   legacyApprox: 'legacy-approx',
   /**
-   * DECLARED AFTER THE FACT by a human, through `branch_assign` (P3,    * migration 090). A FACT — and arguably a stronger one than `recorded`, which is an
+   * DECLARED AFTER THE FACT by a human, through `branch_assign` (P3, 
+   * migration 090). A FACT — and arguably a stronger one than `recorded`, which is an
    * observation the system made at mint time without anyone asserting anything. It exists
    * because the system opens positions the author never asked for (auto/byproduct opens),
    * so the SYSTEM manufactures wrong memberships and somebody has to be able to correct

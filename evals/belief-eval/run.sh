@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# run.sh — the Phase-4 belief-eval (the belief-layer design §5). ONE command to score the
+# run.sh — the Phase-4 belief-eval (design §5). ONE command to score the
 # belief layer against the six-case scorecard on a DISPOSABLE DB.
 #
 # What it does (never touches prod — a ci_*-prefixed throwaway DB, dropped on exit):

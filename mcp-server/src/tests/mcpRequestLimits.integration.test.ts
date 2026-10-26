@@ -1,5 +1,5 @@
 /**
- * Integration test: MCP request limits.
+ * Integration test: MCP request limits (security sweep).
  *
  * Boots the real HealthServer Express app with a real RemoteMcpTransport and a STUB tool
  * executor (same harness as remoteMcpTransport.integration.test.ts) and proves, at the HTTP

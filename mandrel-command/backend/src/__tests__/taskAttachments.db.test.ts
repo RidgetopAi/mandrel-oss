@@ -6,7 +6,7 @@
  * THE REAL APP (server.ts — every mounted router, in the shipped order), real auth, real
  * Postgres (migration 102). Not the attachments router alone: the first cut mounted ONLY
  * routes/taskAttachments.ts and stayed green while the shipped app 400'd the bulk route
- * (routes/tasks.ts's `GET /:id` captured `/tasks/attachments` — the reviewer #1).
+ * (routes/tasks.ts's `GET /:id` captured `/tasks/attachments` — Reviewer #1).
  * A test that wires its own composition has replaced the product; this one drives the
  * entry point the browser drives.
  * Covers: upload -> round-trip GET -> list -> delete -> 404; the 413/415 boundaries
@@ -339,7 +339,7 @@ describeDb('Task attachments (Lane B)', () => {
   });
 
   it('composition: an unknown /api route is still the 404 notFoundHandler owes it, not a 401 from a `/`-mounted authenticated router', async () => {
-    // the reviewer #6: `router.use('/', taskAttachmentRoutes)` with a router-level
+    // Reviewer #6: `router.use('/', taskAttachmentRoutes)` with a router-level
     // authenticateToken made EVERY unknown /api/* answer 401. Unauthenticated on purpose —
     // that is the request the old shape got wrong.
     const res = await request(app).get('/api/nope');
@@ -347,7 +347,7 @@ describeDb('Task attachments (Lane B)', () => {
   });
 
   // ──────────────────────────────────────────────────────────────────────────
-  // FILENAME BOUNDARY (the reviewer #4a/#4b/#4c)
+  // FILENAME BOUNDARY (Reviewer #4a/#4b/#4c)
   // ──────────────────────────────────────────────────────────────────────────
 
   /** RFC 5987 `filename*=UTF-8''…` from a Content-Disposition, decoded — or null. */

@@ -1,7 +1,7 @@
 /**
  * HYBRID SEARCH — the tunables for P2b: rank fusion, the absent-term veto, and the input
  * bound the JavaScript identifier extractor needs now that it sees caller-supplied queries.
- * (design spike an earlier note.)
+ * (design spike an earlier context.)
  *
  * P2a built the lexical PRIMITIVES and wired none of them in. This file is
  * the config for the phase that wires them in, and it is separate from
@@ -22,6 +22,14 @@ function envInt(name: string, fallback: number): number {
   if (raw === undefined || raw === '') return fallback;
   const v = Number(raw);
   return Number.isInteger(v) && v > 0 ? v : fallback;
+}
+
+/** Read a NON-NEGATIVE integer env var (0 allowed), falling back on missing/garbage/negative. */
+function envNonNegInt(name: string, fallback: number): number {
+  const raw = process.env[name]; // env-read: via-callers
+  if (raw === undefined || raw === '') return fallback;
+  const v = Number(raw);
+  return Number.isInteger(v) && v >= 0 ? v : fallback;
 }
 
 /** Read a boolean env var ('1'/'true'/'yes' → true), falling back on missing/garbage. */
@@ -48,7 +56,7 @@ function envEnum<T extends string>(name: string, allowed: readonly T[], fallback
 }
 
 /**
- * ═══ THE RRF SMOOTHING CONSTANT, AND WHY IT IS NOT THE THING AN EARLIER REVIEW REJECTED ═══
+ * ═══ THE RRF SMOOTHING CONSTANT, AND WHY IT IS NOT THE THING an earlier change REJECTED ═══
  *
  * Reciprocal-rank fusion scores a document as Σ 1/(k + rank_c) over the channels c that
  * returned it. `k` is a constant, and an earlier decision rejected TUNED CONSTANTS, so the
@@ -249,7 +257,7 @@ export const HYBRID_SEARCH_CONFIG = {
    * setup") has too few matched terms to qualify, so its subject being absent still vetoes.
    * env: MANDREL_SEARCH_ABSENT_TERM_TOLERATED_ABSENT / _TOLERATED_MIN_MATCHED
    */
-  absentTermToleratedAbsent: envInt('MANDREL_SEARCH_ABSENT_TERM_TOLERATED_ABSENT', 1),
+  absentTermToleratedAbsent: envNonNegInt('MANDREL_SEARCH_ABSENT_TERM_TOLERATED_ABSENT', 1),
 
   /** How many of a question's other content terms must occur in the corpus before one absent term is tolerated. Short questions fall below it and still veto. */
   absentTermToleratedMinMatched: envInt('MANDREL_SEARCH_ABSENT_TERM_TOLERATED_MIN_MATCHED', 3),
@@ -272,6 +280,17 @@ export const HYBRID_SEARCH_CONFIG = {
 
   /** Largest edit distance still counted as a near-miss for a term at or above the long length. */
   absentTermNearMissLongDistance: envInt('MANDREL_SEARCH_NEAR_MISS_LONG_DISTANCE', 2),
+
+  /**
+   * Also check a would-be-vetoing term against every word in the whole project, not only the
+   * retrieved records, before returning an empty result. Catches a typo whose correct spelling
+   * is in a record the search did not retrieve; costs three per-table word-list reads, run
+   * only when the search would otherwise come back empty.
+   * (~350 ms on contexts alone for a 7.6k-context project when the reads ran sequentially;
+   * they now run concurrently — an earlier task.)
+   * env: MANDREL_SEARCH_NEAR_MISS_PROJECT_FALLBACK
+   */
+  absentTermNearMissProjectFallback: envBool('MANDREL_SEARCH_NEAR_MISS_PROJECT_FALLBACK', true),
 } as const;
 
 /**

@@ -1,5 +1,5 @@
 /**
- * ADJUDICATION PROVIDER FACTORY (the belief-layer design §3/§9a).
+ * ADJUDICATION PROVIDER FACTORY (design §3/§9a).
  *
  * Selects the Stage-2 adjudicator implementation from config (BELIEF_ADJUDICATOR_CONFIG.
  * provider) — local-vs-API is a config flip, not a code change. Registers the single-providers

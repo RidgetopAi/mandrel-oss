@@ -1,5 +1,5 @@
 -- Migration 076: PER-USER DEFAULT PROJECT — `admin_users.default_project_id`
--- Epic: the page-scope epic (Command UI project-selector rework, spec §A)
+-- Epic: 41293984 (Command UI project-selector rework, spec §A)
 --
 -- ── WHAT THIS CLOSES ──────────────────────────────────────────────────────────────────
 -- The Command UI's "default project" was NOT per-user. It was the instance-wide

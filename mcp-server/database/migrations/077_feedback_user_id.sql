@@ -28,9 +28,9 @@
 --     guessing an owner from a recyclable string, which is the exact defect being fixed.
 --   * COUNTED, NOT LOGGED: migrate.ts discards the WARNING (node-postgres, no listener).
 --     Count: SELECT count(*) FROM feedback WHERE user_id IS NULL.
---   * STILL READ BY HUMANS. out-of-band feedback reports
+--   * STILL READ BY HUMANS. Out-of-band feedback reports
 --     read this table directly over psql with no owner predicate, so orphaned feedback
---     continues to reach the operator/the coordinator exactly as before. Nothing is lost — only the
+--     continues to reach Operator/Coordinator exactly as before. Nothing is lost — only the
 --     self-service API view of it is withheld, which is the correct fail-closed default.
 --
 -- ── WHY THE COLUMN STAYS NULLABLE AFTER THE BACKFILL ──────────────────────────────────
@@ -101,7 +101,7 @@ BEGIN
     RAISE NOTICE 'migration 077: backfilled owner for % feedback row(s) by username', claimed;
 
     IF orphans > 0 THEN
-        RAISE WARNING 'migration 077: % feedback row(s) have no resolvable owner and stay NULL (KEPT, withheld from the API, still visible to an out-of-band feedback report). Unresolved author labels: %', orphans, names;
+        RAISE WARNING 'migration 077: % feedback row(s) have no resolvable owner and stay NULL (KEPT, withheld from the API, still visible to out-of-band psql readers). Unresolved author labels: %', orphans, names;
     END IF;
 END
 $$;

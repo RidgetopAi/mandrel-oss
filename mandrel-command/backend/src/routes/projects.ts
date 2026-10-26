@@ -46,7 +46,7 @@ const router = Router();
 //
 // That fail-soft behaviour is MEASURED, not assumed, and the watcher lives in a different
 // repo ON A DIFFERENT BOX, so here is the instrument — grep it there, not here:
-//   host: the prod host (the prod box; the watcher source is NOT on the control host)
+//   host: prod-host (the prod box; the watcher source is NOT on the control host control box)
 //   file: /home/user/projects/mandrel-watcher/src/core/ConfigManager.ts
 //   ConfigManager.fetchProjects: throws on a non-2xx at :110-112, and its own catch at
 //   :139-141 logs "Failed to fetch projects from API, using cached/static config" and
@@ -71,8 +71,8 @@ router.use(authenticateToken);
  * checked the SHAPE and nothing else. Measured at the real surface: a zero-grant non-admin
  * read another project's name, description and full insights with a 200.
  *
- * This is the `router.param` + ProjectAccessService choke point (authorizeProjectPathParam),
- * so there is one authorization decision, not two.
+ * This is the same `router.param` + ProjectAccessService choke point the project-by-id routes
+ * already use, so there is one authorization decision, not two.
  */
 const authorizeProjectIdParam: RequestParamHandler = (req, res, next, value) =>
   authorizeProjectPathParam(

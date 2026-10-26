@@ -131,7 +131,7 @@ describe('supersession default: off without a key, on with one', () => {
     expect(t.infoSpy).not.toHaveBeenCalled();
   });
 
-  test('(4) provider=tiered + ANTHROPIC_API_KEY but no tier-1 key: disarms once at startup naming SUBQ_API_KEY, no request', async () => {
+  test('(4) provider=tiered + ANTHROPIC_API_KEY but no tier-1 key: disarms once at startup naming the CONFIGURED tier-1 key variable, no request', async () => {
     process.env.MANDREL_BELIEF_ADJUDICATOR_PROVIDER = 'tiered';
     process.env.ANTHROPIC_API_KEY = 'test-key-not-used';
     const t = await load();
@@ -142,7 +142,16 @@ describe('supersession default: off without a key, on with one', () => {
     const disarm = t.errorSpy.mock.calls.filter((c) => String(c[0]).includes('DISARMED'));
     expect(disarm.length, 'once, at startup — not per record').toBe(1);
     const text = JSON.stringify(disarm[0]);
-    expect(text).toContain('SUBQ_API_KEY');
+    // The key the message must name is whatever tier 1 is CONFIGURED to read — derived from
+    // the live config, not a literal, so a moved tier-1 default (subq) cannot
+    // turn this into a test of the wrong variable. Pinned non-empty and distinct from the
+    // tier-2 key that IS present, so "names a key" cannot pass by naming ANTHROPIC_API_KEY.
+    const { BELIEF_TIERED_CONFIG } = await import('../config/beliefConfig.js');
+    const tier1Key = BELIEF_TIERED_CONFIG.tier1.apiKeyEnvVar;
+    expect(tier1Key).toMatch(/^[A-Z][A-Z0-9_]*$/);
+    expect(tier1Key).not.toBe('ANTHROPIC_API_KEY');
+    expect(process.env[tier1Key], 'the tier-1 key really is absent in this case').toBeUndefined();
+    expect(text).toContain(tier1Key);
     expect(t.resolveProvider).toHaveBeenCalledTimes(1);
     expect(t.queue.size).toBe(0);
     expect(fetchSpy, 'no provider request attempted').not.toHaveBeenCalled();

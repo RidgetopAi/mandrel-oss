@@ -1,5 +1,5 @@
 /**
- * POSITION IS PER-LOOP — the an earlier task contract.
+ * POSITION IS PER-LOOP — the earlier task contract.
  *
  * THE INCIDENT THIS REPRODUCES (measured on prod 2026-08-13, twice): two concurrent
  * Builders with DISTINCT X-Connection-IDs and the SAME X-Actor-ID resolved to ONE DB
@@ -7,7 +7,7 @@
  * actor; ensureSessionForActor caches that one session under every calling connection).
  * Position keying then dereferenced the RAM-cached session id, so a branch position
  * opened by one Builder's task claim stamped false DECLARED-tier `informs` edges onto
- * the OTHER Builder's completion writes (two prod edges — both pruned),
+ * the OTHER Builder's completion writes (prod edges, an earlier change — both pruned),
  * and one branch_close cleared both agents' positions.
  *
  * THE INVARIANT: a position belongs to a LOOP — the connection identity — in every
@@ -97,7 +97,7 @@ describe('position is per-loop: concurrent connections of ONE actor never share 
     await viaTool('project_switch', { project: projectId }, connB);
 
     // Agent A: create a task and start work on it — the byproduct opens A's position on T
-    // (exactly how the prod Builders acquired theirs: task claim / in_progress).
+    // (exactly how the prod builders acquired theirs: task claim / in_progress).
     const taskResp = await viaTool('task_create', { title: 'A-owned task', type: 'feature' }, connA, actor);
     const taskId: string = taskResp.structuredContent.task.id;
     await viaTool('task_update', { taskId, status: 'in_progress' }, connA, actor);
@@ -117,7 +117,7 @@ describe('position is per-loop: concurrent connections of ONE actor never share 
 
     // THE INCIDENT ASSERTION: zero edges of any kind from B's context to A's task. Under
     // session-keyed positions this minted `informs` created_by 'auto:positional' (prod
-    // the pruned edges' shape).
+    // edge's shape).
     expect(await linksBetween(ctxId, taskId)).toEqual([]);
 
     // B's own view: whatever position B now holds (auto-open on its own record is fine),

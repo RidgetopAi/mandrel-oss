@@ -5,8 +5,8 @@
  * ---------------
  * Tests that drive the REAL transport have to bind a real port. Historically they
  * picked a fixed literal (18097 / 18098 / 18099) because of an ordering constraint
- * (below). That is a landmine: the prod box runs the tenant docker fleet, whose
- * docker-proxy processes hold 13xxx / 15xxx / 16379-16399 / 18080-18099. The the control host dev
+ * (below). That is a landmine: the prod host box runs the tenant docker fleet, whose
+ * docker-proxy processes hold 13xxx / 15xxx / 16379-16399 / 18080-18099. The control host dev
  * box runs no fleet, so a colliding literal passes locally and fails ONLY on the box
  * that runs the tenants — which is exactly how `TEST_PORT = 18099` aborted a prod
  * fleet deploy at the clean gate (EADDRINUSE :::18099 in healthServer.start).

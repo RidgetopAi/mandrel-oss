@@ -50,7 +50,7 @@ function envUnit(name: string, fallback: number): number {
 }
 
 /**
- * THE TRUST KNOBS (operator-approved defaults, spec §8.1 "Trust model v1").
+ * THE TRUST KNOBS (the operator-approved defaults, spec §8.1 "Trust model v1").
  *
  * A record's trust = a blend of an OUTCOME signal (the moat: did the work this record
  * informed actually pan out?) and a FRESHNESS signal (decays with age), capped by
@@ -127,7 +127,7 @@ export interface TrustConfig {
 }
 
 /**
- * THE LIVE CONFIG — read once at module load. Defaults are operator-approved §8.1
+ * THE LIVE CONFIG — read once at module load. Defaults are the operator-approved §8.1
  * "Trust model v1" values; every one is env-overridable for the eval sweep.
  */
 export const TRUST_CONFIG: TrustConfig = {

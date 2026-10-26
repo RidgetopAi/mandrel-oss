@@ -169,7 +169,7 @@ describe('recording directive — the WRITE half of the injected block', () => {
     expect(markdown.endsWith(BRIEFING_RECORDING_DIRECTIVE_DEFAULT)).toBe(true);
   });
 
-  test('THE COMPONENT COST is stated as a number a reader can check (the scoring rule)', () => {
+  test('THE COMPONENT COST is stated as a number a reader can check (scoring rule)', () => {
     // Not an assertion about goodness — an assertion that the block is BOUNDED and that the
     // number quoted in briefingConfig.ts and in the task report is the number that ships.
     // A directive that grows silently is paid for in evicted records on every saturated

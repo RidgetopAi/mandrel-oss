@@ -7,7 +7,7 @@
 -- demoted to a cache. `getActiveThread` rehydrates from here when the cache is cold (A2), and
 -- a TTL computed at READ from set_at (spec A3) treats a stale anchor as no anchor.
 --
--- KEY (spec D2, operator-approved): PRIMARY KEY (project_id, session_key). An exact
+-- KEY (spec D2, the operator-approved): PRIMARY KEY (project_id, session_key). An exact
 -- (project_id, session_key) match rehydrates a reconnecting session; on a miss the store may
 -- fall back to the project's most-recent non-expired anchor (behind
 -- ANCHOR_PROJECT_FALLBACK_ENABLED — default OFF in code, config/reliableThreadingConfig.ts:

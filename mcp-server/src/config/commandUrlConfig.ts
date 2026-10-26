@@ -1,5 +1,5 @@
 /**
- * COMMAND UI record-permalink config + the single shared helper ( * an earlier decision).
+ * COMMAND UI record-permalink config + the single shared helper.
  *
  * THE GOAL: every id-emitting MCP tool RESULT carries a plain, clickable permalink to the
  * record — `<this instance's Command UI>/r/<id8>` — so an id is clickable everywhere

@@ -1,5 +1,5 @@
 /**
- * an earlier task (Reviewer REJECT of 573f00d) — does the server's sentence actually reach
+ * an earlier task (Reviewer REJECT of 5730f00) — does the server's sentence actually reach
  * the human?
  *
  * ── WHY THIS TEST IS WRITTEN AT THE ADAPTER SEAM ───────────────────────────────────────

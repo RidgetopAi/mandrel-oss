@@ -16,7 +16,7 @@
  * Fields are kept separate here and terms must start a word, which closes both.
  *
  * ── WHY THE ID STILL WORKS ───────────────────────────────────────────────────────
- * A Mandrel id8 (`2b3c4d5e`) is how every tool, link and handoff REFERS to a task, so
+ * A Mandrel id8 (an earlier change) is how every tool, link and handoff REFERS to a task, so
  * pasting one into the box has to find it — that is why `id` is a searched field at all.
  * It needs no special case under this rule: the word boundary splits a UUID on its
  * dashes, so each dashed segment is its own word. An id8 is a prefix of the first

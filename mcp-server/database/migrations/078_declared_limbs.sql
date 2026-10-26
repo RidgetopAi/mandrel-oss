@@ -15,7 +15,7 @@
 --   '{}'   → DERIVED, and this record declares NOTHING. Unassignable, therefore terminal
 --            under Phase 2. This is the MAJORITY of the riverbend corpus — a large and
 --            EXPECTED population, not an error state. The measured proportion and the
---            query behind it are on deliberately not copied here:
+--            query behind it are on an earlier task, deliberately not copied here:
 --            a number in a comment goes stale without anything noticing.
 --   {…}    → DERIVED, with limb roots.
 -- A `NOT NULL DEFAULT '{}'` would collapse the first two into one value and destroy the

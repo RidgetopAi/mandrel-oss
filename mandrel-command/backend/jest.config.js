@@ -20,7 +20,7 @@ module.exports = {
   // Safe by measurement, not by assumption: `grep -rn "from '\.\{1,2\}/[^']*\.js'"
   // --include=*.ts src` returns 2 hits (both in services/EmbeddingService.ts) and
   // `find src -name '*.js'` returns nothing — so no real .js file can be shadowed.
-  // needed by src/__tests__/mutatingRouteAuthzCoverage.test.ts.
+  // an earlier Task; needed by src/__tests__/mutatingRouteAuthzCoverage.test.ts.
   moduleNameMapper: {
     '^(\\.{1,2}/.*)\\.js$': '$1',
   },

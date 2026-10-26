@@ -4,7 +4,7 @@
  * WHAT CHANGED AND WHY THIS FILE EXISTS
  *   docker-compose.yml used to hand every container `MANDREL_PROJECT_SCOPE_GUARD=shadow`,
  *   overwriting the code's fail-closed default at the container boundary. The soak is
- *   over and Operator approved enforcing. The fix is NOT to swap the literal `shadow` for
+ *   over and the operator approved enforcing. The fix is NOT to swap the literal `shadow` for
  *   the literal `enforce` — that leaves the same defect (a per-deployment value baked
  *   into a tracked file) and re-creates the drift the moment the code default moves.
  *   The fix is a PASSTHROUGH: `"${MANDREL_PROJECT_SCOPE_GUARD:-}"`, so an operator who

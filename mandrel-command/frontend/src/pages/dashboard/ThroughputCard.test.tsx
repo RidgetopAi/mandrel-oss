@@ -5,7 +5,7 @@
  * no lying mocks). Proves the three required states — data / empty / loading — plus the
  * load-bearing wiring: which PROJECT the card asks about.
  *
- * ── THE ASSERTION THAT WAS INVERTED (page-scope epic) ──────────────────────────────────
+ * ── THE ASSERTION THAT WAS INVERTED ──────────────────────────────────
  * This file used to assert `api.tasks.throughput` was called "MANDREL-WIDE — configured
  * range, NO project_id", and called that its mutation anchor: "point the hook at a project
  * and it goes RED." It did exactly that, which made it a guard holding the DEFECT in place.

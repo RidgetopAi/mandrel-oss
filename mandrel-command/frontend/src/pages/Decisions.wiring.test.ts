@@ -4,7 +4,7 @@
  *   1. import ZERO antd (migrated fully off the old component lib);
  *   2. wire data through the UNIFIED `api.*` client (not axios/generated);
  *   3. surface the TYPED thread box from real graph edges (api.decisions.links) — NEVER a
- *      semantic `related` list (the data-gap policy: never conflate the two);
+ *      semantic `related` list (data-gap policy: never conflate the two);
  *   4. carry no hardcoded hex colours in the stylesheet (token-driven);
  *   5. reuse the SHARED typed-edge vocabulary (config/graphEdges) + the shared RecordLink
  *      type rather than re-copying them.

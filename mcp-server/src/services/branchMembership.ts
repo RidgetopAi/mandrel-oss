@@ -468,7 +468,7 @@ export async function readBranchMemberSummaries(
  *      future service). The table permits that state, and it is what the cross-project test
  *      writes by hand.
  *      ⚠️ THE CROSS-PROJECT TEST DOES NOT ISOLATE THIS LAYER, and an earlier draft of this
- *      comment claimed it did. MEASURED (the reviewer): dropping ONLY this
+ *      comment claimed it did. MEASURED (Reviewer): dropping ONLY this
  *      filter leaves that test GREEN, because the handler's pre-check refuses first;
  *      disabling ONLY the pre-check turns it RED with "membership UPDATE affected 0 rows",
  *      which is the evidence that the filter does bite. So do NOT read a green suite as

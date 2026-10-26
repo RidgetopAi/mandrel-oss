@@ -201,7 +201,7 @@ export const READ_WAITING_DUE_HINT_CAVEAT = (): string =>
  * forbids exactly that) and would only ever find the collisions we already knew about.
  *
  * So the check is STRUCTURAL instead: two tags collide when they differ ONLY in their
- * separators. `needs-operator`, `needs:operator`, `needs_operator` and `Needs the operator` all fold to one
+ * separators. `needs-operator`, `needs:operator`, `needs_operator` and `Needs Operator` all fold to one
  * key; `needs-operator` and `needs-coordinator` do not. That detects our own defect, needs no
  * convention, and works on any customer's tag set on day one.
  *
@@ -214,7 +214,7 @@ export const TAG_COLLISION_SEPARATOR = '-';
 
 /**
  * FOLD A TAG TO ITS SPELLING KEY: lowercase, then collapse every run of separator
- * characters to one. `needs-operator`, `needs:operator`, `needs_operator`, `Needs  the operator` → the same
+ * characters to one. `needs-operator`, `needs:operator`, `needs_operator`, `Needs  Operator` → the same
  * key. `needs-operator` and `needs-coordinator` stay different.
  *
  * NOTE WHAT THIS IS NOT: it is not a normaliser any write path applies. Nothing stores its

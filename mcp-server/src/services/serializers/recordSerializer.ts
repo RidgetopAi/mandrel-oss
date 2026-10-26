@@ -1,9 +1,9 @@
 /**
  * RECORD SERIALIZERS — the one place per record type that enumerates wire fields
- * (the class behind the unreadable-field defect).
+ * (the class behind).
  *
  * ═══ THE CLASS ═══
- * The unreadable-field defect was not in a mapper. `dueAt`/`blockedOn` were stored, mapped, and
+ * an earlier change's defect was not in a mapper. `dueAt`/`blockedOn` were stored, mapped, and
  * echoed by the write path — and task_details never returned them, because its
  * structuredContent was a HAND-WRITTEN field-by-field literal that nobody extended when the
  * columns landed. The same literal existed, unaudited, on task_list, the create/update

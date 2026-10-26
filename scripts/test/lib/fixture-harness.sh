@@ -3,7 +3,7 @@
 # fixture-harness.sh — the SHARED fixture harness for scripts/test/*
 # -----------------------------------------------------------------------------
 # NOT A TEST. Sourced by suites under scripts/test/. Answers the two questions
-# that produced it, which are the same
+# that produced it (an earlier task and an earlier change), which are the same
 # question one layer apart:
 #
 #   (A) CAN THIS FIXTURE REACH A REAL DANGEROUS BINARY?
@@ -11,7 +11,7 @@
 #       PATH. A shadowed call is LOGGED and REFUSED. A suite must opt IN
 #       (fh_allow / fh_allow_loopback / fh_allow_prefix) to reach a real one,
 #       and then asserts fh_assert_no_forbidden_calls. Opt-in, never opt-out —
-#       the incident was a suite that reached `docker compose -p mandrel-prod
+#       the incident was a suite that reached `docker compose -p <prod project>
 #       ... up -d` because nobody had remembered to opt OUT.
 #
 #   (B) DID THE COPIED SUBJECT ACTUALLY LOAD?
@@ -26,7 +26,7 @@
 # NEITHER HALF PARSES SHELL, DELIBERATELY. The shadow decides from calls that
 # were MADE; the load check decides from bash's OWN report of what it could not
 # open. A hand-rolled `source`-line recogniser was written first and deleted:
-# measured on fleet-defaults-drift script it returned 20 directives of which
+# measured on one real script it returned 20 directives of which
 # 4 were real, the other 16 being prose and python heredoc assignments. A regex
 # is a claim about a grammar you do not own.
 #
@@ -61,9 +61,8 @@ fh_init() {
 
   # THE SHADOW IS FAITHFUL TO THE HOST: a binary that is NOT on this box is not
   # shimmed. There is nothing to reach, and shimming it would make `command -v
-  # docker` succeed — flipping every capability probe in the tree. Measured:
-  # prod-compose-render-equivalence.test script selects its INTERPRETER vs PARSER mode
-  # on exactly that check, so an unfaithful shadow silently changes what the
+  # docker` succeed — flipping every capability probe in the tree. Measured: a
+  # compose-render suite selects its INTERPRETER vs PARSER mode on exactly that check, so an unfaithful shadow silently changes what the
   # suite tests. FH_UNSHADOWED records the absent ones so "no docker call was
   # logged" can never be read as "docker was blocked" on a box with no docker.
   local b p
@@ -82,7 +81,7 @@ fh_init() {
 
   # THE SHIM'S STATE PATH, DENY CODE AND HOST LIST ARE BAKED IN AS LITERALS, not
   # read from the environment. Real suites invoke their subjects as
-  # `env -i PATH="$PATH" …` (env-caller-restore.test.sh does exactly this), and a
+  # `env -i PATH="$PATH" …`, and a
   # shim that needed FH_DIR from the environment would die WITHOUT LOGGING under
   # that scrub — a shadow that fails open on the very invocation form it exists
   # to police.
@@ -102,7 +101,7 @@ args="$(printf '%s ' "$@" | tr '\n\t' '  ')"
 # there is no version of "a real one leaked into a gate log" that is acceptable
 #.
 #
-# ⚠️ SCOPE, MEASURED — this covers `<keyword><SPACE><value>`
+# ⚠️ SCOPE, MEASURED (Reviewer) — this covers `<keyword><SPACE><value>`
 # and NOTHING ELSE. These leak VERBATIM and were checked, not assumed:
 #     ?token=<value>            (no whitespace)
 #     -H "X-Api-Key: <value>"   (the colon breaks the match)
@@ -141,7 +140,7 @@ fh_shim_allow() {
 # READ THE POLICY ON FD 3, NOT STDIN. `exec "$real" "$@"` inherits whatever the
 # shim is reading from, and a `while … done < "$pol"` hands the POLICY FILE to
 # the real binary as its stdin. Measured: it broke 11 assertions in
-# authed-probe.test.sh, whose subject uses `curl --data @-` and `curl -K -` —
+# a probe suite whose subject uses `curl --data @-` and `curl -K -` —
 # both of which read stdin, and both of which silently got the rule list.
 # NEVER rules first, and they beat every allow rule. A suite that opts in to a
 # read-only verb of a powerful binary must not be one argv away from a mutating
@@ -237,8 +236,8 @@ fh_shadow_report() {
 # "expected + refused" instead. The reason is MANDATORY and non-empty.
 #
 # This is the co-located exception with a written reason, not a central
-# allow-list. It exists because one real suite —
-# env-caller-restore.test.sh — drives real consumer scripts under a deliberately
+# allow-list. It exists because one real suite
+# drives real consumer scripts under a deliberately
 # ALL-CLOBBERING config, so the consumers genuinely do call `rclone delete
 # CONFIG_CLOBBERED` and `systemctl is-active`. Before the shadow those ran for
 # real. The property that suite wants is not "no call was attempted" but "every
@@ -339,7 +338,7 @@ fh_shim_is_live() {
   "$b" --fh-liveness-probe >/dev/null 2>&1
   rc=1
   # ONLY the two logs this function CLEARED above. unavailable.log was deliberately
-  # dropped: it is never cleared here, so a single stale line
+  # dropped (Reviewer): it is never cleared here, so a single stale line
   # in it made a completely DEAD shadow report itself live — the control that exists
   # to catch a false green quietly becoming one.
   grep -q . "$FH_DIR/forbidden.log" "$FH_DIR/allowed.log" 2>/dev/null && rc=0
@@ -372,7 +371,7 @@ fh_shim_is_live() {
 #
 # IT MIRRORS EVERYTHING RATHER THAN ENUMERATING THE SUBJECT'S SOURCES, also
 # deliberately: enumerating means owning a claim about bash's grammar. Measured
-# on fleet-defaults-drift script, a command-position regex returned 20
+# on one real script, a command-position regex returned 20
 # "directives" of which 4 were real — the rest prose and PYTHON heredoc
 # assignments (`source = "code default"`). Same reasoning as
 # fixture_install_gate_libs, which copies wholesale for the same reason.

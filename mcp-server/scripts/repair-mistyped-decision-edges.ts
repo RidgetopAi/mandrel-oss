@@ -1,6 +1,6 @@
 /**
  * REPAIR — `links` rows whose `to_type='decision'` names an id that is NOT a decision.
- * (forward fix for the minting path shipped in 130f00d.)
+ * (forward fix for the minting path shipped in 1303f00.)
  *
  * ═══ WHAT WENT WRONG ═══
  * Before the resolveMintEndpoint guard, autoMintFromDecision's evidence fallback

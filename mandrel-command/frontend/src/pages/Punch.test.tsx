@@ -1,6 +1,6 @@
 /**
- * Punch form — the STRUCTURED contract proof (an earlier decision /
- * the Punch List loop decision; DEPENDS ON the API shape from an earlier task). This is the literal
+ * Punch form — the STRUCTURED contract proof
+ * (DEPENDS ON the API shape from an earlier task). This is the literal
  * acceptance-criteria walkthrough for the punch author's DONE WHEN clauses, run against
  * a MOCKED unified api client so the wire payload — never a screenshot — is the proof
  * of what actually gets sent:
@@ -23,8 +23,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const P_RIVERBEND = 'aaaa1111-1111-4111-8111-aaaa11111111';
-const mockAllProjects = [{ id: P_RIVERBEND, name: 'riverbend' }];
+const P_COORDINATOR = 'aaaa1111-1111-4111-8111-aaaa11111111';
+const mockAllProjects = [{ id: P_COORDINATOR, name: 'riverbend' }];
 
 vi.mock('../contexts/ProjectContext', () => ({
   useProjectContext: () => ({ setSelectedProjectId: () => undefined, allProjects: mockAllProjects }),
@@ -64,7 +64,7 @@ function mount(props: Partial<React.ComponentProps<typeof PunchForm>> = {}) {
     root.render(
       <QueryClientProvider client={client}>
         <MemoryRouter>
-          <PunchForm pageProjectId={P_RIVERBEND} onFiled={onFiled} onCancel={() => {}} {...props} />
+          <PunchForm pageProjectId={P_COORDINATOR} onFiled={onFiled} onCancel={() => {}} {...props} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -97,7 +97,7 @@ function type(el: HTMLInputElement | HTMLTextAreaElement, value: string) {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockApi.tasks.create.mockResolvedValue({ id: NEW_ID, project_id: P_RIVERBEND });
+  mockApi.tasks.create.mockResolvedValue({ id: NEW_ID, project_id: P_COORDINATOR });
   mockApi.tasks.update.mockResolvedValue({ id: NEW_ID, stage: 'ready' });
 });
 afterEach(() => {

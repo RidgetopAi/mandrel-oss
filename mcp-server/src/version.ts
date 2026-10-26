@@ -33,7 +33,7 @@
  *   The semver alone could not discriminate between refs: v0.19.0 spanned 62
  *   commits and three separate fleet releases, so a deploy assertion reading
  *   "initialize reports v0.19.0" passed while prod ran a DIFFERENT build
- *  . The reported version is therefore `<semver>+<revision>`,
+ *. The reported version is therefore `<semver>+<revision>`,
  *   which is spec-legal semver BUILD METADATA (SemVer 2.0.0 §10 — ignored when
  *   determining precedence), so clients that parse semver are unaffected.
  *
@@ -110,10 +110,10 @@ export const BUILD_METADATA_INVALID = 'invalid';
  * A FULL git object id: exactly 40 hex chars, nothing else.
  *
  * WHY EXACTLY 40 AND NOT A RANGE (7..40) — the suffix width must be FIXED.
- *   The only producer in the fleet lane is fleet-deploy script's release_build,
- *   which sets MANDREL_IMAGE_REVISION="$(git rev-parse HEAD)" — always a full
+ *   The release build (docker-compose.build.yml)
+ *   sets MANDREL_IMAGE_REVISION="$(git rev-parse HEAD)" — always a full
  *   40-hex sha. Accepting a shorter id would buy nothing real and would let the
- *   reported string take a FOURTH shape (`0.19.0+cdff00d`, a 7-char suffix)
+ *   reported string take a FOURTH shape (`0.19.0+cdf9f00`, a 7-char suffix)
  *   beyond the three this contract defines. Downstream guards match the suffix
  *   as `<sha12>|unknown|invalid`; a variable-width suffix is precisely the
  *   "guard's population is narrower than reality" defect this task exists to

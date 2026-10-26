@@ -7,7 +7,7 @@
  * falls back to the deterministic mock embedding and these reads/writes use exact ids,
  * so every DB read/write is real.
  *
- * WHAT THIS PROVES (the an earlier task contract):
+ * WHAT THIS PROVES (the earlier task contract):
  *
  *  CASE 1 — an 8-char SHORT id resolves to the SAME record as the full UUID on
  *           task_details, task_update, decision_get, decision_update (back-compat with

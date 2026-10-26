@@ -15,8 +15,8 @@ import {
  * (centralized project scoping), the F-04 AUTHORIZATION closure, and the
  * F-04 COMPLETION.
  *
- * ── WHAT CHANGED LATER, AND WHY ──────────────────────────────────────────────────────────
- * The trust-boundary change authorized THE HEADER. The check was written `if (projectIdHeader) { … }`, so
+ * ── WHAT CHANGED IN an earlier change, AND WHY ────────────────────────────────────────────────
+ * an earlier change authorized THE HEADER. The check was written `if (projectIdHeader) { … }`, so
  * `?project_id=…`, `?project=…`, `?projectId=…` and `body.projectId` — all of which reach
  * the very same project scope in ~20 controllers — passed with no authorization at all.
  * The authorization now hangs off the RESOLUTION, not off one door: see
@@ -66,7 +66,7 @@ export const projectContextMiddleware = async (
 
     // Skip project validation for auth endpoints.
     //
-    // EXACT-OR-SEGMENT, not a bare prefix (the reviewer fold-in): `startsWith('/auth')` also
+    // EXACT-OR-SEGMENT, not a bare prefix (Reviewer fold-in): `startsWith('/auth')` also
     // matches `/authors`, `/authorize`, `/auth-callback`. A future route under any of those
     // would silently skip scope resolution here and then hit the fail-loud throw inside
     // getRequestProjectId() — a 500 whose cause is three files away. The skip list must

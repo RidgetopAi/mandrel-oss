@@ -1,7 +1,6 @@
 /**
  * OAUTH DCR (dynamic-client-registration) ABUSE-CONTROL CONFIG — the single source of truth
- * for the tunables that cap + rate-limit + expire self-registered OAuth clients (BA-3 arming,
- * an earlier task).
+ * for the tunables that cap + rate-limit + expire self-registered OAuth clients (BA-3 arming).
  *
  * WHY THIS EXISTS: `auth.ts` keeps `allowUnauthenticatedClientRegistration: true` — REQUIRED
  * for Claude.ai's connector to self-register via public DCR (RFC 7591). But left ungoverned,

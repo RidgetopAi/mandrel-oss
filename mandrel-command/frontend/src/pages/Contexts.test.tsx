@@ -3,7 +3,7 @@
  * async act into jsdom, behind QueryClientProvider + MemoryRouter, with the UNIFIED `api`
  * client mocked. Proves: the list RAIL, the required states (loading / empty / error), the
  * LIVE facet counts, that the rail auto-selects the first row into the reader, and — via the
- * /contexts/:id DEEP-LINK — that the reader lands on THAT record (the permalink target Operator
+ * /contexts/:id DEEP-LINK — that the reader lands on THAT record (the permalink target the operator
  * shares publicly), renders the markdown body, and shows the TYPED thread box built from REAL
  * graph edges (the moat), including its honest empty state. Detail action wiring (delete
  * mutation-check, edit, share, related, metadata) is covered in
@@ -33,7 +33,7 @@ vi.mock('../api', () => ({
 }));
 
 /**
- * PAGE PROJECT (page-scope epic). The page owns its project now — there is no global
+ * PAGE PROJECT. The page owns its project now — there is no global
  * selector to follow, and no "All Projects" option on this screen. `projectState.projects`
  * is MUTABLE per test so the genuine no-project state (an instance with no projects at
  * all) can be exercised; the default is one concrete project, which is what every render
@@ -226,7 +226,7 @@ describe('Contexts — rail + reader (the initial view)', () => {
     // very drift an earlier decision is about (a second copy that silently disagrees).
     expect(mockApi.contexts.search).toHaveBeenCalledWith(
       expect.objectContaining({ limit: CONTEXTS_CONFIG.listLimit, offset: 0 }),
-      // The second argument is the page's own request scope (page-scope epic); every read on
+      // The second argument is the page's own request scope; every read on
       // this screen carries it.
       expect.objectContaining({
         headers: expect.objectContaining({ 'X-Project-ID': PAGE_PROJECT.id }),
@@ -262,7 +262,7 @@ describe('Contexts — rail + reader (the initial view)', () => {
 });
 
 describe('Contexts — deep link lands on the RIGHT record in the reader', () => {
-  // This is the /r/:id permalink target (Operator shares these links publicly). The rail+reader
+  // This is the /r/:id permalink target (the operator shares these links publicly). The rail+reader
   // reversal must not regress it — so assert the reader shows the record the URL named, and
   // specifically NOT the first row it would otherwise auto-select.
   it('renders at /contexts/:id → the reader fetches + shows THAT record', async () => {
@@ -331,7 +331,7 @@ describe('Contexts — error state', () => {
 describe('Contexts — search', () => {
   it('re-queries with the typed search term (semantic dispatch), scoped to the page project', async () => {
     // Search is project-scoped in the canonical engine. The page now guarantees a concrete
-    // project, so this is the ONLY search path there is (the page-scope epic).
+    // project, so this is the ONLY search path there is (an earlier task → an earlier epic).
     await mount('/contexts');
     await settle();
     const input = container.querySelector('input[aria-label="Search contexts"]') as HTMLInputElement;
@@ -352,7 +352,7 @@ describe('Contexts — search', () => {
 
   it('the "search under All Projects" dead end is UNREACHABLE — the page offers no such option', async () => {
     /**
-     * HISTORY (the page-scope epic). This test used to reproduce a real bug: with
+     * HISTORY (an earlier task → an earlier epic). This test used to reproduce a real bug: with
      * the GLOBAL selector on "All Projects", typing a search fired /api/contexts?query=…,
      * which fails closed with a 400 that the UI rendered as a red "Couldn't load contexts"
      * toast. The fix at the time was a `needsProject` gate that suppressed the request and

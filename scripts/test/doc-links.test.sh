@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NOT-IN-CI: run by scripts/oss-gate.sh stage H (every scripts/test/*.test.sh); not a the CI gate stage.
+# NOT-IN-CI: run by scripts/oss-gate.sh stage H (every scripts/test/*.test.sh); not a CI gate stage.
 #
 # Docs a stranger follows must resolve. Checks (1) README.md links loop/README.md, (2) every relative
 # Markdown link in README.md, loop/README.md and each docs-folder file they link points at an

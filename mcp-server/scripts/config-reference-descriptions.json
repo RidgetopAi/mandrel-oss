@@ -63,6 +63,7 @@
   "MANDREL_BELIEF_COST_ROLLUP_WINDOW_DAYS": "Default look-back window, in days, for the belief cost report when no window is given.",
   "MANDREL_BELIEF_ENABLED": "Master switch for supersession (belief) detection. When true, each stored context or decision is checked in the background against its nearest neighbours and outdated records are linked as superseded. When false nothing is adjudicated, no model is called and no cost is incurred.",
   "MANDREL_BELIEF_PAIR_EXCLUDE_AUTO_RECORD_KINDS": "Machine-written record kinds (read from the record's metadata kind) that are never compared as either side of a candidate pair. Empty disables the filter.",
+  "MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA": "Extra content prefixes, comma-separated, added to MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES: records your own publishers write on a fixed template, which supersession should never compare. Empty adds nothing.",
   "MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES": "Records whose content starts with one of these prefixes are never compared as either side of a candidate pair. This keeps repetitive machine-written records out of adjudication. Empty disables the filter.",
   "MANDREL_BELIEF_PAIR_MAX_COSINE": "Candidate pairs more similar than this are dropped before adjudication, because near-identical restatements produce false supersession verdicts.",
   "MANDREL_BELIEF_PAIR_MIN_COSINE": "A neighbour must be at least this similar (cosine) to a new record to be compared with it. Below this the pair is never sent to the model.",
@@ -306,5 +307,16 @@
   "MANDREL_TRUST_WEIGHT_OUTCOME": "Weight of the outcome signal in the trust score. Outcomes dominate once they exist.",
   "MANDREL_TRUST_WIRE_SCORE_PRECISION": "Decimal places in trust scores returned to clients.",
   "MANDREL_XENOVA_ALLOW_REMOTE": "Allow the local minilm embedder to download its model from the network at run time. Off by default; the model is expected to be in the local cache.",
-  "MANDREL_XENOVA_CACHE_DIR": "Directory holding the local minilm model files. Empty uses the library default."
+  "MANDREL_XENOVA_CACHE_DIR": "Directory holding the local minilm model files. Empty uses the library default.",
+  "MANDREL_DASHBOARD_SESSION_SWEEP_INTERVAL_MINUTES": "Minutes between sweeps that delete expired dashboard sign-in sessions (the sweep itself is on unless MANDREL_DASHBOARD_SESSION_SWEEP_ENABLED is false).",
+  "MANDREL_DASHBOARD_SIGNIN_RATE_MAX": "Failed dashboard sign-in attempts allowed per email and client address within MANDREL_DASHBOARD_SIGNIN_RATE_WINDOW_MS before further attempts get 429. Successful sign-ins never count.",
+  "MANDREL_DASHBOARD_SIGNIN_RATE_WINDOW_MS": "Length of the window, in milliseconds, over which failed dashboard sign-ins are counted against MANDREL_DASHBOARD_SIGNIN_RATE_MAX.",
+  "MANDREL_SEARCH_ABSENT_TERM_ORDINALS_ORDINARY": "Treat ordinals such as 7th or 22nd as ordinary words, so a date ordinal the corpus never contains does not empty a search.",
+  "MANDREL_SEARCH_ABSENT_TERM_TOLERATED_ABSENT": "How many unfamiliar names (absent from every record and not ordinary English) a search may contain and still return results, provided enough of its other words match (MANDREL_SEARCH_ABSENT_TERM_TOLERATED_MIN_MATCHED). More than this and the search returns empty; 0 means no tolerance (any unfamiliar name empties the search).",
+  "MANDREL_SEARCH_NEAR_MISS_MIN_LENGTH": "Shortest word, in characters, that can count as a misspelling of a word in the retrieved records rather than as an unfamiliar name. Shorter words are within one edit of too many others.",
+  "MANDREL_SEARCH_NEAR_MISS_PROJECT_FALLBACK": "Before returning an empty result, also check the unfamiliar words against every word in the project (not only the retrieved records) for a near-miss spelling. Costs one scan of the project's search index, only on searches that would otherwise come back empty.",
+  "MANDREL_SET_PASSWORD_STATUS_RATE_MAX": "Calls per client allowed to the set-password page's status check within MANDREL_SET_PASSWORD_STATUS_RATE_WINDOW_MS before it answers 429.",
+  "MANDREL_SET_PASSWORD_STATUS_RATE_WINDOW_MS": "Length of the window, in milliseconds, for MANDREL_SET_PASSWORD_STATUS_RATE_MAX.",
+  "MANDREL_SET_PASSWORD_TTL_HOURS": "How many hours a newly minted set-password link keeps working.",
+  "MANDREL_EMBEDDING_VERIFY_STARTUP": "What the server does when the embedding model cannot load or be reached at startup: strict (the default) refuses to start; warn logs one loud error line and starts anyway. Mock embeddings are used only with MANDREL_EMBEDDINGS_ALLOW_MOCK."
 }

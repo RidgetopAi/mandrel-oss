@@ -1,6 +1,5 @@
 /**
- * A FRESH DATABASE STORES VECTORS OF THE SIZE THE DEFAULT EMBEDDER PRODUCES
- *.
+ * A FRESH DATABASE STORES VECTORS OF THE SIZE THE DEFAULT EMBEDDER PRODUCES.
  *
  * Replays every migration in filename order (statically — no database needed), tracking
  * the declared `vector(N)` of each (table, column), and asserts that the column the

@@ -1,11 +1,11 @@
 /**
  * RELIABLE AUTO-THREADING — the durable/honest-anchor + no-orphan-inference config
- * (branch:mandrel-reliability, task ST-2, spec
+ * (branch:mandrel-reliability, task ST-2 an earlier change, spec
  * docs/specs/reliable-auto-threading.md §X1).
  *
  * THE PRINCIPLE (the operator, standing rule): NO HARDCODED VARIABLES. Every threshold / TTL /
  * limit the reliable-threading layer touches lives HERE, once — a named value with a
- * Operator-aligned default, a one-line note, and an env override. Never a literal buried in a
+ * The operator-aligned default, a one-line note, and an env override. Never a literal buried in a
  * route or service. Mirrors recallConfig.ts (T1), edgeTypes.ts (T2a), trustConfig.ts (T2b),
  * threadConfig.ts (T3), autoThreadConfig.ts (T5b) — the config is the contract, the code
  * reads it. Downstream ST's (durable anchor A, inference B, backfill C) IMPORT these names;
@@ -185,7 +185,7 @@ export const ANCHOR_PROJECT_FALLBACK_ENABLED: boolean = envBool(
  * context_store auto-thread read returns no-anchor (falls through to the B1 no-orphan
  * inference) with the skip SURFACED in the response. Never silently shared.
  *
- * OFF (THE DEFAULT — shipped dark): byte-identical legacy behavior, including
+ * OFF (THE DEFAULT — a past incident, shipped dark): byte-identical legacy behavior, including
  * the shared-literal fallback, so the fleet is unaffected on the next deploy. The operator
  * tenant enables it explicitly.
  *
@@ -269,7 +269,7 @@ export interface ReliableThreadingConfig {
   inferenceCandidateLimit: number;
 }
 
-/** THE LIVE CONFIG — operator-aligned defaults; every field env-overridable (see the consts). */
+/** THE LIVE CONFIG — the operator-aligned defaults; every field env-overridable (see the consts). */
 export const RELIABLE_THREADING_CONFIG: ReliableThreadingConfig = {
   enabled: RELIABLE_THREADING_ENABLED,
   anchorTtlMs: ANCHOR_TTL_MS,

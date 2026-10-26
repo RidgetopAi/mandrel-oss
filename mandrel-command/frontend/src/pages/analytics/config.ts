@@ -47,7 +47,7 @@ export const ANALYTICS_CONFIG = {
  *   • `built` — "Built, unused · endpoint exists, just turn it on" (deleted here). Its
  *     only two consumers were the most-active-sessions panel and the rhythm panel, both
  *     of which are rendered, fetched, and drawing real production data ON THE PAGE THE
- *     LEGEND PRINTS ON. The earlier reasoning — "a legend entry that no panel carries
+ *     LEGEND PRINTS ON. The reasoning — "a legend entry that no panel carries
  *     is not a harmless leftover" — was correct and was applied one kind short;
  *   • `live` — which, once it is the ONLY kind, carries no information at all. A legend
  *     whose every entry is true of every panel is a legend that cannot be read wrong
@@ -141,7 +141,7 @@ export const OPEN_STATUSES: WorkMixStatus[] = WORK_MIX.filter(
 ).map((s) => s.status);
 
 /**
- * The Work-mix FLOW block's vocabulary (an earlier task — the operator: "I personally like to see
+ * The Work-mix FLOW block's vocabulary (an earlier task — Operator: "I personally like to see
  * what are average tasks completed a day is. Average tasks created a day.").
  *
  * ── WHY THIS IS A SEPARATE, LABELLED BLOCK AND NOT ANOTHER LEGEND ROW ────────────────
@@ -224,9 +224,9 @@ export const ACTOR_ACTIVITY = {
    * THE ROLL-UP RULE IS A SHARE THRESHOLD, NOT A RANK CUT (addition 2).
    *
    * A top-N cut answers "how many bars" — the wrong question. Measured in a browser at
-   * `topN: 8` against prod (a prod screenshot): the chart
-   * drew FOUR sub-pixel bars (`anonymous`, and three `builder-<id>` lanes)
-   * sitting ABOVE an "Other (7 actors)" row. Four invisible bars plus
+   * `topN: 8` against prod (reports/artifacts/actor-bars-<id>/01-…png): the chart
+   * drew FOUR sub-pixel bars (`anonymous`, `builder-a7e9f00d`, `builder-<id>`,
+   * `builder-<id>`) sitting ABOVE an "Other (7 actors)" row. Four invisible bars plus
    * an Other bucket is strictly worse than a bigger Other bucket: they cost four rows of
    * height, carry no readable length, and imply the roll-up threshold is somewhere it is
    * not. The honest question is "is this bar VISIBLE", which is a question about SHARE.
@@ -276,7 +276,7 @@ export const ACTOR_ACTIVITY = {
   minHeight: 150,
   /**
    * Category-axis gutter. Wider than the shared 72px default because a generated actor
-   * slug (`builder-<id>`) is 16 characters and the shared axis middle-elides rather
+   * slug (`builder-a7e9f00d`) is 16 characters and the shared axis middle-elides rather
    * than clipping — too narrow a gutter is legible but uninformative.
    */
   categoryWidth: 124,
@@ -330,7 +330,7 @@ export const SESSION_RHYTHM = {
   seriesLabel: 'Sessions',
   /**
    * ── THE CURRENT-HOUR TINT ──────────────────────────────────────────
-   * The operator: "could we make the current hour bar a different color, that would separate
+   * Operator: "could we make the current hour bar a different color, that would separate
    * past hours from previous days hours."
    *
    * The chart folds every day in the window into 24 buckets, so nothing on it says where

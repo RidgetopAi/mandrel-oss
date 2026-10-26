@@ -1,5 +1,6 @@
 /**
- * HANDOFF RESUME POINTER — the acceptance contract ( * evidence an earlier note).
+ * HANDOFF RESUME POINTER — the acceptance contract
+ * (evidence an earlier context).
  *
  * WHAT WENT WRONG, and therefore what this asserts. Three handoffs were stored with
  * EMPTY tag arrays. Their EDGES were fine — a declared branch position had threaded

@@ -12,7 +12,7 @@ router.use(authenticateToken);
  * Assembles the Calendar click-into-date DAY-SUMMARY report:
  * auto-headline, transparent momentum score, KPI tiles w/ deltas, 24h activity
  * ribbon, milestone/completion highlights, decisions, tasks completed, and a by-actor
- * breakdown — all TZ-correct per 100% wired to existing data.
+ * breakdown — all TZ-correct per an earlier task, 100% wired to existing data.
  */
 router.get('/', DaySummaryController.getDaySummary);
 

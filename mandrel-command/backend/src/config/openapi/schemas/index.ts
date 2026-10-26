@@ -14,6 +14,7 @@ import { sessionSchemas } from './sessions';
 import { monitoringSchemas } from './monitoring';
 import { embeddingSchemas } from './embeddings';
 import { taskAttachmentSchemas } from './taskAttachments';
+import { apiTokenSchemas } from './apiTokens';
 
 export const schemas = {
   ...baseSchemas,
@@ -26,7 +27,8 @@ export const schemas = {
   ...sessionSchemas,
   ...monitoringSchemas,
   ...embeddingSchemas,
-  ...taskAttachmentSchemas
+  ...taskAttachmentSchemas,
+  ...apiTokenSchemas
 };
 
 export {
@@ -40,5 +42,6 @@ export {
   sessionSchemas,
   monitoringSchemas,
   embeddingSchemas,
-  taskAttachmentSchemas
+  taskAttachmentSchemas,
+  apiTokenSchemas
 };

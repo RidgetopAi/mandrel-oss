@@ -16,7 +16,7 @@
  *       actions never alter B's row and vice-versa — there is NO global
  *       "last active anywhere" fallback cross-attributing writes.
  *
- *  Operator's "one session per connection across project switch":
+ *  The operator's "one session per connection across project switch":
  *    4. A: context_store (session S) → project_switch to a different project →
  *       context_store again ⇒ SAME session S, its project_id RE-PINNED to the new
  *       project. NOT a new session.

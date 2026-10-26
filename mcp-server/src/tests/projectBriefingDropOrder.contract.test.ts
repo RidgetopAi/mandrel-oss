@@ -71,7 +71,7 @@ const CFG = (maxChars: number, over: Partial<BriefingConfig> = {}): BriefingConf
   protectionRankBranchMember: 4,
   protectionRankAlwaysSurface: 3,
   protectionRankConvention: 3,
-  // the briefing-budget decision's measurement knob, restated at its SHIPPED default (the floor) like the ranks
+  // an earlier change's measurement knob, restated at its SHIPPED default (the floor) like the ranks
   // above it: a decision gets no band of its own until a measurement says it should.
   protectionRankDecision: 0,
   protectionRankStalePriority: 2,
@@ -457,7 +457,7 @@ describe('briefing drop order — a convention is a standing constraint, not a s
   });
 
   /**
-   * THE OFF PATH (added 2026-08-24, after a review verdict).
+   * THE OFF PATH (added 2026-08-24, Reviewer verdict).
    *
    * WHAT THIS EXISTS TO CATCH, and it is not hypothetical: the first version of this band was
    * left OUT of applySelectionFlag. With MANDREL_BRIEFING_BRANCH_SCOPE_ENABLED off, that flag

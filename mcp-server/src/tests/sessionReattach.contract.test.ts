@@ -1,6 +1,6 @@
 /**
  * Session-Rework SR-1 — per-connection identity + re-attach-on-restart contract test.
- * the operator's session model and the stale-but-ended root cause.
+ * model ctx, root cause ctx.
  *
  * WHAT THIS PROVES (drives the REAL SessionLifecycleService + SessionRepo + reaper +
  * a REAL Postgres; NO wall-clock sleeps — timestamps are injected directly and the
@@ -12,7 +12,7 @@
  *     pre-fix code minted a duplicate here (the random-spawning bug).
  *
  *   MULTIPLE CONNECTIONS → MULTIPLE SESSIONS: two distinct connection ids yield two
- *     distinct active sessions (Operator's legitimate two-terminals case).
+ *     distinct active sessions (the operator's legitimate two-terminals case).
  *
  *   ONE-PER-CONNECTION: N concurrent first-actions on the SAME connection id collapse
  *     to exactly ONE open row (app re-attach guard + the partial-unique-index backstop).

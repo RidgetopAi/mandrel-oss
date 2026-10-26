@@ -264,7 +264,7 @@ describe('ProjectDetail — repository activity (git substitute for un-served br
   });
 });
 
-describe('ProjectDetail — "Set as my default" action (page-scope epic §C)', () => {
+describe('ProjectDetail — "Set as my default" action (an earlier epic §C)', () => {
   beforeEach(() => {
     settings.defaultProjectId = undefined;
     setDefaultProjectId.mockClear();

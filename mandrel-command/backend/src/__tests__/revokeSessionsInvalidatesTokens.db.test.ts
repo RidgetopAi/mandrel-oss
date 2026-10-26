@@ -40,10 +40,10 @@
  *     response never carries the reassuring message — the exact shape of the bug.
  *
  * RUN (throwaway DB — provision FIRST):
- *   bash scripts/provision-test-db.sh ci_revoke_e6c3f00d
- *   eval "$(bash scripts/provision-test-db.sh ci_revoke_e6c3f00d --print-env)"
+ *   bash scripts/provision-test-db.sh ci_revoke_e6c30326
+ *   eval "$(bash scripts/provision-test-db.sh ci_revoke_e6c30326 --print-env)"
  *   npx jest revokeSessionsInvalidatesTokens --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_revoke_e6c3f00d --drop
+ *   bash scripts/provision-test-db.sh ci_revoke_e6c30326 --drop
  */
 
 import request from 'supertest';

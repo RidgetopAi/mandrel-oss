@@ -56,7 +56,7 @@ async function main() {
 
   if (args.apply && !isObviouslyTestDb(dbName) && !args.understandTarget) {
     console.error(`❌ Refusing to --apply against non-test DB "${dbName}" without --i-understand-target.`);
-    console.error('   (Backup first + confirm this is the intended prod/tenant target — Coordinator drives the gated rollout.)');
+    console.error('   (Backup first + confirm this is the intended prod/tenant target — the coordinator drives the gated rollout.)');
     process.exit(2);
   }
   if (!args.project && !args.allProjects) {

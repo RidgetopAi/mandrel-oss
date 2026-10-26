@@ -6,10 +6,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_terminalorder_d186f00d
- *   eval "$(bash scripts/provision-test-db.sh ci_terminalorder_d186f00d --print-env)"
+ *   bash scripts/provision-test-db.sh ci_terminalorder_d186ff4f
+ *   eval "$(bash scripts/provision-test-db.sh ci_terminalorder_d186ff4f --print-env)"
  *   npx jest taskTerminalOrder --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_terminalorder_d186f00d --drop
+ *   bash scripts/provision-test-db.sh ci_terminalorder_d186ff4f --drop
  */
 
 import { v4 as uuidv4 } from 'uuid';

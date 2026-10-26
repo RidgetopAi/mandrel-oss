@@ -7,7 +7,7 @@
  * which sanitizes a DENYLIST of known-sensitive SHAPES (connection URIs, key=value
  * secrets, absolute paths, stack frames) and then forwards whatever is left VERBATIM.
  * A denylist is the wrong default for this: anything the driver says that is not on the
- * list is published to the caller. Measured on `194f00d` at the real HTTP surface, a
+ * list is published to the caller. Measured on `1943f00` at the real HTTP surface, a
  * pgvector fault reached an MCP caller as:
  *
  *     ❌ Error: Context storage failed: expected 1536 dimensions, not 768
@@ -280,7 +280,7 @@ export const DATASTORE_POOL_ERROR_COUNTER = 'datastore_pool_errors_total';
  * bearing: `utils/monitoring.ts` started three uncleared `setInterval`s as an IMPORT-TIME side
  * effect, one of which did `db.query('SELECT 1')` every 60s, so a static import here — in a
  * module `config/database.ts` loads — started those timers in nearly every test process. an earlier Task
- * and the explicit-start change removed that: starting is now an explicit `startMonitoring()` call made
+ * and an earlier change removed that: starting is now an explicit `startMonitoring()` call made
  * by `services/backgroundServices.ts`, and the timers are unref'd. The lazy import is kept
  * anyway because this module sits under `config/database.ts` and the counter is only ever
  * needed on a pool fault, so there is no reason to widen that graph; it is now a preference,
@@ -349,7 +349,7 @@ function sqlOf(args: unknown[]): string | undefined {
  * IT IS ONE FUNCTION ON PURPOSE. The first version of this file hand-wrote the pool wrapper
  * and the client wrapper separately, and gave `connect` a careful both-overloads treatment
  * that neither `query` wrapper got — so the CALLBACK overload of `query` walked straight
- * past the boundary while `connect` was airtight. Measured by the reviewer on a real DB:
+ * past the boundary while `connect` was airtight. Measured by Reviewer on a real DB:
  *
  *     pool.query(text, cb)     isDatastoreError=false   syntax error at or near "SELEKT"
  *     await pool.query(text)   isDatastoreError=true    [DATASTORE_ERROR] … (ref: 6f…)

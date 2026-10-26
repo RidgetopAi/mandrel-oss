@@ -163,17 +163,7 @@ aidis-stdio-mock*.js
 claude-http-mcp-bridge*.js
 compare-mcp-servers.js
 debug-mcp-protocol.js
-emergency-rollback.sh
-health-check.sh
-monitor-health.sh
-rollback-*.sh
-# ...but scripts/test/ holds TRACKED suites, and `rollback-*.sh` above swallowed
-# rollback-service-scope.test script SILENTLY on 2026-09-02: `git add -A`
-# reported nothing, the commit went through, and the suite would have shipped
-# untracked — invisible to `git archive`, to CI, and to the next clone. The block
-# above is legacy throwaway-script hygiene for the REPO ROOT; it was never meant
-# to reach a test directory. Re-include the whole of scripts/test/ so no future
-# suite can be lost to a root-level pattern it never knew about.
+# scripts/test/ holds TRACKED suites: never let a root-level pattern swallow one.
 !scripts/test/**
 mcp-*.js
 *-wrapper.js
@@ -287,21 +277,6 @@ docker-compose.*.yml
 # removed when the schema was promoted into the migration runner.)
 # Operator runbook SQL (gated, operator-run): parameterized DDL/DML, no table dumps /
 # no app rows / no secrets — it's documented code that must ship.
-# ...but the backup/offsite SCRIPTS are code, not data dumps — keep them tracked
-# (they read secrets at runtime, never embed them; the gitleaks gate enforces that).
-# THE NEGATION MUST BE RECURSIVE. The flat `!scripts/backup-*.sh` form covered only
-# scripts/ itself, so `*backup*` silently swallowed backup-retention script
-# and backup-retention-anchor.test script — the shared retention rule and
-# the guard for it — exactly the way it once left the three backup scripts untracked.
-# A file git cannot see is a file that does not deploy and that no gate can scan, and
-# NOTHING in the tree reports it. backup-retention-anchor.test script
-# section F is the check that now does.
-# Scoped to *.sh: shell files are code. SQL dumps and archives with "backup" in the
-# name stay ignored by the rule above, which is the leak this section is for.
-!scripts/**/*backup*.sh
-!scripts/**/*offsite*.sh
-!scripts/backup-*.sh
-!scripts/offsite-*.sh
 
 # Env files — block every variant, but ALWAYS keep the committed example.
 .env

@@ -1,6 +1,6 @@
 /**
  * APPROXIMATE_SOURCES — the positive set that replaces `spineSource !== recorded`
- * (P3 build spec, section C4).
+ * (P3 build spec section C4).
  *
  * THE DEFECT THIS FILE EXISTS TO PREVENT — and why it cannot be caught by any test written
  * against today's data. Four product sites answered "was this member's branch DERIVED
@@ -285,7 +285,7 @@ function fabMembership(sources: MembershipSource[]): BranchMembership {
     approximateMembers: sources.filter((s) => APPROXIMATE_SOURCES.has(s)).length,
     possiblyIncomplete: false,
     tagOnlyNoPosition: 0,
-    // BAND 3 is empty for this population, so its id sample is empty and complete (P3
+    // BAND 3 is empty for this population, so its id sample is empty and complete (P3, an earlier task
     // added both fields). Kept in step with the count deliberately: an empty band
     // with a "truncated" flag set would be a self-contradicting fixture.
     tagOnlyNoPositionIds: [],

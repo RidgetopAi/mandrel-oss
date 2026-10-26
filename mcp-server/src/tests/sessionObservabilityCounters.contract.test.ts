@@ -1,5 +1,5 @@
 /**
- * Sessions Foundation Phase 5 — observability counters (Auditor review §5 / F3).
+ * Sessions Foundation Phase 5 — observability counters (the auditor review §5 / F3).
  *
  * PROVES each new attribution-visibility counter increments ON ITS REAL PATH (a past incident — the
  * silent losses F3 flagged are now visible metrics, not just warn logs):

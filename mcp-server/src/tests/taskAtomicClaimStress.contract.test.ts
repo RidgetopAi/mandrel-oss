@@ -7,7 +7,7 @@
  * this file existed that guarantee had never been exercised under actual concurrency. The
  * in-file contract suite (taskAtomicClaim.contract.test.ts) races `Promise.all` inside ONE
  * process on ONE pool; the bug it defends against was reproduced by two INDEPENDENT Amp orbs
- * (the Amp-orb evaluation probe). Flipping the flag on single-process evidence would be enabling
+ * (eval probe). Flipping the flag on single-process evidence would be enabling
  * unvalidated concurrency control.
  *
  * SO EVERY RACE HERE IS REAL: N separate OS PROCESSES (src/tests/helpers/claimStressWorker.ts),
@@ -81,7 +81,7 @@ async function withWorkers<T>(n: number, opts: SpawnOpts, fn: (ws: StressWorker[
  * clause 10 / the completeness gate keys on the MERGED row's stage,
  * so such an update would otherwise be correctly refused with PUNCH_INCOMPLETE — a gate
  * concern unrelated to what these claim/CAS tests exercise). See the sibling in-process file
- * taskAtomicClaim.contract.test.ts's own `makeTask`, fixed the same way in the fixture-gap fix.
+ * taskAtomicClaim.contract.test.ts's own `makeTask`, fixed the same way in an earlier change.
  */
 async function makeTask(title: string, status = 'todo', stage?: string): Promise<string> {
   const r = await db.query(
@@ -223,7 +223,7 @@ describe('2. a claim presented against a superseded version', () => {
       // (status='todo' -> stage='ready'), which the completeness gate correctly refuses the
       // title-only task_update below against (ready, no punch fields) — starving this test
       // of the version bump it needs and masking the version-stale assertions entirely. See
-      // which pinned the same fixture gap everywhere except this stress file (the
+      // an earlier change, which pinned the same fixture gap everywhere except this stress file (the
       // one suite the confined lane cannot run, so it never met clause 10 until the full gate).
       const taskId = await makeTask('version stale', 'todo', 'draft');
       const v0 = (await readTask(taskId)).version;
@@ -382,7 +382,7 @@ describe('4b. the eval\'s original incident — an ordinary task_update stealing
       expect(held.payload.claimed).toBe(true);
       const token = held.payload.claimId as string;
 
-      // EXACTLY what worker 2 did in the eval: OBSERVE the active
+      // EXACTLY what worker 2 did in the eval (probe): OBSERVE the active
       // assignment, then issue the same ordinary update shape with itself as assignee. Back
       // then both calls returned success and worker 1 was silently replaced. Here every
       // other process does it AT THE SAME INSTANT.

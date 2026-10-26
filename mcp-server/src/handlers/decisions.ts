@@ -32,7 +32,7 @@ import { logger } from '../utils/logger.js';
 // inside a schema migration, and a validator that began REJECTING would be a breaking change
 // for every customer in the worst possible packaging (SCOPE §8.6).
 import { validateAndNormalizeTags } from '../utils/threadingTags.js';
-// Tag-spelling collisions — see services/tagSpellingWriteCheck.ts. Decisions are the other write path
+// 98662108 — see services/tagSpellingWriteCheck.ts. Decisions are the other write path
 // that stored tags unvalidated, so they get the same warning as tasks.
 import { tagSpellingWriteWarnings } from '../services/tagSpellingWriteCheck.js';
 import { recordWriteWithoutSession } from '../utils/sessionObservability.js';
@@ -1488,7 +1488,7 @@ class DecisionsHandler {
    * counted archived (soft-deleted) rows while decision_search excluded them, so the two
    * public tools reported different totals for the same corpus (measured on prod
    * 2026-07-30: stats 556 / search 127 — a 4.4x split, with nothing saying which was
-   * authoritative). This is the same defect that an earlier task already closed for
+   * authoritative). This is the same defect that earlier task already closed for
    * task_progress_summary vs task_list; decisions was the remaining instance.
    *
    * EVERY breakdown takes the filter, not just the total — a partial fix that left

@@ -2,7 +2,7 @@
  * TR005-6: Type Safety Testing Routes
  * Endpoints for testing end-to-end type safety
  *
- * SECURITY (an earlier task — Lesson-011 sibling of the session-routes auth fix): this whole family was
+ * SECURITY (an earlier task — Lesson-011 sibling of an earlier change): this whole family was
  * mounted at `/api/type-safety/*` with NO auth middleware, so every route below was
  * reachable UNAUTHENTICATED from the public internet (edge-verified 200 on
  * command.example.com, 2026-07-19). Per-endpoint disclosure to an anonymous caller:

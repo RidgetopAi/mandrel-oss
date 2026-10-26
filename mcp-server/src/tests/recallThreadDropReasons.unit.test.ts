@@ -4,7 +4,7 @@
  * THE ASSERTION THAT MATTERS, and why it is shaped this way. The structured field must not
  * merely be *populated*; it must say the SAME THING the text channel says, because the text
  * channel is what every existing consumer reads today (our runtime shell recovers all of this
- * by string-splitting it — `runtime/lib/boot-recall.sh`, ~230 lines of awk). So this file does
+ * by string-splitting it, ~230 lines of awk). So this file does
  * not compare the structured field against a hand-written expectation of what the prose ought
  * to contain. It RUNS THE SHELL'S OWN PARSE — the same split at the last ` — trust:` and the
  * same `key:([^ ]+)` token scan — over the line the product actually emits, and asserts the
@@ -23,7 +23,7 @@ import { describe, test, expect } from 'vitest';
 import { dropReasonFor, type ThreadNode } from '../services/recallThreadCore.js';
 import { computeTrust, explainTrust, type Trust, type TrustSignals } from '../services/trustModel.js';
 
-// ── The shell's parse, transcribed from runtime/lib/boot-recall.sh (the awk it will delete) ──
+// ── The shell's parse, transcribed from that awk (which this field will delete) ──
 
 /** The last occurrence of ` — trust:` — the shell's `rindex`, for the same reason it has one. */
 function splitVerdictTail(line: string): string | null {

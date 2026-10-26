@@ -69,8 +69,7 @@
 --
 -- ═══ DEPLOY ═══
 -- CN2, migration-bearing, ROLL-FORWARD ONLY — pinning code back does not revert schema.
--- Ships through the normal migration path (mcp-server/docker-entrypoint.sh owns migrations,
--- NOT fleet-deploy script).
+-- Ships through the normal migration path (mcp-server/docker-entrypoint.sh owns migrations).
 -- IDEMPOTENT: CREATE OR REPLACE FUNCTION, DROP+CREATE TRIGGER, DROP CONSTRAINT IF EXISTS.
 -- Re-running changes nothing.
 

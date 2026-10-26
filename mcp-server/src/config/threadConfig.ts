@@ -80,7 +80,8 @@ export const FRONTIER_EDGE_TYPE_PRIORITY: Readonly<Record<string, number>> = {
   // stated structure and belongs above the weak/soft tiers — but it is not EVIDENCE, so it
   // ranks below the evidential edges (decided_by/informs/learned_from) that carry the story.
   depends_on: 70,
-  // Task→task CONTAINMENT structure (PHASE 1 positional membership,   // migration 080): the positional parent edge minted at task_create while standing on a
+  // Task→task CONTAINMENT structure (PHASE 1 positional membership, 
+  // migration 080): the positional parent edge minted at task_create while standing on a
   // task spine. Same structural-not-evidence tier as depends_on, for the same reason.
   subtask_of: 70,
   proposed_by: 60,
@@ -165,7 +166,7 @@ export function isProjectionAltitude(altitude: string): altitude is ThreadProjec
 export const THREAD_DEFAULT_ALTITUDE: ThreadContentAltitude = 'summary';
 
 /**
- * THE THREAD KNOBS (operator-aligned defaults, spec §4 Capability 2).
+ * THE THREAD KNOBS (the operator-aligned defaults, spec §4 Capability 2).
  *
  * Each field is env-overridable so the eval gate can sweep the traversal/payload shape
  * without a code edit.
@@ -178,15 +179,15 @@ export interface ThreadConfig {
    *
    * WHY 2 AND NOT 3 (the original spec §4 value). Measured on five real anchors in the dev
    * snapshot; distinct nodes reachable at depth 1/2/3 (anchor included):
-   *   2b3c4d5e 11/36/83 · 3c4d5e6f 50/109/231 · 4d5e6f7a 4/9/41 · 5e6f7a8b 7/19/94 ·
-   *   6f7a8b9c 17/46/92.
+   *   an earlier change 11/36/83 · an earlier change 50/109/231 · an earlier change 4/9/41 · an earlier change 7/19/94 ·
+   *   an earlier change 17/46/92.
    * The third hop is where the subgraph stops being a branch: on the P0-security anchor
-   * `6f7a8b9c`, depth 3 admitted an unrelated Calendar PNG-export handoff (`1a2b3c4d`) that
+   * an earlier change, depth 3 admitted an unrelated Calendar PNG-export handoff (an earlier change) that
    * then ordered SECOND and THIRD in the returned story, ahead of the security work the
    * caller asked for. It is absent at depth 2 on all five. The hop that admitted it was a
    * `decided_by` edge off a depth-2 decision — NOT the handoff `supersedes` chain, which was
    * the standing hypothesis; excluding supersedes+possibly_supersedes was measured and moves
-   * 6f7a8b9c's depth-3 population only 92 → 87, so depth is the lever and an edge-type
+   * an earlier change's depth-3 population only 92 → 87, so depth is the lever and an edge-type
    * exclusion is not. Env: MANDREL_THREAD_DEFAULT_DEPTH. Default 2.
    */
   defaultDepth: number;
@@ -207,7 +208,7 @@ export interface ThreadConfig {
    * and an honest report of a missing 74% is not a resumable thread. Measured at the new
    * default depth 2, cap 150 returns all five branches COMPLETE (0 truncated). The cost is
    * not uniform: 4 of the 5 anchors are BYTE-IDENTICAL because the cap never bites for them
-   * (36/9/19/46 nodes), and only the hub anchor 3c4d5e6f grows, 50→109 nodes and ~13.4k→
+   * (36/9/19/46 nodes), and only the hub anchor grows, 50→109 nodes and ~13.4k→
    * ~29.1k response tokens. Summed over the five anchors the response is SMALLER than the
    * shipped depth-3/cap-50 default, because depth 2 removes far more than cap 150 adds.
    * A caller who wants a different budget passes the per-call `maxNodes` argument — no env
@@ -271,7 +272,7 @@ export interface ThreadConfig {
 }
 
 /**
- * THE LIVE CONFIG — read once at module load. Defaults are operator-aligned §4 values;
+ * THE LIVE CONFIG — read once at module load. Defaults are the operator-aligned §4 values;
  * every one is env-overridable for the eval sweep.
  */
 export const THREAD_CONFIG: ThreadConfig = {

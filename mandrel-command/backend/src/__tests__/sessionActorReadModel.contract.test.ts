@@ -1,7 +1,7 @@
 /**
  * Contract test: the session read models SERIALIZE `actor` and SLICE by it.
  *
- * an earlier task — expose the "who" dimension.
+ * an earlier Task — expose the "who" dimension.
  * The Sessions Foundation (migration 062) stamps `sessions.actor`
  * on write; before this task the Command read models DROPPED it on read. This suite
  * proves, against the REAL migrated schema:

@@ -45,7 +45,7 @@ const Sessions: React.FC = () => {
   const [startingOpen, setStartingOpen] = React.useState(false);
 
   // Scoped by the ONE switch in the topbar: one project at a time, opening
-  // on the user's default. No "All projects" here (the project-switch walkthrough F2).
+  // on the user's default. No "All projects" here (an earlier walkthrough F2).
   const project = usePageProject();
 
   const listArgs = {

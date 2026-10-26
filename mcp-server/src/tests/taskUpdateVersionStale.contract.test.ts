@@ -1,22 +1,22 @@
 /**
  * task_update's ORDINARY writes still feed task_claim's `version-stale` CAS refusal, across
- * every field the merged-stage change touched — contract test.
+ * every field touched — contract test.
  *
- * THE INCIDENT. The fleet-deploy gate (2026-09-21 11:34Z) aborted on
+ * THE INCIDENT. The deploy gate (2026-09-21 11:34Z) aborted on
  * src/tests/taskAtomicClaimStress.contract.test.ts's test 2: "a claim presented against a
  * superseded version > is refused with `version-stale`" — 0 refusals counted where the
- * contract requires at least one. GREEN on one ref, RED on the next; the suspect was
- * the merged-stage change, which rewrote task_update's write path (mcp-server/src/handlers/tasks.ts).
+ * contract requires at least one. GREEN on an earlier change, RED on an earlier change; the suspect was
+ * an earlier change, which rewrote task_update's write path (mcp-server/src/handlers/tasks.ts).
  *
  * REPRODUCED. That test's `makeTask('version stale')` inserts a bare task with
  * status='todo' and no `stage`. The `tasks_sync_stage_status` trigger (migration 101)
- * backfills such a row to `stage='ready'` on INSERT. Before the merged-stage change, TasksHandler
+ * backfills such a row to `stage='ready'` on INSERT. Before an earlier change, TasksHandler
  * .updateTaskStatus's punch-completeness gate only fired when THIS CALL's own `stage`
  * argument was `'ready'` (`if (stage === PUNCH_GATE_STAGE)`), so the test's title-only
  * `task_update({ title: 'moved underneath you' })` — meant only to move the row's `version`
  * out from under the caller — sailed through untouched.
  *
- * The merged-stage change (clause 10) re-keyed that gate on the row's MERGED stage
+ * an earlier change (clause 10) re-keyed that gate on the row's MERGED stage
  * instead — `const resultingStage = stage !== undefined ? stage : existingRow.stage; if
  * (resultingStage === PUNCH_GATE_STAGE) { ... assertPunchComplete(...) }` — deliberately, so
  * a metadata/punch edit against an already-`ready` row cannot leave `doneWhen` malformed
@@ -35,14 +35,14 @@
  * metadataMergeParamBind, t1Fluidity, taskClaimFenceFields, taskBlockerRequired, and the
  * SIBLING single-process file taskAtomicClaim.contract.test.ts (its own §5 "D4" test pins
  * `stage: 'draft'`). taskAtomicClaimStress.contract.test.ts was the one file in that class
- * could not have caught: it spawns real OS processes, which the confined lane that
- * produced the fixture-gap fix cannot run (no process-group reaping) — so it never met clause 10 until
+ * an earlier change could not have caught: it spawns real OS processes, which the confined lane that
+ * produced cannot run (no process-group reaping) — so it never met clause 10 until
  * the authoritative full gate did.
  *
  * THIS FILE is the NON-stress, single-process proof the punch requires: it drives the same
  * task_update -> task_claim(expectedVersion) sequence directly against production code (not
  * the stress harness's subprocess plumbing), and — per clause 3 of the punch — repeats it
- * once for each field the merged-stage change changed (`stage`, `punch`, `metadata.punch`, `dependencies`)
+ * once for each field changed (`stage`, `punch`, `metadata.punch`, `dependencies`)
  * so the version-bumping call is proven to survive the completeness gate regardless of which
  * of those fields it names.
  */
@@ -157,7 +157,7 @@ describe('a task_update bump feeds task_claim version-stale correctly', () => {
 });
 
 // ═══════════════════════════════════════════════════════════════════════════════════════
-// (3) THE FIELD MATRIX — the SAME sequence, once per field the merged-stage change changed. Each case's
+// (3) THE FIELD MATRIX — the SAME sequence, once per field changed. Each case's
 //     version-bumping task_update NAMES that field; the assertion is that doing so still
 //     succeeds (does not trip PUNCH_INCOMPLETE) and version-stale still fires correctly
 //     afterward.

@@ -8,7 +8,7 @@
  * them (`invalid input syntax for type uuid`). an earlier Task closed the BEHAVIOURAL half at
  * the routeExecutor choke point. Two halves were still open when this file was written:
  *
- *   1. NOTHING TIED THE DOCUMENTATION TO THE BEHAVIOUR, in either direction. The project-name normalizer
+ *   1. NOTHING TIED THE DOCUMENTATION TO THE BEHAVIOUR, in either direction. The
  *      coverage sweep walks the params the RESOLVER handles (`classifyProjectParam ===
  *      'scoped'`). A parameter can promise "or name" and sit OUTSIDE that population — the
  *      three `exempt` administration params (project_info/project_update/project_delete
@@ -50,7 +50,7 @@
  *   · REGISTER A FAKE OP that claims "Project ID or name" and does NOT resolve — an op whose
  *     project param is `exempt` (so the choke point ignores it) with no exerciser — and this
  *     file goes RED naming it. Removing it returns GREEN. Exercised by
- *     `__c13bf00d_fake_*` in the "a NEW op that claims the contract without honouring it"
+ *     `__c13ba669_fake_*` in the "a NEW op that claims the contract without honouring it"
  *     block, which injects into the REAL registries the product reads.
  *   · DELETE the `PROJECT_REF_CONTRACT_PHRASE` from any one param's description → RED naming
  *     that param.
@@ -171,7 +171,7 @@ function unaccountedExemptions(
 beforeAll(async () => {
   projectId = (
     await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, 'name-contract fixture') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change name-contract fixture') RETURNING id`,
       [PROJECT_NAME]
     )
   ).rows[0].id;
@@ -192,7 +192,7 @@ afterAll(async () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('the population is closed (so the sweeps below mean something)', () => {
+describe('an earlier change — the population is closed (so the sweeps below mean something)', () => {
   test('OP_REGISTRY and validationSchemas yield the SAME project-reference population', () => {
     const regOps = new Set((OP_REGISTRY as any[]).map((o) => o.opId));
     // Every registry op is validated, and every extra schema is a deprecated alias with no
@@ -240,7 +240,7 @@ describe('the population is closed (so the sweeps below mean something)', () => 
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('DOC ⇒ every project reference DOCUMENTS that it accepts a name', () => {
+describe('an earlier change — DOC ⇒ every project reference DOCUMENTS that it accepts a name', () => {
   test('every project-reference param carries the canonical contract phrase', () => {
     const undocumented = undocumentedRefs();
     expect(
@@ -265,7 +265,7 @@ describe('DOC ⇒ every project reference DOCUMENTS that it accepts a name', () 
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('BEHAVIOUR ⇒ a scoped project reference really resolves a NAME', () => {
+describe('an earlier change — BEHAVIOUR ⇒ a scoped project reference really resolves a NAME', () => {
   test('every scoped param canonicalises the NAME to the project UUID at the choke point', async () => {
     const checked: string[] = [];
     for (const { op, param, cls } of population()) {
@@ -349,8 +349,8 @@ const EXEMPT_EXERCISERS: Record<
     await db.query('DELETE FROM projects WHERE name = $1', [target]).catch(() => {});
     return { expectId, raw: text(r), isError: r?.isError === true };
   },
-  // project_move_record.toProject is the DESTINATION of a record move (an earlier task /
-  // an earlier task). Exercised against a DISPOSABLE record created in a DISPOSABLE source project,
+  // project_move_record.toProject is the DESTINATION of a record move.
+  // Exercised against a DISPOSABLE record created in a DISPOSABLE source project,
   // for the same reason project_delete is: proving the handle resolved must not consume or
   // relocate the shared fixture the other cases read. On success the handler names the
   // destination project's UUID, which is the observable this file asserts on.
@@ -380,7 +380,7 @@ const EXEMPT_EXERCISERS: Record<
   },
 };
 
-describe('BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-to-end', () => {
+describe('an earlier change — BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-to-end', () => {
   test('every exemption has an end-to-end exerciser (deny-by-default)', () => {
     expect(
       unaccountedExemptions(PROJECT_PARAM_EXEMPTIONS, EXEMPT_EXERCISERS),
@@ -424,10 +424,10 @@ describe('BEHAVIOUR ⇒ the EXEMPT admin params resolve a NAME end-to-end', () =
  * THE EMPTY / ZERO POPULATION (C3 — the values that slip through). A whitespace-only project
  * reference was NOT blank enough to trip the old `raw.trim() !== ''` check, so it fell through
  * as "no project named" and travelled raw into `AND project_id = $n`. Measured on v0.15.0
- * (993f00d): task_list({projectId:'   '}) → [DATASTORE_ERROR] with the advice "This is a
+ * (9930f00): task_list({projectId:'   '}) → [DATASTORE_ERROR] with the advice "This is a
  * server-side fault, not a problem with the arguments you sent" — false, and unretryable.
  */
-describe('a BLANK project reference is refused loudly, everywhere', () => {
+describe('an earlier change — a BLANK project reference is refused loudly, everywhere', () => {
   test.each([
     ['empty string', ''],
     ['whitespace only', '   '],
@@ -485,8 +485,8 @@ describe('a BLANK project reference is refused loudly, everywhere', () => {
  * later narrows the doc sweep to a hand-kept list, or drops the exempt-exerciser accounting,
  * THIS block stops failing — and a permanently-passing probe is itself the signal.
  */
-describe('a NEW op that claims the contract without honouring it is CAUGHT', () => {
-  const STEM = `__c13bf00d_probe_${STAMP}`;
+describe('an earlier change — a NEW op that claims the contract without honouring it is CAUGHT', () => {
+  const STEM = `__c13ba669_probe_${STAMP}`;
 
   /** Inject a fake op into the REAL registries the product reads, run body, always clean up. */
   function withFakeOp(
@@ -501,7 +501,7 @@ describe('a NEW op that claims the contract without honouring it is CAUGHT', () 
       effect: 'read',
       kind: 'flat',
       category: 'System Health',
-      description: 'fake op injected by the name-contract mutation probe',
+      description: 'fake op injected by the mutation probe',
       humanDescriptions,
     });
     try {

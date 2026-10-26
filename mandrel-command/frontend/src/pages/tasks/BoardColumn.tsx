@@ -1,10 +1,10 @@
 /**
- * BoardColumn — ONE status column of the Tasks board, paged on its OWN axis (an earlier task
- * , PER-COLUMN PAGING). See `useTaskColumnPage` for the full mechanism note:
+ * BoardColumn — ONE status column of the Tasks board, paged on its OWN axis
+ * (PER-COLUMN PAGING). See `useTaskColumnPage` for the full mechanism note:
  * each column runs its own server-side `status`-filtered, `limit`-bound read, so one
  * column's row volume can never spend the budget another column needed — the failure
  * mode of the old single shared fetch once a project passed the list cap (the
- * terminal-order fix made that starvation land EXCLUSIVELY on Done).
+ * terminal-order fix, an earlier change, made that starvation land EXCLUSIVELY on Done).
  *
  * A column's OWN query failing does not take the rest of the board down with it — each
  * renders its loading/error/card state independently.

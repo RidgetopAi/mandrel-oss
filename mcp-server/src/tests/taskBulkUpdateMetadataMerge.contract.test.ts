@@ -5,7 +5,7 @@
  *   bulkUpdateTasks (handlers/tasks.ts) did a WHOLESALE `metadata = $n` REPLACE of the
  *   jsonb column — so a bulk update that set ONE metadata key silently DROPPED every other
  *   key already on the row. The single task_update path was fixed to shallow-merge via
- *   metadataMergeSql (f7af00d), but bulk was left clobbering — an incomplete Lesson-011
+ *   metadataMergeSql (f7a4f00), but bulk was left clobbering — an incomplete Lesson-011
  *   "whole class" fix (single merged, bulk clobbered). Bulk now routes through the SAME
  *   metadataMergeSql helper: set/overwrite incoming keys, KEEP untouched sibling keys, and
  *   an explicit `null` deletes a key.

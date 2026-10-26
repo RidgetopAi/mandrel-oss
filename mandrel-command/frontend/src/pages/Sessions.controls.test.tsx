@@ -11,7 +11,7 @@
  * Sessions.test.tsx; modal content lives in a portal, so those queries hit
  * document.body / the open [role="dialog"].
  *
- * ── AND, SINCE the page-scope epic, THE WRITE-SCOPE GUARD ──────────────────────────────────
+ * ── AND, SINCE an earlier epic, THE WRITE-SCOPE GUARD ──────────────────────────────────
  * "New session" is the one WRITE surface on this screen, and writes are the dangerous
  * half of this change set. A write carries no query param and the backend's write
  * precedence is HEADER > body, so an unscoped start is filed against the AMBIENT default

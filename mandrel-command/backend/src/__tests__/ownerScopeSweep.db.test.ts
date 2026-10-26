@@ -144,6 +144,8 @@ const FOREIGN_MARKERS: ReadonlyArray<{ marker: string; owner: string }> = [
 
 const NAME_A = 'osprobealice';
 const NAME_B = `osprobe${MARK_B_ACCOUNT}`;
+/** B's better-auth user id: carries B's account marker. */
+const BA_B = `osba${MARK_B_ACCOUNT}`;
 const NAME_C = 'osprobecarol';
 
 type Persona = 'a' | 'b' | 'c';
@@ -244,7 +246,7 @@ const FROZEN_VOLATILE: readonly string[] = [
  */
 const IDENTITY_TABLES = ['admin_users', 'user'] as const;
 
-type Intent = 'PRIVATE_PLANTED' | 'PROJECT_SCOPED' | 'UNRENDERED' | 'FOREIGN_SURFACE';
+type Intent = 'PRIVATE_PLANTED' | 'PROJECT_SCOPED' | 'UNRENDERED' | 'FOREIGN_SURFACE' | 'ADMIN_GATED';
 
 /**
  * FROZEN, BOTH DIRECTIONS — over the FK-KEYED columns only. Every column in the live
@@ -261,6 +263,11 @@ type Intent = 'PRIVATE_PLANTED' | 'PROJECT_SCOPED' | 'UNRENDERED' | 'FOREIGN_SUR
  *   UNRENDERED       — no route returns these rows' contents at all.
  *   FOREIGN_SURFACE  — better-auth / OAuth-provider tables owned by mcp-server, not by
  *                      this Express app. Stated as a RESIDUAL, not claimed as covered.
+ *   ADMIN_GATED      — every route that renders these rows is requireAdmin, so this suite's
+ *                      personas (all role=user, by design: the pure pair) cannot reach it at
+ *                      all. Asserted, not assumed: ADMIN_GATED_ROUTES below must answer 403
+ *                      to every persona. Isolation BETWEEN admins is a different suite's job,
+ *                      named in the entry's `why`.
  */
 const OWNER_KEYED_INTENT: Readonly<Record<string, { intent: Intent; why: string }>> = {
   'admin_users.id': {
@@ -274,6 +281,14 @@ const OWNER_KEYED_INTENT: Readonly<Record<string, { intent: Intent; why: string 
   'user_project_access.user_id': {
     intent: 'PRIVATE_PLANTED',
     why: "another user's grants are private; planted as C's grant to a project named with MARK_C_GRANT",
+  },
+  'admin_users.auth_user_id': {
+    intent: 'PRIVATE_PLANTED',
+    why: "the dashboard row's better-auth link (migration 109) — B is linked to a better-auth user whose id carries MARK_B_ACCOUNT, and A must never see it",
+  },
+  'api_tokens.user_id': {
+    intent: 'ADMIN_GATED',
+    why: 'Settings → API tokens is admin-only (Reviewer F1); admin-vs-admin isolation (list own only, cross-user revoke 404) is apiTokens.db.test.ts',
   },
   'user_project_access.granted_by': {
     intent: 'PRIVATE_PLANTED',
@@ -294,6 +309,14 @@ const OWNER_KEYED_INTENT: Readonly<Record<string, { intent: Intent; why: string 
   'oauthConsent.userId': { intent: 'FOREIGN_SURFACE', why: 'OAuth provider table, served by mcp-server' },
   'oauthAccessToken.userId': { intent: 'FOREIGN_SURFACE', why: 'OAuth provider table, served by mcp-server' },
   'oauthRefreshToken.userId': { intent: 'FOREIGN_SURFACE', why: 'OAuth provider table, served by mcp-server' },
+};
+
+/**
+ * The GET routes that render each ADMIN_GATED table. Every key must be an ADMIN_GATED table
+ * in OWNER_KEYED_INTENT and vice versa (asserted), and every route must 403 every persona.
+ */
+const ADMIN_GATED_ROUTES: Readonly<Record<string, readonly string[]>> = {
+  api_tokens: ['/api/api-tokens'],
 };
 
 /** The tables the inventory calls PRIVATE_PLANTED, derived from it rather than restated. */
@@ -546,14 +569,14 @@ const NON_IDENTITY_COLUMN_NAMES: readonly string[] = [
   '_shadow_validation_hash', 'a_type', 'accessToken', 'action', 'active_branch', 'activity_type', 
   'adoption_challenges', 'ai_model', 'ai_model_used', 'analysis_context', 'analysis_method', 
   'analysis_scope', 'analyzer_name', 'analyzer_version', 'answer_note', 'answer_status',
-  'attached_to_type', 'b_type',
+  'attached_to_type', 'auth_session_id', 'b_type',
   'base_branch', 'blocked_on', 'branch_name', 'branch_type', 'category',
   'change_management_lessons', 'change_type', 'checksum', 'chosen', 'clientId', 'clientSecret',
   'commit_context_type', 'commit_sha', 'commit_type', 'component_type', 'confidence_level', 
   'config_name', 'connection_id', 'content', 'content_hash', 
   'context_summary', 'context_type', 'created_via_connection', 'creation_commit', 
   'creation_reason', 'current_commit_sha', 'current_sha', 'decision_type', 'dependency_type', 
-  'derived_action', 'description', 'direction', 'display_id', 'documentation', 'edge_type', 
+  'derived_action', 'description', 'direction', 'display_id', 'display_prefix', 'documentation', 'edge_type', 
   'enhancement_strategy', 'error_class', 'error_message', 'event_type', 'evidence_type', 
   'failed_stage', 'failed_tier', 'failure_reason', 
   'failure_stage', 'file_hash', 'file_path', 'file_type', 'filename', 'from_type', 
@@ -578,7 +601,7 @@ const NON_IDENTITY_COLUMN_NAMES: readonly string[] = [
   'spine_type', 'stage', 'state', 'status', 'subject', 'subjectType',
   'success_criteria', 'superseded_reason', 'sync_mode', 
   'table_name', 'theme', 'thread', 'tier', 'tip_type', 'title', 'to_type', 'token', 
-  'tokenEndpointAuthMethod', 'token_id', 'tools_or_resources_needed', 'tos', 'tree_sha', 
+  'tokenEndpointAuthMethod', 'token_hash', 'token_id', 'tools_or_resources_needed', 'tos', 'tree_sha', 
   'trigger_type', 'type', 'unforeseen_risks', 'upstream_branch', 'uri', 'validation_hash', 
   'validation_notes', 'value', 'verdict', 'version', 'what_we_learned', 
   'what_we_would_do_differently', 'what_went_poorly', 'what_went_well', 'working_commit_sha', 
@@ -605,6 +628,7 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
     }
     await pool.query('DELETE FROM projects WHERE id = ANY($1::uuid[])', [ALL_PROJECTS]);
     await pool.query('DELETE FROM admin_users WHERE id = ANY($1::uuid[])', [ALL_USERS]);
+    await pool.query('DELETE FROM "user" WHERE id = $1', [BA_B]);
   };
 
   beforeAll(async () => {
@@ -650,6 +674,14 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
         P_SHARED,
       ]
     );
+
+    // B's dashboard row is LINKED to a better-auth user (migration 109) whose
+    // id carries B's account marker, so admin_users.auth_user_id is inside the sweep.
+    await pool.query(
+      `INSERT INTO "user" (id, name, email, "emailVerified") VALUES ($1, $1, $2, true)`,
+      [BA_B, `${BA_B}@x.test`]
+    );
+    await pool.query('UPDATE admin_users SET auth_user_id = $1 WHERE id = $2', [BA_B, U_B]);
 
     // THE PURE PAIR: A and B hold IDENTICAL grants. C's grant is the one A must not see.
     await pool.query(
@@ -781,6 +813,7 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
           .map(([k]) => k)
           .sort()
       ).toEqual([
+        'admin_users.auth_user_id',
         'admin_users.id',
         'feedback.user_id',
         'user_project_access.granted_by',
@@ -929,6 +962,31 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
       expect(unwitnessed).toEqual([]);
     });
 
+    it('BACKING: every ADMIN_GATED table names its routes, and every one of them 403s every (non-admin) persona', async () => {
+      const gated = Object.entries(OWNER_KEYED_INTENT)
+        .filter(([, v]) => v.intent === 'ADMIN_GATED')
+        .map(([k]) => k.split('.')[0])
+        .sort();
+      expect(gated.length).toBeGreaterThan(0);
+      expect(Object.keys(ADMIN_GATED_ROUTES).sort()).toEqual(gated);
+      // The premise: no persona is an admin (requireAdmin would let an admin through).
+      const roles = await pool.query('SELECT role FROM admin_users WHERE id = ANY($1::uuid[])', [ALL_USERS]);
+      expect(roles.rows.length).toBe(ALL_USERS.length);
+      expect(roles.rows.filter((r) => r.role === 'admin')).toEqual([]);
+      const open: string[] = [];
+      for (const routes of Object.values(ADMIN_GATED_ROUTES)) {
+        for (const route of routes) {
+          // The route must really exist in the app, or the 403 below proves nothing.
+          expect({ route, discovered: ALL_GET_ROUTES.includes(route) }).toEqual({ route, discovered: true });
+          for (const persona of ['a', 'b', 'c'] as const) {
+            const res = await hit(route, persona);
+            if (res.status !== 403) open.push(`${route} [${res.status}] for persona ${persona}`);
+          }
+        }
+      }
+      expect(open).toEqual([]);
+    });
+
     it('BACKING: every FOREIGN_SURFACE string column sits on a table the FK inventory already declares foreign', () => {
       // Derived from OWNER_KEYED_INTENT rather than restated, so the two inventories
       // cannot disagree about which tables belong to mcp-server.
@@ -968,11 +1026,13 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
       expect(fb.rows.filter((r) => contains(r.message, MARK_B_FEEDBACK))).toHaveLength(2);
 
       const acct = await pool.query(
-        'SELECT username, email, theme, default_project_id FROM admin_users WHERE id = ANY($1::uuid[]) ORDER BY id',
+        'SELECT username, email, theme, default_project_id, auth_user_id FROM admin_users WHERE id = ANY($1::uuid[]) ORDER BY id',
         [[U_A, U_B]]
       );
       expect(contains(acct.rows[1].username, MARK_B_ACCOUNT)).toBe(true);
       expect(contains(acct.rows[1].email, MARK_B_ACCOUNT)).toBe(true);
+      // the PRIVATE_PLANTED better-auth link really carries B's marker
+      expect(contains(acct.rows[1].auth_user_id, MARK_B_ACCOUNT)).toBe(true);
       // THE DIVERGENT INPUT for GET /api/users/preferences, asserted present rather than
       // assumed: A and B must hold DIFFERENT owner-keyed preference values, or that route
       // is insensitive to owner by fixture rather than by code.
@@ -1012,6 +1072,7 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
     const cProjects = await hit('/api/projects', 'c');
     expect(cProjects.status).toBe(200);
     expect(contains(cProjects.body, MARK_C_GRANT)).toBe(true);
+
     // If any of these were false, every "A sees nothing" assertion below would be
     // unfalsifiable — the marker would be undetectable ANYWHERE.
   }, 60000);
@@ -1158,8 +1219,8 @@ describeDb('owner-scoped reads are confined to the caller\'s own rows', () => {
       // happens to carry free text. A marker can only live in a column wide enough to hold
       // it, so `admin_users.theme` (a CHECK-constrained enum) and
       // `admin_users.default_project_id` (a uuid) are UNMARKABLE and the marker sweep is
-      // structurally blind to them. MEASURED by Reviewer on this branch (in review
-      // in review): a /api/users/preferences that returned EVERY user's theme and default
+      // structurally blind to them. MEASURED by Reviewer on this branch:
+      // a /api/users/preferences that returned EVERY user's theme and default
       // project passed this suite 16/16 — the leak class this file was written for,
       // missed, because the only perturbed table was `feedback`. This axis needs no marker;
       // its anchor is the write itself, so it is what reaches an unmarkable column.

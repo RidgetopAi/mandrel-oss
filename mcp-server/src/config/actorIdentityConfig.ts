@@ -10,7 +10,7 @@
  * (the env-NAME constant + call-time getter): the config is the contract, the code reads it.
  *
  * WHY IT EXISTS (the real-world driver): one human/tenant can run N agents CONCURRENTLY on
- * different projects — Amp-Code orbs, and our own swarm (the coordinator + N Builders + the runtime
+ * different projects — Amp-Code orbs, and our own swarm (the coordinator + N builders + the runtime
  * tick). Today `deriveActor` returns the verified `sub` BEFORE it ever reads the declared
  * `X-Actor-ID`, so on an OAuth tenant those N agents COLLAPSE INTO ONE ACTOR, share one
  * current-project, and silently write into each other's project. The composite actor is the
@@ -78,7 +78,7 @@ export const ACTOR_RESERVED_DELIMITER_CHARS: readonly string[] = ['/', ':'];
 export const ACTOR_RESERVED_DELIMITER_REPLACEMENT = '-';
 
 /**
- * The escape character for the PRINCIPAL segment (the reviewer N1). The principal is a VERIFIED
+ * The escape character for the PRINCIPAL segment (Reviewer N1). The principal is a VERIFIED
  * value we must not lose information from, so — unlike the declared segment, which is merely
  * stripped — it is percent-ENCODED: injective, so two different principals can never encode to
  * the same string.

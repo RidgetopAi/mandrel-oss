@@ -3,7 +3,7 @@
  * context corpus.
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  ONE SELECTOR, SEVEN PANELS (page-scope epic §E)
+ *  ONE SELECTOR, SEVEN PANELS (an earlier epic §E)
  * ════════════════════════════════════════════════════════════════════════════════════
  * Every one of the seven panels used to call `useEffectiveProjectId()` for itself, and the
  * page had no control at all — so which project's embedding space you were looking at was

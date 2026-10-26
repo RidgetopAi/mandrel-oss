@@ -100,7 +100,7 @@ docs/
 # wrong place, and looked done.
 #
 # ⚠️ THIS RULE HAS NOT BEEN PROVEN BY A REAL BUILD. It rests on documented
-# .dockerignore semantics and on file inspection, NOT on an observed image. The the control host
+# .dockerignore semantics and on file inspection, NOT on an observed image. The control host
 # control box where this branch was written has no docker (`which docker` -> nothing),
 # so no build could be run. Stated here rather than glossed, because an unverified fix
 # that READS as verified is the failure mode.

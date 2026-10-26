@@ -3,7 +3,7 @@
  * createRoot + async act into jsdom, behind QueryClientProvider + MemoryRouter,
  * with the UNIFIED `api` client mocked. Proves the four required states
  * (data / loading / empty / error), the Live-now vs Earlier grouping, the expanded
- * timeline, the search-filter behaviour, and — new with the page-scope epic — the page's own
+ * timeline, the search-filter behaviour, and — new with an earlier epic — the page's own
  * PROJECT SCOPE. Structural wiring (no antd, unified client, no hex) is asserted in
  * Sessions.wiring.test.ts.
  *
@@ -279,7 +279,7 @@ describe('Sessions — data state', () => {
 
   /**
    * INTENT CHANGED, deliberately. This used to assert the first live card mounted
-   * EXPANDED (`defaultOpen={i === 0}`) and rendered its timeline unprompted. Operator's
+   * EXPANDED (`defaultOpen={i === 0}`) and rendered its timeline unprompted. The operator's
    * requirement is now the opposite: every card loads collapsed. The old assertion was
    * guarding real behaviour, so it is not weakened — it is inverted, and the timeline
    * half it also covered moved into the click case below so nothing stopped being tested.
@@ -394,7 +394,7 @@ describe('Sessions — actor filter', () => {
   });
 });
 
-describe('Sessions — project scope (page-scope epic §E)', () => {
+describe('Sessions — project scope (an earlier epic §E)', () => {
   it('opens on the USER DEFAULT project, not "all"', async () => {
     await mount();
     await settle();

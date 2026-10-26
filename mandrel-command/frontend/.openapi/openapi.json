@@ -2934,6 +2934,44 @@
           }
         }
       },
+      "ApiToken": {
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "prefix",
+          "createdAt",
+          "lastUsedAt",
+          "expiresAt"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "name": {
+            "type": "string"
+          },
+          "prefix": {
+            "type": "string",
+            "description": "Non-secret display prefix, e.g. mdl_AbCd1234"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastUsedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          }
+        }
+      },
       "User": {
         "type": "object",
         "required": [
@@ -3002,7 +3040,7 @@
         "properties": {
           "username": {
             "type": "string",
-            "description": "Username",
+            "description": "Dashboard username, or the email address of this instance's sign-in",
             "example": "admin"
           },
           "password": {
@@ -3190,15 +3228,167 @@
       "description": "Punch List task attachments — before screenshots and evidence images"
     },
     {
+      "name": "API Tokens",
+      "description": "Per-user API tokens for /mcp and the Punch List loop (Settings → API tokens)"
+    },
+    {
       "name": "Authentication",
       "description": "User authentication and authorization endpoints"
     }
   ],
   "paths": {
+    "/api-tokens": {
+      "get": {
+        "summary": "List the current user's API tokens",
+        "description": "Name, display prefix, created, last used and expiry for each un-revoked token the CALLER owns. Never returns a token or its hash.\n",
+        "tags": [
+          "API Tokens"
+        ],
+        "responses": {
+          "200": {
+            "description": "The caller's tokens, newest first",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "tokens": {
+                          "type": "array",
+                          "items": {
+                            "$ref": "#/components/schemas/ApiToken"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Not logged in"
+          },
+          "403": {
+            "description": "Not an admin — API tokens carry full MCP access, so only admins may hold them"
+          }
+        }
+      },
+      "post": {
+        "summary": "Create an API token for the current user",
+        "description": "Returns the plaintext token exactly once, in this response. Only its SHA-256 is stored; it cannot be shown again. Rate-limited and capped per user.\n",
+        "tags": [
+          "API Tokens"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "expiresInDays": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "nullable": true
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created. `plaintext` is the token; store it now.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "token": {
+                          "$ref": "#/components/schemas/ApiToken"
+                        },
+                        "plaintext": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid name or expiry"
+          },
+          "403": {
+            "description": "Not an admin"
+          },
+          "409": {
+            "description": "The per-user token limit is reached"
+          },
+          "429": {
+            "description": "Create rate limit reached"
+          }
+        }
+      }
+    },
+    "/api-tokens/{id}": {
+      "delete": {
+        "summary": "Revoke one of the current user's API tokens",
+        "description": "Takes effect on the next request made with the token. Another user's token id answers 404, exactly like an id that does not exist.\n",
+        "tags": [
+          "API Tokens"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Revoked"
+          },
+          "400": {
+            "description": "Malformed id"
+          },
+          "403": {
+            "description": "Not an admin"
+          },
+          "404": {
+            "description": "No such un-revoked token for this user"
+          }
+        }
+      }
+    },
     "/auth/login": {
       "post": {
         "summary": "User login",
-        "description": "Authenticate a user with username and password",
+        "description": "Sign in with a dashboard username and password, or with the email address and password of this instance's sign-in (the one set from the welcome email's set-password link). The `username` field accepts either.",
         "tags": [
           "Authentication"
         ],
@@ -3244,6 +3434,16 @@
               }
             }
           },
+          "403": {
+            "description": "The sign-in is valid but has no dashboard access on this instance",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
           "429": {
             "description": "Too many login attempts",
             "content": {
@@ -3256,6 +3456,16 @@
           },
           "500": {
             "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "The sign-in could not be checked right now (not a wrong password)",
             "content": {
               "application/json": {
                 "schema": {

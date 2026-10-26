@@ -1,6 +1,6 @@
 -- Migration 082: AUTO-OPEN POSITIONS + the trunk-revert coordinator detector, and the
 -- Q3 zero-declared-inbound meter.
--- (design an earlier note.)
+-- (design an earlier context.)
 --
 -- WHY (the measured gap, not a theory): the first customer-shaped session against v0.22.0
 -- prod — the operator's Pi agent "rivet", a small model with zero house habits, building a weather

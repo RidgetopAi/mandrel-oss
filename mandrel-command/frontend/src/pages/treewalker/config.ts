@@ -5,8 +5,8 @@
  * the graph-layout geometry, and the backend-readiness flag that gates the live data path.
  *
  * The typed-EDGE vocabulary (decided_by / informs / caused / supersedes labels + endpoint
- * dots) is REUSED from the shared `config/graphEdges` module — NOT re-copied here (a past incident
- * : one home for the edge vocab). Only the trust vocab is new, and it lives here.
+ * dots) is REUSED from the shared `config/graphEdges` module — NOT re-copied here
+ * (one home for the edge vocab). Only the trust vocab is new, and it lives here.
  */
 import type { RecordKind, TrustLevel } from '../../api/domains/treewalker';
 
@@ -39,8 +39,8 @@ export const TREEWALKER_CONFIG = {
     padY: 30,
   },
   /**
-   * The character budget for an UNNAMED drawer's rendered label (P2, an earlier decision /
-   * an earlier task). A named drawer shows its full `branch:<name>` tag untruncated — it was
+   * The character budget for an UNNAMED drawer's rendered label (P2).
+   * A named drawer shows its full `branch:<name>` tag untruncated — it was
    * chosen by hand, so it is trusted to be short. An unnamed one falls back to the spine's
    * own title, which carries no such guarantee, so it is truncated to this budget (plus an
    * ellipsis) before it ever reaches the DOM — the CSS `text-overflow: ellipsis` on

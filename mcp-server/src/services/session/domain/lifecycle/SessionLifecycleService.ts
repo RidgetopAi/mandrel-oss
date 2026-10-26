@@ -411,7 +411,7 @@ export const SessionLifecycleService = {
       // read, TOKENS HAVE NO CHILD TABLE, so their tail was simply gone. Persist first,
       // then do everything that can fail.
       //
-      // ── ONE STATEMENT, NOT TWO (the reviewer B1) ──────────────────────────────────
+      // ── ONE STATEMENT, NOT TWO (Reviewer B1) ──────────────────────────────────
       // The activity half and the token half go in the SAME UPDATE. This block used to
       // issue two sequential writes inside one try and restore BOTH deltas in the catch,
       // so a failure of the SECOND write re-queued activity the FIRST had already
@@ -604,7 +604,7 @@ export const SessionLifecycleService = {
     try {
       // 1. RAM HIT (connection-scoped), VALIDATED against the DB as STILL OPEN.
       //
-      // STALE-BUT-ENDED FIX (SR-1): the in-RAM store can hold a session
+      // STALE-BUT-ENDED FIX (SR-1, ctx): the in-RAM store can hold a session
       // id whose row is no longer alive — it was reaped (status=inactive + ended_at),
       // pruned, or shut-down-and-not-resumed. The OLD code validated with exists(),
       // which returns true even for an ENDED row, so it kept returning a DEAD id and
@@ -725,7 +725,7 @@ export const SessionLifecycleService = {
    * SR-1: Graceful-shutdown close — mark ALL open active sessions 'interrupted'
    * (resumable; ended_at left NULL) and evict their in-RAM entries.
    *
-   * REPLACES the old stdio-only special case: previously shutdown
+   * REPLACES the old stdio-only special case (ctx): previously shutdown
    * ended ONLY the 'stdio' connection's session, so every bridge/http/remote session
    * was left 'active' with ended_at NULL forever — they accumulated and, on restart,
    * the RAM map was empty so a duplicate was minted. Now shutdown parks them ALL as

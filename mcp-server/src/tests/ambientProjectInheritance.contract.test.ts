@@ -98,12 +98,12 @@ beforeAll(async () => {
   decoyId = (
     await db.query(
       `INSERT INTO projects (name, description, updated_at)
-       VALUES ($1, 'adverse-ordering decoy', now() + interval '365 days') RETURNING id`,
+       VALUES ($1, 'an earlier change adverse-ordering decoy', now() + interval '365 days') RETURNING id`,
       [DECOY_NAME],
     )
   ).rows[0].id;
   fixtureId = (
-    await db.query(`INSERT INTO projects (name, description) VALUES ($1, 'fixture') RETURNING id`, [
+    await db.query(`INSERT INTO projects (name, description) VALUES ($1, 'an earlier change fixture') RETURNING id`, [
       FIXTURE_NAME,
     ])
   ).rows[0].id;

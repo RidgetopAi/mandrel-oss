@@ -1,5 +1,5 @@
 -- Migration 072: floor the idle reaper's ended_at so a clock-domain row cannot abort the sweep
--- Task: class fix — fix the class, not the instance
+-- Task: an earlier change (class fix — fix the class, not the instance)
 --
 -- ── WHAT WAS BROKEN ────────────────────────────────────────────────────────────────────
 -- `timeout_inactive_sessions()` writes a Postgres-clock `ended_at = CURRENT_TIMESTAMP`,

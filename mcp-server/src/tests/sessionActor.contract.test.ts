@@ -1,6 +1,6 @@
 /**
- * SESSION ACTOR STAMPING — DB-backed contract tests (Sessions Foundation Phase 1,
- * an earlier decision). Runs against the shared CI Postgres (real migrate).
+ * SESSION ACTOR STAMPING — DB-backed contract tests (Sessions Foundation Phase 1).
+ * Runs against the shared CI Postgres (real migrate).
  *
  * Locks the Phase 1 additive behavior:
  *   - actor is STAMPED on a new session from a DECLARED actor (bridge/MCP surface),

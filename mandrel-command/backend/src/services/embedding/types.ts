@@ -16,7 +16,7 @@ export interface EmbeddingDataset {
 /**
  * The project an embedding read is scoped to.
  *
- * `projectName` was REMOVED (the reviewer D1). Its only producer was
+ * `projectName` was REMOVED (Reviewer D1). Its only producer was
  * routes/embedding.ts's legacy `project` request header, which accepted a project NAME and
  * was never authorized — so an attacker needed no uuid, just a name. Deleting the field
  * makes name-based project selection unreachable by construction rather than something a

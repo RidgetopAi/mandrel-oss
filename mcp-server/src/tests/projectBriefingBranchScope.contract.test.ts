@@ -1,6 +1,6 @@
 /**
  * SK5 — BRANCH-SCOPED BRIEFING SELECTION + HONEST PER-SECTION COUNTS
- * (STRONG BONES an earlier decision.)
+ * (STRONG BONES an earlier spine; an earlier decision.)
  *
  * TWO DEFECTS, PROVED SEPARATELY BECAUSE THEY HAVE SEPARATE CAUSES:
  *
@@ -91,7 +91,7 @@ async function viaTool(tool: string, args: any): Promise<any> {
 const short = (id: string): string => id.slice(0, 8);
 
 /**
- * THE SHIPPED CONFIG WITH THE SK5 FLAG ON (Operator's ruling 2026-08-16: default OFF).
+ * THE SHIPPED CONFIG WITH THE SK5 FLAG ON (the operator's ruling 2026-08-16: default OFF).
  *
  * The ON-state tests go through buildProjectBriefing with this rather than through
  * routeExecutor, because the flag is read at module load and the route has no parameter for
@@ -257,7 +257,7 @@ describe('SK5 — PART A: the reader\'s branch selects, on the real wire', () =>
   });
 
   /* ────────────────────────────────────────────────────────────────────────────────────
-   * THE FLAG (Operator's ruling 2026-08-16: riverbend-first, DEFAULT OFF).
+   * THE FLAG (the operator's ruling 2026-08-16: riverbend-first, DEFAULT OFF).
    *
    * THE DIVERGENT SAMPLE IS THE OFF STATE WITH A CALLER HOLDING A POSITION. A suite that
    * only exercised the ON state could not tell a working flag from an ignored one, and a
@@ -694,7 +694,7 @@ describe('SK5 — PART B: the cap is the BACKSTOP, not the selector', () => {
 
   test('APPROXIMATE members are marked FROM THE FIELD and counted, and `exact` is never claimed', () => {
     // Prod reality (measured 2026-08-16): 107 of 130 membership rows fleet-wide are
-    // legacy-approx, and the worked example branch is 8 of 8. A section printing the
+    // legacy-approx, and the worked example is 8 of 8. A section printing the
     // strongest possible count over that set, with the field in hand, is the defect this
     // whole file exists to delete.
     const members = [

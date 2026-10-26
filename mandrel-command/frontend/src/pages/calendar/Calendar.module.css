@@ -246,7 +246,7 @@
 
 /* ---- per-cell momentum treatment ----
    Layout only — every colour is applied INLINE from the momentumCells.ts band config
-   (the palette is iterated there), so this stylesheet stays 100% token-driven. */
+   (the operator iterates the palette there), so this stylesheet stays 100% token-driven. */
 .moRingSvg {
   display: block;
 }

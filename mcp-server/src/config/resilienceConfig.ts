@@ -1,7 +1,7 @@
 /**
  * EMBED-FAILURE RESILIENCE CONFIG — the single source of truth for the tunables of the
- * unified embed-failure resilience mechanism (merges two earlier designs,
- * into ONE mechanism). The operator chose Option B: degrade + queue + alert
+ * unified embed-failure resilience mechanism (merges +
+ * an earlier change into ONE mechanism). The operator chose Option B: degrade + queue + alert
  * — never lose a record, never fail silently.
  *
  * STANDING PRINCIPLE (the operator, binds this + all future builds): NO HARDCODED VARIABLES.
@@ -62,7 +62,7 @@ export interface ResilienceConfig {
    * alerting, so ANY process that can reach the notify script pages the same phone prod
    * does. A dev worktree qualifies — the dev tree has no @xenova model cached and
    * MANDREL_XENOVA_ALLOW_REMOTE=false, so every context a local test writes fails to embed
-   * and alerts. On 2026-08-12 a builder's test runs paged the operator at his day job about NULL
+   * and alerts. On 2026-08-12 a Builder's test runs paged the operator at his day job about NULL
    * embeddings in a disposable ci_* database. Nothing was wrong with prod: prod cut over to
    * `embedding_gemma` on 2026-07-05 and its coverage is 100% with ZERO gaps over 30 days.
    *
@@ -75,7 +75,7 @@ export interface ResilienceConfig {
    * containers: NODE_ENV=production, MANDREL_EMBED_ALERT_ENABLED unset. The sweep is in
    * `src/tests/embedAlertProductionOnly.contract.test.ts`'s header; run that rather than
    * trusting this sentence. (the coordinator's first draft of this comment listed THREE instances and
-   * generalised to eight; the reviewer measured the other five. It happened to be true — but a
+   * generalised to eight; Reviewer measured the other five. It happened to be true — but a
    * count written from a sample reads exactly like a count that was taken.)
    *
    * A FUTURE TENANT IS BORN ALERTING, from two independent layers, so this is not a fact that

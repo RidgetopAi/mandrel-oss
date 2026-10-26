@@ -177,7 +177,7 @@ export async function persistDeclaredLimbsForRow(
 /**
  * THE BATCH SHAPE OF `persistDeclaredLimbsForRow` — same rule, same composition, same
  * degradation, ONE resolver load and ONE update statement for the whole set.
- *
+ * (an earlier task.)
  *
  * WHY IT EXISTS: `bulkUpdateTasks` deliberately does its edit as a SINGLE statement, then
  * called the per-row function in a serial loop over the RETURNING rows — 2N round trips

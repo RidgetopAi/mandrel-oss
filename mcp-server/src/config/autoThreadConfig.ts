@@ -1,10 +1,9 @@
 /**
- * AUTO-THREAD — the session active-thread anchor config (Mandrel Core Redesign T5b,
- * an earlier decision).
+ * AUTO-THREAD — the session active-thread anchor config (Mandrel Core Redesign T5b).
  *
  * THE PRINCIPLE (the operator, standing rule): NO HARDCODED VARIABLES. Every knob the
  * deterministic auto-threading layer touches lives HERE, once — a named value with a
- * Operator-aligned default, a one-line note, and (where it's a runtime tunable) an env
+ * The operator-aligned default, a one-line note, and (where it's a runtime tunable) an env
  * override. Never a literal buried in the route. Mirrors recallConfig.ts (T1),
  * edgeTypes.ts (T2a), trustConfig.ts (T2b), threadConfig.ts (T3) and linksConfig.ts (T5a).
  *
@@ -81,7 +80,7 @@ export interface AutoThreadConfig {
   optOutFlag: string;
 }
 
-/** THE LIVE CONFIG — operator-aligned defaults; the enabled switch is env-overridable. */
+/** THE LIVE CONFIG — the operator-aligned defaults; the enabled switch is env-overridable. */
 export const AUTO_THREAD_CONFIG: AutoThreadConfig = {
   enabled: envBool('MANDREL_AUTO_THREAD_ENABLED', true),
   activeTaskEdgeType: ACTIVE_TASK_EDGE_TYPE,

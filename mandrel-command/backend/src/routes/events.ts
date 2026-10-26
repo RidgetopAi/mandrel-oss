@@ -41,7 +41,7 @@ const ticketMintLimiter = rateLimit({
 });
 
 /**
- * POST /api/events/ticket 
+ * POST /api/events/ticket
  *
  * Exchange a session JWT — carried in the Authorization HEADER, where it belongs — for a
  * single-use, seconds-lived opaque ticket that `EventSource` can put in its URL. This is

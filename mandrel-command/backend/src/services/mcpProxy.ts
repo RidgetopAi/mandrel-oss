@@ -14,7 +14,7 @@
  *      branch — this file introduces NO edit there. It reuses the PUBLIC
  *      McpService.authHeader() (one token source, no drifting copies) but re-derives
  *      the target host/port locally because resolveMcpTarget() is private.
- *      >>> SEAM FOR COORDINATOR AT MERGE: if the text-scrape removal makes resolveMcpTarget public,
+ *      >>> SEAM FOR COORDINATOR AT MERGE: if an earlier change makes resolveMcpTarget public,
  *      >>> delete resolveTarget() below and call it instead.
  *
  * ── WHAT IT ADDS TO EVERY FORWARDED REQUEST ──────────────────────────────────────────

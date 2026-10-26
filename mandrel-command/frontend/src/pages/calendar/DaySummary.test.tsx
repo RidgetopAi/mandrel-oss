@@ -25,7 +25,7 @@ vi.mock('../../api', () => ({
   },
 }));
 // The card reads the ONE central project list for its scope LABEL — it no longer issues
-// its own `/api/projects` fetch (page-scope epic §D).
+// its own `/api/projects` fetch (an earlier epic §D).
 vi.mock('../../contexts/ProjectContext', () => ({
   useProjectContext: () => ({ setSelectedProjectId: () => undefined,
     allProjects: [
@@ -50,14 +50,14 @@ const mockApi = api as unknown as {
 
 /**
  * The card is handed the CALENDAR's per-request scope; it has no scope of its own by
- * design (page-scope epic §E). A recognisable stand-in so the assertions can prove the card
+ * design (an earlier epic §E). A recognisable stand-in so the assertions can prove the card
  * PASSES IT THROUGH rather than quietly calling unscoped.
  */
 const INHERITED_SCOPE = { headers: { 'X-Project-ID': 'inherited-from-calendar' } };
 const pageScope = () => INHERITED_SCOPE;
 const mockDownload = downloadNodeAsPng as unknown as ReturnType<typeof vi.fn>;
 
-const HL_ID = '76959999-aaaa-bbbb-cccc-1234567890ab';
+const HL_ID = '76951513-aaaa-bbbb-cccc-1234567890ab';
 const DEC_ID = '9879f00d-0000-1111-2222-333344445555';
 const TASK_ID = 'e889f00d-dddd-eeee-ffff-000011112222';
 
@@ -207,7 +207,7 @@ describe('DaySummary — populated card', () => {
     // href is the dashless-normalized id under /r/; visible text is r/<id8>
     const hl = document.body.querySelector(`a[href="/r/${HL_ID.replace(/-/g, '')}"]`);
     expect(hl).not.toBeNull();
-    expect(hl?.textContent).toBe('r/76959999');
+    expect(hl?.textContent).toBe('r/76951513');
     expect(document.body.querySelector(`a[href="/r/${DEC_ID.replace(/-/g, '')}"]`)).not.toBeNull();
     expect(document.body.querySelector(`a[href="/r/${TASK_ID.replace(/-/g, '')}"]`)).not.toBeNull();
   });

@@ -10,7 +10,7 @@ import { ProjectAccessService } from '../services/projectAccess';
 import { ALL_PROJECTS } from '../services/embedding/datasets';
 
 /**
- * ── TWO UNAUTHORIZED PROJECT DOORS, CLOSED (the reviewer D1) ──────
+ * ── TWO UNAUTHORIZED PROJECT DOORS, CLOSED (Reviewer D1) ──────
  *
  * This router had EIGHT authenticated routes and its OWN project resolution, which never
  * consulted ProjectAccessService. Measured at the real surface with a zero-grant
@@ -207,7 +207,7 @@ router.get('/similarity', async (req: AuthenticatedRequest, res: Response) => {
 
     const scope = scopeOf(req);
 
-    // DOOR 2 FIRST, before the missing-scope 400 (the reviewer item 6). `?id=` is a project
+    // DOOR 2 FIRST, before the missing-scope 400 (Reviewer item 6). `?id=` is a project
     // id; if it names a project this caller may not have, that is an AUTHORIZATION failure
     // and must be answered as one. Checking the scope header first meant an unscoped
     // `?id=<victim>` got a 400 "send X-Project-ID" — a hint about the wrong problem, and
@@ -284,7 +284,7 @@ router.get('/projection', async (req: AuthenticatedRequest, res: Response) => {
 
     const scope = scopeOf(req);
 
-    // DOOR 2 FIRST, before the missing-scope 400 (the reviewer item 6). `?id=` is a project
+    // DOOR 2 FIRST, before the missing-scope 400 (Reviewer item 6). `?id=` is a project
     // id; if it names a project this caller may not have, that is an AUTHORIZATION failure
     // and must be answered as one. Checking the scope header first meant an unscoped
     // `?id=<victim>` got a 400 "send X-Project-ID" — a hint about the wrong problem, and
@@ -356,7 +356,7 @@ router.get('/cluster', async (req: AuthenticatedRequest, res: Response) => {
 
     const scope = scopeOf(req);
 
-    // DOOR 2 FIRST, before the missing-scope 400 (the reviewer item 6). `?id=` is a project
+    // DOOR 2 FIRST, before the missing-scope 400 (Reviewer item 6). `?id=` is a project
     // id; if it names a project this caller may not have, that is an AUTHORIZATION failure
     // and must be answered as one. Checking the scope header first meant an unscoped
     // `?id=<victim>` got a 400 "send X-Project-ID" — a hint about the wrong problem, and
@@ -422,7 +422,7 @@ router.get('/metrics', async (req: AuthenticatedRequest, res: Response) => {
 
     const scope = scopeOf(req);
 
-    // DOOR 2 FIRST, before the missing-scope 400 (the reviewer item 6). `?id=` is a project
+    // DOOR 2 FIRST, before the missing-scope 400 (Reviewer item 6). `?id=` is a project
     // id; if it names a project this caller may not have, that is an AUTHORIZATION failure
     // and must be answered as one. Checking the scope header first meant an unscoped
     // `?id=<victim>` got a 400 "send X-Project-ID" — a hint about the wrong problem, and

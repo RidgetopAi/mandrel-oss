@@ -48,13 +48,13 @@
  * =============================================================================
  * Enumerated across every `effect:'write'` op by asking `projectScopeParam` and
  * `explicitProjectTargetParams` (the product's own resolvers), not by reading them.
- * Re-derived 2026-07-28 after a persisting scan-status op was corrected read→write (the reviewer B1);
+ * Re-derived 2026-07-28 after a scan-poll op was corrected read→write (Reviewer B1);
  * it landed in the first bucket, so the guard's shape did not change, only its size:
  *
  *   25 ops declare a scoped `projectId`/`project` param  → an unidentified caller complies
  *      by passing it. context_*, decision_*, task_*, link/unlink, thread_set,
  *      session_start, branch_assign, branch_unassign.
- *      (23 → 25 with P3, the two scan ops that once sat in this bucket have since been removed, so re-count before relying on the number. This number is prose and prose cannot be gated; the
+ *      (23 → 25 with P3. This number is prose and prose cannot be gated; the
  *      EXECUTED form of the same population is projectBindingRouteGate.contract.test.ts's
  *      SWEPT_SCOPE_TOOL_COUNT, which is derived from `projectScopeParam` and goes RED when it
  *      moves — that guard is what caught this line being stale, and it counts a wider set,

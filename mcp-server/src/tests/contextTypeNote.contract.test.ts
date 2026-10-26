@@ -1,12 +1,12 @@
 /**
  * `note` CONTEXT TYPE — the generic capture has a real home, and `fact` does not
- * (Auditor recommendation).
+ * (the auditor rec).
  *
  * THE DEFECT: in the Phase-3 eval 5/7 stores guessed `type: "fact"` — an invalid enum —
  * because no generic type existed. The fix is a real type, `note`, added to every copy of
  * the domain: config/contextTypes.ts (the zod enum + the handler's TS type), the DB CHECK
  * constraint (migration 100), mandrel-command's ContextTypeSchema. Deliberately NOT done, on
- * Auditor's call: aliasing `fact` → note server-side, or defaulting a missing type. Either one
+ * The auditor's call: aliasing `fact` → note server-side, or defaulting a missing type. Either one
  * lets a mislabel into durable memory silently.
  *
  * WHY THIS DRIVES THE REAL EXPRESS /mcp/tools SURFACE: the enum lives in validationMiddleware,

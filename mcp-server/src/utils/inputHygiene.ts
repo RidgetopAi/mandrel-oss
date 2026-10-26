@@ -37,7 +37,7 @@ export function stripCodeSpans(text: string): string {
   //    inside it pass.
   out = out.replace(/```[\s\S]*?```/g, ' ');
   out = out.replace(/~~~[\s\S]*?~~~/g, ' ');
-  // 2. DANGLING (unterminated) fence handling — FAIL-SAFE (the reviewer finding /
+  // 2. DANGLING (unterminated) fence handling — FAIL-SAFE (Reviewer finding /
   //    guards-need-guarding). Any triple-fence marker still present here was never closed,
   //    so it is NOT a trusted code region: its TAIL must stay SCANNABLE or a raw leak could
   //    hide behind a lone ``` (e.g. "text ```\n</description>..."). We therefore strip ONLY

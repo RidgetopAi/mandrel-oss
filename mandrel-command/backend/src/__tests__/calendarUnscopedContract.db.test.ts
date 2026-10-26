@@ -1,6 +1,6 @@
 /**
  * calendarUnscopedContract — THE `project=all` CONTRACT, end to end, against real rows
- * (page-scope epic §E; the frontend half is `frontend/src/pages/Calendar.allContract.test.tsx`).
+ * (an earlier epic §E; the frontend half is `frontend/src/pages/Calendar.allContract.test.tsx`).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHAT IS BEING GUARDED, AND WHY NOTHING ELSE GUARDS IT

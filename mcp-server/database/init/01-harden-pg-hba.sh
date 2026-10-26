@@ -2,29 +2,26 @@
 # =============================================================================
 # 01-harden-pg-hba.sh — tighten a FRESH tenant's pg_hba loopback-TCP trust to scram.
 # =============================================================================
-# WHY (exposure an earlier note)
+# WHY (exposure an earlier context)
 #   The postgres image ships pg_hba with `host all all 127.0.0.1/32 trust` (+ ::1/128),
 #   so any process that can reach the mapped loopback port authenticates PASSWORDLESSLY
 #   — a cross-tenant local-isolation gap on a shared box. This runs on FIRST init of a
 #   fresh data volume (mounted into /docker-entrypoint-initdb.d/, after 00-extensions.sql)
 #   and rewrites the auth METHOD to scram-sha-256 on every `host*` rule whose method is
 #   `trust`. `local` (unix-socket) lines are LEFT as trust so in-container admin tooling
-#   (provisioner admin upsert, reset-tenant-password script, rotation socket-exec) keeps
-#   working. The app connects over the docker network WITH a password (scram) → unaffected.
+#   keeps working. The app connects over the docker network WITH a password (scram) →
+#   unaffected.
 #
-#   This is the NEW-TENANT path. EXISTING tenants are tightened at runtime by
-#   rotate-tenant-db-password script (rotate_apply_pg_hba_hardening) using the
-#   IDENTICAL transform in the hosted rotation tooling — a drift
-#   test (scripts/test/db-rotate.test.sh) asserts the two produce byte-identical output.
+#   This is the NEW-INSTANCE path: it runs only on a fresh data volume.
 #
 #   Init scripts run while postgres is up on the UNIX SOCKET (local/trust), so tightening
 #   the TCP host lines here does NOT break the entrypoint's own socket connection.
 #
 # TEST/DRIFT MODE: `01-harden-pg-hba.sh --filter` reads pg_hba text on STDIN and writes
 #   the transformed text on STDOUT (no DB, no I/O) — so the transform is unit-testable
-#   and diffable against the lib. Without --filter it edits "$PGDATA/pg_hba.conf" live.
+#   and diffable. Without --filter it edits "$PGDATA/pg_hba.conf" live.
 #
-# CONFIG (env-overridable; matches the hosted rotation tooling defaults):
+# CONFIG (env-overridable):
 #   HARDEN_HBA_METHOD            method to replace trust with (default scram-sha-256)
 #   HARDEN_HBA_KEEP_LOCAL_TRUST  1 = keep `local` trust (default 1)
 set -eu
@@ -32,8 +29,7 @@ set -eu
 METHOD="${HARDEN_HBA_METHOD:-scram-sha-256}"
 KEEP_LOCAL="${HARDEN_HBA_KEEP_LOCAL_TRUST:-1}"
 
-# The transform — MUST stay byte-identical in behaviour to
-# the hosted rotation tooling (guarded by a drift test).
+# The transform.
 _harden_filter() {
   awk -v method="$METHOD" -v keeplocal="$KEEP_LOCAL" '
     /^[[:space:]]*#/ || /^[[:space:]]*$/ { print; next }

@@ -1,5 +1,6 @@
 /**
- * MAKE implementation_status READABLE — end-to-end contract tests ( * item 2 of an earlier decision).
+ * MAKE implementation_status READABLE — end-to-end contract tests
+ * (item 2 of an earlier decision).
  *
  * WHAT WENT WRONG THAT THIS EXISTS TO PREVENT: an earlier decision's
  * implementation_status read `planned` for 12 days after the work shipped. NOTHING read
@@ -133,7 +134,7 @@ async function viaFlat(toolName: string, rawArgs: any): Promise<any> {
   return routeExecutor(toolName, validated, { connectionId: CONN });
 }
 
-/** GATEWAY surface: the discriminated form Coordinator and the agents actually call. */
+/** GATEWAY surface: the discriminated form the coordinator and the agents actually call. */
 async function viaGateway(gateway: string, action: string, rawArgs: any): Promise<any> {
   return dispatchGateway(gateway, { action, ...rawArgs }, { connectionId: CONN });
 }

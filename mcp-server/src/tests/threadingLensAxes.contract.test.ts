@@ -299,7 +299,8 @@ describe('threading lens axes — component: is the registry, actor: is the rost
 
 describe('threading lens axes — batch: is validated by SHAPE, on purpose', () => {
   test('every batch/phase label measured on prod is accepted', () => {
-    // These are the real out-of-set `tranche:` values from the census in     // plus this batch's own lane label. A closed set would have quarantined all of them.
+    // These are the real out-of-set `tranche:` values from the census in an earlier decision,
+    // plus this batch's own lane label. A closed set would have quarantined all of them.
     for (const label of ['p3', 'p4', 'sprint0', 'batch-2', 'b7-l10']) {
       expect(
         isQuarantinedThreadingTag(store(`batch:${label}`).stored),

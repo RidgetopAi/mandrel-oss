@@ -1,12 +1,13 @@
 /**
- * commandUrlConfig — the ONE shared record-permalink helper ( * an earlier decision). Pure unit test (no DB): proves the helper's contract in isolation.
+ * commandUrlConfig — the ONE shared record-permalink helper.
+ * Pure unit test (no DB): proves the helper's contract in isolation.
  *
  *  1. recordUrl(id) builds `${base}/r/<id8>` — the plain full URL, id8 = first 8 chars.
  *  2. formatRecordRef(id) is the house-style permalink line (the plain URL — WS1 an earlier task
  *     dropped the 🔗 marker: MCP text goes to machine readers) — one source.
  *  3. The base URL is CONFIG-DRIVEN: overriding COMMAND_BASE_URL changes the emitted URL
  *     (env override tested via vi.resetModules + dynamic import — the beliefConfig idiom).
- *  4. Only the resolvable record types (context/task/decision/session/project
+ *  4. Only the resolvable record types (context/task/decision/session/project — an earlier task
  *     added the last two) are linkifiable, and that set is held in PARITY with the
  *     Command backend resolver's own enumeration by a cross-boundary guard at the bottom.
  */

@@ -13,7 +13,7 @@
  *   - `successCriteria`— free text (mostly populated); `alternatives` / `affected_components`
  *                        are string arrays that are frequently EMPTY (render honest empty).
  *   - `created_by`     — NOT currently serialised by the backend (always absent) → the "by X"
- *                        chip is omitted rather than faked (the data-gap policy).
+ *                        chip is omitted rather than faked (data-gap policy).
  */
 export interface Decision {
   id: string;

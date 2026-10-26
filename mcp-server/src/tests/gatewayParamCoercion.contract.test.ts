@@ -226,7 +226,7 @@ describe('the known blast radius validates end-to-end through validateToolArgume
     expect(out.tags).toEqual(['alpha']);
   });
 
-  test('graph.links edgeTypes — an array filter on the graph gateway', () => {
+  test('graph.links edgeTypes — array filter on the graph gateway', () => {
     const links = validateToolArguments('get_links', {
       id: '22222222-2222-4222-8222-222222222222',
       edgeTypes: '["informs"]',

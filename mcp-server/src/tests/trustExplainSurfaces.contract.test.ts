@@ -1,5 +1,5 @@
 /**
- * TRUST EXPLAINABILITY, END-TO-END on all FOUR render surfaces ( * an earlier decision).
+ * TRUST EXPLAINABILITY, END-TO-END on all FOUR render surfaces.
  *
  * The source guard (trustExplainSingleRenderer.contract.test.ts) proves nobody re-implements
  * the hint; THIS suite proves what an agent actually READS. It drives the REAL tools through

@@ -70,7 +70,8 @@ export function toId8(projectId: string): string {
  *                       session); project_switch if this is wrong`
  *
  * BOUND WINS OVER `defaulted`, and the precedence is here rather than at the call site so
- * there is one answer to "what does a bound write say" ( * no surface may tell a bound client the wrong thing about its own write). A DECLARED
+ * there is one answer to "what does a bound write say" (
+ * no surface may tell a bound client the wrong thing about its own write). A DECLARED
  * binding is the most deliberate target there is — never a "default" — and the defaulted
  * hint points at `project_switch`, which a bound client is REJECTED for calling.
  */

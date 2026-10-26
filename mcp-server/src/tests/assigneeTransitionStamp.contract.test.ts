@@ -2,7 +2,7 @@
  * assignee TRANSITION STAMP Contract Test — MCP surface (Phase 2).
  *
  * THE DEFECT THIS LOCKS SHUT — `tasks.assigned_to` was written by exactly two things: a
- * caller typing a name, and `task_claim`. Most work does not claim; Coordinator or a Builder
+ * caller typing a name, and `task_claim`. Most work does not claim; the coordinator or a Builder
  * moves the status directly. So THE DOER WAS LOST AT COMPLETION TIME. Measured on prod
  * 2026-08-09, project riverbend: 364 of 925 live tasks are `completed` with no assignee.
  *

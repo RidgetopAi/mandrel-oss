@@ -346,7 +346,8 @@ class ProjectHandler {
   }
 
   /**
-   * THE EFFECTIVE PROJECT SCOPE for the call currently running (   * an earlier decision). This is the accessor the whole tree resolves projects through,
+   * THE EFFECTIVE PROJECT SCOPE for the call currently running.
+   * This is the accessor the whole tree resolves projects through,
    * and it is therefore where the precedence ladder is honoured — NOT the tool's schema.
    *
    *   rung 2 BINDING     — an `X-Mandrel-Project` / `MANDREL_PROJECT_ID` client binding
@@ -515,7 +516,7 @@ class ProjectHandler {
 
   /**
    * Sync the DB `sessions` row to the current project for a SINGLE connection's
-   * active session only (per-connection isolation — the session-isolation fix).
+   * active session only (per-connection isolation — an earlier change).
    *
    * `connectionId` is the key used throughout the project handler (the route layer
    * passes context.connectionId as `sessionId`). The DB session that belongs to that
@@ -645,10 +646,10 @@ class ProjectHandler {
    * does NOT identify a loop: under MANDREL_SESSION_RESOLVER_MODE=actor, resolveSession
    * keys sessions by ACTOR (newest-open), and ensureSessionForActor / getActiveSession
    * cache that ONE shared session under EVERY connection the actor calls from. This method
-   * used to prefer that resolved session id as the position key, so two concurrent Builders
+   * used to prefer that resolved session id as the position key, so two concurrent builders
    * (distinct X-Connection-IDs, same X-Actor-ID) shared one position row: a task claim by
    * one stamped false DECLARED-tier `informs` edges onto the other's completion writes
-   * (two edges — both pruned), and one branch_close cleared both. Keying by
+   * (edges, an earlier change — both pruned), and one branch_close cleared both. Keying by
    * the connection id keeps every key the caller's OWN in every resolver mode.
    *
    * The old session-id preference existed to bridge lazy session creation (a branch_open

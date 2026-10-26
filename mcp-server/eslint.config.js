@@ -13,7 +13,7 @@ import globals from 'globals';
  * EMBEDDER-DIMENSION SELECTORS — TEST FILES ONLY.
  *
  * A test fixture must never write a vector dimension as a number. src/tests/helpers/
- * embedGeometry.ts has offered the derived spelling since so the right thing
+ * embedGeometry.ts has offered the derived spelling since an earlier task, so the right thing
  * was AVAILABLE here — but availability only makes it convenient, it does not make the wrong
  * thing unwritable. This is the enforcement half, ported from the backend,
  * where a hardcoded 1536 went RED on a merged ref the moment the CODE DEFAULT flipped to
@@ -99,7 +99,7 @@ export default [
       'dist/**',
       'node_modules/**',
       'coverage/**',
-      // NOTE: 'scripts/**' was globally ignored here until so the
+      // NOTE: 'scripts/**' was globally ignored here until an earlier task, so the
       // lint gate covered ZERO operational code — migrations, production-data
       // backfills and regen-tool-surface-golden.ts (which regenerates a gate
       // fixture) were linted by nothing while `npm run lint` reported green.

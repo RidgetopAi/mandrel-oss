@@ -1,5 +1,5 @@
 /**
- * Shared gate for EVERY DB-backed test suite (extended by the session-revocation change).
+ * Shared gate for EVERY DB-backed test suite (extended by an earlier change).
  *
  * The file name says "contract" for history's sake: it was written for the
  * `*.contract.test.ts` family. It is now the SINGLE gate for both families —
@@ -19,7 +19,7 @@
  *   and BOTH authoritative gates set that flag job-wide — the CI gate STAGE 4 and
  *   .github/workflows/ci.yml — so 14 suites / 93 tests were silently skipped in CI
  *   while a fully migrated Postgres sat right there. MEASURED: with the security fix
- *   with the session-revocation change reverted (the route revoking nothing), the full backend suite under
+ *   for an earlier change reverted (the route revoking nothing), the full backend suite under
  *   exact the CI gate STAGE 4 conditions still reported 408 passed / 0 failed. A guard that
  *   opts out of the gate is not a guard.
  *

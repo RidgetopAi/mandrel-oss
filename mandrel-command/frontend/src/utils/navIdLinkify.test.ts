@@ -47,8 +47,8 @@ describe('segmentNavIds — DETECTS id forms', () => {
   });
 
   it('detects threading tags task:/decision:/context: and links the whole token', () => {
-    expect(segmentNavIds('task:34919999')).toEqual([
-      { text: 'task:34919999', href: '/r/34919999' },
+    expect(segmentNavIds('task:34910609')).toEqual([
+      { text: 'task:34910609', href: '/r/34910609' },
     ]);
     expect(segmentNavIds('decision:6aaaf00d')).toEqual([
       { text: 'decision:6aaaf00d', href: '/r/6aaaf00d' },

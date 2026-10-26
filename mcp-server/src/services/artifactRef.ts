@@ -350,7 +350,7 @@ export function validateArtifactRef(
       );
     }
   }
-  // ── LOCATOR SAFETY, defence 1 of 2 (the reviewer F3) ──────────────────────────────────
+  // ── LOCATOR SAFETY, defence 1 of 2 (Reviewer F3) ──────────────────────────────────
   // These strings are substituted into instructions an autonomous agent follows without a
   // human reading them, so "non-empty and ≤512 chars" is not a validation — it is an
   // injection surface. Constrain the CHARSET here (and quote at emission: defence 2).
@@ -626,7 +626,7 @@ const TRUSTED_PLACEHOLDERS: ReadonlySet<string> = new Set(['hashAlgorithm']);
 /**
  * POSIX single-quote a value so it is one inert shell word.
  *
- * DEFENCE 2 OF 2 against instruction injection (the reviewer F3). These instructions are followed
+ * DEFENCE 2 OF 2 against instruction injection (Reviewer F3). These instructions are followed
  * by an AUTONOMOUS AGENT without a human reading them, so a locator like
  * `x.bundle; rm -rf /tmp/pwned; echo ` would otherwise emit as a runnable payload carrying the
  * authority of a verification step.

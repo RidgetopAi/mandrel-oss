@@ -11,7 +11,7 @@
  * (All/Active/Dormant with live counts), searches (client-side over name + description),
  * and sorts. Clicking a card opens its ProjectDetail route (/projects/:id).
  *
- * DATA GAPS (the data-gap policy — never fabricate): the mock's per-project 30-day sparkline
+ * DATA GAPS (policy — never fabricate): the mock's per-project 30-day sparkline
  * and literal "active branches" telemetry are NOT served. The sparkline is omitted; the
  * footer shows the REAL in-progress-task count as the active-work signal (see
  * projects/config.ts ACTIVE_WORK_GAP_NOTE). Task + decision counts come from

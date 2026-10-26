@@ -11,11 +11,11 @@
  *     beside the switch and both follow — AND the ambient `X-Project-ID` the interceptor
  *     would send (the REAL resolver, not the context agreeing with itself);
  *   • the pick survives a remount (navigation / reload) AND A NEW TAB — a second store
- *     instance rehydrating from the same localStorage (the project-switch walkthrough F1);
+ *     instance rehydrating from the same localStorage (an earlier walkthrough F1);
  *   • `resetProjectSelection()` — what logout AND a fresh login call — puts it back on
  *     the default, and a pick made under another username is never inherited;
  *   • a `?project=` deep link SETS the switch;
- *   • the switch NEVER offers "All projects" (the project-switch walkthrough F2).
+ *   • the switch NEVER offers "All projects" (an earlier walkthrough F2).
  *
  * Real ProjectProvider + real store + real resolver; only the network and auth are
  * stubbed (the ProjectContext.test harness). Raw react-dom + React.act.

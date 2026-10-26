@@ -7,7 +7,7 @@
  *
  * This test serializes the full advertised surface (the tool definitions + category
  * grouping + order) and asserts it is BYTE-IDENTICAL to a golden fixture captured from the
- * PRE-refactor code (git main @e9bf00d, before opRegistry.ts existed). If a future change to
+ * PRE-refactor code (git main @e9b6f00, before opRegistry.ts existed). If a future change to
  * the registry, buildInputSchema, or a zod validator shifts a single byte of the advertised
  * `tools/list`, this fails LOUD and names the exact diff.
  *
@@ -22,7 +22,15 @@
  *
  * ── DELIBERATE REGENERATIONS (the wire delta, called out) ───────────────────────────────
  *
- * 2026-09-21 · an earlier decision (Punch List lane A, the STRUCTURED
+ * 2026-10-22 · an earlier task — the golden is the DEFAULT-config (neutral)
+ *   surface. context_store `tags`, decision_record `question` and task_create's description no
+ *   longer hardcode Riverbend's vocabulary (the operator / the coordinator / needs-operator / the component and
+ *   class:* rosters); they read config/deploymentVocabularyConfig.ts
+ *   (MANDREL_DEPLOYMENT_VOCABULARY, default neutral). No tool added/removed/renamed (70 -> 70).
+ *   MEASURED: tools/list compact 144,001 -> 143,254 (-747); fixture 275,030 -> 274,283 (-747);
+ *   context_store -782, decision_record +12, task_create +23.
+ *
+ * 2026-09-21 · an earlier task, an earlier decision (Punch List lane A, the STRUCTURED
  *   contract) — `punch.doneWhen` becomes an array of `{ text, owner: lane|human, proof? }`
  *   clauses (the legacy bare string is still accepted, unguarded, off-`ready`); `punch` gains
  *   `touches` (repo-relative paths/globs) and `dependsOn` (server-mirrored from
@@ -61,15 +69,15 @@
  * 2026-09-08 · an earlier task (REALIGN step 5) — ONE description string changes, no schema
  *   change: `task_create`'s description gains the sentence naming the agent fold-in gate
  *   (`[TASK_CREATE_AGENT_FOLD_IN]`, exempt tag `needs-operator`, roster `MANDREL_AGENT_ACTORS`).
- *   The gate refuses a listed agent's create unless the task is marked as needing a human decision;
+ *   The gate refuses a listed agent's create unless the task is marked for the operator's decision;
  *   the explain line is the one place an agent reads the rule before it trips it.
  * 2026-09-08 · an earlier task round 3 — ONE new registered guard class joins the closed
- *   `class:` axis (GUARD_CLASS_VALUES, mirroring scripts/config/guard-classes.conf; the CI gate
+ *   `class:` axis (GUARD_CLASS_VALUES, mirroring the guard-class registry; the gate's
  *   STAGE 0a22d keeps the two equal): `secret-on-child-argv`.
  *   The class: a secret is handed to a child process on its ARGV (docker -e K=V, node -e
  *   "$pw", psql -c, curl -d, sed -e), world-readable in /proc for the child's lifetime; each
  *   fix moved it off ONE child while the next child in the same pipeline still carried it.
- *   Detector: the CI gate STAGE 0a20d, scripts/test/secret-argv.test.sh (PATH-shadow argv shims).
+ *   Detector: the gate's PATH-shadow argv shims.
  *   MEASURED delta, regen-tool-surface-golden.ts, which emits its own numbers:
  *     fixture      — wc -c pretty fixture: 253,928 -> 253,949 (+21, 0.01%)
  *     tool count   — 70 -> 70 (unchanged)
@@ -77,7 +85,7 @@
  *   removed in `git diff --numstat` on the fixture.
  *
  * 2026-09-07 · an earlier task round 5 — ONE new registered guard class joins the closed
- *   `class:` axis (GUARD_CLASS_VALUES, mirroring scripts/config/guard-classes.conf; the CI gate
+ *   `class:` axis (GUARD_CLASS_VALUES, mirroring the guard-class registry; the gate's
  *   STAGE 0a22d keeps the two equal): `two-channel-answer-read-through-one`.
  *   The class: an answer that travels on two channels — a CARRIER saying the call RAN and a
  *   PAYLOAD saying what HAPPENED — is read through only one, so a claim is minted from
@@ -86,7 +94,6 @@
  *   broken", a failed `docker network ls` read as "zero networks", an invalid regex read as
  *   "nothing matched", a 200 carrier read as "the context was archived".
  *   ONE row deliberately, not four: filing a row per instance is what let the class recur.
- *   Detector is STAGE 0a11f plus scripts/test/two-channel-readers.test.sh.
  *   NO tool added, removed or renamed (count 70 -> 70, printed by the regen script). No
  *   param added, retyped or removed. No outputSchema touched. The delta is ONE `description`
  *   string: context_store's `tags` param, whose derived lensAxesSummary() enumerates the
@@ -104,22 +111,18 @@
  *
  * 2026-09-07 · an earlier task (canary S1 smoke asserted against a project that does not
  *   exist) — TWO new registered guard classes join the closed `class:` axis
- *   (GUARD_CLASS_VALUES, mirroring scripts/config/guard-classes.conf; the CI gate STAGE 0a22d keeps
+ *   (GUARD_CLASS_VALUES, mirroring the guard-class registry; the gate's STAGE 0a22d keeps
  *   the two equal):
  *     `sweep-removes-without-detaching` — a cleanup sweep removes a resource without
  *       releasing what still holds it, swallows the daemon's refusal, and asserts nothing
- *       afterwards, so every run leaks one more of a finite pooled resource. Measured
- *       instance: canary-tenant script ran `docker network rm` with no preceding
- *       `docker network disconnect`, so twelve failed runs stranded twelve networks on a box
- *       whose docker defaults yield ~31. Detector is STAGE 0a11e plus
- *       the canary network-reclaim test.
+ *       afterwards, so every run leaks one more of a finite pooled resource (a
+ *       `docker network rm` with no preceding `docker network disconnect`).
  *     `verdict-from-uncontracted-status` — a check compares a status code with == so any
  *       status it has no contract for renders as a verdict about the system. Measured
  *       instance: the provisioner's step-8 write smoke expected 403 and got 404
  *       ([PROJECT_ARG_UNRESOLVED], raised ahead of the session posture gate), which it
  *       reported as "the posture is broken" — twelve confident false REDs on a healthy
- *       fleet. Detector is STAGE 0a11d plus sections 4f/4g of
- *       scripts/test/provisioner-posture.test.sh.
+ *       fleet.
  *   NO tool added, removed or renamed (count 70 -> 70, printed by the regen script). No param
  *   added, retyped or removed. No outputSchema touched. The delta is ONE `description`
  *   string: context_store's `tags` param, whose derived lensAxesSummary() enumerates the
@@ -137,13 +140,12 @@
  *
  * 2026-09-05 · batch 15, lane H (provisioner session posture) — ONE new registered guard
  *   class, `generator-omits-fleet-posture`, joins the closed `class:` axis
- *   (GUARD_CLASS_VALUES, mirroring scripts/config/guard-classes.conf; the CI gate STAGE 0a22d keeps
+ *   (GUARD_CLASS_VALUES, mirroring the guard-class registry; the gate's STAGE 0a22d keeps
  *   the two equal). The class: a GENERATOR writes an instance's config without a fleet
  *   posture key, so every instance it produces resolves that key from the permissive CODE
  *   DEFAULT and is born pre-drifted — remediating the instances leaves the generator intact.
- *   Measured instance: the hosted provisioner never wrote MANDREL_SESSION_REQUIRE_ACTOR
- *   or MANDREL_SESSION_RESOLVER_MODE, so two live tenants accepted actorless writes.
- *   Detector is STAGE 0a11d plus scripts/test/provisioner-posture.test.sh.
+ *   Measured instance: a provisioner never wrote MANDREL_SESSION_REQUIRE_ACTOR or
+ *   MANDREL_SESSION_RESOLVER_MODE, so two live instances accepted actorless writes.
  *   NO tool added, removed or renamed (count 69 -> 69, printed by the regen script). No param
  *   added, retyped or removed. No outputSchema touched. The delta is ONE `description`
  *   string: context_store's `tags` param, whose derived lensAxesSummary() enumerates the
@@ -192,11 +194,10 @@
  *
  * 2026-09-04 · an earlier task (batch 14, lane B — instrument accounting) — ONE new registered
  *   guard class, `unpinned-instrument-verdict`, joins the closed `class:` axis
- *   (GUARD_CLASS_VALUES, mirroring scripts/config/guard-classes.conf; the CI gate STAGE 0a22d keeps
+ *   (GUARD_CLASS_VALUES, mirroring the guard-class registry; the gate's STAGE 0a22d keeps
  *   the two equal). The class: a stage's verdict is produced by an external binary whose
  *   version the gate never established, so two boxes answer differently on the same ref and
- *   the LOCAL green is the weaker measurement with nothing saying so. Detector is STAGE IN
- *   plus scripts/test/instrument-accounting.test.sh.
+ *   the LOCAL green is the weaker measurement with nothing saying so.
  *   NO tool added, removed or renamed (count 69 -> 69, printed by the regen script). No param
  *   added, retyped or removed. No outputSchema touched. The delta is ONE `description`
  *   string: context_store's `tags` param, whose derived lensAxesSummary() enumerates the
@@ -211,8 +212,8 @@
  *   WHAT AN EXISTING CONSUMER SEES ON THE WIRE: nothing structural; one prose string grew by
  *   the length of the new value plus its separator.
  *
- * 2026-09-03 · BATCH 13 MERGE NOTE (Coordinator) — the two entries below landed on SEPARATE lanes
- *   (two changes, one of them the gate-exit-code fix) that each registered one guard class and each regenerated this
+ * 2026-09-03 · BATCH 13 MERGE NOTE (the coordinator) — the two entries below landed on SEPARATE lanes
+ *   (an earlier change and 2522f00d) that each registered one guard class and each regenerated this
  *   fixture against a 21-value axis. They conflicted here, which is the correct outcome: two
  *   independent writers to a closed, customer-visible axis SHOULD collide rather than one
  *   silently overwrite the other's regeneration. Resolved by keeping both entries and
@@ -231,7 +232,7 @@
  *
  * 2026-09-03 · an earlier task (batch 13, single-FILE bind mounts) — ONE new registered guard
  *   class, `stale-file-bind-mount`, joins the closed `class:` axis (GUARD_CLASS_VALUES,
- *   mirroring scripts/config/guard-classes.conf; the CI gate STAGE 0a22d keeps the two equal).
+ *   mirroring the guard-class registry; the gate's STAGE 0a22d keeps the two equal).
  *   NO tool added, removed or renamed (count 69 -> 69). No param added, retyped or removed.
  *   No outputSchema touched. The delta is ONE `description` string: context_store's `tags`
  *   param, whose derived lensAxesSummary() enumerates the axis's values, 21 -> 22.
@@ -247,7 +248,7 @@
  *     tool count   — AIDIS_TOOL_DEFINITIONS.length: 69 -> 69
  * 2026-09-03 · an earlier task (batch 13, lane F) — ONE new registered guard class,
  *   `renderer-drops-structured-fact`, joins the closed `class:` axis (GUARD_CLASS_VALUES,
- *   mirroring scripts/config/guard-classes.conf; the CI gate STAGE 0a22d keeps the two equal).
+ *   mirroring the guard-class registry; the gate's STAGE 0a22d keeps the two equal).
  *   Same shape as the 2026-09-02 entry below, and found the same way it should be: the class
  *   was registered in one commit and the fixture regenerated in the next, so the full suite
  *   was RED on a branch whose product change had nothing to do with the tool surface.
@@ -263,7 +264,7 @@
  *
  * 2026-09-02 · an earlier task (batch 12, schema-parity) — ONE new registered guard
  *   class, `ledger-trusted-over-object`, joins the closed `class:` axis (GUARD_CLASS_VALUES,
- *   mirroring scripts/config/guard-classes.conf; the CI gate STAGE 0a22d keeps the two equal).
+ *   mirroring the guard-class registry; the gate's STAGE 0a22d keeps the two equal).
  *   NO tool added, removed or renamed (count 69 -> 69). No param added, retyped or removed.
  *   No outputSchema touched. The delta is ONE `description` string: context_store's `tags`
  *   param, whose derived lensAxesSummary() enumerates the axis's values, 20 -> 21.
@@ -277,15 +278,15 @@
  *     per-tool     — context_store [CHANGED] 10,287 -> 10,314 (+27); TOOLS MOVED = 1, ADDED 0, REMOVED 0
  *     tool count   — AIDIS_TOOL_DEFINITIONS.length: 69 -> 69
  *
- * 2026-09-01 · guard-class registry — `class:` becomes a CLOSED lens axis.
+ * 2026-09-01 · guard-class registry (an auditor) — `class:` becomes a CLOSED lens axis.
  *   NO tool added, removed or renamed (count 69 -> 69). No param added, retyped or removed.
  *   No outputSchema touched. The delta is ONE `description` string: context_store's `tags`
  *   param, which advertises the derived lensAxesSummary() and now lists the `class:` axis
  *   with its 20 registered values.
  *   WHAT AN EXISTING CONSUMER SEES ON THE WIRE: nothing structural; one prose string grew.
  *   WHY IT HAD TO REACH THE WIRE: the axis went from write-only (28 tasks under one value,
- *   `guards-need-guarding`, joined by prose) to a closed set that mirrors
- *   scripts/config/guard-classes.conf (the CI gate STAGE 0a22d keeps the two lists equal). A
+ *   `guards-need-guarding`, joined by prose) to a closed set that mirrors the guard-class
+ *   registry. A
  *   value outside the set is quarantined like any other lens value, so the description
  *   must say what the set IS or a caller has no way to write a valid one.
  *   MEASURED delta, regen-tool-surface-golden.ts + `git diff --numstat` (1 added / 1 removed):
@@ -517,7 +518,7 @@
  *
  * 2026-07-25 · an earlier task — `task_claim`'s `actor` PARAM DESCRIPTION was
  *   CORRECTED because it had become FALSE. It said "defaults to your derived actor". After the
- *   actor-precedence fix (closing an earlier note) the derived actor takes PRECEDENCE over the
+ *   actor-precedence fix (closing an earlier context) the derived actor takes PRECEDENCE over the
  *   argument — it is not a default — and since prod runs MANDREL_SESSION_REQUIRE_ACTOR=true a
  *   derived actor is always present there, so in the shipped default mode the argument is INERT
  *   on prod. An agent reading the old text via discover({action:'explain'}) would have been told
@@ -569,7 +570,7 @@
  *   Fixture 229682 → 229995 bytes (+313, +0.136%); the compact `tools/list` definitions payload
  *   107247 → 107532 bytes (+285, +0.266%).
  *   Each of those four absolutes was produced by running the command, on both refs:
- *     base    `git show 993f00d:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
+ *     base    `git show 9930f00:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
  *     head    `wc -c mcp-server/src/tests/fixtures/toolSurface.golden.json`
  *     compact `DATABASE_NAME=measure_only npx tsx -e "import {AIDIS_TOOL_DEFINITIONS} from
  *              './src/config/toolDefinitions.js'; console.log(Buffer.byteLength(
@@ -602,7 +603,7 @@
  *   archived by DEFAULT and takes the SAME param name/meaning decision_search already has —
  *   deliberately not a second spelling for one concept.
  *   MEASURED HERE, each number re-run against THIS tree (not carried forward — see the ⚠️
- *   above), base = main @ceff00d measured in the shared checkout with the SAME commands.
+ *   above), base = main @cefff00 measured in the shared checkout with the SAME commands.
  *   EACH NUMBER NAMES ITS INSTRUMENT, because two reasonable instruments disagree (an
  *   Reviewer measured the per-tool figures 2 bytes lower than the line below and was right
  *   to flag it: a tool object measured standalone carries its own enclosing braces, one
@@ -630,13 +631,13 @@
  *   entry is the FIRST regen (232693 / 109217), not main, since both regens are on one branch:
  *     fixture      — wc -c                     232693 → 233458  (+765, +0.33%)
  *     tools/list   — compact JSON.stringify    109217 → 109880  (+663, +0.61%)
- *     context_stats    — JSON.stringify(def, null, 2)  552 → 875  (+323)  [base on main @ceff00d]
- *     project_insights — JSON.stringify(def, null, 2)  563 → 973  (+410)  [base on main @ceff00d]
+ *     context_stats    — JSON.stringify(def, null, 2)  552 → 875  (+323)  [base on main @cefff00]
+ *     project_insights — JSON.stringify(def, null, 2)  563 → 973  (+410)  [base on main @cefff00]
  *     decision_stats   — unchanged by this regen (903)
  *     tool count   — AIDIS_TOOL_DEFINITIONS.length: 60 → 60
  *   `git diff --numstat` on the fixture: 10 added / 2 removed — exactly two tools' bytes
  *   moved, and +323 +410 = +733 accounts for the +765 modulo indentation.
- *   Cumulative for the whole task vs main @ceff00d: fixture 232337 → 233458 (+1121, +0.48%);
+ *   Cumulative for the whole task vs main @cefff00: fixture 232337 → 233458 (+1121, +0.48%);
  *   compact tools/list 108912 → 109880 (+968, +0.89%); three tools changed, none added or
  *   removed.
  *
@@ -734,7 +735,7 @@
  *   services/projectBriefing.ts, pinned by its contract test).
  *   MEASURED on this tree (each command re-run, not carried forward):
  *     fixture          — `wc -c` 247244 → 248378 (+1134, +0.46%); base re-measured via
- *                        `git show 032f00d:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
+ *                        `git show 0328f00:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
  *     tools/list       — compact `Buffer.byteLength(JSON.stringify(AIDIS_TOOL_DEFINITIONS))`
  *                        115720 → 116538 (+818, +0.71%)
  *     project_briefing — `Buffer.byteLength(JSON.stringify(def, null, 2))` = 990 (new)
@@ -790,9 +791,9 @@
  *   have none of: `depthLimitReached` advertised a signal nothing could emit any more.
  *   MEASURED on this tree, commands named per line:
  *     fixture     — `wc -c` 253626 → 254865 (+1239, +0.49%); base re-measured via
- *                   `git show 52cf00d^:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
+ *                   `git show 52c0f00^:mcp-server/src/tests/fixtures/toolSurface.golden.json | wc -c`
  *     tool count  — `AIDIS_TOOL_DEFINITIONS.length`: 65 → 65 (unchanged)
- *   `git diff --numstat 52cf00d^` on the fixture: 25 added / 4 removed.
+ *   `git diff --numstat 52c0f00^` on the fixture: 25 added / 4 removed.
  *
  * 2026-08-16 · FIX A (SK5 follow-on) — NO tool added or removed; ONE new
  *   OPTIONAL param, `project_briefing.spine`. SK5 scoped the briefing to the caller's open
@@ -911,7 +912,7 @@
  *     one tool    — branch_open 1941 → 2095 bytes; TOOLS WHOSE BYTES MOVED = 1, computed by
  *                   diffing every definition object between the two fixtures
  *   `git diff --numstat` on the fixture: 1 added / 1 removed — a single description line.
- * 2026-08-21 · an earlier task (spec an earlier decision) — recall_thread got
+ * 2026-08-21 · an earlier task (spec an earlier context) — recall_thread got
  *   (a) the explicit ANSWER-SHAPE discriminator and (b) its omission accounting on the wire.
  *   Three deltas, ALL on recall_thread and NOTHING else:
  *     1. outputSchema gained `shape` (enum "thread" | "currentState") — the two answer shapes
@@ -964,7 +965,7 @@
  *                     branch_history 4951 → 5139 (+188)
  *     tool count    — `AIDIS_TOOL_DEFINITIONS.length`, read off both fixtures: 65 → 67
  *   Each number was produced by running its command against THIS tree and against the base ref
- *   (main @f6df00d, measured in the shared checkout with the identical command) — not carried
+ *   (main @f6daf00, measured in the shared checkout with the identical command) — not carried
  *   forward from a delta that still adds up, which is the failure the ⚠️ above describes.
  *
  * 2026-08-21 · an earlier task (P4 L1) — THE AGENT CAPTURE CONTRACT added ONE
@@ -1207,7 +1208,7 @@ describe('op registry — the closed 67-op source of truth', () => {
     // decision_answer / decision_discuss — decision.answer / decision.discuss. An OPEN
     // decision (question + >=2 options, each with >=1 pro and >=1 con) is answered by picking
     // an option (folding the rest into alternatives_considered) or kicked back for discussion.
-    // 72 -> 67: the five code-scan ops were removed.
+    // 72 -> 67: the five code-scan ops removed.
     expect(OP_REGISTRY.length).toBe(67);
     expect(new Set(ALL_OP_IDS).size).toBe(67);
   });

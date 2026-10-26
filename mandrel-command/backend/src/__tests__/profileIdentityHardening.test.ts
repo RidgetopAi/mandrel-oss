@@ -1,5 +1,5 @@
 /**
- * profileIdentityHardening.test.ts — issues 1 (re-auth) and 3 (validation).
+ * profileIdentityHardening.test.ts — an earlier task, issues 1 (re-auth) and 3 (validation).
  *
  * Issue 2 (rate limit) is proved in `profileUpdateRateLimit.test.ts`, in a SEPARATE FILE
  * on purpose: `express-rate-limit` keeps counter state in module scope, so a suite that

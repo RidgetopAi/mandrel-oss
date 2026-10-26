@@ -13,10 +13,10 @@
  * MEASURED ON PROD 2026-08-15 (this is not a hypothetical shape):
  *
  *   SELECT mint_via, edge_type FROM links
- *    WHERE from_id::text LIKE '2b3c4d5e%' AND to_id::text LIKE '3c4d5e6f%';
+ *    WHERE from_id::text LIKE 'an earlier change%' AND to_id::text LIKE 'e617f00d%';
  *   ->  tag | informs          (one row; NO position row)
  *
- *   an earlier Decision were both written while standing on the same branch and both
+ *   an earlier Decision and an earlier change were both written while standing on e617f00d and both
  *   tagged it. Neither is a member of it. Restricted to spines with real branch activity,
  *   roughly half of each branch was missing this way:
  *
@@ -30,7 +30,7 @@
  *           AND NOT EXISTS (SELECT 1 FROM links p
  *                            WHERE p.mint_via='position' AND p.from_id=l.from_id)) AS tag_only
  *     FROM spines sp;
- *     ->  4d5e6f7a | 8 | 10     3c4d5e6f | 9 | 12     5e6f7a8b | 8 | 10
+ *     ->  an earlier change | 8 | 10     e617f00d | 9 | 12     an earlier change | 8 | 10
  *
  * WHY IT IS KEPT RATHER THAN TORN DOWN. This is the canonical keeper: a frozen pre-fix
  * subject is the only thing that can regression-test a bug that is no longer in the tree.

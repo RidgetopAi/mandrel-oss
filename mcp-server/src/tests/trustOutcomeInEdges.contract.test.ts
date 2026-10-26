@@ -1,5 +1,5 @@
 /**
- * TRUST — READ-TIME OUTCOME INHERITANCE ALONG **IN** EDGES (SK3,  * an earlier decision).
+ * TRUST — READ-TIME OUTCOME INHERITANCE ALONG **IN** EDGES (SK3).
  *
  * THE GAP THIS PINS, and it is directional. trustForRecord's outcome gather walked OUT
  * edges only. `decided_by` is stored task → decision, so the tasks that IMPLEMENTED a

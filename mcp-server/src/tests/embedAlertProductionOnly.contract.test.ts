@@ -5,7 +5,7 @@
  * no notion of WHICH instance is alerting — so any process that could reach the notify script
  * paged the same phone production does. A dev worktree qualifies: the dev tree has no @xenova
  * model cached and MANDREL_XENOVA_ALLOW_REMOTE=false, so every context a local test writes
- * fails to embed and alerted. On 2026-08-12 a Builder's test runs paged Operator at his day job
+ * fails to embed and alerted. On 2026-08-12 a Builder's test runs paged the operator at his day job
  * about NULL embeddings in a disposable ci_* database.
  *
  * WHY IT IS A CONTRACT TEST AND NOT A NIT. Alert fatigue is not a tidiness complaint — it is
@@ -24,7 +24,7 @@
  *       "$(docker exec $c printenv NODE_ENV 2>/dev/null || echo UNSET)" \
  *       "$(docker exec $c printenv MANDREL_EMBED_ALERT_ENABLED 2>/dev/null || echo UNSET)"; done'
  *
- * 8/8 NODE_ENV=production, 8/8 flag UNSET (Reviewer, 2026-08-12). Coordinator's original note here
+ * 8/8 NODE_ENV=production, 8/8 flag UNSET (Reviewer, 2026-08-12). The coordinator's original note here
  * listed THREE instances and generalised to eight — true, as it turned out, but written from a
  * sample. A future tenant is also born alerting from two independent layers, so this is not a
  * fact that decays: `ENV NODE_ENV=production` is baked into the image (mcp-server/Dockerfile),

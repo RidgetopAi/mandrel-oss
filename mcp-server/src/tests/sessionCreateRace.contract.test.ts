@@ -71,10 +71,10 @@ async function cleanup(): Promise<void> {
   await db.query(`DELETE FROM sessions WHERE connection_id LIKE $1`, [`scr-%-${STAMP}`]);
 }
 
-describe('connection-keyed session create is race-free', () => {
+describe('an earlier change: connection-keyed session create is race-free', () => {
   beforeAll(async () => {
     projectId = (await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, 'test') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change test') RETURNING id`,
       [`scr-proj-${STAMP}`]
     )).rows[0].id;
   });
@@ -170,7 +170,7 @@ describe('connection-keyed session create is race-free', () => {
     ActiveSessionStore.clearAll();
 
     const otherProjectId = (await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, 'winner project') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change winner project') RETURNING id`,
       [`scr-proj-winner-${STAMP}`]
     )).rows[0].id;
 

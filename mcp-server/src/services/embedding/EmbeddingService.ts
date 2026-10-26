@@ -26,7 +26,7 @@ import { applyTargetDimensions } from './normalize.js';
 import { assertUsableEmbedding } from './degenerate.js';
 import { calculateCosineSimilarity, validateEmbedding } from './similarity.js';
 import { validateInput } from './validation.js';
-import { activeEmbedder, activeEmbedderKey, applyPrefix, embeddingsAllowMock, EMBEDDING_MAX_TEXT_LENGTH } from '../../config/embeddingConfig.js';
+import { activeEmbedder, activeEmbedderKey, applyPrefix, embeddingsAllowMock, embeddingVerifyStartupMode, EMBEDDING_MAX_TEXT_LENGTH } from '../../config/embeddingConfig.js';
 import { logger } from '../../utils/logger.js';
 
 export class EmbeddingService {
@@ -69,14 +69,26 @@ export class EmbeddingService {
     return this.startupMock || this.metrics.mockFallbacks > 0 ? 'mock' : 'real';
   }
 
+  /** True once verifyStartup() found the embedder unusable and continued in `warn` mode. */
+  private startupVerifyFailed = false;
+
+  /** Did the boot-time check find the embedder unusable (and continue, in `warn` mode)? */
+  startupCheckFailed(): boolean {
+    return this.startupVerifyFailed;
+  }
+
   /**
-   * STARTUP CHECK: prove the active embedder can actually load. A model that cannot load
-   * throws (the error names the directory searched and MANDREL_XENOVA_CACHE_DIR) so the
-   * server refuses to start, instead of silently serving meaningless mock embeddings.
-   * With the explicit mock opt-in (embeddingsAllowMock) it warns and continues.
+   * STARTUP CHECK: prove the active embedder can actually load. Never a silent mock: with the
+   * explicit mock opt-in (embeddingsAllowMock) it warns and continues on MOCK vectors; otherwise
+   * MANDREL_EMBEDDING_VERIFY_STARTUP decides — `strict` throws (the error names the directory
+   * searched and MANDREL_XENOVA_CACHE_DIR, or the Ollama endpoint) so the server refuses to
+   * start (the default); `warn` logs ONE loud error line and returns, so the server starts and
+   * each embed then fails loudly into the existing persist-NULL + self-heal path.
    */
   async verifyStartup(): Promise<void> {
     this.startupMock = false;
+    this.startupVerifyFailed = false;
+    const mode = embeddingVerifyStartupMode();
     try {
       if (activeEmbedder().backend === 'ollama') {
         if (!(await isOllamaAvailable())) {
@@ -94,6 +106,15 @@ export class EmbeddingService {
       if (embeddingsAllowMock()) {
         this.startupMock = true;
         logger.warn(`⚠️  Embedding model cannot load; continuing with MOCK embeddings (explicit opt-in): ${err.message}`);
+        return;
+      }
+      if (mode === 'warn') {
+        this.startupVerifyFailed = true;
+        logger.error(
+          `🚨 EMBEDDER UNUSABLE AT STARTUP — starting anyway (MANDREL_EMBEDDING_VERIFY_STARTUP=warn); ` +
+            `every embed will fail until it recovers. Set MANDREL_EMBEDDING_VERIFY_STARTUP=strict to refuse to start. ` +
+            `Cause: ${err.message}`
+        );
         return;
       }
       throw err instanceof EmbeddingError ? err : new EmbeddingError(

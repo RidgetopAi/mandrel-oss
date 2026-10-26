@@ -33,10 +33,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_archcount_c987f00d
- *   eval "$(bash scripts/provision-test-db.sh ci_archcount_c987f00d --print-env)"
+ *   bash scripts/provision-test-db.sh ci_archcount_c987497b
+ *   eval "$(bash scripts/provision-test-db.sh ci_archcount_c987497b --print-env)"
  *   npx jest archivedTaskCountSweep --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_archcount_c987f00d --drop
+ *   bash scripts/provision-test-db.sh ci_archcount_c987497b --drop
  */
 
 import request from 'supertest';

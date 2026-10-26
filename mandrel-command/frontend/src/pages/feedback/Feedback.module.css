@@ -1,5 +1,5 @@
 /* Feedback screen — the antd form retired onto the P0.2 tokens + P0.3 primitives
-  . Colour and type are 100% token-driven (no hex/rgb/font-size-px
+. Colour and type are 100% token-driven (no hex/rgb/font-size-px
    literals); residual px are STRUCTURAL geometry only (column width, hairline). */
 
 .page {

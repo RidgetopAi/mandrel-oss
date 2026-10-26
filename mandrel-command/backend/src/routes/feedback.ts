@@ -18,8 +18,7 @@ const MAX_PAGE_LENGTH = 1000;
  * Both owner fields are SERVER-DERIVED from `req.user` and NOT trusted from the request
  * body. `user_id` is the OWNERSHIP KEY the read path authorizes on (immutable
  * admin_users.id); `username` is a denormalized human-readable LABEL, kept only because
- * out-of-band feedback reports render it, and it may go
- * stale after a rename. type/severity/message are validated.
+ * out-of-band feedback reports render it, and it may go stale after a rename. type/severity/message are validated.
  */
 router.post('/', authenticateToken,
   declareAnyAuthenticatedMayWrite('submitting feedback is append-only'),

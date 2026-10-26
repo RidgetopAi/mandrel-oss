@@ -52,7 +52,7 @@ export const setStoredToken = (token: string | null) => {
  * self-heal path and the explicit logout path can never drift into clearing different
  * subsets (which is how the split-state arose — only manual logout cleared all three).
  *
- * ── THE PROJECT SCOPE IS PART OF THE IDENTITY (page-scope epic, the reviewer B3) ──────────
+ * ── THE PROJECT SCOPE IS PART OF THE IDENTITY (Reviewer B3) ──────────
  * The ambient `X-Project-ID` is derived from user A's default project and cached across
  * FOUR rungs (api/http/projectHeaders.ts). None of them was cleared here, and the Logout
  * button is a react-router `navigate()` with NO page reload — so user B inherited A's
@@ -60,7 +60,7 @@ export const setStoredToken = (token: string | null) => {
  * admin B. `clearAmbientProjectState()` owns the rung list; this call site must not
  * enumerate it (a second copy is how rungs 3 and 4 came to leak in the first place).
  *
- * ── THE LAST-VISITED PATH IS ALSO PART OF THE IDENTITY (the reviewer B1) ─
+ * ── THE LAST-VISITED PATH IS ALSO PART OF THE IDENTITY (Reviewer B1) ─
  * Same class, third occurrence: `utils/lastVisitedPath` caches the route the user was on
  * (in module memory AND a sessionStorage mirror) so the Feedback form can report it. Our
  * routes are id-bearing, so after a react-router logout user B saw — and submitted —

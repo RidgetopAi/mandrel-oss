@@ -1,16 +1,16 @@
 /**
- * ONE FACT, ONE VOCABULARY — contract test.
+ * ONE FACT, ONE VOCABULARY — contract test (an earlier task and an earlier change).
  *
  * TWO defects, one subject: "which path minted this edge?" had two spellings and two
  * reporting holes.
  *
- *   the store RESPONSE spelled the label differently from the stored COLUMN.
+ *   an earlier change — the store RESPONSE spelled the label differently from the stored COLUMN.
  *     `MintedEdgeVia` said 'links-arg' / 'handoff-supersession'; `EDGE_MINT_VIA` (which is
  *     what actually reaches `links.mint_via`) says 'links-param' / 'handoff-timeline'. A
  *     consumer reading the response and a consumer reading the column disagreed about the
  *     same edge, and nothing could tell them they disagreed.
  *
- *   `link` and `unlink` ADVERTISE `mintVia` + `provenanceClass` in the shared
+ *   an earlier change — `link` and `unlink` ADVERTISE `mintVia` + `provenanceClass` in the shared
  *     `edgeRecord` output schema and never populated either. A declared contract field that
  *     is permanently absent is worse than an undeclared one: a consumer coded to the schema
  *     reads `undefined` as "this edge has no provenance", when in fact `mint_via` is NOT

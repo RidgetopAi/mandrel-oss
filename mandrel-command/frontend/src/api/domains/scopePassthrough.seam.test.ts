@@ -2,7 +2,7 @@
  * THE SEAM TEST — `usePageProject().scope()` driven through a REAL `api.*` call.
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  THE DEFECT THIS EXISTS TO CATCH (Reviewer B1, reject round 1 of the page-scope epic)
+ *  THE DEFECT THIS EXISTS TO CATCH (Reviewer B1, reject round 1 of an earlier epic)
  * ════════════════════════════════════════════════════════════════════════════════════
  * `scopedRequestConfig` shipped fully tested — in ISOLATION. `usePageProject.test.tsx`
  * builds a config object and hand-feeds it to the axios request interceptor. Nothing in
@@ -188,8 +188,8 @@ const CASES: ReadonlyArray<readonly [string, (cfg: AxiosRequestConfig) => Promis
 
   // ── treewalker ──
   // NOTE: both dropped their positional `projectId` when the TreeWalker page adopted
-  // usePageProject and its private projectScopedConfig copy was deleted (page-scope epic,
-  // insight stream). The old 3-arg call survived tsc here because the extra argument was
+  // usePageProject and its private projectScopedConfig copy was deleted
+  // (insight stream). The old 3-arg call survived tsc here because the extra argument was
   // still type-compatible — config simply landed in an ignored slot and the request fell
   // back to the ambient project. Only the MERGED-ref run caught it.
   ['treewalker.getThread', (c) => api.treewalker.getThread('anchor-1', c)],
@@ -292,8 +292,12 @@ describe('guards its own population', () => {
    *                    not here. (Corrected after Reviewer round 2: the old wording said
    *                    "no project axis", and a wrong reason tells the next reader not to
    *                    look — which is worse than no reason at all.)
+   *  - apiTokens.*   — Settings → API tokens: a user's OWN credentials. The
+   *                    backend scopes every query by the authenticated user id and the
+   *                    tokens act across every project the user may see, so a page project
+   *                    has nothing to say about them — same axis as users.*.
    */
-  const UNSCOPED_DOMAINS = ['auth', 'users', 'embedding', 'feedback', 'meta', 'monitoring', 'resolve'];
+  const UNSCOPED_DOMAINS = ['auth', 'users', 'apiTokens', 'embedding', 'feedback', 'meta', 'monitoring', 'resolve'];
 
   /**
    * Covered by ANOTHER stream's guard, named here so this file's silence is deliberate

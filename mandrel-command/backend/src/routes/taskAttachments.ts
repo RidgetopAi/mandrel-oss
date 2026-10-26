@@ -14,7 +14,7 @@ import { MAX_ATTACHMENT_BYTES } from '../config/taskAttachments';
  *   attachmentRoutes            → `/attachments`  GET       /            (bulk, ?taskIds=)
  *                                                 GET/DELETE /:attachmentId
  *
- * WHY NOT ONE ROUTER AT `/` (the first cut, the reviewer #1 + #6): the bulk read
+ * WHY NOT ONE ROUTER AT `/` (the first cut, Reviewer #1 + #6): the bulk read
  * used to live at `/tasks/attachments`, and routes/tasks.ts's `GET /:id` — mounted
  * earlier — captured the literal `attachments` as `:id` (400 'Invalid ID format'), so the
  * board's thumbnails never loaded in the shipped app. Its own DB test mounted only this
@@ -52,7 +52,7 @@ attachmentRoutes.use(authenticateAgentOrUser);
 // TaskAttachmentService.create directly without going through this multer config.
 // `defParamCharset: 'utf8'`: busboy decodes an un-encoded multipart `filename=` as latin1
 // by default, so a browser-sent Japanese/emoji name arrived as mojibake and was stored
-// that way (the reviewer #4a). Browsers send the raw UTF-8 bytes; tell busboy so.
+// that way (Reviewer #4a). Browsers send the raw UTF-8 bytes; tell busboy so.
 const upload = multer({
   storage: multer.memoryStorage(),
   limits: { fileSize: MAX_ATTACHMENT_BYTES },

@@ -3,7 +3,7 @@
  *
  * THE DEFECT UNDER TEST. Our boot package's most valuable section for a human operator
  * selected tasks BY TAG, from a four-tag vocabulary we invented, and `grep -rn "blocked_on"
- * mcp-server/src` at ea7f00d returned nothing — there was no server concept at all.
+ * mcp-server/src` at ea77f00 returned nothing — there was no server concept at all.
  * Migration 093 makes it a column; this suite asserts the section selects on that column,
  * degrades honestly when it is absent or unpopulated, keeps the two-tier deadline honesty,
  * and reports (never silently repairs) the tag-spelling defect.

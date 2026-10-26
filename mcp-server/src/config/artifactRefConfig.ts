@@ -1,5 +1,6 @@
 /**
- * FIRST-CLASS ARTIFACT REFERENCE — the config ( * Amp-orb eval Lane C P3).
+ * FIRST-CLASS ARTIFACT REFERENCE — the config
+ * (Amp-orb eval Lane C P3).
  *
  * ═══════════════════════════════════════════════════════════════════════════════════
  * THE BOUNDARY THIS PROTECTS (do not erode it)
@@ -253,7 +254,7 @@ export interface ArtifactRefConfig {
   maxFieldLength: number;
 
   /* ═══════════════════════════════════════════════════════════════════════════════════════
-   * LOCATOR SAFETY — the charset/scheme allow-lists (an earlier task re-work, the reviewer F3).
+   * LOCATOR SAFETY — the charset/scheme allow-lists (an earlier task re-work, Reviewer F3).
    *
    * THE THREAT, stated plainly: the strings below are substituted into instructions that an
    * AUTONOMOUS AGENT is expected to follow WITHOUT a human reading them. That makes this a

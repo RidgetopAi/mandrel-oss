@@ -3,7 +3,7 @@
  * a stub vector matches the ACTIVE embedder's column geometry instead of a hardcoded 1536.
  *
  * WHY THIS EXISTS
- *   mcp-server has had src/tests/helpers/embedGeometry.ts since so the
+ *   mcp-server has had src/tests/helpers/embedGeometry.ts since an earlier task, so the
  *   derived spelling was available there. The backend had no equivalent, so the hardcoded
  *   spelling was the easy one here — and on 2026-08-19 two backend fixtures written as
  *   `Array.from({ length: 1536 })` went RED the moment the CODE DEFAULT flipped to gemma,

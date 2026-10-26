@@ -130,8 +130,8 @@ describe('hybrid search', () => {
     // whose OWN id matches ("this IS the record you named") versus a row whose TEXT contains
     // that id ("this record mentions it"). MEASURED REGRESSION this guards: when P2b added
     // the identifier tier without knowing about the id/tag boost, the live bare-id query
-    // `2b3c4d5e` fell from rank 1 to rank 4 — three records that mention that id8 in their
-    // prose took the identifier tier, and the record whose id IS that id8 does not contain
+    // an earlier change fell from rank 1 to rank 4 — three records that mention that id8 in their
+    // prose took the identifier tier, and the record whose id IS an earlier change does not contain
     // its own id in its text, so it had no identifier hit at all.
     idHomeId = (
       await db.query(

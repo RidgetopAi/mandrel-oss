@@ -1,6 +1,6 @@
 /**
  * WS1 "CLEAN THE PIPES" — MCP response shape (defect register
- * an earlier tool-output audit).
+ * an earlier change, tool-output an earlier audit).
  *
  * THE THREE MEASURED DEFECTS THIS PINS CLOSED:
  *   D1 — truncation stubs ("…[truncated; fetch the full record…]") in 6/13 read-tool

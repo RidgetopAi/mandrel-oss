@@ -40,10 +40,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_softdel_a648f00d
- *   eval "$(bash scripts/provision-test-db.sh ci_softdel_a648f00d --print-env)"
+ *   bash scripts/provision-test-db.sh ci_softdel_a648c2b9
+ *   eval "$(bash scripts/provision-test-db.sh ci_softdel_a648c2b9 --print-env)"
  *   npx jest contextDecisionSoftDelete --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_softdel_a648f00d --drop
+ *   bash scripts/provision-test-db.sh ci_softdel_a648c2b9 --drop
  */
 
 import request from 'supertest';

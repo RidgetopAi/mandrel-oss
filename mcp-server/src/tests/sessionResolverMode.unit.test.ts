@@ -1,5 +1,6 @@
 /**
- * Resolver-mode flag — pure config unit tests (Sessions Foundation Phase 2a,  * an earlier decision). NO DB. Locks the SAFETY DEFAULT: the shared resolver is INERT unless an
+ * Resolver-mode flag — pure config unit tests (Sessions Foundation Phase 2a).
+ * NO DB. Locks the SAFETY DEFAULT: the shared resolver is INERT unless an
  * operator explicitly opts in.
  *
  * The flag is read once at module load (like every other sessionConfig knob), so we re-import

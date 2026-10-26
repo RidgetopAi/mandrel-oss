@@ -42,6 +42,7 @@
  * exists for (empty, spaces, punctuation).
  */
 
+import { DEPLOYMENT_VOCABULARY, type DeploymentVocabulary } from './deploymentVocabularyConfig.js';
 import { ACTOR_PREFIX_RULES, isRegisteredActor, normalizeActor } from './actorRegistry.js';
 
 /** Lens axis: WHOSE work is this — the company itself, or the product we sell. */
@@ -69,7 +70,7 @@ export const TRANCHE_VALUES = ['safe', 'measured'] as const;
  *
  * DERIVED, NOT INVENTED — these are exactly the `components[].name` values of the
  * Riverbend company-map component registry snapshot
- * (generated 2026-08-28T16:15:04Z by dev-host, 8 components). The registry generator
+ * (generated 2026-08-28T16:15:04Z by control-host, 8 components). The registry generator
  * lives in the runtime repo, so this is a SNAPSHOT rather than an import: when the
  * registry gains or renames a component, refresh this list and say which snapshot it came
  * from. Do not add a component here that the registry does not know about — the point of
@@ -149,10 +150,7 @@ const closed = (prefix: string, values: readonly string[], noun: string): LensAx
 /**
  * Lens axis: WHICH GUARD CLASS a task is an instance of.
  *
- * THE ROSTER IS scripts/config/guard-classes.conf — this array is the TypeScript copy of
- * its ids, and the CI gate STAGE 0a22d goes RED whenever the two lists differ, so they are one
- * list with two spellings, not two lists. Add a class THERE (with its detector, or under
- * the `!undetected-max` ratchet), then mirror the id here in the same commit.
+ * This array is the closed roster of guard-class ids. A class joins with its detector.
  *
  * Why a closed set and not a shape: until 2026-09-01 the axis was write-only — 28 tasks
  * carried the single value `guards-need-guarding` and were joined to each other by prose
@@ -197,15 +195,16 @@ export const LENS_AXES: readonly LensAxisSpec[] = [
   closed('owner:', OWNER_VALUES, 'the department that owns it'),
   closed('tranche:', TRANCHE_VALUES, 'the build risk class'),
   closed('component:', COMPONENT_VALUES, 'a component of the company-map registry'),
-  closed('class:', GUARD_CLASS_VALUES, 'a registered guard class — scripts/config/guard-classes.conf'),
+  closed('class:', GUARD_CLASS_VALUES, 'a registered guard class'),
   {
     prefix: 'actor:',
     // The registry is the roster, so name it rather than reprinting it — a copy here would
     // drift the first time an actor is added, and the env extension would make the copy
     // wrong on any instance that uses it.
     expects:
-      'a registered actor from config/actorRegistry.ts (operator, coordinator, builder, reviewer, ' +
-      `ops-bot, tick, …), including the parametric families ${ACTOR_PREFIX_RULES.map(r => `${r.prefix}<id>`).join(', ')}`,
+      'a registered actor from config/actorRegistry.ts' +
+      (DEPLOYMENT_VOCABULARY.actorNames.length > 0 ? ` (${DEPLOYMENT_VOCABULARY.actorNames.join(', ')}, …)` : '') +
+      `, including the parametric families ${ACTOR_PREFIX_RULES.map(r => `${r.prefix}<id>`).join(', ')}`,
     // `normalizeActor(v) === v` FIRST, deliberately: the tag grammar only ever trims and
     // lowercases a value (it refuses to guess — see normalizeThreadingTag), while the actor
     // normalizer additionally folds whitespace and repeated hyphens. Without this clause a
@@ -255,10 +254,17 @@ for (const axis of LENS_AXES) {
  * is the drift class this repo keeps closing (CLASSES.md C5), and a nastier one than
  * usual: a user following an out-of-date description writes a tag the server quarantines.
  */
-export function lensAxesSummary(): string {
-  return LENS_AXES.map(a =>
-    a.values ? `\`${a.prefix}${a.values.join('|')}\`` : `\`${a.prefix}<${a.shapeHint}>\``,
-  ).join(' / ');
+export function lensAxesSummary(vocab: DeploymentVocabulary = DEPLOYMENT_VOCABULARY): string {
+  return LENS_AXES.map(a => {
+    // The component roster and the guard-class registry are Riverbend's own names; they are
+    // printed only where the deployment vocabulary opts in (config/deploymentVocabularyConfig.ts).
+    // The VALIDATOR still enforces the full closed set either way.
+    const hidden =
+      (a.prefix === 'component:' && !vocab.listComponentValues) ||
+      (a.prefix === 'class:' && !vocab.listGuardClassValues);
+    if (hidden) return `\`${a.prefix}<${a.prefix.slice(0, -1) === 'class' ? 'guard class' : 'component'}>\``;
+    return a.values ? `\`${a.prefix}${a.values.join('|')}\`` : `\`${a.prefix}<${a.shapeHint}>\``;
+  }).join(' / ');
 }
 
 /** The lens axis a tag prefix belongs to, or null. Used by the retag tooling. */

@@ -30,7 +30,7 @@
  *   - the fixture uses two-digit values that do not appear in the uuid or the timestamps.
  * A single-digit count is never assertable this way by accident.
  *
- * MUTATION PROOF (recorded in the an earlier task report): putting `row.contexts_created ??`
+ * MUTATION PROOF (recorded in the earlier task report): putting `row.contexts_created ??`
  * back at the front of the chain makes 'renders the DERIVED counts…' fail with "0" instead
  * of "31". Watched, not assumed.
  */

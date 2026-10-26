@@ -13,7 +13,7 @@
  * task_create) stamps a declared `informs` edge (created_by 'auto:positional') to the spine
  * via services/positionalMint.ts.
  *
- * The spine-first fold-in: branch_open always resolves to a REAL spine record — an id that
+ * an earlier change fold-in: branch_open always resolves to a REAL spine record — an id that
  * resolves to nothing in any of the three tables is an actionable error, so "current
  * branch" can never be unnamed or dangling.
  *
@@ -293,7 +293,7 @@ class BranchRoutes {
       // THE SPINE MUST STILL EXIST (signal 2). `branch_positions.spine_id`
       // is a soft reference — migration 080 — so the record can be deleted out from under
       // an open position and nothing removes the row. Measured on prod: this endpoint
-      // reported `spineType: "task"` for an id its own by-id lookup resolves to
+      // reported `spineType: "task"` for an earlier change, an id its own by-id lookup resolves to
       // nothing. Reproduced from a clean DB in tests/danglingSpine.contract.test.ts, where
       // the pre-fix render was an ORDINARY OPEN BRANCH — origin 'declared', spineType
       // 'task' — separable from a healthy one only by a null title, and `spineTitle()`
@@ -339,7 +339,7 @@ class BranchRoutes {
       }
 
       // ARCHIVED IS A THIRD STATE, AND IT IS THE ONE THE BUG WAS FILED ON.
-      // an earlier Task reported that this endpoint claimed `spineType:'task'` for such an id
+      // an earlier Task reported that this endpoint claimed `spineType:'task'` for an earlier change
       // while `task details` answered found:false, and read that as a dangling pointer.
       // Measured on prod 2026-09-05, the row EXISTS (status 'todo', archived_at
       // 2026-09-02) — `task details` could not see it because includeArchived:false is the
@@ -352,8 +352,8 @@ class BranchRoutes {
       // AT TRUNK emitted a `spineType` and no archived signal whatsoever, leaving the coordinator's
       // originally-reported observation byte-for-byte reproducible after two commits that
       // claimed to have addressed it. That is the same error those commits warn against, one
-      // arm over: the bug report's own comment calls trunk "the half the bug report was actually
-      // filed on", and the follow-up's whole argument is that a fix which changes nothing on the
+      // arm over: an earlier change's own comment calls trunk "the half the bug report was actually
+      // filed on", and an earlier change's whole argument is that a fix which changes nothing on the
       // case that produced the report is inadequate. ONE source, consumed by BOTH arms, is
       // why that can no longer drift apart — a second copy is a second chance to fix one and
       // not the other.
@@ -471,7 +471,7 @@ class BranchRoutes {
    * before SK2 a branch's lifecycle was unrecoverable the moment somebody stepped off it.
    *
    * PROJECT SCOPE, two layers — stated with what each one can actually stop, because SK2
-   * round 1 asserted a defence here that no test could falsify (the reviewer F2):
+   * round 1 asserted a defence here that no test could falsify (Reviewer F2):
    *   1. THE ONE THAT FIRES IN PRODUCT: the spine id is resolved through the same
    *      project-scoped, never-first-match resolver branch_open uses, so an id from another
    *      project resolves to nothing and the call ends before any membership read.
@@ -581,7 +581,7 @@ class BranchRoutes {
           // to another member rather than to the spine (the position's tip had advanced).
           // The round-1 renderer said "[via tip +N]" for records reached by a walk, which
           // asserted a causal history the rows do not carry — and was wrong for every
-          // nested-branch record the walk had absorbed (the reviewer).
+          // nested-branch record the walk had absorbed (Reviewer).
           const attach =
             m.attachedToId !== spine.spineId ? `  [attached to ${m.attachedToId.substring(0, 8)}]` : '';
           const approx =

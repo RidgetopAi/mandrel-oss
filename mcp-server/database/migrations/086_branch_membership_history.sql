@@ -28,9 +28,9 @@
 --         AND NOT EXISTS (SELECT 1 FROM links p
 --                          WHERE p.mint_via='position' AND p.from_id=l.from_id)) AS tag_only
 --   FROM spines sp;
---   ->  2b3c4d5e | 8 | 10      3c4d5e6f | 9 | 10      4d5e6f7a | 8 | 9
+--   ->  an earlier change | 8 | 10      e617f00d | 9 | 10      an earlier change | 8 | 9
 --
--- Roughly half of each branch was missing. Two decisions written on one of those branches during this very
+-- Roughly half of each branch was missing. Two decisions written on e617f00d during this very
 -- task carry a single `tag`-minted informs edge to it and no position
 -- edge at all.
 --

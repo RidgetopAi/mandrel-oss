@@ -25,8 +25,7 @@
 //   directory that is not an ancestor of any other workspace, loaded explicitly
 //   with `--config` (which makes eslint's base path the CURRENT WORKING
 //   DIRECTORY, so the repo-root trees are still reachable). Frozen reproduction
-//   of the regression: reports/artifacts/59b8f00d-tsconfig-scripts-evals/
-//   eslint-mode-flip-repro.sh in the riverbend repo.
+//   of the regression.
 //
 // WHY THIS FILE EXISTS. ESLint's base path is the directory holding the config
 // file when the config is DISCOVERED, and the working directory when it is passed

@@ -59,7 +59,7 @@ const SCRATCH = fs.mkdtempSync(path.join(os.tmpdir(), 'poolbounce-'));
  * THE BOUNCE DATABASE — why the child no longer bounces the suite's own DB.
  *
  * `pg_terminate_backend` writes a real `FATAL: terminating connection due to administrator
- * command` into the Postgres server log. `scripts/lib/gate-db-capacity.sh` reads that log
+ * command` into the Postgres server log. The gate's DB capacity check reads that log
  * scoped to the run's database and invalidates the whole gate run on any unrecognised FATAL —
  * by SEVERITY, deliberately, because that is also the signature of the connection-slot
  * exhaustion and of the `postgresql@16-main` restart that killed prod on 2026-08-12. Both

@@ -541,7 +541,7 @@
   }
 }
 
-/* The page's own project selector, first in the filter row (page-scope epic). */
+/* The page's own project selector, first in the filter row. */
 .projectSelect {
   min-width: 170px;
 }

@@ -1,6 +1,6 @@
 /**
  * THE PRIORITY-4 AMBIENT FALLBACK ANNOUNCES ITSELF IN TESTS — an earlier task's class fix,
- * landed from another lane because handlers/project.ts belongs to it this batch.
+ * landed from the lane because handlers/project.ts belongs to it this batch.
  *
  * WHY THIS EXISTS RATHER THAN FOUR MORE CALL-SITE FIXES. The L7 lane fixed the four sites
  * its decoy run measured. That protects those four and does nothing for the next test

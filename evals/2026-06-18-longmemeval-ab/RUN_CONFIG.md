@@ -58,25 +58,15 @@ the *encoder* (weights + tokenizer + pooling) is identical.
 
 Prereq for Arm A: the baseline embed server must be up (it IS the encoder):
 ```
-cd longmemeval-baseline
+cd /home/user/projects/riverbend/longmemeval-baseline
 EMBED_PORT=8390 nohup node embed_server.mjs > embed_server.log 2>&1 &
 curl -fsS http://127.0.0.1:8390/health
 ```
 Prereq for Arm B: the disposable Mandrel must be up on `:8190` (throwaway `ci_*` DB).
 
-Full 500-question runs:
-```
-# ARM A — wiki baseline
-RUN_ID=armA-wiki ./launch_armA_wiki.sh
-
-# ARM B — Mandrel
-RUN_ID=armB-mandrel ./launch_armB_mandrel.sh
-```
-Smoke (fixed 8-question slice `smoke8.qids`):
-```
-QIDS_FILE=smoke8.qids RUN_ID=armA-smoke ./launch_armA_wiki.sh
-QIDS_FILE=smoke8.qids RUN_ID=armB-smoke ./launch_armB_mandrel.sh
-```
+Full 500-question runs used one launcher per arm (not part of this repository), as
+`RUN_ID=armA-wiki` (wiki baseline) and `RUN_ID=armB-mandrel` (Mandrel). Smoke runs used the
+fixed 8-question slice `QIDS_FILE=smoke8.qids` with `RUN_ID=armA-smoke` / `armB-smoke`.
 Both launchers read `OPENAI_API_KEY` from `/opt/assistant/.env` inside the runner — the key is
 never printed. Runs are resumable (fixed `--run-id` + checkpoint).
 
@@ -84,7 +74,7 @@ never printed. Runs are resumable (fixed `--run-id` + checkpoint).
 
 ## Outputs (each run writes its own distinct JSON — additive, nothing overwritten)
 
-Per `RUN_ID`, under `reports/`:
+Per `RUN_ID`, under `/home/user/projects/riverbend-reports/`:
 - `longmemeval-<RUN_ID>-recall.json` — recall@k curve (overall + by_type), answerable-only
 - `longmemeval-<RUN_ID>-live.json` — live progress + running recall@k + QA
 - `longmemeval-<RUN_ID>-results.json` — per-question records, incl. `ranked_sessions`

@@ -62,13 +62,16 @@ describe('Settings rebuild — every live write maps to a real backend route', (
       'api.users.updatePreferences',
       'api.users.revokeSessions',
       'api.projects.remove',
+      'api.apiTokens.list',
+      'api.apiTokens.create',
+      'api.apiTokens.revoke',
     ]) {
       expect(hooks).toContain(call);
     }
   });
 
   /**
-   * The INSTANCE-WIDE default-project writes must not come back (page-scope epic §A).
+   * The INSTANCE-WIDE default-project writes must not come back (an earlier epic §A).
    * `set-primary` / `clear-primary` set `projects.metadata.is_primary`, a flag on the
    * SHARED projects table: one user setting "their" default set it for every user, and
    * `clearPrimary`'s UPDATE carries no user scoping whatsoever. The default project is
@@ -105,7 +108,9 @@ describe('Settings rebuild — tunables live in config (configs-not-hardcoded)',
 });
 
 describe('Settings rebuild — honest data-gap sections name the gap', () => {
-  it.each(['IdentitySection.tsx', 'NotificationsSection.tsx', 'ApiTokensSection.tsx'])(
+  // ApiTokensSection left this list when Settings → API tokens went LIVE;
+  // its rail entry is `live: true` and its behaviour is pinned by ApiTokensSection.test.tsx.
+  it.each(['IdentitySection.tsx', 'NotificationsSection.tsx'])(
     '%s renders a DATA_GAPS note and never fakes a live write',
     (file) => {
       const src = readFileSync(resolve(modDir, file), 'utf8');

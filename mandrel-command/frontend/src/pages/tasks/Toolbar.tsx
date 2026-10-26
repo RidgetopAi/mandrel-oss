@@ -1,8 +1,8 @@
 /**
  * Toolbar — the Tasks filter row: a client-side search box over the loaded tasks.
  *
- * No project selector here. The page-scope epic put one on every page; an earlier punch (the operator,
- * an earlier decision) moved it back to the ONE switch in the topbar (shell/ProjectSwitch),
+ * No project selector here. an earlier Epic put one on every page; an earlier punch (the operator)
+ * moved it back to the ONE switch in the topbar (shell/ProjectSwitch),
  * which the page reads through `usePageProject`.
  *
  * Reused as-is by the Punch board for search PARITY — `placeholder` /

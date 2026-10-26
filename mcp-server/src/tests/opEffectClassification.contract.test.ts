@@ -24,9 +24,8 @@
  * THE CLASSIFICATION RULE (so a future row is decidable, not a coin flip)
  * =============================================================================
  * ANSWER IT BY TRACING THE HANDLER — transitively, into handlers/ and services/ — never from
- * the opId. The first version of this table classified a scan-status poller 'read' while its
- * handler called `persistScan()`, and its scan trigger 'write' while that one persisted
- * nothing. Exactly backwards on a pair is what classifying
+ * the opId. The first version of this table classified a scan-poll op 'read' while its
+ * handler persisted a whole scan, and its trigger sibling 'write' while that one persisted nothing. Exactly backwards on a pair is what classifying
  * by NAME looks like. Restating the values here does NOT protect against that: both files
  * carried the same wrong value and agreed (Reviewer B1).
  *

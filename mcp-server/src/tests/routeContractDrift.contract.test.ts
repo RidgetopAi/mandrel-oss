@@ -110,7 +110,7 @@ const EXEMPT_PARAMS: Record<string, Set<string>> = {
   // context_store/search forward the whole validated args object to contextRoutes,
   // which reads sessionId internally; the route references the rest via args.<x>.
   // noAutoThread (T5b opt-out): read via the CONFIG-named key
-  // `args[AUTO_THREAD_CONFIG.optOutFlag]` (Operator's no-hardcoded-variable rule), NOT a
+  // `args[AUTO_THREAD_CONFIG.optOutFlag]` (the operator's no-hardcoded-variable rule), NOT a
   // literal `args.noAutoThread` — so it's exempt from the literal-reference scan here.
   context_store:  new Set(['sessionId', 'noAutoThread']),
   context_search: new Set(['sessionId']),

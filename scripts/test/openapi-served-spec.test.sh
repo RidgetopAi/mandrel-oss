@@ -9,7 +9,7 @@
 #   matched nothing. It did not error: swagger-jsdoc returns a well-formed document
 #   with `paths: {}` and exits 0.
 #
-#   MEASURED 2026-08-31 on the live fleet, the then-current image — all 7 running
+#   MEASURED 2026-08-31 on the live fleet, image 5fe3f00df00d — all 7 running
 #   command-backend containers, prod included: GET /api/openapi/openapi.json returned
 #   HTTP 200, 33229 bytes, 70 schemas, 11 tags, and `paths: []`. A customer reading our
 #   API spec got a document describing nothing, and it was indistinguishable from an
@@ -29,8 +29,8 @@
 # HOW IT MEASURES (the choke point, not a remembered shape)
 #   1. DELETES dist/ and then runs the SHIPPED build (`npm run build`), and asserts the
 #      emitter's own witness line is in the build output. Both halves are load-bearing
-#      and both were missing until Reviewer produced a false green (round 1, verdict
-#      an earlier change): the guard used to just run the build, and with the emission step
+#      and both were missing until Reviewer produced a false green (round 1):
+#      the guard used to just run the build, and with the emission step
 #      removed from package.json it still passed — because a LEFTOVER artifact from an
 #      earlier build was sitting in the warm tree's dist/ and tsc does not remove it.
 #      Deleting dist/ makes this the Docker builder's actual condition (a fresh

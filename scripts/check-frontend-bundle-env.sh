@@ -32,9 +32,9 @@
 #       clean-checkout case, where P1 has nothing to bite on).
 #
 # ON RED THIS SCRIPT PRINTS KEY NAMES ONLY — NEVER VALUES. Its output flows to
-#   CI logs, fleet-deploy output, and chat failure text; an env file can
+#   CI logs, deploy output, and chat failure text; an env file can
 #   hold secrets, and a guard that prints the secret it just caught has
-#   recreated the leak one surface over (the reviewer finding F1 on this task).
+#   recreated the leak one surface over (Reviewer finding F1 on this task).
 #   Anyone diagnosing a RED reads the VALUE off the named file locally, where
 #   the leak already is — the report never needs to carry it.
 #
@@ -51,7 +51,7 @@
 # =============================================================================
 set -u
 
-# LOCALE PIN — load-bearing, do not remove (the reviewer F4, measured 2026-08-03).
+# LOCALE PIN — load-bearing, do not remove (Reviewer F4, measured 2026-08-03).
 # The deploy population runs TWO greps: GNU 3.11 on prod-host (LANG=en_US.UTF-8),
 # GNU 3.12 on the control host (C.UTF-8). grep 3.11's `[ -~]` RANGE semantics are
 # locale-dependent: under en_US.UTF-8 the P2 signature pattern returns rc=1
@@ -66,7 +66,7 @@ export LC_ALL=C
 # P1: a VITE_ env KEY NAME in shipped JS.
 #   * The LEFT BOUNDARY `(^|[^A-Za-z0-9_])` is load-bearing: without it an
 #     unrelated identifier like INVITE_CODE submatches as VITE_CODE — a real
-#     false-positive class (the reviewer finding F3), and a guard that REDs on
+#     false-positive class (Reviewer finding F3), and a guard that REDs on
 #     legitimate code gets deleted. POSIX ERE has no \b, so the boundary is
 #     spelled as a group; the display code below strips the captured boundary
 #     character before printing. No right boundary is needed — any run of
@@ -78,11 +78,11 @@ readonly P1_VITE_KEY='(^|[^A-Za-z0-9_])VITE_[A-Za-z0-9_]{2,}'
 # P2: Vite's inlined env-object signature — the five standard keys, fixed order,
 # tolerant of minified (!0/!1, unquoted keys) and unminified (quoted) output.
 # The gap matcher is [ -~] (printable ASCII), NOT `.`. Measured population,
-# 2026-08-03: GNU grep 3.11 on prod-host (fleet-deploy's prod build host) and
+# 2026-08-03: GNU grep 3.11 on prod-host (the prod build host) and
 # GNU grep 3.12 on the control host (where the CI gate STAGE 5b gate runs); grep 3.11's
 # `[ -~]` range semantics are LOCALE-DEPENDENT, which is why this script pins
 # LC_ALL=C at the top — without the pin, prod-host's en_US.UTF-8 turned this
-# pattern into a silent rc=1 miss against a real dump (the reviewer F4). The
+# pattern into a silent rc=1 miss against a real dump (Reviewer F4). The
 # class is kept over `.` because Claude Code agent INTERACTIVE shells shim
 # `grep` to ugrep via a shell function (not exported to child processes), and
 # ugrep expands `.` into a UTF-8 multibyte alternation and rejects the bounded
@@ -112,7 +112,7 @@ if [[ "${#JS_FILES[@]}" -eq 0 ]]; then
 fi
 
 # Scratch for grep's stderr — mktemp'd, because parallel gate/deploy runs share
-# /tmp and a fixed filename would interleave two runs' diagnostics (the reviewer N2).
+# /tmp and a fixed filename would interleave two runs' diagnostics (Reviewer N2).
 GREP_ERR="$(mktemp "${TMPDIR:-/tmp}/check-fe-bundle-env.XXXXXX")" || {
   echo "check-frontend-bundle-env: CANNOT MEASURE — mktemp failed." >&2
   exit 2
@@ -140,7 +140,7 @@ for pat_name in P1_VITE_KEY P2_ENV_DUMP; do
       echo "  $f"
       # KEY NAMES ONLY — never a context window. A window around the match
       # captures the VALUE sitting next to the key, and this output flows to CI
-      # logs / deploy output / chat (the reviewer F1: a canary VALUE printed
+      # logs / deploy output / chat (Reviewer F1: a canary VALUE printed
       # verbatim here). Display-only, so a failure must not mask the RED (|| true).
       if [[ "$pat_name" == "P1_VITE_KEY" ]]; then
         # PIPEFAIL-BOOLEAN-OK: status is not consumed. The `|| true` here is

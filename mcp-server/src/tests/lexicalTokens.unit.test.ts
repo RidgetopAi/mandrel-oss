@@ -1,6 +1,6 @@
 /**
  * LEXICAL TOKENS — unit test for the JavaScript half of the identifier extractor.
- * (SEARCH P2a.)
+ * (SEARCH P2a, an earlier task.)
  *
  * This file covers the parts that need no database: what the pattern matches, what it
  * rejects, and the two bounds (truncation, token length). The half that cannot be asserted
@@ -35,13 +35,13 @@ describe('extractIdentifiers — the three shapes it exists for', () => {
   });
 
   test('hex 7-40 chars, bounded at both ends', () => {
-    expect(extractIdentifiers('at 532f00d we shipped')).toEqual(['532f00d']);
-    expect(extractIdentifiers('at 532f00d204273cc24dc41ae77ca96ecc2610dccf we shipped')).toEqual([
-      '532f00d204273cc24dc41ae77ca96ecc2610dccf',
+    expect(extractIdentifiers('at 5320f00 we shipped')).toEqual(['5320f00']);
+    expect(extractIdentifiers('at 5320f00df00df00df00df00df00df00df00df00d we shipped')).toEqual([
+      '5320f00df00df00df00df00df00df00df00df00d',
     ]);
     // Too short to be a sha, and not a word boundary on either side.
     expect(extractIdentifiers('deadbe and abcdef')).toEqual([]);
-    expect(extractIdentifiers('x532f00dy')).toEqual([]);
+    expect(extractIdentifiers('x5320bd9y')).toEqual([]);
   });
 
   test('ordinary prose yields nothing — the extractor is not a tokenizer', () => {

@@ -1,6 +1,6 @@
 /**
  * ONE-TIME ORPHAN BACKFILL — CLI parsing + usage (DB-FREE)
- * (branch:mandrel-reliability, task ST-6, spec §C1/C2/C3, §X4).
+ * (branch:mandrel-reliability, task ST-6 an earlier change, spec §C1/C2/C3, §X4).
  *
  * WHY A SEPARATE, DB-FREE MODULE: the DB logic (orphanBackfill.ts) transitively imports
  * config/database.ts, which THROWS at module load if DATABASE_NAME is unset. Arg parsing and
@@ -126,7 +126,7 @@ FLAGS
 SAFETY
   Dry-run is the default; a live write requires --apply. Idempotent (re-running mints
   nothing new). Scoped to one project. Do NOT run against the prod/riverbend DB from a
-  dev build — that real-corpus run is gated by a human after review.
+  dev build — that real-corpus run is gated by Coordinator/Operator after Reviewer APPROVE.
 
 EXAMPLES
   # Project the rescue on a project (writes nothing):

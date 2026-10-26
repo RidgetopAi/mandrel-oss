@@ -11,7 +11,7 @@
  * `McpResponse` envelope and a plain REST JSON body.
  *
  * MOUNTED with `bearerAuth()` in server/healthServer.ts — the SAME static-token guard the
- * `/api/v2/sessions` family uses (an earlier task / the trust-boundary change). This surface
+ * `/api/v2/sessions` family uses (an earlier task / trust boundary). This surface
  * serves and mutates real decision data; it does not get to be born unauthenticated.
  */
 import express, { Router, Request, Response } from 'express';

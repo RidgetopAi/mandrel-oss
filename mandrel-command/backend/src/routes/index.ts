@@ -2,6 +2,7 @@ import { Router } from 'express';
 import healthRoutes from './health';
 import authRoutes from './auth';
 import userRoutes from './users';
+import apiTokenRoutes from './apiTokens';
 import contextRoutes from './contexts';
 import projectRoutes from './projects';
 import sessionRoutes from './sessions';
@@ -33,6 +34,8 @@ router.use('/', healthRoutes);
 router.use('/openapi', openApiRoutes);
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+// Settings → API tokens. Gated by its own router-level authenticateToken.
+router.use('/api-tokens', apiTokenRoutes);
 router.use('/contexts', contextRoutes);
 router.use('/projects', projectRoutes);
 router.use('/sessions', sessionRoutes);
@@ -84,13 +87,13 @@ router.use('/v2/sessions', sessionRoutesV2);
 // one `router.use(...)`, restricts calls to a deny-by-default READ tool allow-list, and
 // enforces per-user project authorization before attaching the internal MCP token.
 // The browser's direct /mcp/tools/* path is retired by the same change (see
-// frontend/src/api/mandrelApiClient.ts + docs/deploy/trust-boundary-cutover.md).
+// frontend/src/api/mandrelApiClient.ts).
 router.use('/mcp', mcpRoutes);
 
 // The other half of the Punch List task attachments pair (`taskScopedAttachmentRoutes`
 // is mounted at `/tasks` ABOVE, before taskRoutes — see that comment). This one owns its
 // own, uncontested prefix: the bulk read lives at `GET /attachments?taskIds=` rather than
-// `/tasks/attachments` for the same reason (the reviewer #1: the latter was
+// `/tasks/attachments` for the same reason (Reviewer #1: the latter was
 // captured by `GET /tasks/:id`). Not mounted at `/` — a router-level `authenticateToken`
 // there turned unknown `/api/*` into 401s (#6). Both facts are asserted against the real
 // app in taskAttachments.db.test.ts.

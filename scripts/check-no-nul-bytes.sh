@@ -127,7 +127,7 @@ fi
 
 # ── THE PREDICATE, plus a SELF-CHECK that fails CLOSED ──────────────────────
 # `grep -P '\x00'` is the fastest correct spelling (0.07s over ~1,750 files vs
-# 40s for a per-file `tr -d`), but -P is a build-time option: the control host runs
+# 40s for a per-file `tr -d`), but -P is a build-time option: the control host box runs
 # ugrep, CI runs GNU grep, and a grep without PCRE would print an error to
 # stderr and exit non-zero-but-not-1 — which a careless caller reads as "no
 # matches", i.e. a silent GREEN over an unscanned population.

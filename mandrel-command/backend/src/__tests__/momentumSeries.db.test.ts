@@ -1,6 +1,6 @@
 /**
- * DB-integration tests for the Calendar MOMENTUM-SERIES endpoint (an earlier task /
- * an earlier decision). Exercises the REAL MomentumSeriesService against seeded rows to prove
+ * DB-integration tests for the Calendar MOMENTUM-SERIES endpoint.
+ * Exercises the REAL MomentumSeriesService against seeded rows to prove
  * the load-bearing guarantee: the per-cell score a day earns in the series is IDENTICAL to
  *   (a) the shared `computeMomentum` helper's output, and
  *   (b) what `/api/day-summary` (DaySummaryService) returns for that same date.

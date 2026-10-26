@@ -37,7 +37,7 @@ interface UploadedFile {
  *   filename*=UTF-8''…   — the real name, percent-encoded, which every current browser
  *                          prefers, so a Japanese/emoji name round-trips exactly.
  * The stored name is already control-char free (validation/taskAttachment.ts), so this can
- * no longer throw inside `res.set` — the pre-fix 500 for a `\r\n` name (the reviewer #4c).
+ * no longer throw inside `res.set` — the pre-fix 500 for a `\r\n` name (Reviewer #4c).
  */
 export function buildContentDisposition(filename: string): string {
   // eslint-disable-next-line no-control-regex
@@ -137,7 +137,7 @@ export class TaskAttachmentController {
    * GET /attachments?taskIds=<uuid>,<uuid>,... — bulk-by-task-ids read for the board,
    * replacing a per-card `GET /tasks/:id/attachments` fan-out. Lives on the `/attachments`
    * prefix (NOT `/tasks/attachments`) so no `/tasks/:id` route anywhere can capture the
-   * literal segment — the shipped-app defect the reviewer #1 found. Scoped by the CALLER's project grants
+   * literal segment — the shipped-app defect Reviewer #1 found. Scoped by the CALLER's project grants
    * (services/projectListScope.ts resolveCallerScope — same construction every other
    * multi-row read on this backend uses); an id whose owning task sits outside that
    * scope is SILENTLY OMITTED, never 403'd, so one foreign id cannot fail the board.

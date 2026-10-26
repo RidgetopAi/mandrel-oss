@@ -40,7 +40,7 @@ const Contexts: React.FC = () => {
   const navigate = useNavigate();
   const { id: routeId } = useParams<{ id: string }>();
 
-  // THE PAGE OWNS ITS PROJECT (page-scope epic). It no longer rides a global selector —
+  // THE PAGE OWNS ITS PROJECT. It no longer rides a global selector —
   // there isn't one. The selection lives in `?project=`, opens at the user's default, and
   // every request below carries `project.scope()` so the header names THIS page's project
   // rather than the ambient default.

@@ -1,5 +1,6 @@
 /**
- * beliefConfig — PURE-logic unit tests for the two-tier v1 config knobs (BL-1,  * an earlier milestone). NO DB, NO LLM.
+ * beliefConfig — PURE-logic unit tests for the two-tier v1 config knobs (BL-1).
+ * NO DB, NO LLM.
  *
  * beliefConfig reads its knobs from env AT MODULE LOAD, so every case gets a FRESH module
  * instance (vi.resetModules + dynamic import) under a controlled env — the same pattern

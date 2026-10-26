@@ -1,6 +1,6 @@
 /**
  * pageScopedProjectScope — THE guard for the per-page scope contract
- * (page-scope epic, amendment §A1/§A2 "the guard construction", supersedes §F).
+ * (amendment §A1/§A2 "the guard construction", supersedes §F).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY THIS TEST EXISTS AT ALL
@@ -275,7 +275,7 @@ describeDb('per-page project scope — the request names the PAGE\'s project', (
           title: `pagescope write twin ${MARK_B}`,
           problem: 'a record must land in the project the page is showing',
           decision: 'scope the request from the page selection',
-          rationale: 'write-direction twin for the page-scope epic §A1',
+          rationale: 'write-direction twin for an earlier epic §A1',
         });
 
       expect([200, 201]).toContain(res.status);

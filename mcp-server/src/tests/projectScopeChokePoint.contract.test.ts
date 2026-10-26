@@ -140,7 +140,8 @@ const EXPECTED_ACCESSOR_DEFINITIONS = 4;
  *   the disclosed population matches the population that was read.
  * resolution (routes/project.routes.ts, getCurrentProject) is classified `effective`:
  * a hook-injected briefing must describe the BOUND project, never the interactive slot.
- * 45 -> 44: the code-scan (surveyor) routes module was removed, and its one call site with it.
+ * 45 -> 44: the code-scan routes module was removed with its
+ *   one project-scope call site.
  */
 const EXPECTED_TOTAL_CALL_SITES = 44;
 
@@ -411,7 +412,7 @@ describe('PART C — every surface a bound client can ask agrees with where its 
 
     // ── THE GROUND TRUTH, derived (not asserted from a constant): do a REAL write as a bound
     //    client and read back which project the row landed in. This is the "where do my writes
-    //    go" that an earlier decision says no surface may contradict.
+    //    go" that earlier decision says no surface may contradict.
     const content = `cross-check write ${STAMP}`;
     const stored = await call('context_store', { content, type: 'completion' }, conn, BOUND_PROJECT);
     expect(stored.isError).toBeFalsy();

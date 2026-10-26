@@ -1,6 +1,6 @@
 /**
  * useRecordProjectSync — keep a record page's `?project=` pointed at the record it is
- * SHOWING (page-scope epic §A4, the `/r/<id8>` short-link case).
+ * SHOWING (an earlier epic §A4, the `/r/<id8>` short-link case).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE WEDGE THIS EXISTS TO PREVENT
@@ -35,7 +35,7 @@
  * alone — `usePageProject` would ignore the value anyway, and re-asking every render for
  * something that will never be honoured is the shape that spins.
  *
- * ── WHY IT MUST NOT FIGHT THE USER (the reviewer round-2 blocker 1) ─────────────────────
+ * ── WHY IT MUST NOT FIGHT THE USER (Reviewer round-2 blocker 1) ─────────────────────
  * "Cannot loop" was the only question the original version asked, and it was the wrong
  * one. The effect also listed `projectId` in its dependencies, so a PROJECT change re-ran
  * it — and the reader is route-driven (`/tasks/:id`), so it stays mounted across a

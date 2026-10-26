@@ -125,7 +125,7 @@ export function notifyDeliveryCheck(): { deliverable: boolean; reason: string | 
  * notify mechanism (no divergent notifier in TS; any credential stays in the script's own
  * env file and is NEVER read or logged here). Fully detached + fail-safe.
  *
- * RETURNS whether the alert was DISPATCHED (an earlier task the reviewer ruling 4): true = the
+ * RETURNS whether the alert was DISPATCHED (an earlier task Reviewer ruling 4): true = the
  * notify script resolved and the detached child was launched; false = no script, or the
  * spawn threw synchronously. This is what a caller can know without blocking — an async
  * spawn failure after launch is logged but reports as dispatched (bounded, documented).
@@ -189,7 +189,7 @@ export function resetAlertDedupe(): void {
  *
  * Always: a structured WARN (so the degradation is in the logs even when alerting is off or
  * deduped). Then, if alerting is enabled and outside the per-table dedupe window, a LOUD
- * chat alert naming the table, op, active column, and error. NEVER throws — the caller
+ * Chat alert naming the table, op, active column, and error. NEVER throws — the caller
  * has already (or will immediately) persist the record; nothing here may endanger that.
  */
 export function onEmbedFailure(ctx: EmbedFailureContext): void {

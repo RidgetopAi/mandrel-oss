@@ -80,7 +80,7 @@ class PortManager {
    * Returns PORT=0 for dynamic assignment if configured, otherwise returns default port
    */
   public async assignPort(serviceName: string, preferredPort?: number): Promise<number> {
-    const { value: envPort, deprecatedName, preferredName } = resolvePortEnv(serviceName, process.env);
+    const { value: envPort, deprecatedName, preferredName } = resolvePortEnv(serviceName, process.env); // env-read: object-passthrough(resolvePortEnv reads MANDREL_<SVC>_PORT / the documented MANDREL_MCP_PORT / AIDIS_<SVC>_PORT from the env it is handed)
 
     // Log deprecation warning (once per assignment) if only an old name is used
     if (deprecatedName) {

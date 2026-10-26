@@ -1,7 +1,8 @@
 import { AsyncLocalStorage } from 'node:async_hooks';
 
 /**
- * THE PRIORITY-4 AMBIENT FALLBACK MUST NOT BE SILENT IN TESTS ( * measured by the L7 lane; the edit lives here because handlers/project.ts is another
+ * THE PRIORITY-4 AMBIENT FALLBACK MUST NOT BE SILENT IN TESTS
+ * (measured by the L7 lane; the edit lives here because handlers/project.ts is another
  * lane's file).
  *
  * STANDING PRINCIPLE (the operator): NO HARDCODED VARIABLES. The rule and the condition it fires

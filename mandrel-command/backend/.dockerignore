@@ -120,7 +120,6 @@ temp/
 
 # Scripts not needed in container
 scripts/
-!scripts/start.sh
 
 # Development configuration
 docker-compose.yml

@@ -1,7 +1,7 @@
 /**
  * BELIEF EDGE RECONCILIATION (Phase 4 — Inc-1 reversibility fix, generalized in BL-3).
  *
- * WHY (the auditor foundation-review finding #7, in the foundation review): the belief
+ * WHY (the auditor foundation-review finding #7, ref:foundation-review): the belief
  * layer's core promise is "verdicts are DATA and re-adjudication is REVERSIBLE" — the
  * property that justifies shipping on top of an API-model adjudicator (a model swap /
  * re-run must be able to WITHDRAW a claim, not just add one). Before this module, the

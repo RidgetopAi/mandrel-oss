@@ -83,8 +83,8 @@ export interface CoverageEdge {
   to: string;
   type: string;
   /**
-   * The declared/guessed provenance class from the `link_provenance` VIEW (migration 079,
-   * an earlier task). This module never computes the class — the SQL view is the single
+   * The declared/guessed provenance class from the `link_provenance` VIEW (migration 079).
+   * This module never computes the class — the SQL view is the single
    * source; the gather reads it back. OPTIONAL for older/synthetic callers, and an absent
    * value is counted as 'unclassified' — fail-closed: an edge whose provenance nobody
    * stated must never inflate the declared bucket.
@@ -94,7 +94,7 @@ export interface CoverageEdge {
 
 /**
  * The provenance split over the examined edges — reported BESIDE the coverage ratios, never
- * folded into them. WHY (the graph audit): edge COVERAGE held 97-98% for 15 days while
+ * folded into them. WHY (graph an earlier audit): edge COVERAGE held 97-98% for 15 days while
  * the declared minting mechanism was dead, because a guess-edge and a declared-edge count
  * identically. The split is what makes a guess quietly replacing a fact visible.
  */

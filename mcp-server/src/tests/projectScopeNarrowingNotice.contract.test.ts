@@ -1,6 +1,6 @@
 /**
  * A READ THAT RETURNS LESS THAN ASKED MUST SAY SO — end-to-end, real Postgres, real tools.
- * an earlier task (follow-up to the project-binding and session-identity changes).
+ * an earlier task (follow-up to an earlier change project binding / an earlier change session identity).
  *
  * =============================================================================
  * THE CLASS

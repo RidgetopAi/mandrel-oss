@@ -1,7 +1,7 @@
 /**
  * TECHNICAL-DECISION LEARNING-LOOP VOCABULARY — the single source of truth.
  *
- * an earlier Task (item 2 of THE UNIFICATION).
+ * an earlier Task (item 2 of an earlier decision, THE UNIFICATION).
  *
  * THE PRINCIPLE (the operator, standing rule): NO HARDCODED VARIABLES, and no truth
  * maintained in two places. Before this module, `implementation_status` existed as
@@ -80,7 +80,8 @@ export function vocabList(values: readonly string[]): string {
 }
 
 /**
- * technical_decisions.answer_status — THE DECISION INBOX lane ( * an earlier task). A THIRD, orthogonal lifecycle from `status` (active/deprecated/…) and the
+ * technical_decisions.answer_status — THE DECISION INBOX lane.
+ * A THIRD, orthogonal lifecycle from `status` (active/deprecated/…) and the
  * learning-loop pair above: "has a human actually chosen an option yet?"
  *
  *   open       — carries a question + >=2 options (each with >=1 pro and >=1 con); waiting

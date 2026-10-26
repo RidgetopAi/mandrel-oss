@@ -1,6 +1,6 @@
 /**
  * SettingsContext — the user's own settings, with the DEFAULT PROJECT as its
- * load-bearing value (page-scope epic §A).
+ * load-bearing value (an earlier epic §A).
  *
  * ── WHAT CHANGED AND WHY ─────────────────────────────────────────────────────────────
  * This context used to hold `defaultProject`: a project NAME, seeded by fetching
@@ -78,7 +78,7 @@ const SettingsContext = createContext<UseSettingsReturn | undefined>(undefined);
  * DISCARDED rather than trusted — the old cache shape stored a project NAME under
  * `defaultProject`, and letting that through would put a name where every consumer now
  * expects an id (and would send it as X-Project-ID). This is the upgrade path for a
- * browser that has the pre-page-scope cache.
+ * browser that has the pre-41293984 cache.
  */
 const readStoredSettings = (): UserSettings => {
   try {
@@ -119,7 +119,7 @@ export const SettingsProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [settings]);
 
   /**
-   * DROP THE DEFAULT PROJECT WHEN THE TOKEN GOES AWAY (the reviewer B3).
+   * DROP THE DEFAULT PROJECT WHEN THE TOKEN GOES AWAY (Reviewer B3).
    *
    * `resetAuthState` clears the four storage/memory rungs, but THIS provider holds a
    * FIFTH copy in React state, and the persist effect above would write user A's id

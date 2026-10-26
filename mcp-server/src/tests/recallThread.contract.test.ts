@@ -1,6 +1,6 @@
 /**
- * recall_thread — integration + adversarial contract tests (Mandrel Core Redesign T3,
- * an earlier task). THE headline pull tool, driven end-to-end.
+ * recall_thread — integration + adversarial contract tests (Mandrel Core Redesign T3).
+ * THE headline pull tool, driven end-to-end.
  *
  * Tests are armor (spec §6). The pure ordering/altitude/causal logic is covered by
  * recallThread.unit.test.ts; THIS suite drives the REAL tool through validate →
@@ -268,7 +268,7 @@ describe('recall_thread (T3) — traverse + trust + narrate, one call', () => {
     const nodes = resp.structuredContent.nodes;
     const soft = nodes.find((n: any) => n.id === softNode);
     expect(soft, 'the soft-superseded node is RETURNED (never dropped)').toBeTruthy();
-    // The soft/hard/abstain flags left the wire with the rule they encode
+    // The soft/hard/abstain flags left the wire with an earlier decision; the rule they encode
     // did not. Read them from the service, and keep the wire assertion on what the wire says.
     const softTrust = await trustForRecord({ id: softNode, type: 'context' });
     expect(softTrust.softSuperseded).toBe(true); // flagged

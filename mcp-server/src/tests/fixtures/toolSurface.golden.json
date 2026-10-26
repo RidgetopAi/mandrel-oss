@@ -567,7 +567,7 @@
               "maxLength": 50
             },
             "maxItems": 20,
-            "description": "Optional tags for categorization, filtering, and RECORD LINKING. Threading tags wire this context into the linked story: `task:<id8>` (belongs to a task thread), `decision:<id8>` (ladders to a decision), `context:<id8|uuid>`, plus lens axes `scope:company|product` / `owner:engineering|product|marketing|rnd|accounting|ops` / `tranche:safe|measured` / `component:prod-mandrel|mandrel-command|cockpit|coordinator-ui|tenant-fleet|mcp-bridge|runtime` / `class:backwards-belief-edge|fixture-reaches-real-binary|fixture-vacuity|fleet-drift-env-seam|gate-ci-population-disjoint|gate-reads-control-tree|generator-omits-fleet-posture|guard-not-fail-closed|guard-reads-unexecuted-copy|host-shape-in-suite|ledger-trusted-over-object|lint-population-one-dir-over|paged-order-no-tiebreaker|pipefail-boolean|reaper-never-reaped|regex-recognizer-unowned-parser|renderer-drops-structured-fact|secret-reading-command|serializer-literal-recurs|served-openapi-drift|shared-namespace-enumeration|secret-on-child-argv|stale-file-bind-mount|sweep-removes-without-detaching|unguarded-pg-pool|unpinned-instrument-verdict|two-channel-answer-read-through-one|unwired-suite|verdict-from-uncontracted-status` / `actor:<a registered actor>` / `batch:<a batch label>`. A `ref:<slug>` tag (`ref:[a-z0-9-]+`) is a memorable named pointer resolvable via context_search({tags:[\"ref:<slug>\"]}). Malformed ref/threading tags are normalized on write and reported, never rejected; a threading value the grammar cannot use (e.g. `scope:mandrel`) is stored QUARANTINED as `invalid-<tag>` so it is never mistaken for a working threading tag. A `handoff` additionally gets `ref:resume` appended by the server when absent (see `type`)."
+            "description": "Optional tags for categorization, filtering, and RECORD LINKING. Threading tags wire this context into the linked story: `task:<id8>` (belongs to a task thread), `decision:<id8>` (ladders to a decision), `context:<id8|uuid>`, plus lens axes `scope:company|product` / `owner:engineering|product|marketing|rnd|accounting|ops` / `tranche:safe|measured` / `component:<component>` / `class:<guard class>` / `actor:<a registered actor>` / `batch:<a batch label>`. A `ref:<slug>` tag (`ref:[a-z0-9-]+`) is a memorable named pointer resolvable via context_search({tags:[\"ref:<slug>\"]}). Malformed ref/threading tags are normalized on write and reported, never rejected; a threading value the grammar cannot use (e.g. `scope:mandrel`) is stored QUARANTINED as `invalid-<tag>` so it is never mistaken for a working threading tag. A `handoff` additionally gets `ref:resume` appended by the server when absent (see `type`)."
           },
           "relevanceScore": {
             "type": "number",
@@ -2674,7 +2674,7 @@
           "question": {
             "type": "string",
             "maxLength": 5000000,
-            "description": "Required when answerStatus:\"open\" (else optional/ignored). The one sentence being decided — what the operator is answering in seconds."
+            "description": "Required when answerStatus:\"open\" (else optional/ignored). The one sentence being decided — what the human decider is answering in seconds."
           },
           "options": {
             "type": "array",
@@ -4083,7 +4083,7 @@
     },
     {
       "name": "task_create",
-      "description": "Create a new task for agent coordination. Set `type` to the right kind (e.g. \"bug\", \"feature\") at creation time; task_update can re-classify it later. AGENTS: on deployments that list your actor in MANDREL_AGENT_ACTORS, a create is REFUSED with [TASK_CREATE_AGENT_FOLD_IN] unless tagged `needs-operator` — fold the finding into your lane or report it in your return; only an item needing a human decision becomes a task.",
+      "description": "Create a new task for agent coordination. Set `type` to the right kind (e.g. \"bug\", \"feature\") at creation time; task_update can re-classify it later. AGENTS: on deployments that list your actor in MANDREL_AGENT_ACTORS, a create is REFUSED with [TASK_CREATE_AGENT_FOLD_IN] unless tagged `needs-human` — fold the finding into your lane or report it to your coordinator in your return; only an item needing the human decider's decision becomes a task.",
       "inputSchema": {
         "type": "object",
         "properties": {

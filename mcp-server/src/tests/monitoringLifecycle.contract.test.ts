@@ -2,7 +2,7 @@
  * CONTRACT: utils/monitoring.ts owns three background intervals, and they must be (1) started
  * only when a caller asks, and (2) unable to hold a process open.
  *
- * WHY (an earlier task — one defect seen from two angles). The module used to call
+ * WHY (an earlier task and an earlier change — one defect seen from two angles). The module used to call
  * startMonitoring() at module scope and never unref the timers it created. Two consequences,
  * both measured before this guard existed:
  *   - Any process that transitively imported the module started three timers it never asked

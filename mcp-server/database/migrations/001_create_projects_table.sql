@@ -49,7 +49,7 @@ VALUES (
     'aidis-bootstrap', 
     'The AIDIS project itself - bootstrapping the AI Development Intelligence System',
     'https://github.com/your-username/aidis',
-    '/path/to/aidis',
+    '/home/user/aidis',
     '{"phase": "foundation", "tools": ["postgresql", "typescript", "mcp"], "learning_project": true}'::jsonb
 ) ON CONFLICT (name) DO NOTHING;
 

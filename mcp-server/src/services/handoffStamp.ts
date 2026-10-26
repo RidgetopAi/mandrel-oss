@@ -6,8 +6,8 @@
  * frozen prose, and (2) a live recall walk of the database. NOTHING marks which one is
  * current. Two independent blind readers — no transcript, no Mandrel access, no contact with
  * each other — both hit this unprompted on the 2026-08-21 P6 package: the handoff said
- * "Three remain: P3b, P4, P6" and routed the reader to BUILD `2b3c4d5e` and `3c4d5e6f`,
- * while the walk on the same page carried a builder run report AND a reviewer verdict for
+ * "Three remain: P3b, P4, P6" and routed the reader to BUILD an earlier change and an earlier change,
+ * while the walk on the same page carried a Builder run report AND an Reviewer verdict for
  * both. Reader B, verbatim: "Acting on the handoff's list could mean rebuilding finished
  * work."
  *

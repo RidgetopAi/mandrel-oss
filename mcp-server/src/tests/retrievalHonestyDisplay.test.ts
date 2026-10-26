@@ -1,6 +1,6 @@
 /**
  * Retrieval HONESTY FLOOR + DISPLAY CONSISTENCY — unit contract
- * (the honesty floor and the display-consistency fix)
+ * (an earlier task honesty floor, an earlier change display consistency)
  *
  * THE TWO BEHAVIORS UNDER TEST (no DB; pure formatting/labeling logic):
  *
@@ -79,7 +79,7 @@ beforeEach(() => {
   fakeCountContext.mockClear();
 });
 
-describe('buildHonestyHeader (the honesty floor logic, default 0.35)', () => {
+describe('buildHonestyHeader (an earlier change floor logic, default 0.35)', () => {
   test('fires below the floor and quotes the SAME number it was given', () => {
     const header = buildHonestyHeader(20); // 20% < 35%
     expect(header).not.toBeNull();
@@ -97,7 +97,7 @@ describe('buildHonestyHeader (the honesty floor logic, default 0.35)', () => {
   });
 });
 
-describe('context_search route (the honesty floor + the display-consistency fix)', () => {
+describe('context_search route (an earlier change + an earlier change)', () => {
   test('ABOVE floor: no header, and displayed number == sort order (relevance, not raw similarity)', async () => {
     // Sorted DESC by the sort key (relevance). similarity is the raw vector value
     // and intentionally DISAGREES with the order (boost/blend can move it) — the
@@ -157,7 +157,7 @@ describe('context_search route (the honesty floor + the display-consistency fix)
   });
 });
 
-describe('smart_search route (the honesty floor; already display-consistent)', () => {
+describe('smart_search route (an earlier change floor; already display-consistent)', () => {
   test('BELOW floor: honest header prepended using best relevanceScore', async () => {
     fakeSmartSearchDetailed.mockResolvedValue({ degradedSources: [], results: [
       { type: 'context', id: 's1', title: 'A', summary: 'a', relevanceScore: 0.20, metadata: {}, source: 'semantic_search' },

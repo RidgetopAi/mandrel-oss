@@ -13,8 +13,7 @@
  * the DCR cap middleware's fail-CLOSED catch turned into an HTTP 503 and a false RED on
  * an innocent business assertion.
  *
- * The fix bounds the footprint from CI via DATABASE_POOL_* (scripts/lib/gate-env.sh
- * GATE_ENV_STAGE1_PINS). Measured peak with the pins applied: 21.
+ * The fix bounds the footprint from CI via DATABASE_POOL_* pins. Measured peak with the pins applied: 21.
  *
  * WHAT THIS TEST GUARDS
  * ---------------------
@@ -25,7 +24,7 @@
  * through — so re-hardcoding the footprint is a RED, not a silent regression back to 80
  * slots and an unexplainable gate.
  *
- * It also pins the DEFAULTS, because the defaults are what PROD runs: the connection-exhaustion incident change
+ * It also pins the DEFAULTS, because the defaults are what PROD runs: the change
  * must not alter production pool behaviour, only make it boundable.
  */
 import { describe, it, expect, afterEach, vi } from 'vitest';

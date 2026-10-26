@@ -1,5 +1,5 @@
 /**
- * PROJECT BRIEFING — WS2 "living summary".
+ * PROJECT BRIEFING — WS2 "living summary" (plan).
  *
  * Contract tests ADVERSARIAL TO THE RENDERER (the spec's list, verbatim):
  *   - full handoff, untruncated;
@@ -364,7 +364,7 @@ const CFG = (maxChars: number, deadEndReservedChars = 4000): BriefingConfig => (
   protectionRankBranchMember: 4,
   protectionRankAlwaysSurface: 3,
   protectionRankConvention: 3,
-  // the briefing-budget decision's measurement knob, restated at its SHIPPED default (the floor) like the ranks
+  // an earlier change's measurement knob, restated at its SHIPPED default (the floor) like the ranks
   // above it: a decision gets no band of its own until a measurement says it should.
   protectionRankDecision: 0,
   protectionRankStalePriority: 2,

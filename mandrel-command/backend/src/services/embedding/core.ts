@@ -10,7 +10,7 @@ import type { EmbeddingScope } from './types';
  * Resolve project ID from scope (by ID or name)
  */
 export async function resolveProjectId(scope: EmbeddingScope): Promise<string | undefined> {
-  // Name resolution DELETED (the reviewer D1). This used to fall back to
+  // Name resolution DELETED (Reviewer D1). This used to fall back to
   // `SELECT id FROM projects WHERE LOWER(name) = LOWER($1)` when the scope carried a
   // projectName — and the only thing that ever set projectName was the unauthorized
   // legacy `project` header, so this query was the step that turned a guessable NAME into

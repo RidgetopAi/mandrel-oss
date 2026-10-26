@@ -2,7 +2,7 @@
  * seed-first-oauth-user.ts — provision a tenant's FIRST better-auth login user
  * server-side, so a freshly OAuth-enabled tenant has a credential to sign in with
  * BEFORE the customer connects (the auditor spec
- * an earlier note).
+ * an earlier context).
  *
  * WHY THIS EXISTS
  *   With open sign-up CLOSED by default (betterAuthConfig `allowSignUp=false` →
@@ -31,8 +31,15 @@
  *   - `rotate` is the ONLY path that overwrites an existing working credential.
  *   The password is NEVER logged.
  *
- * The exported `seedFirstOAuthUser(auth, {...})` is the tested unit; `main()` is the CLI the
- * host wrapper (a provisioning wrapper) invokes inside the tenant container. CLI
+ * ONE LOGIN: after seeding, `main()` also gives the login its Command dashboard
+ * (services/dashboardOwner.ts — link an unlinked row with the same email, else create an owner
+ * row). Opt out per exec with MANDREL_OAUTH_SEED_DASHBOARD_OWNER=false; name an existing row with
+ * MANDREL_OAUTH_SEED_DASHBOARD_LINK_USERNAME, or by row id with
+ * MANDREL_OAUTH_SEED_DASHBOARD_LINK_ADMIN_ID (REQUIRED when more than one admin row exists). A refused link (unverified login, ambiguous or
+ * non-admin email match) prints DASHBOARD_OWNER=refused and exits 1.
+ *
+ * The exported `seedFirstOAuthUser(auth, {...})` is the tested unit; `main()` is the CLI an
+ * operator runs inside the container (`docker exec -e`). CLI
  * inputs come from the ENVIRONMENT at exec time (NEVER argv — argv leaks the password in `ps`).
  */
 
@@ -41,6 +48,7 @@ import { createAuth, type AuthInstance } from '../server/auth.js';
 import { BETTER_AUTH_CONFIG } from '../config/betterAuthConfig.js';
 import { logger } from '../utils/logger.js';
 import { guardPool } from '../utils/datastoreError.js';
+import { linkDashboardOwner, DashboardLinkRefused } from '../services/dashboardOwner.js';
 
 /** Result actions — distinct so the shell wrapper can grep the outcome from the log line. */
 export type SeedAction = 'created' | 'exists' | 'repaired' | 'rotated';
@@ -141,6 +149,18 @@ async function main(): Promise<void> {
   const rotate = ['1', 'true', 'yes', 'on'].includes(
     (process.env.MANDREL_OAUTH_SEED_ROTATE ?? '').trim().toLowerCase(), // env-read: MANDREL_OAUTH_SEED_ROTATE
   );
+  // ONE LOGIN: the seeded login user is this instance's OWNER, so by default
+  // they also get the Command dashboard (Settings → API tokens lives there). An operator
+  // seeding a login that must NOT get the dashboard sets this to false.
+  const dashboardOwner = !['0', 'false', 'no', 'off'].includes(
+    (process.env.MANDREL_OAUTH_SEED_DASHBOARD_OWNER ?? '').trim().toLowerCase(), // env-read: MANDREL_OAUTH_SEED_DASHBOARD_OWNER
+  );
+  // The operator's EXPLICIT choice of an existing dashboard row to link (its username). Needed
+  // when the email matches no admin, several rows, or a non-admin row (services/dashboardOwner.ts).
+  const linkUsername = (process.env.MANDREL_OAUTH_SEED_DASHBOARD_LINK_USERNAME ?? '').trim() || undefined; // env-read: MANDREL_OAUTH_SEED_DASHBOARD_LINK_USERNAME
+  // The operator's EXPLICIT choice of the existing dashboard row by admin_users.id. REQUIRED
+  // when more than one admin row exists (an email match is not trusted then).
+  const linkAdminId = (process.env.MANDREL_OAUTH_SEED_DASHBOARD_LINK_ADMIN_ID ?? '').trim() || undefined; // env-read: MANDREL_OAUTH_SEED_DASHBOARD_LINK_ADMIN_ID
 
   if (!email) {
     logger.error('SEED_RESULT=error MANDREL_OAUTH_SEED_EMAIL is required (unset/empty)');
@@ -185,6 +205,23 @@ async function main(): Promise<void> {
       case 'rotated':
         logger.info(`SEED_RESULT=rotated user=${result.userId} email=${result.email} (existing credential overwritten)`);
         break;
+    }
+    // ONE LOGIN: link (or create) the dashboard row for this login user. On a
+    // re-run this is 'exists' and changes nothing (an operator's demotion/deactivation stands).
+    if (dashboardOwner) {
+      try {
+        const owner = await linkDashboardOwner(pool, { authUserId: result.userId, email: result.email, linkUsername, linkAdminId });
+        logger.info(`DASHBOARD_OWNER=${owner.action} admin_user=${owner.adminUserId} username=${owner.username}`);
+      } catch (err) {
+        if (err instanceof DashboardLinkRefused) {
+          // A refusal is a FAILED provisioning step, not a skipped one: nonzero exit.
+          logger.error(`DASHBOARD_OWNER=refused reason=${err.reason} ${err.message}`);
+          process.exit(1);
+        }
+        throw err;
+      }
+    } else {
+      logger.info('DASHBOARD_OWNER=skipped (MANDREL_OAUTH_SEED_DASHBOARD_OWNER=false)');
     }
     process.exit(0);
   } catch (err) {

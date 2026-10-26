@@ -1,7 +1,7 @@
 /**
  * Sessions grouping — the heading must never contradict the pills.
  *
- * Operator, 2026-08-09, with a screenshot: a section headed "LIVE NOW 4" above four cards
+ * The operator, 2026-08-09, with a screenshot: a section headed "LIVE NOW 4" above four cards
  * each pilled "dormant". The page bucketed on `st === 'ended' ? ended : live`, so the
  * HEADING asked "is this session not ended?" while every PILL asked "was there recorded
  * activity in the last SESSIONS_CONFIG.liveWithinMs?". Two questions, one screen.
@@ -212,7 +212,7 @@ describe('Sessions grouping — the heading agrees with the pills', () => {
 
   it('never renders the word "dormant" inside the Live now section', async () => {
     await mount();
-    // The pill is the only place a card says `dormant`. This is the screenshot Operator sent,
+    // The pill is the only place a card says `dormant`. This is the screenshot the operator sent,
     // asserted directly.
     expect(sectionText('Live now')).not.toContain('dormant');
     expect(sectionText('Dormant')).toContain('dormant');

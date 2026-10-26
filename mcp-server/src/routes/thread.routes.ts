@@ -27,8 +27,8 @@ import { branchRoutes } from './branch.routes.js';
 /** Prepend the deprecation warning to a delegated response's text channel. */
 function withDeprecationWarning(response: McpResponse, oldTool: string, newForm: string): McpResponse {
   const warning =
-    `⚠️  DEPRECATED: ${oldTool} is retired — use ${newForm} (positional membership). ` +
-    `Delegated for you this time.`;
+    `⚠️  DEPRECATED: ${oldTool} is retired — use ${newForm} (positional membership, ` +
+    `an earlier decision). Delegated for you this time.`;
   const content = [{ type: 'text' as const, text: warning }, ...(response.content ?? [])];
   return {
     ...response,

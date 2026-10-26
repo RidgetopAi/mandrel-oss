@@ -3,8 +3,7 @@
 # -----------------------------------------------------------------------------
 # Defined ONCE, here, as the single implementation. scripts/test/pipefail-boolean-ban.test.sh
 # and every one of its mutation probes call THIS file — never a re-inlined regex
-# that could drift away from it (the same rule test-wiring-coverage.test.sh
-# follows for invokes_test()).
+# that could drift away from it.
 #
 # WHAT IT LOOKS FOR
 #   A pipeline whose EXIT STATUS is consumed as a BOOLEAN, where some stage of the
@@ -25,7 +24,7 @@
 #                       inside it is a value, so its status is discarded.
 #   HEREDOC bodies are NOT skipped. They read as data to THIS shell, so skipping
 #   them is defensible — and it was wrong here. MEASURED on this tree: the only two
-#   heredoc-body hits at an earlier revision were inside scripts/test/lib/fixture-harness.sh's
+#   heredoc-body hits at an earlier change were inside scripts/test/lib/fixture-harness.sh's
 #   `<<'"'"'SHIM'"'"'` block, which is WRITTEN OUT to $FH_DIR/bin/.fh-shim and then EXECUTED.
 #   A generated script is code; the fact that it is quoted at rest does not make its
 #   pipefail boolean safe. Scanning heredoc bodies costs a small amount of
@@ -34,7 +33,7 @@
 #   Comments are stripped with WORD-BOUNDARY correctness: bash starts a comment at
 #   the start of any WORD, and metacharacters delimit words, so `:;#`, `x &#` and
 #   `y |#` are all comments. That exact hole produced a false GREEN in this repo
-#   once already (test-wiring-coverage.test.sh, commit ebef00d). Unlike the sed
+#   once already (commit ebeef00). Unlike the sed
 #   strip used there, this one is also QUOTE-AWARE, so `grep -q '# x'` survives
 #   intact instead of being truncated into a miss.
 #
@@ -230,8 +229,8 @@ function pop(   dd) {
   # MEASURED: `if [[ $m == c ]]; then` on one line carried a literal " then" into
   # the next line's segbuf, so seg_is_bool() no longer saw the leading `if` and
   # THE FIRST PIPELINE-BOOLEAN INSIDE ANY then/do BLOCK WAS INVISIBLE — the most
-  # common shape in the tree. Bisected on a per-instance schema audit: dark from
-  # the `; then` at :117, hiding the banned pipeline at :118. Do not add them back.
+  # common shape in the tree: dark from a `; then`, hiding the banned pipeline on the
+  # next line. Do not add them back.
   if (!sq && !dq && L !~ /(\\|\||&&|\|\|)[[:space:]]*$/) {
     eval_seg(d); reset_seg(d, 0)
   }
@@ -243,7 +242,7 @@ function pop(   dd) {
 # This parser carries state across lines, and three separate bugs have proved it
 # can LOSE that state and go silently dark over the rest of a file (a herestring
 # read as a heredoc, `$(( a << b ))` read as a heredoc, a heredoc body with an
-# unbalanced `$(`). Measured by the reviewer at the earlier pipefail scan: 25 of 252 files ended the
+# unbalanced `$(`). Measured by Reviewer at an earlier change: 25 of 252 files ended the
 # scan with an unclosed nesting level, up to d=34, and the ban reported GREEN.
 #
 # An unbalanced end-of-scan means the parse is not trustworthy for that file. Say

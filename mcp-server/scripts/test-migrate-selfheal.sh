@@ -3,7 +3,7 @@
 # test-migrate-selfheal.sh — automated proof harness for migrate.ts self-heal
 # =============================================================================
 # Proves the non-fresh self-heal in scripts/migrate.ts on DISPOSABLE postgres
-# databases (created + dropped here; never touches mandrel/mandrel-* or real data).
+# databases (created + dropped here; never touches the mandrel databases or real data).
 #
 # Scenarios:
 #   1. Self-heal fires  — pre-baseline existing DB (old-lineage _aidis_migrations
@@ -19,7 +19,7 @@
 # =============================================================================
 set -uo pipefail
 
-MCP_DIR="mcp-server"
+MCP_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"   # script-relative: runs from any cwd
 MIG_DIR="$MCP_DIR/database/migrations"
 BASELINE_SQL="$MIG_DIR/000_baseline_schema.sql"
 EXT_SQL="$MCP_DIR/database/init/00-extensions.sql"
@@ -62,8 +62,8 @@ trap cleanup EXIT
 
 # Create the disposable login role up front.
 $PGSUPER psql -q -c "DROP ROLE IF EXISTS \"$DBUSER\";" >/dev/null 2>&1
-# The throwaway password rides psql's STDIN, not its argv (class secret-on-child-argv,
-# an earlier task): argv is world-readable in /proc for the life of the child. A stdin
+# The throwaway password rides psql's STDIN, not its argv (class secret-on-child-argv):
+# argv is world-readable in /proc for the life of the child. A stdin
 # psql exits 0 on a SQL error unless told otherwise, hence -v ON_ERROR_STOP=1.
 $PGSUPER psql -q -v ON_ERROR_STOP=1 <<<"CREATE ROLE \"$DBUSER\" LOGIN PASSWORD '$DBPASS';" >/dev/null
 

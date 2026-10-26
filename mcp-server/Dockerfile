@@ -25,9 +25,10 @@
 # The retry helper is COPY'd into each stage that does a network install.
 # -----------------------------------------------------------------------------
 
-# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to whatever image the
-# build host has CACHED, so a build without --pull can stay on an older patch past a Node
-# security release (22.23.4). An exact tag forces the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
+# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to
+# whatever image the build host has CACHED — the fleet build does not --pull, so the
+# fleet stayed on 22.23.3 / 22.22.3 (sweep) past the 22.23.4 security release. An exact tag forces
+# the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
 # Stage 1: Dependencies stage
 # Use Debian-slim (glibc) NOT alpine: the embedding stack (@xenova/transformers ->
 # onnxruntime-node) ships a prebuilt glibc native binary that does not run reliably
@@ -195,8 +196,8 @@ ENV NODE_ENV=production \
     AIDIS_SKIP_DATABASE=false \
     NODE_OPTIONS="--max-old-space-size=256" \
     NPM_CONFIG_LOGLEVEL=warn \
-    # Defense-in-depth for the singleton-lock-survives-restart outage (2026-06-27,
-    # an earlier decision): keep the lock on tmpfs (/dev/shm), NOT on the container's
+    # Defense-in-depth for the singleton-lock-survives-restart outage (2026-06-27):
+    # keep the lock on tmpfs (/dev/shm), NOT on the container's
     # ephemeral writable layer (default cwd /app/aidis.pid). /dev/shm is a fresh tmpfs
     # on every container start, so a `docker restart`/host reboot ALWAYS starts
     # lock-free — no stale pid file to reclaim in the first place. The start-time

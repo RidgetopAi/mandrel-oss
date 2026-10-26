@@ -12,7 +12,7 @@
   // MEASURED, not assumed: appending `export const l4FeProbe: number = "nope";`
   // to src/config/tagLimits.drift.test.ts left `tsc --noEmit` at rc=0.
   //
-  // This is the same hole, and the same fix, that an earlier task closed for
+  // This is the same hole, and the same fix, that earlier task closed for
   // mcp-server and an earlier task closed for mandrel-command/backend. The
   // difference is that here the BUILD config's own `exclude` was the hole, so
   // the fix is a DELETION of those three globs rather than a second config.

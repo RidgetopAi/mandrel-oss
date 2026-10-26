@@ -255,7 +255,7 @@ describe('AMBIGUITY at live scale: dropped, counted, never guessed', () => {
 });
 
 describe('BODY COMPOSITION: the TypeScript equals the SQL the fixture was pinned with', () => {
-  test('context / task / decision bodies match the pin_bodies.sh expressions, including NULLs', async () => {
+  test('context / task / decision bodies match the expressions the fixture was pinned with, including NULLs', async () => {
     // NULL and empty-string segments are the cases where coalesce() and concat_ws() differ,
     // so the fixtures are chosen to contain both.
     const t = await db.query(

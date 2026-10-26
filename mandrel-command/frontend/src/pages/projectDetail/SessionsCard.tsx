@@ -3,7 +3,7 @@
  * context-based sessions carrying a context count + first/last activity). Owns its own
  * loading / empty / error state.
  *
- * DATA GAP (the data-gap policy): `api.projects.sessions` does NOT serve per-session token
+ * DATA GAP (policy): `api.projects.sessions` does NOT serve per-session token
  * counts, actor identity, or a live/ended flag, so the mock's "N tok" + live pulse +
  * actor avatars are NOT rendered — each row shows the session's REAL context count and
  * relative activity time only. The substitution is disclosed via the header Tooltip

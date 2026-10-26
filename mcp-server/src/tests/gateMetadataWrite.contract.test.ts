@@ -103,7 +103,7 @@ const GOOD_BLOCK = {
   [GATE_CANONICAL_RUN_KEY]: true,
   [GATE_CANONICAL_EXIT_CODE_KEY]: 0,
   [GATE_CANONICAL_REF_KEY]: '1594f00d',
-  name: 'scripts/ci-clean-gate.sh',
+  name: 'the clean gate',
   reason: 'free-form sibling keys are deliberately still free-form',
 };
 
@@ -131,7 +131,7 @@ describe('§1 metadata.gate — enforced on every metadata-accepting op', () => 
 
   test('a free-prose STRING gate block is REJECTED — on every one of them', () => {
     // The dominant malformed shape on prod: 14 contexts + 5/5 tasks store a sentence here.
-    const prose = 'CLEAN GATE GREEN on 648f00d, exit 0, zero FAIL lines, all twelve stages';
+    const prose = 'CLEAN GATE GREEN on 648bf00, exit 0, zero FAIL lines, all twelve stages';
     for (const opId of METADATA_OPS) {
       const r = parseMetadata(opId, gate(prose));
       expect(r.success, `${opId} accepted a free-prose gate block`).toBe(false);
@@ -144,7 +144,7 @@ describe('§1 metadata.gate — enforced on every metadata-accepting op', () => 
     for (const opId of METADATA_OPS) {
       const r = parseMetadata(
         opId,
-        gate({ [GATE_CANONICAL_EXIT_CODE_KEY]: "NOT RUN - outstanding, Coordinator's" }),
+        gate({ [GATE_CANONICAL_EXIT_CODE_KEY]: "NOT RUN - outstanding, the coordinator's" }),
       );
       expect(r.success, `${opId} accepted prose in ${GATE_CANONICAL_EXIT_CODE_KEY}`).toBe(false);
       expect(issueText(r)).toContain('must be an INTEGER');

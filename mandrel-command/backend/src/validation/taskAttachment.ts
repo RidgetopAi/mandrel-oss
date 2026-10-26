@@ -73,7 +73,7 @@ export function parseBulkAttachmentIds(
  * through here (the service calls it, so a direct service caller is covered too):
  *  - control characters (NUL, CR, LF, TAB, DEL, ...) are STRIPPED. A stored CR/LF made
  *    every later `GET /attachments/:id` for that row throw inside `res.set(...)` — a
- *    permanently unreadable attachment from one bad upload name (the reviewer #4c).
+ *    permanently unreadable attachment from one bad upload name (Reviewer #4c).
  *  - bounded to MAX_ATTACHMENT_FILENAME_CHARS code points, keeping a short extension,
  *    instead of letting pg's varchar(255) reject the INSERT as a 500 (#4b).
  *  - a name that sanitizes to nothing becomes DEFAULT_ATTACHMENT_FILENAME.

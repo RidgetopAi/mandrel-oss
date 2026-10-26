@@ -1,6 +1,6 @@
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 -- 096 — `belief_adjudications.minted_edge_id` gets the FOREIGN KEY it always needed.
---       (follow-on from the direction retraction.)
+--       (follow-on from the retraction.)
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 --
 -- ═══ WHAT WAS WRONG ═══
@@ -43,7 +43,7 @@
 --     would erase the evidence of why the edge existed. Exactly backwards.
 --   * RESTRICT / NO ACTION would make `unlinkEdge` FAIL on any belief-minted edge, turning
 --     a data-integrity fix into a product outage on the retraction path.
---   * SET NULL reproduces, mechanically, what the direction retraction did BY HAND in SQL
+--   * SET NULL reproduces, mechanically, what the retraction did BY HAND in SQL
 --     (it set all 58 to NULL explicitly, which is why none of the 30 orphans were its).
 --
 -- ═══ ORDERING — THE NULL-OUT MUST COME FIRST, IN THIS SAME FILE ═══
@@ -81,7 +81,7 @@
 -- CN2, migration-bearing, ROLL-FORWARD (the rollback file removes the constraint and index
 -- but cannot un-null a pointer, and should not: a nulled pointer named a row that was
 -- already gone). Ships through the normal migration path — mcp-server/docker-entrypoint.sh
--- owns migrations, NOT the deploy script.
+-- owns migrations.
 -- ORDER-INDEPENDENT with respect to application code: no code change accompanies this
 -- migration. Old code keeps writing the pointer the same way; it simply can no longer
 -- write one that does not resolve, and no longer has to remember to clear it.

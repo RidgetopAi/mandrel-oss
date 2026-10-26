@@ -90,6 +90,14 @@ export class BackgroundServices {
         logger.warn('   NULL-embedding rows will not self-heal automatically');
       }
 
+      // Expired better-auth session sweep: self-gates on OAuth enabled + config.
+      try {
+        const { AuthSessionSweeper } = await import('./authSessionSweeper.js');
+        AuthSessionSweeper.start();
+      } catch (error) {
+        logger.warn('⚠️  Failed to initialize auth session sweep', { metadata: { error } });
+      }
+
       // Initialize the OAuth DCR client TTL-sweep: a scheduled, single-flight
       // sweep that deletes abandoned (never-consented, never-used) self-registered OAuth clients
       // older than the configured TTL. Self-gates: no-op unless OAuth is enabled AND the sweep is
@@ -209,6 +217,13 @@ export class BackgroundServices {
         logger.info('✅ Edge-provenance alarm stopped gracefully');
       } catch (error) {
         logger.warn('⚠️  Failed to stop edge-provenance alarm', { metadata: { error } });
+      }
+
+      try {
+        const { AuthSessionSweeper } = await import('./authSessionSweeper.js');
+        AuthSessionSweeper.stop();
+      } catch (error) {
+        logger.warn('⚠️  Failed to stop auth session sweep', { metadata: { error } });
       }
 
       // Stop OAuth DCR TTL-sweep

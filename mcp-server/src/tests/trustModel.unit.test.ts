@@ -13,7 +13,7 @@
  *   - ADVERSARIAL: only-too_early downstream → unproven (not failed); contradicted → abstain.
  *
  * The §8.1 default config is reproduced here so the math is asserted against the
- * Operator-approved knobs explicitly; a couple of cases inject a custom config to prove
+ * The operator-approved knobs explicitly; a couple of cases inject a custom config to prove
  * tunability (no-hardcoded-vars).
  */
 
@@ -31,7 +31,7 @@ import {
 } from '../services/trustModel.js';
 import type { TrustConfig } from '../config/trustConfig.js';
 
-/** The §8.1 Operator-approved defaults, fixed here so the math is asserted against them. */
+/** The §8.1 the operator-approved defaults, fixed here so the math is asserted against them. */
 const CFG: TrustConfig = {
   weightOutcome: 0.6,
   weightFreshness: 0.4,

@@ -1,5 +1,5 @@
 /**
- * an earlier task (Reviewer REJECT of 573f00d) — the LAST HOP.
+ * an earlier task (Reviewer REJECT of 5730f00) — the LAST HOP.
  *
  * `request.apiErrorMessage.test.ts` proves the helper turns the real rejection into the
  * server's sentence. That is necessary and NOT sufficient: it would stay green if

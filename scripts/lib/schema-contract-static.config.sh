@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 #
 # schema-contract-static.config.sh — single source of truth for STAGE 0c's
-# static-mode trigger (refile (c) of an earlier task).
+# static-mode trigger (refile (c) of an earlier change).
 #
 # WHY THIS EXISTS
 #   STAGE 0c (the CI gate) needs the ONE path prefix that, when touched by a
@@ -9,7 +9,7 @@
 #   (scripts/schema-reference.sql.txt): the migrations directory
 #   mcp-server/scripts/migrate.ts actually walks. Named config, not a literal
 #   inlined at the call site (configs-not-hardcoded) — and not duplicated between
-#   the CI gate and its test suite (scripts/test/gate-static-drift-stages.test.sh),
+#   the CI gate and its test suite,
 #   which would drift the same way schema-fingerprint.sql and this reference
 #   already warn about drifting (scripts/schema-contract.sh's own header).
 #

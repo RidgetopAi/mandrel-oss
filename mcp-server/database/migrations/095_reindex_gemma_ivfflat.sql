@@ -1,5 +1,5 @@
 -- ═════════════════════════════════════════════════════════════════════════════════════════
--- 095 — The gemma ivfflat indexes are rebuilt over data that EXISTS.
+-- 095 — The gemma ivfflat indexes are rebuilt over data that EXISTS. (an earlier task.)
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 --
 -- ═══ THE MECHANISM ═══
@@ -47,8 +47,8 @@
 --
 -- (The recall knob that IS worth moving is ivfflat.probes, not lists — at lists=100 the
 -- knee is probes=20: r@50 0.9876 for 531ms/100q, still an Index Scan. That is a RUNTIME
--- config change on the two write-path ANN call sites, gated to the operator under an earlier task
--- , and deliberately NOT made here.)
+-- config change on the two write-path ANN call sites, gated to the operator under an earlier task,
+-- and deliberately NOT made here.)
 --
 -- ═══ WHAT THIS MIGRATION DOES ═══
 -- REINDEX both gemma indexes, which re-runs k-means over the rows now present. Idempotent:

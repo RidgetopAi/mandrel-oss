@@ -1,6 +1,6 @@
 -- Migration 085: EDGE PROVENANCE, FAIL-CLOSED — links.mint_via (NOT NULL) + a GENERATED
 -- provenance_class, replacing the created_by CASE as the single classifier.
--- (STRONG BONES SK4.)
+-- (STRONG BONES SK4, an earlier spine.)
 --
 -- ── WHY ──────────────────────────────────────────────────────────────────────────────
 -- "Which path minted this edge?" was recorded in `links.metadata` under FOUR different

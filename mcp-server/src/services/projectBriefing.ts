@@ -1,5 +1,6 @@
 /**
- * PROJECT BRIEFING — the "living summary" renderer (WS2,  * spec/plan an earlier note).
+ * PROJECT BRIEFING — the "living summary" renderer (WS2, 
+ * spec/plan an earlier context).
  *
  * WHAT THIS IS: a DETERMINISTIC server-side renderer (no model anywhere in the path)
  * that assembles a NOTES.md-shaped markdown briefing of a project's CURRENT STATE:
@@ -32,12 +33,12 @@
  * only trace was a GLOBAL footer that never said WHICH section it emptied. The served count
  * was printed in the position a reader reads as the population, so the renderer's silence
  * manufactured "there is no open work".
- * RULING 6 of the display-honesty rulings is the invariant: THE DISPLAY MAY ONLY ASSERT WHAT A RECORD CARRIES
+ * RULING 6 of an earlier change is the invariant: THE DISPLAY MAY ONLY ASSERT WHAT A RECORD CARRIES
  * IN A FIELD. So the population is now a FIELD — every section carries a SectionCensus, the
  * heading prints `(served of population)`, and `none` may be emitted ONLY when the census
  * says the population is genuinely zero. The census is a REQUIRED member of BriefingData
  * (never optional, never defaulted): delete it and the GREEN path stops compiling, which is
- * the property the display-honesty rulings RULING 4 says to select for in a guard.
+ * the property RULING 4 says to select for in a guard.
  *
  * TWO INDEPENDENT NARROWINGS, NEVER CONFLATED. (1) the per-query `LIMIT sectionMaxRecords`
  * at fetch time — when it binds, the population is a FLOOR and renders `N+` with a note
@@ -358,7 +359,7 @@ export interface BriefingBranchMember {
  *
  * NO `spineType` AND NO SPINE TITLE: the section labels the spine by id, because neither is
  * needed to select and neither is carried by the membership read. Rendering a kind or a
- * headline here would mean inferring one — the exact move the display-honesty rulings RULING 6 forbids.
+ * headline here would mean inferring one — the exact move RULING 6 forbids.
  */
 export interface BriefingBranch {
   spineId: string;
@@ -492,7 +493,7 @@ export interface BriefingConfig {
   protectionRankConvention: number;
   /**
    * A non-superseded decision's band. SHIPPED DEFAULT IS THE FLOOR — see briefingConfig.ts:
-   * this is the briefing-budget decision measurement knob, not a ruling, and turning it up is the experiment.
+   * this is the measurement knob, not a ruling, and turning it up is the experiment.
    */
   protectionRankDecision: number;
   protectionRankStalePriority: number;
@@ -603,7 +604,7 @@ export function applySelectionFlag(config: BriefingConfig): BriefingConfig {
     // Same move, same reason: a decision band reorders which records survive the
     // cap, so it is collapsed to the floor with the master switch off. Its SHIPPED default is
     // already the floor, so today this line changes nothing — it is here so that an operator
-    // running the briefing-budget decision measurement cannot obtain a reordered document from a flag-off
+    // running the measurement cannot obtain a reordered document from a flag-off
     // deployment, which is the hole the comment above says to close or explain.
     protectionRankDecision: BRIEFING_PROTECTION_RANK_NONE,
   };
@@ -827,7 +828,7 @@ export async function gatherBriefingData(
   // 1c. THE CARRIED FIELDS (P5.4) — MODE / PATH / SPINE.
   //
   //     These three lines used to exist ONLY in our shell, recovered by a regex over the
-  //     handoff's prose (riverbend/runtime/lib/handoff-fields.sh). Measured against a
+  //     handoff's prose. Measured against a
   //     FOREIGN project on 2026-08-23 that regex found nothing, because no customer writes
   //     `MODE:` in prose — so the product's most load-bearing section rendered empty for
   //     everyone but us. The FIELD is the fix; the prose read is kept as a FALLBACK because
@@ -890,7 +891,7 @@ export async function gatherBriefingData(
   ).rows[0].n;
 
   // 3. LIVE decisions only — the body is current guidance, so it excludes every
-  //    rejected-record signal the schema carries (the reviewer R1 T1):
+  //    rejected-record signal the schema carries (Reviewer R1 T1):
   //      - supersession: status='superseded' OR superseded_by named;
   //      - REFUTATION: outcome_status='failed' — the learning loop measured this
   //        decision as wrong; rendering its rationale as a live WHY is the exact
@@ -951,7 +952,7 @@ export async function gatherBriefingData(
     )
   ).rows;
 
-  // 5b. Dead-end DECISIONS — every rejected-record signal (the reviewer R1 T1):
+  // 5b. Dead-end DECISIONS — every rejected-record signal (Reviewer R1 T1):
   //     superseded lifecycle / named supersessor / REFUTED (outcome_status='failed') /
   //     deprecated. The deprecated-without-reason filter happens in TS below, at the
   //     reason computation, so the choice sits next to the chain it modifies.
@@ -1399,13 +1400,13 @@ function shapeLine(
  * THE STRUCTURED-FACT STAMPS, rendered inside the id bracket for all four record kinds.
  *
  * WHY THIS IS IN shapeLine AND NOT IN THE THREE CALLERS (guard class
- * `renderer-drops-structured-fact`): this function's own
+ * `renderer-drops-structured-fact`, sibling): this function's own
  * header calls itself "THE ONE SHAPE-LINE GRAMMAR — spelled here and nowhere else, for all
  * four record kinds". A fact added per-caller is a fact three callers can each forget, which
  * is how the class recurs. One place, every population, present and future.
  *
  * THE DEFECT MEASURED, 2026-09-03: the recall renderers were fixed to carry the review call
- * and the gate's exit code, and the OTHER half of the same boot package
+ * and the gate's exit code (2522f00d), and the OTHER half of the same boot package
  * — this briefing — rendered neither, for any record kind, because no Briefing* record type
  * carried `metadata` at all. The fact was not dropped at the render; it was never gathered.
  * Same reader outcome, one layer earlier: the fact is on the record and absent from the
@@ -1515,7 +1516,7 @@ const DEAD_END_LABEL: Record<DeadEndBasis, string> = {
 
 function renderDeadEnd(e: BriefingDeadEnd): string {
   // No "because": the reason is a cause only on the refuted/deprecated branches. On the
-  // other two it is the signal itself ("superseded by 1a2b3c4d"), and "because superseded
+  // other two it is the signal itself ("superseded by an earlier change"), and "because superseded
   // by X" after a "superseded:" label is both redundant and reads as a justification the
   // record does not carry.
   return `- ${DEAD_END_LABEL[e.basis]}: ${e.headline} — ${e.reason} [${e.kind}:${short(e.id)}]`;
@@ -1962,7 +1963,7 @@ export function renderBriefing(
   /**
    * A DECISION has neither a status nor a priority column the briefing reads, so the two
    * bands available to it are branch membership and its own kind band. `protectionRankDecision`
-   * SHIPS AT THE FLOOR, which makes this line behave exactly as it did before the briefing-budget decision — it is
+   * SHIPS AT THE FLOOR, which makes this line behave exactly as it did before an earlier change — it is
    * the measurement knob for "the package serves 0 of 162 decisions", not a ruling that they
    * should be protected. See briefingConfig.ts. (Conventions used to share this function; they
    * have their own band, below.)
@@ -2326,7 +2327,7 @@ export function renderBriefing(
 
     const dropped = droppedCount();
     if (overCap) {
-      // HONESTY (the reviewer R1 nit 1): every droppable is gone and the output is STILL
+      // HONESTY (Reviewer R1 nit 1): every droppable is gone and the output is STILL
       // over cap — the frame + exempt handoff alone exceed it. Say that, instead of
       // claiming the cap was honored.
       lines.push('');

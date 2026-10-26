@@ -70,6 +70,6 @@ Same encoder + same cosine → **Mandrel does not retrieve better.** Session-exp
 - `hypotheses-armA-wiki.jsonl` / `hypotheses-armB-mandrel.jsonl` — per-question: `recall_at_k`, `qa_correct`, `ranked_sessions`, `question_type`, `abstention`. **Reproduces every number above.**
 - `longmemeval-{armA-wiki,armB-mandrel}-recall.json` — recall aggregates.
 - `RUN_CONFIG.md` — pinned config (encoder, retrieval, answerer, judge, k, dataset).
-- Full per-question `retrieved_context` dumps (bulky) live in `reports/longmemeval-arm*-results.json` on the VPS; retained via backup (see eval-backup task).
+- Full per-question `retrieved_context` dumps (bulky) live in `riverbend-reports/longmemeval-arm*-results.json` on the VPS; retained via backup (see eval-backup task).
 - Live dashboard: `coordinator.example.com/longmemeval-ab.html`.
-- Mandrel: methodology result an earlier decision.
+- Mandrel: methodology an earlier decision, result an earlier decision.

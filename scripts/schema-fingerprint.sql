@@ -8,7 +8,7 @@
 --
 -- This is the single source of truth for BOTH:
 --   * the committed CI reference   (scripts/schema-reference.sql.txt)
---   * the per-instance fleet audit  (a per-instance schema audit)
+--   * a per-instance schema audit
 -- so a tenant on pg15 is compared apples-to-apples with a pg16-migrated reference.
 --
 -- Usage:  psql -d <db> -f scripts/schema-fingerprint.sql   (READ ONLY — pure SELECTs)

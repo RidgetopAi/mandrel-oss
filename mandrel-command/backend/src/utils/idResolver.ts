@@ -2,7 +2,7 @@
  * UNIFIED navigation id resolver (SPINE of branch:mandrel-navigation).
  *
  * THE PROBLEM THIS SOLVES: a human or agent has a bare id — a full UUID or the
- * 8-hex short-id form every Mandrel reference uses (e.g. `2b3c4d5e`) — and wants to
+ * 8-hex short-id form every Mandrel reference uses (e.g. `b822f00d`) — and wants to
  * navigate to that record WITHOUT already knowing what KIND of record it is. This
  * resolver takes the bare id, discovers its TYPE by looking in every navigable table
  * at once, and returns the canonical record ({type, id, title, url}) so a route can
@@ -17,7 +17,7 @@
  * the SQL, the human "we searched N kinds" message, the tests' population — is derived
  * from it. Adding a sixth type is one entry, not five edits.
  *
- * SINGLE SOURCE OF RESOLUTION LOGIC (fix the class, don't drift N
+ * SINGLE SOURCE OF RESOLUTION LOGIC (a past incident — fix the class, don't drift N
  * copies): the id-shape primitives (isFullUuid / normalizeShortId) are REUSED from
  * utils/searchPredicates.ts — the backend-side mirror of the Mandrel-core resolver
  * (mcp-server/src/utils/idResolver.ts). We do NOT re-implement them here.

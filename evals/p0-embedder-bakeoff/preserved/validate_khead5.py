@@ -3,7 +3,7 @@
 
 For each h68 project (already ingested by the full2 run, graphs intact):
   1. derive the khead5 chunk-level edge picks offline (top-5 earlier cross-session
-     candidates >= 0.5 per session-HEAD -- same rule the builder build would add
+     candidates >= 0.5 per session-HEAD -- same rule the Builder build would add
      to threadInference.ts),
   2. mint them through the PUBLIC `link` tool (idempotent; shipped edges remain),
   3. re-run the REAL pipeline: context_search top-8 -> recall_thread depth-2 per

@@ -1,7 +1,7 @@
 /**
  * AnalyticsKpis — the four KPI tiles atop the Tasks · Analytics view (mock's `.kpis`).
  * Each tile carries a provenance tag (live / built / not-yet-available) so a real number
- * is never confused with a gap (the operator's real-not-mocked rule + the data-gap policy):
+ * is never confused with a gap (the operator's real-not-mocked rule + data-gap policy):
  *
  *   1. Throughput (/wk + Sparkline) — LIVE from `/api/tasks/throughput` (range-scoped per-day
  *      series of completed/created); the /wk figure + Sparkline are derived from that real

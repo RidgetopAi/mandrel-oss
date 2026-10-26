@@ -61,7 +61,7 @@ export function getLastVisitedPath(): string | null {
  * DROP EVERY COPY. Call this when the identity behind the path changes — i.e. on logout,
  * from `resetAuthState`.
  *
- * ── THE DEFECT THIS CLOSES (the reviewer B1, reject round 1 of an earlier task) ───────────
+ * ── THE DEFECT THIS CLOSES (Reviewer B1, reject round 1 of an earlier task) ───────────
  * The tracked path is IDENTITY-BEARING and this module did not know it. `AuthContext.logout`
  * is `navigate('/login', { replace: true })` — a react-router navigation with NO page
  * reload — so the module stays loaded across a user switch. `resetAuthState` cleared the

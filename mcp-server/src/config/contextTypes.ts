@@ -8,7 +8,7 @@
  * and mandrel-command's ContextTypeSchema are the three copies that MUST agree, and each
  * names the others.
  *
- * `note` (the auditor recommendation): the GENERIC capture type. In the Phase-3 eval
+ * `note` (the auditor rec): the GENERIC capture type. In the Phase-3 eval
  * 5/7 stores guessed `type: "fact"` — an invalid value — because nothing generic existed.
  * The auditor's constraints, which this file encodes: NO server-side alias (a `fact` is REJECTED,
  * with a message that names `note`), and NO server-side default (a silent mislabel corrupts

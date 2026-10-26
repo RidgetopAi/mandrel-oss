@@ -74,7 +74,7 @@ async function main(): Promise<void> {
       `INSERT INTO tasks (project_id, title, status, blocked_on, due_at, tags) VALUES
         ($1, 'Approve the CN1 fleet roll',            'todo',        'human', '2030-01-15Z', ARRAY['needs-operator']),
         ($1, 'Sign off the pricing page copy',        'todo',        'human', '2030-12-01Z', ARRAY['needs:operator']),
-        ($1, 'Decide: keep or retire /srv/app',   'in_progress', 'human', NULL,          ARRAY['decision-needed']),
+        ($1, 'Decide: keep or retire /srv/mandrel',   'in_progress', 'human', NULL,          ARRAY['decision-needed']),
         ($1, 'Review the 2031-03-04 launch draft',    'todo',        'human', NULL,          ARRAY['decision-gate']),
         ($1, 'Re-embed the stale task vectors',       'todo',        'agent', NULL,          ARRAY['scope:product']),
         ($1, 'Waiting on the upstream CVE patch',     'blocked',     NULL,    NULL,          ARRAY['scope:infra'])`,

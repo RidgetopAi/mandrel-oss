@@ -3,7 +3,7 @@
  *
  * WHAT THIS PROVES: that `task_update`'s unconditional last-writer-wins write (WHERE id ONLY)
  * has been replaced, for OWNERSHIP, by a real compare-and-swap + lease that two workers cannot
- * both win. Externally reproduced bug (Amp-orb evaluation): worker 2 OBSERVED
+ * both win. Externally reproduced bug (Amp-orb evaluation, probe): worker 2 OBSERVED
  * worker 1's active assignment and its write still succeeded, silently evicting worker 1.
  *
  * ALL 11 SPEC §8 CASES ARE HERE, in order, each labelled with what it defends:
@@ -146,11 +146,11 @@ describe('0. wiring — claim/renew/release are registered, categorized, schema-
    * it was noticed on.
    */
   const CLAIM_ID_TOOLS: Array<[string, any]> = [
-    ['task_claim', { taskId: '59829999' }],
-    ['task_renew', { taskId: '59829999' }],
-    ['task_release', { taskId: '59829999' }],
-    ['task_update', { taskId: '59829999', status: 'completed' }],
-    ['cancel_task', { taskId: '59829999' }],
+    ['task_claim', { taskId: '59823126' }],
+    ['task_renew', { taskId: '59823126' }],
+    ['task_release', { taskId: '59823126' }],
+    ['task_update', { taskId: '59823126', status: 'completed' }],
+    ['cancel_task', { taskId: '59823126' }],
   ];
 
   test('every claimId param refuses a SHORT id at the edge, and accepts a full uuid', () => {
@@ -404,7 +404,7 @@ describe('3. two workers racing an EXPIRED claim — exactly one wins', () => {
 
 // ═══════════════════════════════════════════════════════════════════════════════════════
 // CASE 4 — D2 REGRESSION GUARD. `assigned_to`/`claim_actor` is a free-form varchar with no
-// FK. If exclusion were keyed on the ACTOR, two Builders (or two tick runs) sharing a name
+// FK. If exclusion were keyed on the ACTOR, two builders (or two tick runs) sharing a name
 // would both "hold" the claim. Exclusion is keyed on the SERVER-MINTED claim_id.
 // ═══════════════════════════════════════════════════════════════════════════════════════
 describe('4. D2 — a shared actor NAME does not share a claim (claim_id is the lock key)', () => {
@@ -1356,7 +1356,7 @@ describe('11. mutation probe — the guards are proven capable of failing', () =
 
 /**
  * ═══════════════════════════════════════════════════════════════════════════════════════════
- * ACTOR ATTRIBUTION CANNOT BE FORGED (closing an earlier note
+ * ACTOR ATTRIBUTION CANNOT BE FORGED (an earlier task / an earlier decision, closing an earlier context
  * — Reviewer B1, 2026-07-25)
  * ═══════════════════════════════════════════════════════════════════════════════════════════
  *
@@ -1370,7 +1370,7 @@ describe('11. mutation probe — the guards are proven capable of failing', () =
  * Driven through the PUBLIC tool path with a real RouteContext and asserted on the DB COLUMN,
  * not on a return value — the observable is the row that was actually written.
  */
-describe('task_claim — attribution actor cannot be forged', () => {
+describe('task_claim — attribution actor cannot be forged (a7e9f00d)', () => {
   const FLAG = ACTOR_IDENTITY_ENV.COMPOSITE_ENABLED;
   let savedFlag: string | undefined;
 

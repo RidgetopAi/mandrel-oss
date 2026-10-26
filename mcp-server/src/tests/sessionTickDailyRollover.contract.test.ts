@@ -1,5 +1,6 @@
 /**
- * Sessions Foundation Phase 4 — Break 3 (tick scatter) CORE CONTRACT ( * an earlier decision). Proves the automation-actor "one session per UTC day + deterministic
+ * Sessions Foundation Phase 4 — Break 3 (tick scatter) CORE CONTRACT.
+ * Proves the automation-actor "one session per UTC day + deterministic
  * rollover at the UTC day boundary" rule against a REAL Postgres (disposable CI DB).
  *
  * The rule is implemented in TWO lockstep places (both exercised here):

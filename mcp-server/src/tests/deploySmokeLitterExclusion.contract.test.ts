@@ -3,7 +3,7 @@
  *
  * WHAT THIS PROVES (drives REAL Postgres — the disposable migrated CI DB):
  *
- *  The fleet deploy smoke (fleet-deploy script) POSTs /api/v2/sessions/start
+ *  A deploy smoke check POSTs /api/v2/sessions/start
  *  to every instance on every deploy to prove the session write-path is alive.
  *  That used to leave an untitled, never-ended `sessions` row PER INSTANCE PER
  *  DEPLOY — litter that polluted the sessions list + session stats fleet-wide.

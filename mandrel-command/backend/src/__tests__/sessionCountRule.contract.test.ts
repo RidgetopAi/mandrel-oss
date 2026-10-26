@@ -41,7 +41,7 @@
  *   COPY 1 → edit migration 070, re-apply it, re-run → the view test fails 4 !== 7.
  *   COPY 3 → edit sessionCounts.contextCountSql → the raw-SQL AND list-endpoint tests fail.
  *   COPY 2 → covered by the mcp-server half (same drill on IDENTITY_SELECT).
- * All three runs were recorded in the an earlier task remediation report.
+ * All three runs were recorded in the earlier task remediation report.
  *
  * ── SECOND CONTRACT IN THIS FILE: THE ARCHIVED RULE, PER READ PATH ──────
  * The three-copies contract above is about the PROJECT rule. The block at the bottom of the
@@ -79,7 +79,7 @@ describeContract('session count rule: the three copies agree', () => {
   const sessionInA = uuidv4();
   // A unique actor so the list-endpoint assertions can select THIS session without a
   // project filter — filtering by project would switch the query to RULE 2 and stop
-  // testing RULE 1, which is the surface Operator reported the bug on.
+  // testing RULE 1, which is the surface the operator reported the bug on.
   const ACTOR = `count-rule-probe-${sessionInA.slice(0, 8)}`;
 
   // A SECOND session, in project A, whose contexts ALL live in project B. Under the old
@@ -647,7 +647,8 @@ describeContract('session count rule: the three copies agree', () => {
           contexts_created: d!.contexts_created,
           context_count: d!.context_count,
           // This path does not merely COUNT archived rows — it RETURNED them, so the card
-          // rendered soft-deleted contexts as the session's work. Closed by           // asserted here so a regression is a number, not a sentence.
+          // rendered soft-deleted contexts as the session's work. Closed by an earlier task;
+          // asserted here so a regression is a number, not a sentence.
           contexts_returned: d!.contexts.length,
           decisions_created: d!.decisions_created,
           tasks_created: d!.tasks_created,

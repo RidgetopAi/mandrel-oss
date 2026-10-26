@@ -68,7 +68,7 @@ jest.mock('../services/projectAccess', () => ({
  * caller's authorized project set, which is the entire fix for the unscoped-/list leak —
  * was discarded, and the only assertion about it was
  * `expect(listAccessibleProjectIds).toHaveBeenCalledWith('nobody')`: proof that the set
- * was COMPUTED, never that it was USED. Coordinator reproduced the consequence — deleting the
+ * was COMPUTED, never that it was USED. The coordinator reproduced the consequence — deleting the
  * third argument at the call site left all 38 cases GREEN while a zero-grant non-admin
  * got the every-project listing back. `allArgs` is captured now, and asserted.
  */
@@ -339,7 +339,7 @@ describe('/api/embedding/* — the two unauthorized project doors are closed (D1
   // ===========================================================================
   // F1 — the authorized set must be PASSED, not merely computed
   // ===========================================================================
-  // Coordinator reproduced the hole before this suite was fixed: deleting the third argument at
+  // The coordinator reproduced the hole before this suite was fixed: deleting the third argument at
   // routes/embedding.ts (keeping `void allowed;` so tsc stayed clean) left all 38 cases
   // GREEN while a zero-grant non-admin got the every-project listing back. These four
   // cases are the ones that now go red for that mutation.

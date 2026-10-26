@@ -3,7 +3,7 @@
  * EVERY ROUTE THAT RETURNS A RECORD RETURNS THE SERIALIZER'S RECORD.
  *
  * ═══ THE CLASS ═══
- * `dueAt`/`blockedOn` were stored, mapped and echoed on write — and unreadable,
+ * an earlier change: `dueAt`/`blockedOn` were stored, mapped and echoed on write — and unreadable,
  * because task_details' structuredContent was a hand-written field-by-field literal nobody
  * extended. The same literal existed on task_list, the create/update echoes and every
  * context and decision route: N copies of "what a <type> looks like on the wire", each free

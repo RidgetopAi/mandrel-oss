@@ -687,8 +687,7 @@ export class TaskService {
   }
 
   /**
-   * Create new task — DELEGATES to the mcp-server `task_create` tool (a past incident fix,
-   * an earlier task).
+   * Create new task — DELEGATES to the mcp-server `task_create` tool (a past incident fix).
    *
    * THE CLASS being fixed: the Mandrel monorepo had TWO independent task-WRITE paths. The
    * mcp-server MCP tools do the FULL job (mint typed graph edges from tags/dependencies +
@@ -740,7 +739,7 @@ export class TaskService {
 
     // mcp-write-scope: self-scoped — `toolArgs` is seeded above as `{ projectId: project_id,
     // title }`, and project_id is a REQUIRED field of the create DTO, so this write always
-    // names its project. It was already correct before this states why.
+    // names its project. It was already correct before an earlier task; this states why.
     const result = await McpService.callTool('task_create', toolArgs, actor);
 
     // TOOL ERROR / isError → callTool sets success:false (makeRequest rejects on
@@ -801,7 +800,8 @@ export class TaskService {
   }
 
   /**
-   * Update a task — DELEGATES to the mcp-server `task_update` tool (   * completing the class fix `createTask` started under an earlier task).
+   * Update a task — DELEGATES to the mcp-server `task_update` tool
+   * (completing the class fix `createTask` started under an earlier task).
    *
    * THE CLASS: this backend used to write `UPDATE tasks SET …` directly, so the Command
    * surface and the MCP surface were two independent implementations of the same write.
@@ -1132,7 +1132,8 @@ export class TaskService {
   static async getTaskLinks(taskId: string): Promise<TaskLink[]> {
     // Delegates to the ONE canonical typed-edge resolver (LinkService.getLinksForRecord).
     // The query keys only on the id, so a task id works unchanged; keeping this public
-    // method + its route means nothing upstream changes. See services/links.ts (    // one resolver, not three copies).
+    // method + its route means nothing upstream changes. See services/links.ts (
+    // one resolver, not three copies).
     return LinkService.getLinksForRecord(taskId);
   }
 
@@ -1249,7 +1250,7 @@ export class TaskService {
    * the window then starts at the earliest task date for the scope. Days with no activity
    * read 0 (real zeros, not gaps).
    *
-   * HONEST EMPTY (the data-gap policy): we return `[]` (→ the panel's "not yet available"
+   * HONEST EMPTY (policy): we return `[]` (→ the panel's "not yet available"
    * state) only when there is ZERO task ACTIVITY of either kind — no created AND no
    * completed — in the window. The chart plots BOTH a completed/day and a created/day
    * line, so a window with created-but-not-yet-completed tasks is real activity and lights
@@ -1410,7 +1411,7 @@ export class TaskService {
    * ── THIS IS A SUGGESTION SOURCE, NOT A WHITELIST ──────────────────────────────────
    * `tasks.assigned_to` is free-form varchar and STAYS free-form. Nothing in this path
    * validates or rejects an assignee. Its only job is to make the canonical spelling the
-   * path of least resistance at the write surface, so `builder` / `the builder` /
+   * path of least resistance at the write surface, so `builder` / `Builder` /
    * `builder (P3 Insight)` stop being three buckets for one actor.
    *
    * ── SECURITY ──────────────────────────────────────────────────────────────────────
@@ -1579,7 +1580,7 @@ export class TaskService {
     for (const update of updates) {
       const projectId = known.get(update.id);
       // One reason for "unknown" and "not yours": distinguishing them is an existence oracle
-      // for foreign ids, and contexts/move already collapse the two.
+      // for foreign ids (Reviewer), and contexts/move already collapse the two.
       if (projectId === undefined) {
         skipped.push({ id: update.id, reason: 'not found in the caller\'s project scope' });
         continue;
@@ -1678,7 +1679,7 @@ export class TaskService {
    */
   /**
    * Move tasks to another project — DELEGATES per task to the mcp-server
-   * `project_move_record` tool (Punch fix round 1, the reviewer finding 2 sibling).
+   * `project_move_record` tool (Punch fix round 1, Reviewer finding 2 sibling).
    *
    * THE CLASS (same as updateTask above): this used to be a raw `UPDATE tasks SET project_id`,
    * which moved the task row and NOTHING that carries a denormalized copy of its project_id —

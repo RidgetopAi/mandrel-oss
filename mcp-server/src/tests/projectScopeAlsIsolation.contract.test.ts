@@ -290,7 +290,7 @@ describe('PART 2 — concurrent calls in different scope states never cross', ()
   }, 120000);
 
   test(`${CONCURRENT_WRITES} concurrent bound writes each LAND in their own project`, async () => {
-    // Reporting is one half of this is the other — where the row goes.
+    // Reporting is one half of an earlier decision; this is the other — where the row goes.
     const jobs: Promise<any>[] = [];
     const marks: Array<[string, string]> = [];
     const built = { boundA: 0, boundB: 0 };

@@ -28,7 +28,7 @@
  * selector that nothing ever feeds — and that is what the rest of this file locks shut.
  *
  * ═══ ROUND 2: THE RULE IS "A NAMED BLOCKER", NOT "A `blocked_on`" ═══
- * The first cut of this rule required `blocked_on` specifically. Coordinator's fleet measurement
+ * The first cut of this rule required `blocked_on` specifically. The coordinator's fleet measurement
  * killed it, and the reason is now the most important thing this file
  * tests: the enum is `['human','agent','external']` and THERE IS NO VALUE MEANING "waiting on
  * another task". Requiring it would force an author whose honest answer is "task X must land

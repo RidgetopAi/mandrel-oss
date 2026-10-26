@@ -10,10 +10,10 @@
  *
  * IT IS STRICTLY READ-ONLY. It runs only SELECTs and mutates NOTHING — remediation of any
  * rows it flags is a SEPARATE, GATED follow-up (the write guard stops NEW corruption; old
- * rows are a data-cleanup decision for the coordinator/the operator, not this script's job).
+ * rows are a data-cleanup decision for Coordinator/Operator, not this script's job).
  *
  * USAGE (points at whatever DATABASE_* env is set — e.g. the disposable ci_* DB, or prod
- * on the production host):
+ * on the prod host box):
  *   npx tsx scripts/sweep-input-artifacts.ts            # human summary
  *   npx tsx scripts/sweep-input-artifacts.ts --json     # machine-readable
  *   npx tsx scripts/sweep-input-artifacts.ts --samples  # + up to 5 sample ids per field

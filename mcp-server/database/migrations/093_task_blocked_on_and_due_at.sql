@@ -6,7 +6,7 @@
 -- ═══ WHAT WAS WRONG ═══
 -- The briefing's most valuable section for a human operator — "what is waiting on ME" —
 -- had NO SERVER CONCEPT AT ALL. `grep -rn "blocked_on" mcp-server/src` over the product at
--- ea7f00d returned zero lines. Our own shell selected that section BY TAG, from a four-tag
+-- ea77f00 returned zero lines. Our own shell selected that section BY TAG, from a four-tag
 -- vocabulary we invented (`needs-operator`, `needs:operator`, `decision-needed`, `decision-gate`),
 -- and that vocabulary is itself defective: the first two are ONE CONCEPT SPELLED TWO WAYS,
 -- both live, so any consumer that picks one spelling sees a fraction of the truth.

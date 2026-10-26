@@ -7,7 +7,7 @@
  * back to the deterministic mock embedding and these reads/writes use exact ids, so
  * every DB read/write is real and the migration-046 archived_at column is exercised.
  *
- * WHAT THIS PROVES (the an earlier task contract — reversible soft-delete, no raw SQL):
+ * WHAT THIS PROVES (the earlier task contract — reversible soft-delete, no raw SQL):
  *
  *  G1 — *_delete sets archived_at AND the row then DISAPPEARS from the default
  *       list/search, but STILL EXISTS in the DB (soft, not hard).

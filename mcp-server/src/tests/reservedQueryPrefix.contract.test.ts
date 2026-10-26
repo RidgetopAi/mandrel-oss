@@ -1,7 +1,7 @@
 /**
  * RESERVED ARG-NAME PREFIX IN A QUERY — Contract Test.
  *
- * THE BUG THIS PINS (dogfood snag, an earlier note — reproduced on BOTH tool surfaces):
+ * THE BUG THIS PINS (dogfood snag, an earlier context — reproduced on BOTH tool surfaces):
  *   `context_search({ query: 'id:071df00d-…' })` SILENTLY returned an unrelated record.
  *   `id:<uuid>` READS like query syntax, but there is no query DSL. The `:` fails
  *   HEX_PREFIX_RE (utils/idResolver.ts), so `queryLooksLikeId()` returns false, the
@@ -17,7 +17,7 @@
  *            that is correct on the flat AND gateway surfaces).
  *   PART B — a reserved-prefix query FAILS LOUD, naming the correct parameter form.
  *
- * DELIBERATELY NOT A DSL (rejected by Coordinator): Part B ERRORS; it never RESOLVES. We do not
+ * DELIBERATELY NOT A DSL (rejected by the coordinator): Part B ERRORS; it never RESOLVES. We do not
  * parse `id:<uuid>` and run the lookup — that would contradict the documented bare-token
  * design and invite extending a half-DSL to every prefix forever.
  *
@@ -480,7 +480,7 @@ describe('reserved arg-name prefix in a search query', () => {
     });
   });
 
-  // ── THE GATEWAY SURFACE (the one Coordinator + customers actually get) ──────────────────────
+  // ── THE GATEWAY SURFACE (the one the coordinator + customers actually get) ──────────────────────
 
   describe('the guard holds end-to-end on the GATEWAY surface', () => {
     // WHY THIS IS NOT REDUNDANT WITH THE FLAT TESTS. "It routes through the same handler" is a

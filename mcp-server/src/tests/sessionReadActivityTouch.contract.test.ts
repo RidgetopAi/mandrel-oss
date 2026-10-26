@@ -91,11 +91,11 @@ async function read(connectionId: string): Promise<void> {
   await routeExecutor('mandrel_ping', {}, { connectionId } as any);
 }
 
-describe('read-path liveness bug 2: a READ advances session liveness', () => {
+describe('an earlier change bug 2: a READ advances session liveness', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(
-        `INSERT INTO projects (name, description) VALUES ($1, 'read-activity-touch test')
+        `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change read-activity-touch test')
          RETURNING id`,
         [`rat-proj-${STAMP}`]
       )
@@ -198,7 +198,7 @@ describe('read-path liveness bug 2: a READ advances session liveness', () => {
   });
 
   /**
-   * WRITE AMPLIFICATION, MEASURED AT THE DB CLIENT SEAM — the number Coordinator asked for.
+   * WRITE AMPLIFICATION, MEASURED AT THE DB CLIENT SEAM — the number the coordinator asked for.
    *
    * This does not read the hook's own counters and does not infer from stored values: it
    * counts the `UPDATE sessions SET last_activity_at` STATEMENTS handed to `db.query`,

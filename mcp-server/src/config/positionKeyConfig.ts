@@ -8,7 +8,7 @@
  *
  * ── WHY THE KEY CHANGED ──────────────────────────────────────────────────────────────
  * Position used to be keyed on the CONNECTION identity alone. Measured 2026-08-27 on the
- * control box: ONE `claude` process hosts the coordinator and eight the builder subagents and
+ * control box: ONE `claude` process hosts the coordinator and eight Builder subagents and
  * multiplexes all nine over THREE long-lived stdio bridge processes; every one of those
  * bridges declares the SAME `X-Connection-ID`, because the launcher exports
  * `MANDREL_LOOP_ID` into an environment every descendant inherits. So nine agents shared
@@ -90,14 +90,11 @@ export const POSITION_KEY_ACTOR_SEPARATOR = '#actor:';
  * IT IS A FLAG RATHER THAN A CONSTANT FOR ONE MEASURED REASON, and only one. Scoping by
  * actor RE-KEYS every caller that declares an actor, which means a caller that
  * deliberately BORROWS another principal's connection id in order to share its position
- * stops sharing it. Exactly one such caller exists that we know of: the Riverbend
- * SessionStart boot hook (`riverbend/.claude/hooks/coordinator-session-boot.sh`)
- * exports `MANDREL_CONNECTION_ID="$MANDREL_LOOP_ID"` so its `branch_open` lands
- * on the live session — but it leaves `MANDREL_ACTOR` at bridge-auth.sh's `coordinator-shell`
- * default while the session's own bridge declares `coordinator`. Under actor scoping those are
- * two loops, and the boot-side open stops landing until that hook also declares the
- * session's actor. That companion change lives in another repo and cannot be verified from
- * here, so this flag is the rollback: one env var restores the previous keying whole.
+ * stops sharing it. A session boot hook that exports `MANDREL_CONNECTION_ID` to land its
+ * `branch_open` on a live session, under a DIFFERENT actor than the session's own bridge,
+ * is exactly that caller: under actor scoping those are two loops, and the boot-side open
+ * stops landing until the hook also declares the session's actor. So this flag is the
+ * rollback: one env var restores the previous keying whole.
  *
  * Rung 1 is NOT flagged. A caller that declares a loop id is asking for exactly this
  * behaviour, and honouring an explicit declaration needs no escape hatch.

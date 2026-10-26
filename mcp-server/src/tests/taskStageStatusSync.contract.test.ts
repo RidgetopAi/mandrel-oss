@@ -1,5 +1,6 @@
 /**
- * `tasks.stage` <-> `tasks.status` SYNC Contract Test (migration 101,  * Punch List lane A).
+ * `tasks.stage` <-> `tasks.status` SYNC Contract Test (migration 101, 
+ * Punch List lane A).
  *
  * Asserts the trigger's four required cases, plus the FIRING-ORDER property this migration's
  * header claims: a stage='merged' write must stamp `closed_at` AND `completed_at` in the SAME
@@ -34,6 +35,11 @@ const MIGRATION_103 = resolve(
   __dirname, '../../database/migrations/103_stage_never_mints_ready_for_blocked.sql',
 );
 const MIGRATION_103_SQL = readFileSync(MIGRATION_103, 'utf8');
+// Migration 107: todo derives draft, not ready. Same read-from-disk rule.
+const MIGRATION_107 = resolve(
+  __dirname, '../../database/migrations/107_todo_derives_draft_not_ready.sql',
+);
+const MIGRATION_107_SQL = readFileSync(MIGRATION_107, 'utf8');
 
 const STAMP = Date.now();
 const PROJ_NAME = `task-stage-sync-${STAMP}`;
@@ -79,6 +85,9 @@ beforeAll(async () => {
     `INSERT INTO projects (name, description) VALUES ($1, 'stage sync contract') RETURNING id`,
     [PROJ_NAME]);
   projectId = p.rows[0].id;
+  // Install migration 107's trigger body (idempotent CREATE OR REPLACE) so the suite measures
+  // the shipped file even on a DB that has not yet had it applied.
+  await db.query(MIGRATION_107_SQL);
 });
 
 afterAll(async () => {
@@ -115,7 +124,7 @@ describe('migration 101 — tasks_stage_status_sync', () => {
     expect(row.status).toBe('blocked'); // honored verbatim
   });
 
-  test('CASE 4: stage=ready after blocked-clear derives todo', async () => {
+  test('CASE 4: clearing a block with status=todo derives draft (migration 107), not ready', async () => {
     const id = await makeTask('in_progress', 'claimed');
     await db.query(`UPDATE tasks SET status = 'blocked' WHERE id = $1`, [id]);
     expect((await readRow(id)).stage).toBe('claimed');
@@ -123,14 +132,14 @@ describe('migration 101 — tasks_stage_status_sync', () => {
     // stage is derived from the NEW status.
     await db.query(`UPDATE tasks SET status = 'todo' WHERE id = $1`, [id]);
     const row = await readRow(id);
-    expect(row.stage).toBe('ready');
+    expect(row.stage).toBe('draft');
     expect(row.status).toBe('todo');
   });
 
-  test('INSERT with neither stage nor status defaults stage=ready for status=todo (rule d)', async () => {
+  test('INSERT with neither stage nor status derives stage=draft for status=todo (rule d, migration 107)', async () => {
     const id = await makeTask('todo');
     const row = await readRow(id);
-    expect(row.stage).toBe('ready');
+    expect(row.stage).toBe('draft');
     expect(row.status).toBe('todo');
   });
 
@@ -296,5 +305,103 @@ describe('migration 103 — blocked never mints ready; cancel clears stage', () 
     expect((await readRow(controlClaimed)).stage).toBe('claimed');
     expect((await readRow(controlDraftBlocked)).stage).toBe('draft');
     expect((await readRow(controlReadyTodo)).stage).toBe('ready');
+  });
+});
+
+describe('migration 107 — a stage derived from status=todo is draft, never ready', () => {
+  const COMPLETE_PUNCH = {
+    doneWhen: [{ text: 'it works', owner: 'lane', proof: 'a test' }],
+    proofKind: 'test',
+  };
+
+  // The 103 describe above re-runs migration 103's file, which restores 103's trigger body
+  // (todo->ready). Re-apply 107 on top, exactly as the migration runner orders them.
+  beforeAll(async () => { await db.query(MIGRATION_107_SQL); });
+
+  async function createViaTool(args: Record<string, unknown>) {
+    return viaPublicTool(
+      'task_create', { projectId, title: 'an earlier change create', ...args },
+      (a) => tasksRoutes.handleCreate(a),
+    );
+  }
+
+  // ── (1) create with no stage, no status ───────────────────────────────────────────────
+  test('(1) task_create with NO stage and NO status is stored at stage=draft, status=todo', async () => {
+    const resp: any = await createViaTool({});
+    const id = resp.structuredContent?.task?.id as string;
+    expect(id).toBeTruthy();
+    const row = await readRow(id);
+    expect(row.stage).toBe('draft');
+    expect(row.stage).not.toBe('ready');
+    expect(row.status).toBe('todo');
+    expect(await listReadyIds(projectId)).not.toContain(id);
+  });
+
+  // ── (2) reopen ─────────────────────────────────────────────────────────────────────────
+  test('(2) status-only todo on a merged task reopens to draft; in_progress/completed keep their mapping', async () => {
+    const id = await makeTask('todo', 'merged');
+    expect((await readRow(id)).status).toBe('completed');
+    await db.query(`UPDATE tasks SET status = 'todo' WHERE id = $1`, [id]);
+    let row = await readRow(id);
+    expect(row.stage).toBe('draft');
+    expect(row.status).toBe('todo');
+
+    await db.query(`UPDATE tasks SET status = 'in_progress' WHERE id = $1`, [id]);
+    row = await readRow(id);
+    expect(row.stage).toBe('claimed');
+    expect(row.status).toBe('in_progress');
+
+    await db.query(`UPDATE tasks SET status = 'completed' WHERE id = $1`, [id]);
+    row = await readRow(id);
+    expect(row.stage).toBe('merged');
+    expect(row.status).toBe('completed');
+  });
+
+  // ── (3) controls ───────────────────────────────────────────────────────────────────────
+  test('(3a) control: stage=ready with a missing punch is still refused PUNCH_INCOMPLETE and writes nothing', async () => {
+    const title = `an earlier change refused ${STAMP}`;
+    const resp: any = await createViaTool({ title, stage: 'ready' });
+    expect(resp.isError).toBe(true);
+    expect(resp.structuredContent?.code).toBe('PUNCH_INCOMPLETE');
+    const n = await db.query(
+      `SELECT count(*)::int AS n FROM tasks WHERE project_id = $1 AND title = $2`, [projectId, title]);
+    expect(n.rows[0].n).toBe(0);
+  });
+
+  test('(3b) control: stage=ready with a complete punch lands at stage=ready, status=todo', async () => {
+    const resp: any = await createViaTool({ stage: 'ready', metadata: { punch: COMPLETE_PUNCH } });
+    const id = resp.structuredContent?.task?.id as string;
+    const row = await readRow(id);
+    expect(row.stage).toBe('ready');
+    expect(row.status).toBe('todo');
+  });
+
+  // ── (4) data repair ────────────────────────────────────────────────────────────────────
+  test('(4) migration 107 moves ready rows lacking doneWhen to draft, spares those with it, and is idempotent', async () => {
+    const insertReady = async (metadata: unknown) => (await db.query(
+      `INSERT INTO tasks (project_id, title, type, priority, status, stage, metadata)
+       VALUES ($1, 'repair seed', 'general', 'medium', 'todo', 'ready', $2::jsonb) RETURNING id`,
+      [projectId, JSON.stringify(metadata)])).rows[0].id as string;
+
+    const noPunch = await insertReady({});
+    const punchNoDone = await insertReady({ punch: { proofKind: 'test' } });
+    const complete = await insertReady({ punch: COMPLETE_PUNCH });
+    const claimed = await makeTask('in_progress', 'claimed');
+    for (const id of [noPunch, punchNoDone, complete]) expect((await readRow(id)).stage).toBe('ready');
+
+    await db.query(MIGRATION_107_SQL);
+    expect((await readRow(noPunch)).stage).toBe('draft');
+    expect((await readRow(punchNoDone)).stage).toBe('draft');
+    expect((await readRow(complete)).stage).toBe('ready');
+    expect((await readRow(claimed)).stage).toBe('claimed');
+
+    // Second run: nothing left matching the signature, so the repair UPDATE moves 0 rows.
+    const left = await db.query(
+      `SELECT count(*)::int AS n FROM tasks
+        WHERE stage = 'ready' AND (metadata #>> '{punch,doneWhen}') IS NULL`);
+    expect(left.rows[0].n).toBe(0);
+    await db.query(MIGRATION_107_SQL);
+    expect((await readRow(noPunch)).stage).toBe('draft');
+    expect((await readRow(complete)).stage).toBe('ready');
   });
 });

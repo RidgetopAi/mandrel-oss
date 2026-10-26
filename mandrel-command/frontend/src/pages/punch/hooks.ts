@@ -47,7 +47,7 @@ export function pickFirstBefore(rows: ReadonlyArray<TaskAttachment>): Record<str
   const map: Record<string, string> = {};
   for (const a of rows) {
     // Only an image can be a thumbnail — a text/json `before` would render as a broken glyph
-    // on the card (the reviewer A); the gallery already tiles those by mime.
+    // on the card (Reviewer A); the gallery already tiles those by mime.
     if (a.kind === 'before' && a.mime.startsWith('image/') && !(a.taskId in map)) map[a.taskId] = a.id;
   }
   return map;

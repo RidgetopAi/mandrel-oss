@@ -96,7 +96,7 @@ export function activeEmbeddingColumn(): string {
  * renders, and any fixture that builds a stub vector — instead of writing the number.
  *
  * Reads the env at point of use, like everything else here: a snapshot taken at module
- * load is the memoization bug the core removed in and a jest suite that
+ * load is the memoization bug the core removed in an earlier task, and a jest suite that
  * flips MANDREL_EMBEDDER between files would silently keep the first value.
  */
 export function activeEmbeddingDimensions(): number {

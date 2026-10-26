@@ -6,8 +6,7 @@
  * so `total` silently maxed out at the page size. An offset-paginating caller reasoning
  * about "how many matched" was lied to the moment the match set exceeded one page.
  *
- * context_search has TWO multi-row branches, BOTH fixed here (same tool, same class —
- * A past incident):
+ * context_search has TWO multi-row branches, BOTH fixed here (same tool, same class):
  *   • SEMANTIC branch (query present): the query RANKS an embedded-candidate set; `total`
  *     is now contextHandler.countContext() — a COUNT(*) over the SAME hard filters
  *     (project/type/session/date/tags + `embedding IS NOT NULL`), NO LIMIT — built through

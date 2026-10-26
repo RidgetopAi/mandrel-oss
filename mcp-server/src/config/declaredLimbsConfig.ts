@@ -1,6 +1,6 @@
 /**
- * DECLARED LIMBS — the named config for the limb materialisation (BRANCH-1
- * , an earlier decision Phase 1).
+ * DECLARED LIMBS — the named config for the limb materialisation (BRANCH-1,
+ * an earlier decision Phase 1).
  *
  * STANDING PRINCIPLE (the operator, binds this and every build): NO HARDCODED VARIABLES. Every
  * knob the derivation touches lives HERE, with a doc line and an env override — never a

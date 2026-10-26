@@ -89,9 +89,9 @@ export function registerMcpHandlers(
       // SCHEMA-DRIVEN inside validateToolArguments, once the per-op schema is resolved
       // (an earlier task — replaced the old name-allow-list deserializer here).
       const args = rawArgs || {};
-      // TOOL-INPUT ELEMENT LIMIT — the SDK 1.32 `maxToolInputElements` check, which the
-      // low-level Server does not offer. Its McpError(-32602) is re-thrown verbatim by the
-      // catch below.
+      // TOOL-INPUT ELEMENT LIMIT — the SDK 1.32 `maxToolInputElements` check,
+      // which the low-level Server does not offer. Its McpError(-32602) is re-thrown verbatim
+      // by the catch below.
       assertToolInputWithinLimit(name, args);
       // Pass connectionId so HTTP sessions are isolated from stdio and each other.
       // `identified: true` — a connectionId is only non-empty here when the

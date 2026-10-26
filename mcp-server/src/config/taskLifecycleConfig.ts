@@ -1,6 +1,6 @@
 /**
  * taskLifecycleConfig — the NAMED constants for the task record's own LIFECYCLE: when it
- * closed, who filed it, and what it is waiting on.
+ * closed, who filed it, and what it is waiting on. (an earlier task.)
  *
  * ═══ WHY THIS FILE EXISTS ═══
  * The task record could not answer basic questions about its own lifecycle. Answering

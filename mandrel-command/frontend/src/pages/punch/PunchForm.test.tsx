@@ -1,6 +1,6 @@
 /**
  * PunchForm — the file-a-punch flow end-to-end against a MOCKED
- * unified api client. Since `doneWhen` is a LIST of clause
+ * unified api client. Since an earlier task, `doneWhen` is a LIST of clause
  * rows (text / owner lane|human / proof) and the submit payload carries the STRUCTURED
  * contract: create(draft, punch.doneWhen=[...]) → upload(before) per photo →
  * update(stage:'ready'). Two things must never happen: a submit before every clause is
@@ -13,8 +13,8 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const P_RIVERBEND = 'aaaa1111-1111-4111-8111-aaaa11111111';
-const mockAllProjects = [{ id: P_RIVERBEND, name: 'riverbend' }];
+const P_COORDINATOR = 'aaaa1111-1111-4111-8111-aaaa11111111';
+const mockAllProjects = [{ id: P_COORDINATOR, name: 'riverbend' }];
 
 vi.mock('../../contexts/ProjectContext', () => ({
   useProjectContext: () => ({ setSelectedProjectId: () => undefined, allProjects: mockAllProjects }),
@@ -55,7 +55,7 @@ function mount(props: Partial<React.ComponentProps<typeof PunchForm>> = {}) {
     root.render(
       <QueryClientProvider client={client}>
         <MemoryRouter>
-          <PunchForm pageProjectId={P_RIVERBEND} onFiled={onFiled} onCancel={() => {}} {...props} />
+          <PunchForm pageProjectId={P_COORDINATOR} onFiled={onFiled} onCancel={() => {}} {...props} />
         </MemoryRouter>
       </QueryClientProvider>,
     );
@@ -91,7 +91,7 @@ function type(el: HTMLInputElement | HTMLTextAreaElement, value: string) {
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockApi.tasks.create.mockResolvedValue({ id: NEW_ID, project_id: P_RIVERBEND });
+  mockApi.tasks.create.mockResolvedValue({ id: NEW_ID, project_id: P_COORDINATOR });
   mockApi.tasks.update.mockResolvedValue({ id: NEW_ID, stage: 'ready' });
   mockApi.attachments.upload.mockResolvedValue({ id: 'att-1', kind: 'before' });
   (globalThis as unknown as { URL: typeof URL }).URL.createObjectURL = vi.fn(() => 'blob:x');
@@ -210,7 +210,7 @@ describe('PunchForm — the submit flow', () => {
       description: undefined,
       type: 'bug',
       priority: 'medium',
-      project_id: P_RIVERBEND,
+      project_id: P_COORDINATOR,
       stage: 'draft',
       punch: {
         doneWhen: [{ text: 'Save works', owner: 'lane', proof: 'Punch.test.tsx' }],
@@ -221,7 +221,7 @@ describe('PunchForm — the submit flow', () => {
     // `metadata.punch` is NEVER the channel this form writes.
     expect(payload.metadata).toBeUndefined();
     // The write is SCOPED to the form's project (X-Project-ID agrees with the body).
-    expect(config?.headers?.['X-Project-ID']).toBe(P_RIVERBEND);
+    expect(config?.headers?.['X-Project-ID']).toBe(P_COORDINATOR);
 
     expect(mockApi.attachments.upload).toHaveBeenCalledTimes(1);
     expect(mockApi.attachments.upload.mock.calls[0].slice(0, 3)).toEqual([NEW_ID, file, 'before']);

@@ -171,7 +171,7 @@ const fmt = (hits: Array<{ rel: string; line: number; text: string }>) =>
  * Lines that are CODE, not prose. Rule 3 asks "does this site actually CALL the renderer?" —
  * a plain text search answers YES to a file that merely MENTIONS explainTrust() in a doc
  * comment. (The mutation probe proved that hole: the mutated route kept its JSDoc, and Rule 3
- * stayed green while Rules 1+4 caught it. Guard the guard.)
+ * stayed green while Rules 1+4 caught it. Guard the guard — a past incident.)
  */
 function isCodeLine(l: string): boolean {
   const t = l.trim();

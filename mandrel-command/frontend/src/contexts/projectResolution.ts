@@ -91,7 +91,7 @@ export function resolveRealProject(
  * resolves to a real project, matching the existing selectBootstrapProject
  * contract.
  *
- * THE PREFERENCE IS AN ID, NOT A NAME (page-scope epic §A). It used to be matched by
+ * THE PREFERENCE IS AN ID, NOT A NAME (an earlier epic §A). It used to be matched by
  * `p.name === defaultProject`, which meant renaming a project silently detached
  * every user whose default pointed at it — they were bounced to the durable
  * fallback with no error and no way to tell. Matching on the id makes that

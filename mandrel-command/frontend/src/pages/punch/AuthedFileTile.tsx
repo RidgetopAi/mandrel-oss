@@ -1,6 +1,6 @@
 /**
  * AuthedFileTile — the non-image attachment (the API allows text/plain and
- * application/json). An `<img>` for these was a broken-image glyph (the reviewer
+ * application/json). An `<img>` for these was a broken-image glyph (Reviewer
  * #5). A file tile instead: icon + filename + size, and a click fetches the bytes through
  * the AUTHED client (never a bearer token in a URL) and opens them in a new tab as an
  * object URL. Nothing is fetched until the click — a board of notes should not download

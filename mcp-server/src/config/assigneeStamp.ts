@@ -1,10 +1,11 @@
 /**
- * assigneeStamp — THE TRANSITION STAMP for `tasks.assigned_to` ( * Phase 2 item 1). This file is the CANONICAL declaration; the Command backend carries a
+ * assigneeStamp — THE TRANSITION STAMP for `tasks.assigned_to`
+ * (Phase 2 item 1). This file is the CANONICAL declaration; the Command backend carries a
  * byte-identical mirror of the marked region below (see "TWO SURFACES").
  *
  * ── THE DEFECT THIS CLOSES ────────────────────────────────────────────────────────────
  * `assigned_to` was only ever written by `task_claim` (services/taskClaim.ts) and by a
- * caller explicitly typing a name. Most work does not claim — the coordinator or a builder moves the
+ * caller explicitly typing a name. Most work does not claim — the coordinator or a Builder moves the
  * status directly — so THE DOER IS LOST AT COMPLETION TIME. Measured on prod 2026-08-09,
  * project riverbend: of 925 live tasks, 364 are `completed` with no assignee.
  *
@@ -57,7 +58,7 @@
  *              (migration 062), resolved at the edge through the actorRegistry choke point.
  *   - Command: `normalizeActor(req.user?.username)` from `backend/src/config/sessionActor.ts`,
  *              the module that already exists to keep the two surfaces from diverging on
- *              casing. That is what makes `the operator` and `operator` one actor and not two.
+ *              casing. That is what makes `Operator` and `operator` one actor and not two.
  */
 
 /* ══════ ASSIGNEE STAMP RULE — MIRRORED REGION BEGIN ══════════════════════════════════ */

@@ -42,7 +42,7 @@ export interface DaySummaryProps {
   tz: string | undefined;
   /**
    * The Calendar's project selection, INHERITED — this card has no selector of its own by
-   * design (page-scope epic §E). Passed to the endpoint RAW, the literal `'all'` included:
+   * design (an earlier epic §E). Passed to the endpoint RAW, the literal `'all'` included:
    * the backend reads `'all'` on a query source as explicitly unscoped, which is a
    * different request from omitting the param.
    */

@@ -4,7 +4,8 @@
  *.
  *
  * THE CLASS THIS CLOSES
- *   src/tests/helpers/embedGeometry.ts has offered the derived spelling since  *   so the right thing was AVAILABLE here — but availability only makes it convenient. A
+ *   src/tests/helpers/embedGeometry.ts has offered the derived spelling since an earlier task,
+ *   so the right thing was AVAILABLE here — but availability only makes it convenient. A
  *   hardcoded width stayed writable, and a hardcoded width is invisible in a worktree until
  *   the CODE DEFAULT moves under it: on the backend exactly that happened,
  *   `Array.from({ length: 1536 })` going RED on a merged ref against a vector(768) column's

@@ -7,7 +7,7 @@
  * its coverage line (bars + coverage from ONE payload, in ONE unit). Structural wiring
  * (no antd, unified client, reuse charts, no hex) is in Analytics.wiring.test.ts.
  *
- * ── PLUS, SINCE the page-scope epic, THE PAGE'S OWN PROJECT SCOPE ──────────────────────────
+ * ── PLUS, SINCE an earlier epic, THE PAGE'S OWN PROJECT SCOPE ──────────────────────────
  * Analytics used to open on `null` — every project — and pass that scope to its four
  * reads. It now opens on the user's DEFAULT project, keeps `?project=` in the URL as the
  * source of truth, and scopes ALL FOUR reads explicitly. Four is the number that matters:
@@ -321,7 +321,7 @@ describe('Analytics — data state', () => {
  * an onboarding prompt rather than "no data".
  *
  * jsdom has no layout, so NOTHING here proves the bars are legible — that is proved by
- * browser screenshots. These assert the TEXT.
+ * browser screenshots (reports/artifacts/actor-bars-<id>/). These assert the TEXT.
  */
 describe('Analytics — the actor panel is live, and states its own coverage', () => {
   it('names the real endpoint and draws a bar per attributed actor', async () => {
@@ -404,7 +404,8 @@ describe('Analytics — the actor panel is live, and states its own coverage', (
    * and jsdom gives ResponsiveContainer a 0x0 box, so recharts renders no axis at all —
    * an assertion on it passes or fails for reasons that have nothing to do with the
    * roll-up. The arithmetic is asserted as a pure function in analytics/actorBars.test.ts,
-   * and the rendered bars are proved by browser screenshots (same split as    * which deleted exactly this kind of jsdom tick assertion after it went green with the
+   * and the rendered bars are proved by browser screenshots (same split as an earlier task,
+   * which deleted exactly this kind of jsdom tick assertion after it went green with the
    * fix reverted).
    */
 });
@@ -574,7 +575,7 @@ describe('Analytics — Work mix flow rates', () => {
 /**
  * THE CURRENT-HOUR MARK on Sessions started — by hour. The tint itself is
  * an SVG fill that jsdom will report but that says nothing on its own; what is asserted
- * here is that the mark is EXPLAINED — a colour with no key is the thing Operator would have
+ * here is that the mark is EXPLAINED — a colour with no key is the thing the operator would have
  * to ask about, which is the problem this was meant to solve.
  */
 describe('Analytics — the rhythm chart marks the current hour', () => {
@@ -625,7 +626,7 @@ describe('Analytics — error state', () => {
   });
 });
 
-describe('Analytics — project scope (page-scope epic §E)', () => {
+describe('Analytics — project scope (an earlier epic §E)', () => {
   it('opens on the USER DEFAULT project, not "every project"', async () => {
     await mount();
     await settle();

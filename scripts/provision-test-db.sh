@@ -50,9 +50,9 @@
 #   it only guarantees a usable, authenticating role/db/extensions for env capture).
 #
 # ISOLATION — CONCURRENT RUNS MUST NOT BE ABLE TO OBSERVE OR DESTROY EACH OTHER'S DBs
-#   Worktrees isolate the FILESYSTEM. Until this section
+#   (an earlier task.) Worktrees isolate the FILESYSTEM. Until this section
 #   existed, NOTHING isolated the DATABASE, and the isolation we believed the
-#   parallel-Builders pattern had was conventional (pick a unique-ish name and hope)
+#   parallel-builders pattern had was conventional (pick a unique-ish name and hope)
 #   rather than structural. Two failure modes were REPRODUCED against the previous
 #   version of this script, both with two runs started simultaneously on one name:
 #
@@ -136,7 +136,7 @@
 #   BY THE NEXT PROVISION, not by a cron and not by anyone remembering.
 #   Cleanup used to be a convention: every caller drops what it made. Anything that
 #   died mid-run, was interrupted, or forgot, leaked silently — 15 databases and 23
-#   roles were found on the control host on 2026-07-25, 19 of the roles orphans whose
+#   roles were found on the control host box on 2026-07-25, 19 of the roles orphans whose
 #   database was already gone. Nothing swept and nothing alerted.
 #
 #   Every provision (and --print-env) now first drops, in ONE psql session per run:
@@ -149,7 +149,7 @@
 #     ROLES      named ci_role_* whose ci_* database does not exist, that own no
 #                database, have no backend, and whose per-name lock is takeable.
 #   BOTH conditions on a database are load-bearing and the task says so: age alone
-#   would eventually drop a long-running the reviewer's idle-but-live database and
+#   would eventually drop a long-running Reviewer's idle-but-live database and
 #   produce a confusing false failure; connections alone would drop a run that is
 #   merely between phases within the TTL. The directory mtime is the age instrument
 #   because it is written by the server on every relation file create/extend
@@ -397,8 +397,8 @@ SQL
   # those get different exit codes and different messages.
   #
   # THIS USED TO BE INFERRED — "psql failed AND the pre-read says someone else owns it"
-  # — and that was wrong in both directions (the reviewer findings 2 and 3, verdict
-  # an earlier fix). It lost rc=3 down to rc=1 whenever the pre-read returned `unknown`, i.e.
+  # — and that was wrong in both directions (Reviewer findings 2 and 3).
+  # It lost rc=3 down to rc=1 whenever the pre-read returned `unknown`, i.e.
   # in exactly the could-not-measure case the four-state design exists for; and it
   # blamed an ordinary SQL failure on ownership whenever the DB happened to be foreign.
   # Both were a guess about the CAUSE dressed as a measurement of it.
@@ -492,7 +492,7 @@ DBPASS="${TEST_DB_PASS:-throwaway_$(printf '%s' "$DBNAME" | sha1sum | cut -c1-16
 # and the reason that task exists.
 #
 # THE CEILING IS STILL A CEILING, deliberately. Measured on both boxes the same day:
-# max_connections=100, superuser_reserved=3 -> 97 usable; the production host had 18 in use by prod and
+# max_connections=100, superuser_reserved=3 -> 97 usable; the prod host had 18 in use by prod and
 # the tenant fleet. 60 leaves ~19 slots spare there even while a full gate runs. A value
 # like 120 would exceed the server's own capacity and hand the gate the ability to deny
 # connections to paying tenants, which is the exact harm this limit was added to prevent —
@@ -695,7 +695,7 @@ fi
 # assignment under eval sets a SHELL-LOCAL var that a CHILD PROCESS never sees — so
 # jest/vitest launched afterwards got no DB and died in assertDbReachable. That is a
 # LOUD failure, never a silent green, but it reads as a real RED and has now cost two
-# agents a wasted mutation-probe round (the reviewer). `export` makes the
+# agents a wasted mutation-probe round (Reviewer). `export` makes the
 # documented recipe actually do what it says.
 cat <<EOF
 export DATABASE_NAME=$DBNAME

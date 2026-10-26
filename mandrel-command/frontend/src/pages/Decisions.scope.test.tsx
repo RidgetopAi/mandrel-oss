@@ -1,5 +1,5 @@
 /**
- * Decisions page project-scoping — READ and, more importantly, WRITE (page-scope epic §A1/§A4).
+ * Decisions page project-scoping — READ and, more importantly, WRITE (an earlier epic §A1/§A4).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY THE WRITE HALF IS THE POINT OF THIS FILE

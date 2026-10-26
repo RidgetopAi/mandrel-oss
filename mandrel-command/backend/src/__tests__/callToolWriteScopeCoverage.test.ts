@@ -1,5 +1,5 @@
 /**
- * DENY-BY-DEFAULT COVERAGE OVER `callTool(` — Reviewer B2.
+ * DENY-BY-DEFAULT COVERAGE OVER `callTool(` — an earlier task, Reviewer B2.
  *
  * =============================================================================
  * THE GAP THIS CLOSES

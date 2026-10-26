@@ -20,7 +20,7 @@
  *   a POSITIVE CONTROL that reads that row back with raw SQL — proving the row exists,
  *   is `status='completed'`, carries a non-null `archived_at`, and would be selected by
  *   the pre-fix predicate. Without that control the suite would pass against an empty
- *   fixture, which is exactly the hole found on an earlier revision (Reviewer probe 1b).
+ *   fixture, which is exactly the hole found on an earlier change (Reviewer probe 1b).
  *
  *   The archived row's numbers are chosen to be LOUD: its lead time (22d) is an order
  *   of magnitude off the live row's (2d), its actor name appears nowhere else, and its
@@ -80,7 +80,7 @@ describeDb('Task analytics reads share ONE population: live tasks', () => {
       [
         id,
         projectId,
-        `probe ${id.slice(0, 8)}`,
+        `an earlier change probe ${id.slice(0, 8)}`,
         opts.assignedTo,
         opts.createdDaysAgo,
         opts.completedDaysAgo,

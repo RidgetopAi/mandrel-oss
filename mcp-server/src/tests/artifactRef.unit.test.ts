@@ -370,7 +370,7 @@ describe('config, not literals — the allow-lists are driven by the config obje
       artifactType: 'git-commit',
       repository: 'Riverbend/mandrel',
       head: HEAD,
-      retrieval: { provider: 'git-remote', uri: 'https://git-host.example.com/Riverbend-Ai/my-repo.git' },
+      retrieval: { provider: 'git-remote', uri: 'https://git-host.example.com/Mandrel-Ai/my-repo.git' },
     });
     expect(r.ok, r.ok ? '' : r.errors.join(' | ')).toBe(true);
   });

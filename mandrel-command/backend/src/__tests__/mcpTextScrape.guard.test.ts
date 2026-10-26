@@ -3,7 +3,7 @@
  *
  * THE CLASS THIS STOPS (instance four): reading a MACHINE fact out of a HUMAN
  * rendering. Three instances landed in one day (2026-07-30): the ANSI-poisoned CI
- * regex (fixed 40af00d), the decision read model, and this backend's
+ * regex (fixed 40acf00), the decision read model, and this backend's
  * six text parsers (deleted by an earlier task). Every number those parsers scraped is
  * carried by the structured channel (`data` sibling or `structuredContent`, which the
  * bridge guarantees on every response). A rendered string is a representation the
@@ -43,7 +43,7 @@
  *   - intermediate variable:  `const block = res.content[0]; ... block.text`
  * Catching those requires AST/type-directed analysis (an ESLint rule over the
  * TypeScript program), which is a different instrument than a source grep. The miss
- * is accepted because (a) every scrape DELETED by the text-scrape removal used the direct-accessor
+ * is accepted because (a) every scrape DELETED by an earlier change used the direct-accessor
  * shape, (b) the split forms are conspicuous in review precisely because they take
  * two lines to do what one banned line would, and (c) a half-strength lexical guard
  * that runs on every test invocation beats an AST guard that never ships. If a

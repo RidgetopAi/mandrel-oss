@@ -1,11 +1,12 @@
 /**
- * A POSITION MAY NEVER NAME A SPINE THAT RESOLVES TO NOTHING —  * SIGNAL 2, measured by Coordinator on its own session 2026-09-03:
+ * A POSITION MAY NEVER NAME A SPINE THAT RESOLVES TO NOTHING — an earlier task,
+ * SIGNAL 2, measured by the coordinator on its own session 2026-09-03:
  *
  *   graph({action:'branch_current'})
  *     -> {"ok":true,"position":null,"atTrunk":true,
  *         "revertedFrom":{"spineId":"f50bf00d-...","spineType":"task"}}
- *   task({action:'details', taskId:'2b3c4d5e'})  -> {"ok":true,"found":false}
- *   context({action:'search', id:'2b3c4d5e'})    -> "❌ Context not found"
+ *   task({action:'details', taskId:'an earlier change'})  -> {"ok":true,"found":false}
+ *   context({action:'search', id:'an earlier change'})    -> "❌ Context not found"
  *
  * The API asserted `spineType: "task"` for an id that is not a task and is not anything.
  *
@@ -233,7 +234,7 @@ describe('DANGLING SPINE — a position whose record no longer exists', () => {
    *
    * an earlier Task read `branch_current` naming an earlier task while `task details` answered
    * found:false, and inferred a dangling pointer. Measured on prod 2026-09-05:
-   *   SELECT id, status, archived_at IS NOT NULL FROM tasks WHERE id::text LIKE '2b3c4d5e%';
+   *   SELECT id, status, archived_at IS NOT NULL FROM tasks WHERE id::text LIKE 'an earlier change%';
    *   -> f50bf00d-... | todo | t   (archived_at 2026-09-02 00:58:52+00)
    * The row EXISTS. It was invisible to `task details` because includeArchived:false is the
    * default on the read ops. Two different causes, one observable — so a fix that only
@@ -275,7 +276,7 @@ describe('DANGLING SPINE — a position whose record no longer exists', () => {
    * THE TRUNK ARM — reject round 1's blocker, and the arm the report was filed on.
    *
    * The archived check was first written BELOW the trunk arm, which returns early, so an
-   * archived spine at trunk emitted a `spineType` and no archived signal at all: Coordinator's
+   * archived spine at trunk emitted a `spineType` and no archived signal at all: the coordinator's
    * original observation, byte-for-byte, after two commits that claimed to address it.
    *
    * It is asserted SEPARATELY from the position-path probe on purpose. A single probe on the

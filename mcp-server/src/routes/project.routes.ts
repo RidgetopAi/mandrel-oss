@@ -603,7 +603,7 @@ class ProjectRoutes {
   }
 
   /**
-   * PROJECT BRIEFING (WS2 "living summary").
+   * PROJECT BRIEFING (WS2 "living summary", plan).
    * Deterministic current-state briefing markdown — the whole renderer lives in
    * services/projectBriefing.ts; this route only resolves the project and ships the
    * result on both channels. `project` optional → the caller's current project.
@@ -693,8 +693,8 @@ class ProjectRoutes {
         if (keying.keys !== undefined) {
           const position = await readPositionAny(project.id, keying.keys);
           if (position && !isTrunkPosition(position)) {
-            // THE AMBIENT SPINE GETS THE SAME LIVENESS RULE AS THE EXPLICIT ONE (an earlier task
-            // , N4). Two paths reach this variable and only one of them validated —
+            // THE AMBIENT SPINE GETS THE SAME LIVENESS RULE AS THE EXPLICIT ONE
+            // (N4). Two paths reach this variable and only one of them validated —
             // the C5 shape, and the weaker path is the one a COLD BOOT takes, because the
             // boot hook asks for a briefing without naming a spine. MEASURED with
             // MANDREL_BRIEFING_BRANCH_SCOPE_ENABLED=true, same id, both routes:

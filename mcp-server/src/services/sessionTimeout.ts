@@ -8,7 +8,7 @@
  *   legacy | shadow (DEFAULT) — UNCHANGED idle==end reaper. A single sweep every
  *     SESSION_CONFIG.reaperSweepIntervalSec calls timeout_inactive_sessions (active|interrupted
  *     idle past idleTimeoutSec → status='inactive' + ended_at stamped) and evicts matching RAM
- *     entries (the stale-but-ended fix). BYTE-IDENTICAL to pre-Phase-3.
+ *     entries (the stale-but-ended fix, ctx). BYTE-IDENTICAL to pre-Phase-3.
  *
  *   actor — idle == DORMANT, not end. The single reaper SPLITS into two sweeps:
  *     • dormanter (every dormanterSweepIntervalSec): active|interrupted idle past idleDormantSec
@@ -80,7 +80,7 @@ export interface ReaperHealthPayload {
 
 /**
  * Build the /health/reaper body. Lives HERE, not inline in the route, for one reason:
- * the acceptance test for an external reaper monitor has to parse the payload the endpoint
+ * the acceptance test for the external alerter has to parse the payload the endpoint
  * REALLY emits. If the test hand-rolled an equivalent body it would prove only that the
  * script can parse the test's own idea of the contract — the classic probe that mutates
  * nothing and reports a perfect result. One builder, two callers: the route
@@ -369,7 +369,7 @@ export class SessionTimeoutService {
       lastFailure: this.lastFailure,
       // --- The alerting seam -------------------------------------
       // The DOWN decision is made HERE, once, and published as a boolean, so the
-      // out-of-process alerter (an external reaper monitor) consumes a VERDICT and never
+      // out-of-process alerter consumes a VERDICT and never
       // re-derives the rule. A shell script holding its own copy of the threshold is a
       // second place the rule is written, and the copies would agree right up until
       // someone tuned one of them.

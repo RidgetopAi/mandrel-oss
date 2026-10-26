@@ -2,17 +2,17 @@
  * TEST-SIDE EMBEDDER GEOMETRY — the single source every fixture uses so a stub vector
  * matches the ACTIVE embedder's column geometry instead of a hardcoded 1536.
  *
- * WHY THIS EXISTS (WS-1 Pass-2):
+ * WHY THIS EXISTS (an earlier task / an earlier decision, WS-1 Pass-2):
  * the CI gate used to PIN MANDREL_EMBEDDER=minilm for the whole suite, and dozens of contract
  * tests hardcoded `new Array(1536)` / `dimensions: 1536` / asserted the column is
  * 'embedding'. That made the generic suite STRUCTURALLY UNABLE to run under prod's real
  * config (gemma → `embedding_gemma`, vector(768)): a 1536-d fixture is rejected by the
  * 768-d column's CHECK constraint. CI could never catch a gemma-only regression (it bit us
- * on an earlier task). The fix is embedder-agnostic BY CONSTRUCTION: derive geometry from
+ * on an earlier change). The fix is embedder-agnostic BY CONSTRUCTION: derive geometry from
  * activeEmbedder() so the SAME test runs correctly under either embedder, and the CI gate exercises
  * BOTH as an axis instead of pinning one.
  *
- * STANDING PRINCIPLE (Operator): no hardcoded tunables — the dimension is a named value read
+ * STANDING PRINCIPLE (the operator): no hardcoded tunables — the dimension is a named value read
  * from the embedder registry, never a literal buried in a fixture.
  */
 import { activeEmbedder, activeEmbeddingColumn, embedders } from '../../config/embeddingConfig.js';

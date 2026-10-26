@@ -28,7 +28,7 @@
  *       with no code change. A registry-based fix cannot pass this test.
  *       SCOPE OF THAT CLAIM: this table is the SIMPLE shape — one cascading FK, on
  *       `project_id`, referencing `projects.id`. "Covered the moment it exists" held for
- *       this shape in 4dcf00d and was FALSE for an ordinary two-FK table, which was
+ *       this shape in 4dcbf00 and was FALSE for an ordinary two-FK table, which was
  *       deleted without confirmation while all nine tests here stayed green. The shapes
  *       that broke it — two FKs, composite keys, partitions, an FK that does not reference
  *       `projects.id` — are covered in projectDeleteHostileSchema.contract.test.ts, and

@@ -1,5 +1,5 @@
 -- Migration 069: index technical_decisions(session_id)
--- Task: session counter columns render 0 once a session ends
+-- Task: an earlier change (session counter columns render 0 once a session ends)
 --
 -- WHY: the fix for that task stops reading the denormalized sessions.decisions_created
 -- column (which has NO runtime writer at all — the only assignment anywhere in the tree

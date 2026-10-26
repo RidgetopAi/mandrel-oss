@@ -1,11 +1,11 @@
 /**
- * ONE TRANSPORT, MANY AGENTS — the an earlier task contract.
+ * ONE TRANSPORT, MANY AGENTS — the earlier task contract.
  *
  * THE INCIDENT THIS REPRODUCES (measured on prod 2026-08-26, four independent
  * confirmations in an earlier task's noteLog, plus a live re-measurement 2026-08-27).
- * Nine agents — Coordinator plus eight Builders — ran concurrently and their writes minted
+ * Nine agents — the coordinator plus eight builders — ran concurrently and their writes minted
  * DECLARED-tier `informs` membership edges onto EACH OTHER'S spines: a Builder working
- * `2b3c4d5e` became a member of `3c4d5e6f` on one call and `4d5e6f7a` on the next.
+ * an earlier change became a member of an earlier change on one call and an earlier change on the next.
  *
  * WHY, measured rather than theorised (see the run report for the commands):
  *   - ALL of those agents live inside ONE `claude` process, which multiplexes them over
@@ -124,7 +124,7 @@ afterAll(async () => {
 /**
  * THE PROD SHAPE, in the prod ORDER. Three agents on ONE transport each start work on
  * their own task and then write their own note — claims first, writes after, exactly the
- * interleave nine parallel Builders produce. `identify` turns each agent into whatever the
+ * interleave nine parallel builders produce. `identify` turns each agent into whatever the
  * probe is testing (distinct actors, or distinct declared loop ids).
  */
 async function threeAgentsOnOneTransport(
@@ -178,7 +178,7 @@ describe('one transport, many agents: a position belongs to ONE loop', () => {
 
   test('PROBE 2 — three DECLARED LOOP IDS under ONE actor on one connection each thread to their OWN spine', async () => {
     const conn = `pxt-shared-loops-${STAMP}`;
-    const actor = `pxt-builder-${STAMP}`; // the prod case: eight Builders, ONE actor value
+    const actor = `pxt-builder-${STAMP}`; // the prod case: eight builders, ONE actor value
     const { tasks, contexts } = await threeAgentsOnOneTransport(conn, (n) => ({
       conn,
       actor,
@@ -209,10 +209,10 @@ describe('one transport, many agents: a position belongs to ONE loop', () => {
 
   test('PROBE 4 — a subagent does NOT inherit its COORDINATOR\'s DECLARED position', async () => {
     // THE FIFTH CONFIRMATION, and the most diagnostic (measured 2026-08-27, and measured
-    // again by this task's own Builder on itself): Coordinator ran `branch_open 1a2b3c4d` in the
+    // again by this task's own Builder on itself): the coordinator ran `branch_open` in the
     // coordinating session at 01:31:27Z with origin='declared' and then dispatched eight
     // subagents. A subagent working an unrelated task reported BOTH of its writes minting a
-    // position edge to 1a2b3c4d — "a branch position I never opened" — and `branch_current`
+    // position edge to an earlier change — "a branch position I never opened" — and `branch_current`
     // from inside a subagent returned the coordinator's spine verbatim.
     //
     // THIS IS A STRONGER CLAIM THAN THE PEER-TO-PEER CASE, and it is why it gets its own

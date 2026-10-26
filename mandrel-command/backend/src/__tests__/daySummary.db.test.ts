@@ -1,6 +1,6 @@
 /**
- * DB-integration tests for the Calendar DAY-SUMMARY aggregation endpoint (an earlier task
- * / an earlier decision). Exercises the REAL DaySummaryService against seeded rows so
+ * DB-integration tests for the Calendar DAY-SUMMARY aggregation endpoint.
+ * Exercises the REAL DaySummaryService against seeded rows so
  * every assertion FAILS if the aggregation, the TZ bucketing, or the momentum math is reverted
  * (mutation-resistant — tests-are-the-rock).
  *

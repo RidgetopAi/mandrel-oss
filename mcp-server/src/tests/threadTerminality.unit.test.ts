@@ -63,8 +63,8 @@ describe('terminality — the overlap fraction', () => {
     expect(limbOverlapFraction([B], cone)).toBe(1);
     expect(limbOverlapFraction([B, X], cone)).toBe(0.5);
     expect(limbOverlapFraction([X], cone)).toBe(0);
-    // Four limbs, one of them the branch: the shape that separates one measured anchor (labeled IN)
-    // from another (labeled OUT) — a count cannot, a fraction can.
+    // Four limbs, one of them the branch: the shape that separates (labeled IN)
+    // from an earlier change (labeled OUT) — a count cannot, a fraction can.
     expect(limbOverlapFraction([B, X, N, A], cone)).toBe(0.5);
   });
 

@@ -57,8 +57,8 @@ describeDb('ProjectAccessService — user_project_access (DB integration)', () =
       );
       await client.query(
         `INSERT INTO projects (id, name, description, status, created_at)
-         VALUES ($1, $2, 'trust-boundary test project', 'active', NOW()),
-                ($3, $4, 'trust-boundary other project', 'active', NOW())`,
+         VALUES ($1, $2, 'an earlier change test project', 'active', NOW()),
+                ($3, $4, 'an earlier change other project', 'active', NOW())`,
         [projectId, projectName, otherProjectId, `${projectName}-other`]
       );
     } finally {

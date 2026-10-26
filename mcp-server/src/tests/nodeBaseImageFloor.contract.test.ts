@@ -2,10 +2,12 @@
  * Contract: every `FROM node:` base image in the repo is pinned to an exact patch release at
  * or above the security floor.
  *
- * WHY A FLOOR AND NOT JUST THE MAJOR: a floating `node:22-slim` resolves to whatever patch
- * the build host has cached, so a build without --pull can stay on an older patch past a
- * Node security release (22.23.4). An exact `22.y.z` tag forces the pull; this test keeps it
- * exact and keeps it at or above the floor.
+ * WHY A FLOOR AND NOT JUST THE MAJOR: the gate's node-pin stage already
+ * holds every declaration to the .nvmrc MAJOR. That cannot see a floating `node:22-slim`
+ * resolving to whatever patch the build host has cached — the fleet build does not --pull —
+ * which is how the fleet stayed on 22.23.3 / 22.22.3 past the 22.23.4 security release
+ * (sweep). An exact `22.y.z` tag forces the pull; this test keeps it exact and
+ * keeps it at or above the floor.
  *
  * Raise NODE_BASE_IMAGE_FLOOR with the Dockerfiles when a newer Node 22 security release
  * ships. The population is every Dockerfile `git ls-files` reports — not a hand list.

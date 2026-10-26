@@ -15,7 +15,7 @@ import {
   stageIndex,
   stageChangeFromDrop,
 } from './stage';
-import { STAGES, BLOCKED_LANE } from './config';
+import { STAGES, BLOCKED_LANE, riskGateLabel } from './config';
 import type { Task } from '../../types/task';
 
 const t = (over: Partial<Task>): Task =>
@@ -124,10 +124,17 @@ describe('rejectReason — the picker verdict tag, read verbatim', () => {
     ).toBe('exhausted, 2 attempts failed');
   });
 
-  it('reject:tag-excluded + risk:gate → waiting on the operator', () => {
+  it('reject:tag-excluded + risk:gate → the risk-gate wording (default build: the operator)', () => {
     expect(
       rejectReason(t({ tags: ['reject:tag-excluded', 'risk:gate'] } as Partial<Task>)),
-    ).toBe('waiting on the operator');
+    ).toBe(import.meta.env.VITE_PUNCH_RISK_GATE_LABEL?.trim() || 'waiting on the operator');
+  });
+
+  it('riskGateLabel: unset or blank → waiting on the operator; set → that text, trimmed', () => {
+    expect(riskGateLabel(undefined)).toBe('waiting on the operator');
+    expect(riskGateLabel('')).toBe('waiting on the operator');
+    expect(riskGateLabel('   ')).toBe('waiting on the operator');
+    expect(riskGateLabel(' waiting on Pat ')).toBe('waiting on Pat');
   });
 
   it('reject:tag-excluded with neither known secondary tag → generic excluded fallback', () => {

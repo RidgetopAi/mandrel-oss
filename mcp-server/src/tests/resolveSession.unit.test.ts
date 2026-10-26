@@ -1,8 +1,9 @@
 /**
- * resolveSession — PURE branch unit tests (Sessions Foundation Phase 2a,  * an earlier decision). NO DB, NO network — every port is a stub so each precedence branch is
+ * resolveSession — PURE branch unit tests (Sessions Foundation Phase 2a).
+ * NO DB, NO network — every port is a stub so each precedence branch is
  * exercised in isolation.
  *
- * Locks the ONE resolver's contract (Auditor review §4.1 / §5):
+ * Locks the ONE resolver's contract (the auditor review §4.1 / §5):
  *   (a) explicit session id (verified open, ANY actor) wins;
  *   (b) else the actor's DB pin (only if still open);
  *   (c) else the actor's newest open session — automation actors restricted to the same UTC day;

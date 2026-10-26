@@ -1,5 +1,5 @@
 /**
- * belief EDGE RECONCILIATION — PURE unit tests (Phase 4; Auditor finding #7 + BL-3 two-tier).
+ * belief EDGE RECONCILIATION — PURE unit tests (Phase 4; the auditor finding #7 + BL-3 two-tier).
  *
  * Locks the RE-ADJUDICATION REVERSIBILITY fix AND the BL-3 two-belief-edge generalization
  * with NO DB: the reconciler's mint/retract behaviour is exercised against an IN-MEMORY fake
@@ -9,18 +9,18 @@
  * reverted — proving the behaviour, not just the happy path.
  *
  * The properties under test:
- *   - Auditor #7 (the belief-layer design; the foundation review): "verdicts are DATA and
+ *   - The auditor #7 (design; foundation-review): "verdicts are DATA and
  *     re-adjudication is REVERSIBLE" — a re-adjudication that no longer supports the prior
  *     edge must WITHDRAW it, an unchanged verdict is idempotent (no churn), and a human-
  *     curated edge is NEVER clobbered (provenance guard).
  *   - BL-3: the SOFT outcome mints a `possibly_supersedes` edge; a direction
  *     flip leaves EXACTLY the right single edge, and `none` retracts BOTH edge types.
- *   - the no-hard-tier change: `supersedes` is NOT MINTABLE here at all. The retraction sweep still covers
+ *   - an earlier change: `supersedes` is NOT MINTABLE here at all. The retraction sweep still covers
  *     it, which is what WITHDRAWS a hard edge minted by the earlier code when its pair
  *     is re-adjudicated — the tests that SEED a HARD edge and assert it is retracted are
  *     that path, and they are the reason `HARD` still appears in this file.
  *
- * COVERAGE CHANGED BY the no-hard-tier change: the tests that CONSTRUCTED a `mint_supersedes` outcome are
+ * COVERAGE CHANGED BY an earlier change: the tests that CONSTRUCTED a `mint_supersedes` outcome are
  * gone, because the type no longer has that member and the compiler now rejects it — a
  * strictly stronger guard than a runtime assertion. The BEHAVIOURS they covered (direction
  * flip, idempotent re-mint, first-time mint, the human-edge provenance guard) are all still
@@ -96,7 +96,7 @@ class FakeLinks {
     return id;
   }
 
-  /** edgeType is REQUIRED, deliberately: it defaulted to HARD, and after the no-hard-tier change HARD is
+  /** edgeType is REQUIRED, deliberately: it defaulted to HARD, and after an earlier change HARD is
    *  never minted — so a bare has(a,b) silently asked about the channel under test's
    *  opposite. Making it explicit turns that into a compile error instead of a puzzle. */
   has(fromId: string, toId: string, edgeType: string): boolean {
@@ -227,7 +227,7 @@ describe('reconcileBeliefEdge — TIER SWITCH (hard↔soft mutual exclusion, BL-
     expect(links.size).toBe(1);
   });
 
-  // DELETED by the no-hard-tier change: 'stale SOFT re-adjudicated HARD → supersedes minted'. That
+  // DELETED by an earlier change: 'stale SOFT re-adjudicated HARD → supersedes minted'. That
   // transition is not merely untested, it is unconstructible — `mint_supersedes` is not a
   // member of BeliefOutcome, so the test could not be written without a cast. Its inverse
   // (stale HARD re-adjudicated SOFT) is the transition that matters now and is the test
@@ -356,7 +356,7 @@ describe('reconcileBeliefEdge — RETRACTION / IDEMPOTENCY (fails-when-reverted)
     expect(res.mintedEdgeType).toBe(SOFT);
     expect(res.retracted).toEqual([]);
     expect(links.has(A, B, SOFT)).toBe(true);
-    // the reconciler never creates a `supersedes` row, on ANY outcome.
+    // an earlier change: the reconciler never creates a `supersedes` row, on ANY outcome.
     expect(links.has(A, B, HARD)).toBe(false);
     expect(links.viaOf(A, B, SOFT)).toBe(EDGE_MINT_VIA.beliefAdjudication);
   });
@@ -388,7 +388,7 @@ describe('reconcileBeliefEdge — PROVENANCE (never clobber a human edge)', () =
 
   test('a human-curated HARD supersedes edge is NOT retracted when we mint the soft edge', async () => {
     // The declared exclusion edge a human made must survive a belief pass on the same pair —
-    // the provenance guard, in the direction that matters after the no-hard-tier change: the declared hard
+    // the provenance guard, in the direction that matters after an earlier change: the declared hard
     // edge is now the ONLY kind of hard edge, and the adjudicator must not touch it.
     links.seed(A, B, HARD, 'link'); // human hard edge on the same pair
     const res = await reconcileBeliefEdge(

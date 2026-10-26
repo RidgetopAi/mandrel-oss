@@ -16,7 +16,7 @@
  *   2. an 8-hex id NAMED IN ITS PROSE that resolves to a task or a decision.
  * A large minority of the corpus declares its limb ONLY the second way, which is why the
  * tags-only shortcut was rejected on measurement rather than on argument. The counts and
- * the query that produced them live on they are deliberately not
+ * the query that produced them live on an earlier task; they are deliberately not
  * restated here, because a number in a comment is a number that goes stale silently.
  *
  * ── THE RULE IS PINNED, NOT AUTHORED HERE ────────────────────────────────────────────
@@ -89,8 +89,7 @@ export interface DerivedLimbs {
 /**
  * Compose the prose an id8 may be named in, per record kind.
  *
- * These expressions MIRROR the ones the eval pinned its bodies with
- * (`evals/branch-meter/pin_bodies.sh`), because the golden fixture's `body` strings were
+ * These expressions MIRROR the ones the eval pinned its bodies with, because the golden fixture's `body` strings were
  * produced by them: a context is its `content`, a task is `title\ndescription`, a decision
  * is `concat_ws('\n', title, description, rationale, problem_statement, outcome_notes)`.
  * Postgres `concat_ws` SKIPS NULL arguments but keeps empty strings, and `coalesce(x,'')`
