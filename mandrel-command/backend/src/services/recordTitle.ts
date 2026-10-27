@@ -20,7 +20,7 @@
  *
  * WHAT THIS REPLACED: a bare `CONTEXT_TITLE_PREVIEW_CHARS = 140`, declared here AND a second
  * time in `services/links.ts`, applied as a flat mid-word `slice`. Two of the five spellings
- * of one decision that an earlier task collapsed.
+ * of one decision that earlier task collapsed.
  */
 
 /** Read a positive-integer env var, falling back to `fallback` on missing/garbage. */

@@ -1,7 +1,7 @@
 /**
  * EMBEDDER CONFIG — the single source of truth for which embedding model Mandrel uses,
  * its geometry, its documented prompt prefixes, its storage column, and its ivfflat
- * tuning (an earlier task "D1: adopt embeddinggemma-300m").
+ * tuning (an earlier task / an earlier decision "D1: adopt embeddinggemma-300m").
  *
  * STANDING PRINCIPLE (the operator, binds this + all future builds): NO HARDCODED VARIABLES.
  * Every knob the embed path touches lives HERE — a named value with a doc comment + an
@@ -13,7 +13,7 @@
  * not a destructive in-place alter). Cutover = flip the env + rebuild the index; rollback =
  * flip it back — the old column's data is never destroyed.
  *
- * MEASURED (2026-07-05, dev-host): embeddinggemma does NOT load under this repo's
+ * MEASURED (2026-07-05, control-host): embeddinggemma does NOT load under this repo's
  * @xenova/transformers@2.17.2 (ONNX IR v10 > onnxruntime-node max IR v8; `gemma3_text`
  * arch unknown). So the gemma backend runs via OLLAMA (the same backend that won the P0
  * bake-off, +8.5 strict coverage). MiniLM stays on the self-contained @xenova path.
@@ -76,8 +76,10 @@ function envBool(name: string, fallback: boolean): boolean {
  *    no `vendor/` next to its code, so it keeps using that default). Set the variable for a
  *    non-standard install layout.
  *  - MANDREL_EMBEDDINGS_ALLOW_MOCK → explicit opt-in to deterministic MOCK embeddings
- *    (`embeddingsAllowMock()`). Without it, a model that cannot load stops the server at
- *    startup. The test runner (VITEST / NODE_ENV=test) counts as an opt-in.
+ *    (`embeddingsAllowMock()`). Without it, a model that cannot load is reported at startup
+ *    per MANDREL_EMBEDDING_VERIFY_STARTUP (`warn`: one loud line, start anyway; `strict`:
+ *    refuse to start) and never silently mocked. The test runner (VITEST / NODE_ENV=test)
+ *    counts as an opt-in.
  */
 export const XENOVA_ALLOW_REMOTE: boolean = envBool('MANDREL_XENOVA_ALLOW_REMOTE', false);
 
@@ -114,6 +116,39 @@ export function embeddingsAllowMock(): boolean {
   return envBool('MANDREL_EMBEDDINGS_ALLOW_MOCK', false) ||
     process.env.NODE_ENV === 'test' || // env-read: via-callers
     !!process.env.VITEST; // env-read: via-callers
+}
+
+/** What the boot-time embedder check does when the active embedder cannot load / be reached. */
+export type EmbeddingVerifyStartupMode = 'warn' | 'strict';
+
+/** The accepted MANDREL_EMBEDDING_VERIFY_STARTUP values. */
+export const EMBEDDING_VERIFY_STARTUP_MODES: readonly EmbeddingVerifyStartupMode[] = ['warn', 'strict'];
+
+/**
+ * MANDREL_EMBEDDING_VERIFY_STARTUP default: `strict` — an embedder that cannot load or be
+ * reached at boot stops the server, so a fresh install learns about a missing model or a
+ * down Ollama at startup instead of from empty search results. `warn` starts anyway and logs
+ * ONE loud error line (embeds then fail loudly per write and self-heal) — the choice for a
+ * deployment that must not refuse to boot over its embedder (our fleet sets
+ * `warn` in its deployment config).
+ */
+export const EMBEDDING_VERIFY_STARTUP_DEFAULT: EmbeddingVerifyStartupMode = 'strict';
+
+/**
+ * Boot-time embedder check mode. `warn`: an embedder that cannot load at startup logs one loud
+ * error line and the server starts anyway. `strict`: the server refuses to start. Read at call
+ * time. AN UNRECOGNIZED VALUE THROWS (same rule as MANDREL_EMBEDDER) so a typo of `strict` cannot
+ * silently mean `warn`.
+ */
+export function embeddingVerifyStartupMode(): EmbeddingVerifyStartupMode {
+  const raw = envStr('MANDREL_EMBEDDING_VERIFY_STARTUP', EMBEDDING_VERIFY_STARTUP_DEFAULT).trim().toLowerCase();
+  if (!(EMBEDDING_VERIFY_STARTUP_MODES as readonly string[]).includes(raw)) {
+    throw new Error(
+      `MANDREL_EMBEDDING_VERIFY_STARTUP=${JSON.stringify(raw)} is not a known mode. ` +
+        `Valid values: ${EMBEDDING_VERIFY_STARTUP_MODES.join(', ')}.`,
+    );
+  }
+  return raw as EmbeddingVerifyStartupMode;
 }
 
 /** Which runtime executes the model. */
@@ -196,7 +231,7 @@ export function embedders(): Record<string, EmbedderSpec> {
     docPrefix: envStr('MANDREL_GEMMA_DOC_PREFIX', 'title: none | text: '),
     padToDimensions: false,
     indexLists: envInt('MANDREL_GEMMA_INDEX_LISTS', 100),
-    // 20, not 10 — measured 2026-08-28, operator-approved. On the live
+    // 20, not 10 — measured 2026-08-28, the operator-approved. On the live
     // corpus shape (11,100 contexts, lists=100) probes=20 is the knee:
     //   probes=10  recall@50 0.9532  253ms/100q  Index Scan
     //   probes=20  recall@50 0.9852  415ms/100q  Index Scan  <- here
@@ -221,8 +256,7 @@ export function embedders(): Record<string, EmbedderSpec> {
  *     export const EMBEDDING_COLUMN    = ACTIVE_EMBEDDER.column;
  *
  * (The default literal is deliberately written as `<default>` above and NOT as a real
- * quoted value: two guards — fleet-defaults-drift script and
- * scripts/test/compose-code-default-agreement.test.sh — extract this file's code default
+ * quoted value: guards such as scripts/test/compose-code-default-agreement.test.sh extract this file's code default
  * with the regex `envStr\('MANDREL_EMBEDDER', *'([^']*)'\)`, and a SECOND quoted literal
  * anywhere in this file makes that extraction ambiguous. Both guards then fail closed
  * ("matched CONFLICTING defaults"), which turns a live fleet-drift detector off. Measured
@@ -237,7 +271,7 @@ export function embedders(): Record<string, EmbedderSpec> {
  * this module's evaluation was reused across files, the flip was INERT and
  * embedResilienceGemma's `expect(activeEmbeddingColumn()).toBe(embedders().gemma.column)`
  * failed with "expected 'embedding' to be 'embedding_gemma'" — GREEN then RED on the same
- * ref, same box. Reproduced deterministically at f9df00d with a shared module registry;
+ * ref, same box. Reproduced deterministically at f9d1f00 with a shared module registry;
  * see embedderSelectionMemoization.unit.test.ts + vitest.order-matrix.config.ts.
  *
  * THE FIX IS THE DELETION. There is no cached value left to go stale, so the bad state is

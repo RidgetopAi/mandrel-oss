@@ -4,7 +4,7 @@
  *
  * ═══ THE DEFECT ═══
  * Our own boot package's most valuable section for a human operator selected tasks BY TAG,
- * from a four-tag vocabulary we invented. `grep -rn "blocked_on" mcp-server/src` at ea7f00d
+ * from a four-tag vocabulary we invented. `grep -rn "blocked_on" mcp-server/src` at ea77f00
  * returned nothing: there was NO SERVER CONCEPT of "a person has to act next". And our
  * vocabulary is itself broken — `needs-operator` and `needs:operator` are one concept spelled two
  * ways, both live, so a consumer that picks one spelling sees a fraction of the truth.
@@ -150,7 +150,7 @@ export function extractDueHint(title: string, description: string | null): strin
 
 /**
  * FOLD A TAG TO ITS SPELLING KEY: lowercase, then collapse every run of separator
- * characters to one. `needs-operator`, `needs:operator`, `needs_operator`, `Needs  the operator` → the same
+ * characters to one. `needs-operator`, `needs:operator`, `needs_operator`, `Needs  Operator` → the same
  * key. `needs-operator` and `needs-coordinator` stay different.
  *
  * NOTE WHAT THIS IS NOT: it is not a normaliser the write path applies. Nothing calls it on
@@ -406,7 +406,7 @@ async function measureFallbackPrecision(
  * the two write paths that, until P5.5 folded SCOPE §3.3 in, stored tags completely
  * unvalidated and unwarned, which is why a project accumulates two spellings of one concept
  * in the first place. Contexts are excluded: that path has validated at the write boundary
- * since tool-native linking shipped, and it is another the builder's file this round.
+ * since tool-native linking shipped, and it is another Builder's file this round.
  */
 async function gatherTagFindings(projectId: string, pool: Pool): Promise<WaitingFindings> {
   if (!READ_TAG_COLLISION_FINDING_ENABLED()) {

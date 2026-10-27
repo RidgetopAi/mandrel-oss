@@ -2,8 +2,7 @@
  * DecisionInbox — "answerable in seconds, several at a sitting" (the operator).
  * Every OPEN or DISCUSSING decision for the page's project, soonest deadline first then
  * newest: its question, each option's label/pros/cons/recommended marker, one radio, a
- * note, a Decide button and a Discuss button. THE DECISION INBOX (an earlier decision
- * and its follow-up).
+ * note, a Decide button and a Discuss button. THE DECISION INBOX.
  *
  * Reuses the Decisions page's data layer (`api.decisions.*` via react-query,
  * `usePageProject` for scope) and the shared UI primitives — no second card system, no

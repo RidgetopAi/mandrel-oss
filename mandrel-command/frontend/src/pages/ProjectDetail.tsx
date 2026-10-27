@@ -11,7 +11,7 @@
  * (contexts / tasks / decisions / sessions / commits), and a section grid — repository
  * activity, recent sessions, the task mini-board, and recent decisions.
  *
- * DATA GAPS (the data-gap policy — never fabricate): the mock's per-project 30-day activity
+ * DATA GAPS (policy — never fabricate): the mock's per-project 30-day activity
  * sparkline is OMITTED (not served); the "active branches → TreeWalker" card is replaced
  * by the REAL git-activity signal (RepoActivityCard); sessions show real context counts +
  * activity time only (no fabricated token/actor/live fields). See projectDetail/config.ts.
@@ -56,7 +56,7 @@ const ProjectDetail: React.FC = () => {
   const now = React.useMemo(() => Date.now(), [record.data]); // eslint-disable-line react-hooks/exhaustive-deps
 
   /**
-   * Make this project THIS USER's default (page-scope epic §C). Formerly "switch to
+   * Make this project THIS USER's default (an earlier epic §C). Formerly "switch to
    * project", which set a hidden app-wide scope; there is no such global now.
    *
    * The write is authorization-checked server-side (the backend refuses a project the

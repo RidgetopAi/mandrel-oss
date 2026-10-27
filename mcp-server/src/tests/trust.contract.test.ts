@@ -1,6 +1,6 @@
 /**
- * TRUST MODEL v1 — integration + adversarial contract tests (Mandrel Core Redesign T2b,
- * an earlier task). THE MOAT, surfaced default-on in recall.
+ * TRUST MODEL v1 — integration + adversarial contract tests (Mandrel Core Redesign T2b).
+ * THE MOAT, surfaced default-on in recall.
  *
  * Tests are armor (spec §6). The pure math is covered by trustModel.unit.test.ts; THIS
  * suite drives the REAL recall tools through validate → routeExecutor (the EXACT path the

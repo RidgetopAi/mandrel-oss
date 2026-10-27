@@ -1,7 +1,7 @@
 /**
  * Tasks search box — id matching
  *
- * The Tasks third of the id-search class-fix. Operator pasted an id8 into the Tasks search
+ * The Tasks third of the id-search class-fix. The operator pasted an id8 into the Tasks search
  * box and got nothing: the haystack was title+description+assigned_to+tags, so the one
  * handle every Mandrel tool, link and handoff uses to refer to a task — its id — was the
  * one thing you could not search by.
@@ -147,9 +147,9 @@ describe('Tasks matchesSearch — word-prefix, fields kept separate', () => {
   });
 
   test('a term cannot start mid-segment of the id (the id trade-off, stated)', () => {
-    // OLD: true — '9aca13' is inside the first UUID segment. The word-prefix rule gives
+    // OLD: true — '9af00d' is inside the first UUID segment. The word-prefix rule gives
     // this up on purpose; the forms people actually paste are covered above.
-    expect(matchesSearch(makeTask(), '9aca13')).toBe(false);
+    expect(matchesSearch(makeTask(), '9af00d')).toBe(false);
   });
 
   test('terms may land in DIFFERENT fields (AND across the row, not a phrase)', () => {

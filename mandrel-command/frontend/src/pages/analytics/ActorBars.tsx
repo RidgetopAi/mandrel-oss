@@ -5,7 +5,7 @@
  * the SERVER classified it as.
  *
  * ── WHY THE SPLIT ────────────────────────────────────────────────────────────────────
- * Measured on prod (a prod screenshot): the two longest bars
+ * Measured on prod (reports/artifacts/actor-bars-<id>/01-…png): the two longest bars
  * on this chart were `coordinator-alert-sink` and `tick` — machinery — with every human and
  * agent bar compressed underneath them. A single ranking answers "who wrote the most
  * rows", which automation always wins and which nobody needs to be told. The operator's ask was
@@ -14,8 +14,8 @@
  *
  * ── ONE SHARED VALUE DOMAIN, AND WHY THAT IS NOT NEGOTIABLE ──────────────────────────
  * The groups were first drawn each scaled to itself, which is wrong for the question the
- * panel exists to answer. Measured in a browser (the
- * BEFORE screenshot): the user-driven axis ran 0–60 and the automated axis 0–120, so `operator`
+ * panel exists to answer. Measured in a browser (reports/artifacts/tokens-<id>/
+ * 08-BEFORE-…png): the user-driven axis ran 0–60 and the automated axis 0–120, so `operator`
  * (57 contexts) and `coordinator-alert-sink` (120) drew the SAME pixel length. That destroys the
  * between-group reading and keeps only the secondary within-group one, and it errs in the
  * direction that understates automation — the single fact the split was built to surface.

@@ -5,7 +5,7 @@
  * WHY THIS FILE EXISTS
  * ─────────────────────────────────────────────────────────────────────────────
  * Before P0.2, tokens were scattered as inline hex across ThemeContext.tsx,
- * chartTheme.ts — JS and CSS drifting apart with
+ * chartTheme.ts and surveyor/config/colors.ts — JS and CSS drifting apart with
  * no single source. This module is now the ONE place every design token is
  * defined. Everything else derives from it:
  *
@@ -35,7 +35,8 @@
  * TYPE SCALE — formalized from the doc's "Type" reference section
  * (Display/24 · Title/17 · Body/15.5 · Label/11 · Data/14). Traceable to the doc.
  *
- * DERIVED (NOT from the locked doc, but APPROVED 2026-07-14 —  * dark default, light optional):
+ * DERIVED (NOT from the locked doc, but APPROVED 2026-07-14 — an earlier decision:
+ * dark default, light optional):
  *   • the entire LIGHT theme palette. The doc is dark-first and specifies no
  *     light values, so the light ramp below is a principled derivation (proper
  *     contrast on a light ground, teal kept legible — NOT a naive invert).

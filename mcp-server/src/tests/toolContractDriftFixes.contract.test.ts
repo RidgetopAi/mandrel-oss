@@ -295,7 +295,7 @@ describe('tool-contract-drift fixes (public-tool path, real DB, zero SQL on writ
 
     // task_list scopes via the route's args.projectId (resolveProjectId). NOTE: the
     // task_list zod schema does not itself declare projectId (a separate, pre-existing
-    // gap — flagged to Coordinator, out of A1–A8 scope), so we VALIDATE the pagination params
+    // gap — flagged to the coordinator, out of A1–A8 scope), so we VALIDATE the pagination params
     // (limit/offset — the thing under test here) and supply the project scope the route
     // reads, instead of relying on the ambient current-project (which is non-deterministic
     // under parallel CI). The offset value still flows validate→route→handler→SQL.

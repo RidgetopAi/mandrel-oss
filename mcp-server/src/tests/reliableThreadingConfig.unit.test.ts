@@ -1,13 +1,13 @@
 /**
  * reliableThreadingConfig — PURE-logic unit tests (branch:mandrel-reliability, task ST-2
- * spec docs/specs/reliable-auto-threading.md §X1).
+ * an earlier change, spec docs/specs/reliable-auto-threading.md §X1).
  *
  * Tests are the rock. This module reads its knobs from env AT MODULE LOAD, so every case
  * gets a FRESH module instance (vi.resetModules + dynamic import) under a controlled env —
  * exactly the pattern processLock.unit.test.ts uses for a load-time singleton. Zero DB.
  *
  * Locks the config contract the spec (§X1) + task ST-2 require:
- *   - the Operator-aligned defaults are present + correct,
+ *   - the operator-aligned defaults are present + correct,
  *   - each env override actually takes,
  *   - a bad/unparseable env (a typo) FALLS BACK to the default (boot must not crash),
  *   - an OUT-OF-RANGE but parseable value FAILS FAST (throws at load) — the same fail-fast
@@ -63,7 +63,7 @@ async function freshConfig(env: Partial<Record<(typeof ENV_KEYS)[number], string
 beforeEach(clearEnv);
 afterEach(clearEnv);
 
-describe('reliableThreadingConfig — defaults (spec §X1 Operator-aligned)', () => {
+describe('reliableThreadingConfig — defaults (spec §X1 the operator-aligned)', () => {
   it('exposes the correct defaults when no env is set', async () => {
     const c = await freshConfig();
     expect(c.ANCHOR_TTL_MS).toBe(DEFAULT_TTL_MS);

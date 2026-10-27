@@ -178,7 +178,7 @@ export function sanitizeDeclaredActor(declared: string): string {
 }
 
 /**
- * Percent-ENCODE the reserved delimiters out of a VERIFIED PRINCIPAL segment (the reviewer N1).
+ * Percent-ENCODE the reserved delimiters out of a VERIFIED PRINCIPAL segment (Reviewer N1).
  *
  * The declared half is merely stripped (it is untrusted say-so — losing information in it costs
  * nothing). The principal is verified identity, so it is encoded instead: the mapping is
@@ -190,7 +190,7 @@ export function sanitizeDeclaredActor(declared: string): string {
  * a NO-OP for every delimiter-free principal — i.e. for every ordinary email / uuid / `auth0|…`
  * sub — so the common path is untouched by construction.
  *
- * SCOPE, STATED HONESTLY (the reviewer B2): this protects COMPOSITE actors. It does NOT separate the
+ * SCOPE, STATED HONESTLY (Reviewer B2): this protects COMPOSITE actors. It does NOT separate the
  * FLAT namespace — see the residual documented on deriveActor().
  */
 export function encodePrincipalActor(principal: string): string {
@@ -207,7 +207,7 @@ export function encodePrincipalActor(principal: string): string {
  * the grammar `<principal>/<handle>` read literally. `operator@x/builder-abc` → `builder-abc`; a
  * non-composite actor is returned unchanged.
  *
- * FIRST, not last (the reviewer N1): the principal is ONE segment by construction, because
+ * FIRST, not last (Reviewer N1): the principal is ONE segment by construction, because
  * encodePrincipalActor() guarantees it contains no raw delimiter. For every actor this system
  * can PRODUCE the two readings are identical (a well-formed composite holds exactly one
  * delimiter — asserted structurally in the unit tests); first-split is the one that stays
@@ -267,7 +267,7 @@ export function classifyActor(actor?: string | null): ActorKind {
   // `registry['constructor']` is the Object CONSTRUCTOR FUNCTION — which this line would
   // then return as an `ActorKind`, a value outside the union the signature promises, with
   // no type error anywhere because the index read is typed `ActorKind` by declaration.
-  // Measured 2026-08-28 (the reviewer): classifyActor('constructor') returned
+  // Measured 2026-08-28 (Reviewer): classifyActor('constructor') returned
   // that function. Same door reopened isRegisteredActor below; one edit closes both.
   if (Object.hasOwn(registry, subject)) return registry[subject];
   for (const rule of ACTOR_PREFIX_RULES) {
@@ -338,11 +338,11 @@ export function isRegisteredActor(actor?: string | null): boolean {
  * ── THE NAMESPACE INVARIANT: WHAT IS ACTUALLY TRUE ──────────────────────────────────────
  *   "A client-supplied string can never produce another principal's COMPOSITE actor."
  * Note the word COMPOSITE. The absolute form of this sentence — "…never produce another
- * principal's actor" — is FALSE, and was written here twice before the reviewer falsified it
+ * principal's actor" — is FALSE, and was written here twice before Reviewer falsified it
  * (2026-07-25). The residual is stated in full below; read it before you rely on this.
  *
  * The composite claim is about EVERY site an actor is built, not just this function, and it is
- * enforced by three things that must all hold (the reviewer falsified it when only the first
+ * enforced by three things that must all hold (Reviewer falsified it when only the first
  * existed):
  *   1. sanitizeDeclaredActor() — a DECLARED segment can never contain the delimiter, so it can
  *      never spell a composite (here, and at every other actor-construction site).
@@ -355,7 +355,7 @@ export function isRegisteredActor(actor?: string | null): boolean {
  *      careful this function is.
  * If you add a new surface that accepts a caller-declared actor, it goes through here.
  *
- * ── THE RESIDUAL: THE FLAT NAMESPACE IS SHARED, AND CANNOT BE SEPARATED HERE (the reviewer B2) ──
+ * ── THE RESIDUAL: THE FLAT NAMESPACE IS SHARED, AND CANNOT BE SEPARATED HERE (Reviewer B2) ──
  * A principal with NO declared handle gets a FLAT actor (`victim@example.com`), and a caller
  * with no principal that declares that exact string gets the SAME flat actor. Measured, both
  * before and after normalizeActor folds case:
@@ -417,7 +417,7 @@ export function deriveActor(authSub?: string | null, declared?: string | null): 
   // (including the sub-less static-bearer path, where an un-sanitized declared value could
   // otherwise spell another principal's composite). The principal half is verified → ENCODED on
   // every path it is emitted (including the sub-only path, or a delimiter-bearing sub would
-  // still collide with a composite — the reviewer N1).
+  // still collide with a composite — Reviewer N1).
   const safePrincipal = a ? encodePrincipalActor(a) : '';
   const safeDeclared = d ? sanitizeDeclaredActor(d) : '';
   if (safePrincipal && safeDeclared) {
@@ -430,7 +430,7 @@ export function deriveActor(authSub?: string | null, declared?: string | null): 
 
 /**
  * Refine an ALREADY-DERIVED actor with a caller-declared handle — the operation every
- * DOWNSTREAM site needs (closing an earlier note).
+ * DOWNSTREAM site needs (closing an earlier context).
  *
  * ⚠️ THIS EXISTS BECAUSE `deriveActor` IS THE WRONG FUNCTION DOWNSTREAM. deriveActor's first
  * argument is a RAW VERIFIED PRINCIPAL, and it ENCODES it. An already-derived
@@ -464,7 +464,7 @@ export function refineActor(derived?: string | null, declared?: string | null): 
 }
 
 /*
- * REMOVED: isKnownActor() (the reviewer N5, 2026-07-25). It answered "is this exact actor string
+ * REMOVED: isKnownActor() (Reviewer N5, 2026-07-25). It answered "is this exact actor string
  * enumerated?" on the WHOLE string while classifyActor() answers the neighbouring question on
  * the HANDLE segment — two readings of one concept, guaranteed to drift the moment composites
  * are enabled. It had ZERO product consumers (tests only), so the fix is deletion, not a second

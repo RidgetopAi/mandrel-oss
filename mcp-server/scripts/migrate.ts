@@ -169,7 +169,7 @@ class MigrationRunner {
    * lineage) but does NOT have 000_baseline_schema.sql recorded in
    * _aidis_migrations. Without this, the pending loop would treat the baseline as
    * pending and run it against a populated DB → `CREATE TABLE … already exists` →
-   * crash-loop the service (the exact failure that bit prod; see the project history).
+   * crash-loop the service (the exact failure that bit prod; see a past incident).
    *
    * Detection requires ALL THREE conditions (precise — no false positives):
    *   1. Non-fresh path (caller only invokes this when _aidis_migrations exists).

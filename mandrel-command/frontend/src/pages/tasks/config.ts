@@ -27,7 +27,7 @@ export const TASKS_CONFIG = {
    * fetches its OWN rows server-side (`useTaskColumnPage`, a `status`/`stage` filter +
    * this `limit`), so a column's volume can never spend another column's row budget —
    * the failure mode the shared `listLimit` cap had once a project passed it (the
-   * terminal-order fix sorts every completed-implying row after every open
+   * terminal-order fix, an earlier change, sorts every completed-implying row after every open
    * one, so the shared cap starved EXCLUSIVELY the terminal columns: Done / Merged /
    * Deployed). The header count is the column's REAL total (`COUNT(*) OVER()`,
    * services/task.ts), never this page length; "Load more" grows the page by another
@@ -76,7 +76,7 @@ export const TASKS_CONFIG = {
  */
 export const ASSIGNEE_COMBOBOX_CONFIG = {
   /**
-   * Max suggestions RENDERED after filtering (the reviewer carryover N3). `getActorOptions`
+   * Max suggestions RENDERED after filtering (Reviewer carryover N3). `getActorOptions`
    * has no server-side LIMIT — an unscoped admin gets every distinct assignee on the box —
    * so the bound lives here, at the surface that renders them. Applied AFTER the
    * case-insensitive filter, so typing narrows toward what you want instead of the cap

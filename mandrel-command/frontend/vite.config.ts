@@ -7,8 +7,8 @@ import react from '@vitejs/plugin-react';
  * THE ONE DIRECTORY VITE LOADS `.env*` FILES FROM.
  *
  * Pinned away from the project root ON PURPOSE. The on-host deploy paths
- * (fleet-deploy script prod build; formerly also deploy-command-ui-fast.sh,
- * deleted by an earlier task — prod is containerized) run `npm run build`
+ * (the prod build; formerly also a fast UI deploy script, deleted by
+ * an earlier task — prod is containerized) run `npm run build`
  * in this directory, where Vite's default env loading picked up the untracked
  * legacy `frontend/.env.production.local` at highest precedence — and a single
  * dynamic env read then inlined that whole file into the shipped bundle
@@ -37,7 +37,7 @@ const ENV_DIR = fileURLToPath(new URL('./env', import.meta.url));
  * Output dir is `build/` (NOT Vite's default `dist/`) so the existing deploy
  * path keeps working unchanged: frontend/Dockerfile does
  * `COPY --from=builder /app/frontend/build /usr/share/nginx/html` and
- * frontend/nginx.conf serves that dir.
+ * frontend/nginx.conf serves that dir. See frontend/DEPLOY-NOTES.md.
  */
 /**
  * The timezone every test runs in. See the long note on `test.env.TZ` below for WHY it is

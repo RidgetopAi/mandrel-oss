@@ -2,14 +2,14 @@
  * CLAIM FLAG — THE NAIVE-CLIENT PROPERTY. Contract tests.
  *
  * WHAT THIS PINS, AND WHY A CONFIG ROW DEPENDS ON IT
- *   the hosted provisioning posture ships MANDREL_TASK_CLAIM_ENABLED=true into every
- *   NEWLY PROVISIONED tenant. That row is only safe because of ONE property, measured here
+ *   docker-compose.yml defaults MANDREL_TASK_CLAIM_ENABLED to true for every instance that
+ *   does not set it. That default is only safe because of ONE property, measured here
  *   rather than reasoned (2026-09-05, batch 15 lane H):
  *
  *     enabling the claim feature changes NOTHING observable for a client that never calls
  *     task_claim and never passes claimId/force.
  *
- *   The row was held back until this was driven. The instinct against it was that it looked
+ *   The default was held back until this was driven. The instinct against it was that it looked
  *   like an earlier task — MANDREL_SESSION_REQUIRE_ACTOR shipped enforcing and 403'd a live
  *   customer's 88 writes in 14 days. The measurement showed the two flags have OPPOSITE
  *   POLARITY, and that is the whole argument:
@@ -22,9 +22,9 @@
  *   So a tenant whose client never claims carries claim_id IS NULL on every row forever, and
  *   every fence predicate (claim_id IS NULL OR claim_expires_at <= now()) is trivially true.
  *
- * IF THIS SUITE GOES RED, THE CONFIG ROW IS NO LONGER SAFE. Do not fix the test: the fence
- *   polarity changed, and a provisioner is now shipping a customer-breaking default. Pull the
- *   MANDREL_TASK_CLAIM_ENABLED row from the hosted provisioning posture in the same commit.
+ * IF THIS SUITE GOES RED, THE DEFAULT IS NO LONGER SAFE. Do not fix the test: the fence
+ *   polarity changed, and the compose is now shipping a customer-breaking default. Flip the
+ *   MANDREL_TASK_CLAIM_ENABLED default in the same commit.
  *
  * THE POPULATION (state it, per C3)
  *   The four mutating task surfaces a naive client can reach — task_update (plain field),

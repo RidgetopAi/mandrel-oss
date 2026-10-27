@@ -359,7 +359,7 @@ export class MandrelApiClient {
   // SPECIFIC MANDREL TOOL METHODS
   // ================================
   //
-  // ⚠️ INVARIANT — THE BROWSER MAKES ONLY MCP *READS*.
+  // ⚠️ INVARIANT — THE BROWSER MAKES ONLY MCP *READS*. (an earlier task.)
   //
   // A browser is a caller that cannot present a connection identity that means anything:
   // there is no such thing as a "stable X-Connection-ID" for a tab. Per-mount = a NEW
@@ -375,7 +375,7 @@ export class MandrelApiClient {
   //   - switchProject  (project_switch, effect 'scope-switch') → G1. Replaced by the UI's
   //     OWN selected-project state: the per-user default project (contexts/SettingsContext
   //     `defaultProjectId`) plus each page's own `usePageProject()` selection. (This line
-  //     used to point at ProjectContext.selectProjectByName, deleted by the page-scope epic.)
+  //     used to point at ProjectContext.selectProjectByName, deleted by an earlier epic.)
   //   - storeContext   (context_store,  effect 'write')        → G2. UI error telemetry
   //     belongs in services/errorReporter.ts (Sentry + /api/monitoring/errors), not in the
   //     user's context knowledge base scoped to a slot nobody owns.

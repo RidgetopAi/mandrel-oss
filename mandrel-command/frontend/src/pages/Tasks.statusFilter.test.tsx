@@ -37,7 +37,7 @@ vi.mock('../api', () => ({
 }));
 
 /**
- * PAGE PROJECT (page-scope epic). The page owns its project now — there is no global
+ * PAGE PROJECT. The page owns its project now — there is no global
  * selector to follow. These render tests need SOME concrete project so the reads are
  * enabled (`scope()` throws rather than silently sending unscoped), so a single fixture
  * project is provided and is BOTH the user's default and the only selectable one. The
@@ -267,8 +267,8 @@ describe('Tasks List status filter — selecting a status runs a server-side fil
 
     await clickStatusChip('Blocked');
 
-    // The dedicated server-side read fired WITH the status param — and, since the
-    // page-scope epic, with the page's own request scope as its second argument. Asserting BOTH
+    // The dedicated server-side read fired WITH the status param — and, since an earlier epic,
+    // with the page's own request scope as its second argument. Asserting BOTH
     // matters: a status-filtered read that forgot the scope would return the AMBIENT
     // project's blocked tasks under this page's heading, with nothing to show it had.
     expect(mockApi.tasks.list).toHaveBeenCalledWith(

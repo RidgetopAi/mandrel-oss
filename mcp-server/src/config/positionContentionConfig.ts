@@ -7,7 +7,7 @@
  * ── WHY A SEPARATE RULE FROM THE KEYING LADDER ───────────────────────────────────────
  * config/positionKeyConfig.ts separates agents that are DISTINGUISHABLE — by a declared
  * loop id, or by actor. It cannot separate agents that are not. Measured 2026-08-27 on
- * dev-host: eight the builder subagents share ONE bridge process (pid 2559015,
+ * control-host: eight Builder subagents share ONE bridge process (pid 2559015,
  * MANDREL_ACTOR=builder) and one inherited MANDREL_LOOP_ID, and the MCP protocol frame
  * carries nothing else about them —
  *
@@ -19,7 +19,7 @@
  * on the wire, and therefore no server-side rule and no bridge change can invent one.
  *
  * So the peer-to-peer case — which is the case the defect was actually filed on; all four
- * confirmations in an earlier task's noteLog are the builder↔the builder — has to be closed WITHOUT
+ * confirmations in an earlier task's noteLog are Builder↔Builder — has to be closed WITHOUT
  * identifying the agents. This rule does that by reading the SLOT'S OWN STATE instead.
  *
  * ── THE RULE ─────────────────────────────────────────────────────────────────────────
@@ -29,11 +29,11 @@
  * to TRUNK — which already means, exactly and everywhere, "mints no membership and
  * auto-opens nothing until a DECLARED act" (R5) — and the caller is TOLD.
  *
- * The batch-2 incident, replayed against this rule: the builder 1 claims T1 (slot empty →
- * byproduct on T1). The builder 2 claims T2 (byproduct already on T1, different spine →
+ * The batch-2 incident, replayed against this rule: Builder 1 claims T1 (slot empty →
+ * byproduct on T1). Builder 2 claims T2 (byproduct already on T1, different spine →
  * CONTESTED → trunk). Every write from that slot afterwards mints no DECLARED membership
  * at all, so the four cross-threaded memberships in the noteLog never come into existence.
- * Each builder's own explicit `task:` tag still threads exactly as it did — which is the
+ * Each Builder's own explicit `task:` tag still threads exactly as it did — which is the
  * whole point: nothing correct is lost, only the unattributable edge is not added.
  *
  * ── THE PRICE, STATED RATHER THAN DISCOVERED ─────────────────────────────────────────

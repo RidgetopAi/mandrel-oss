@@ -55,11 +55,11 @@ export type { ApiError };
  *    shapes genuinely reach these call sites: the interceptor's object, and a real `Error`
  *    thrown by {@link unwrapData} on a `success:false` 2xx envelope. Fixing the interceptor
  *    would leave all 48 sites anchored on a CLASS that merely happens to be right today —
- *    verbatim the a past incident tell, a guard and a product that agree until one moves. The
+ *    verbatim the past incident tell, a guard and a product that agree until one moves. The
  *    helper anchors on `message`, the field every real rejection actually carries, so a
  *    third shape arriving tomorrow is handled rather than silently mis-read.
  *
- * 2. FLIPPING A SHARED RUNTIME CONTRACT FROM A FEATURE BRANCH IS THE a past incident SHAPE.
+ * 2. FLIPPING A SHARED RUNTIME CONTRACT FROM A FEATURE BRANCH IS THE past incident SHAPE.
  *    The rejection shape is depended on by 48 render sites plus an unknown number of
  *    `toEqual` assertions. A 42-file explicit diff is reviewable; a one-line change to what
  *    every failed request rejects with is not — it is exactly the kind of shared default

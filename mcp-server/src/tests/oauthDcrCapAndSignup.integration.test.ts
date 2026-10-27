@@ -39,7 +39,7 @@ const SCRATCH_PASS = SCRATCH.password;
 // the ranges reservedTestPorts.contract.test.ts knows about, so nothing would have
 // caught the collision. See helpers/ephemeralPort.ts for why the port must be known
 // BEFORE the server is constructed (allowedHosts is frozen in the transport ctor).
-// NOTE: this is hardening, NOT the fix for the connection-exhaustion incident — that failure was Postgres
+// NOTE: this is hardening, NOT the fix for an earlier change — that failure was Postgres
 // connection-slot exhaustion, and nothing was ever bound on 19098 (measured).
 let TEST_PORT: number;
 const TEST_TOKEN = 'static-mcp-token-ba3-cap-test';
@@ -145,7 +145,7 @@ beforeAll(async () => {
   // socket is accepting, not that the server can serve — /readyz additionally reports DB
   // pool health. Asserting it here means a DB-side problem surfaces as an explicit
   // "server never became ready" failure in THIS hook, instead of leaking downstream as a
-  // mystery 503 on an unrelated assertion (which is exactly how the connection-exhaustion incident presented).
+  // mystery 503 on an unrelated assertion (which is exactly how presented).
   // NOT the fix for that bug — the root cause was host connection-slot exhaustion.
   await waitForReady(baseUrl);
 }, 30000);

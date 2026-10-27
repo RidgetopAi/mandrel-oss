@@ -254,7 +254,7 @@ describe('HTTP ↔ MCP contract', () => {
         expect(res.status, toolName).toBe(200);
         expectSuccessEnvelope(body);
       } else if (res.status === 200) {
-        // the envelope-agreement defect: `success: false` at 200 is NOT a contradiction — it is an in-band
+        // `success: false` at 200 is NOT a contradiction — it is an in-band
         // MCP tool error, and the envelope now says so instead of claiming success. This
         // branch did not exist because the shape could not occur: the envelope hardcoded
         // `success: true`, so every one of these responses took the success branch above.
@@ -262,7 +262,7 @@ describe('HTTP ↔ MCP contract', () => {
       } else {
         // A NON-200 NOW HAS TWO LEGAL BODIES, and this branch used to know only one.
         //
-        // Before an earlier task (commit 32df00d) a 4xx could only come from the express
+        // Before an earlier task (commit 32d6f00) a 4xx could only come from the express
         // catch, whose body is `{success:false, error:<string>}`. A POLICY REFUSAL — the
         // identity guards, the actor requirement, a binding mismatch — never reaches that
         // catch: routeExecutorInner returns formatMcpError IN BAND, and that branch used to

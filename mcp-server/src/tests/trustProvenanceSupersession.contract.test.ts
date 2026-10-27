@@ -20,7 +20,7 @@
  * with the belief-adjudicator provenance label (exactly the row the reconciler mints) — the
  * `link` tool stamps created_by='link' (declared), so it cannot be used to forge an auto edge.
  *
- * UPDATED BY the no-hard-tier change: an inferred supersession can no longer occupy the `supersedes`
+ * UPDATED BY an earlier change: an inferred supersession can no longer occupy the `supersedes`
  * channel at all (migration 087's links_supersedes_declared_only), so every AUTO fixture here
  * is a `possibly_supersedes` row. The DECLARED fixtures — the `link` tool, a NULL created_by,
  * `auto:decision_backfill` — are unchanged and still ride `supersedes`, which is the whole
@@ -133,7 +133,7 @@ describe('trust — provenance-weighted supersession (BL-4)', () => {
     await db.end();
   });
 
-  // ── DELETED BY the no-hard-tier change: 'an AUTO supersedes edge SOFT-supersedes' ───────────────────
+  // ── DELETED BY an earlier change: 'an AUTO supersedes edge SOFT-supersedes' ───────────────────
   // That test inserted `supersedes` + created_by='auto:belief-adjudicator' and asserted trust
   // demoted rather than abstained. Migration 087 makes that row UNWRITABLE (a `supersedes`
   // edge must classify 'declared'), so the test now fails on a constraint violation instead
@@ -206,7 +206,7 @@ describe('trust — provenance-weighted supersession (BL-4)', () => {
     const autoId = await storeContext(NEW_AUTO);
 
     // A DECLARED (link) `supersedes` AND an AUTO (belief) `possibly_supersedes` both point at
-    // the old record. After the no-hard-tier change this IS the both-tiers-present shape: an inferred
+    // the old record. Post-<id> this IS the both-tiers-present shape: an inferred
     // supersession cannot occupy the hard channel, so the soft channel is where it lands.
     const linkResp = await viaTool('link', {
       from: id8(declId), fromType: 'context',

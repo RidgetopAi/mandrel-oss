@@ -320,7 +320,7 @@ describe('Calendar — error state', () => {
   });
 });
 
-describe('Calendar — the page opens on the user default, not "all" (page-scope epic §E)', () => {
+describe('Calendar — the page opens on the user default, not "all" (an earlier epic §E)', () => {
   it('both reads name the DEFAULT project on first paint', async () => {
     await mount();
     await settle();

@@ -1,5 +1,5 @@
 /**
- * Notifications section — HONEST NOT-YET-AVAILABLE (the data-gap policy).
+ * Notifications section — HONEST NOT-YET-AVAILABLE (data-gap policy).
  *
  * Alerts already route to chat from the Runtime, but there is NO Command backend
  * endpoint that stores per-event notification preferences. So the event checklist renders

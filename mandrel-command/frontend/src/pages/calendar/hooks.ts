@@ -12,7 +12,7 @@
  * IANA tz so each day buckets in local time and the RAW project filter
  * ('all' or a uuid) so the Calendar's own scope is authoritative.
  *
- * ── THE RAW `'all'` IS THE CONTRACT, NOT AN ACCIDENT (page-scope epic §E) ───────────────
+ * ── THE RAW `'all'` IS THE CONTRACT, NOT AN ACCIDENT (an earlier epic §E) ───────────────
  * Both reads send the page's selection VERBATIM — the literal string `'all'` included.
  * The backend accepts `'all'` from a QUERY source (and only from a query source) as
  * EXPLICITLY UNSCOPED, and that beats the `X-Project-ID` header by precedence

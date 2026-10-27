@@ -7,7 +7,7 @@
  * "100" rather than the number 100. Every numeric param this server DECLARES must therefore
  * accept its own stringified form — and must still reject garbage.
  *
- * WHY A NEW GUARD, GIVEN AN EARLIER GUARD ALREADY EXISTS
+ * WHY A NEW GUARD, GIVEN an earlier change ALREADY EXISTS
  * ----------------------------------------------
  * validateToolArguments() runs coerceArgsToDeclaredTypes(), which rescues a
  * stringified value by looking up its DECLARED type. That central seam is why most of the bare
@@ -18,7 +18,7 @@
  *   2. It is DENY-BY-DEFAULT for ambiguous types — ZodUnion in particular.
  *
  * So `minTrust: z.union([trustBandEnum, z.number()...])` on recall_thread was NOT rescued.
- * Measured against live prod v0.17.0 (commit f68f00d) on 2026-07-30:
+ * Measured against live prod v0.17.0 (commit f689f00) on 2026-07-30:
  *      minTrust: 0.5   -> 200, 29 nodes
  *      minTrust: "0.5" -> -32602 "'minTrust': Invalid input"
  * That param is not named `offset` and does not match the shape `name: z.number()`, which is
@@ -31,9 +31,9 @@
  * nested ZodObject shapes, into ZodArray/ZodSet elements, into ZodRecord values, and into every
  * arm of every ZodUnion / ZodDiscriminatedUnion. It is deliberately NOT:
  *   - a list of param names   (`offset` alone would have missed 8 of the 11 known instances),
- *   - a regex over the file   (Coordinator's `^\s+name: z.number()` missed 3 real shapes: the two
+ *   - a regex over the file   (the coordinator's `^\s+name: z.number()` missed 3 real shapes: the two
  *                              shared consts baseLimit/baseRelevanceScore and the union above),
- *   - the top-level shape     (that is the very scope limit that let this survive the earlier guard).
+ *   - the top-level shape     (that is the very scope limit that let this survive).
  * `validationSchemas` is the single object that every tool call resolves its schema from
  * (validation.ts:1362 and :1553), so it is the choke point every instance must pass through.
  * A new numeric param is covered the moment it is declared; nobody has to remember this file.

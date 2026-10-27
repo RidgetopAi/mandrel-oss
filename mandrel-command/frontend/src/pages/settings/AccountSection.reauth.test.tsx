@@ -1,5 +1,5 @@
 /**
- * Batch 4 merge fold-in (Coordinator) — the CROSS-LANE half of an earlier task.
+ * Batch 4 merge fold-in (the coordinator) — the CROSS-LANE half of an earlier task.
  *
  * Lane 9 made `PUT /api/users/profile` require `currentPassword` whenever an identity
  * field actually changes, answering 401 `code: 'REAUTH_REQUIRED'` without it. That is
@@ -42,7 +42,7 @@ vi.mock('../../contexts/AuthContext', () => ({
  * file, so no request leaves the test. It reads as what it is on sight — a password-SHAPED
  * literal in a TS object is exactly the pattern a secret scanner should flag, and the
  * scanner cannot know it is inert, so the value should say so rather than look plausible.
- * (An earlier 'hunter2' here tripped GitGuardian on commit 706f00d — a correct catch of a
+ * (An earlier 'hunter2' here tripped GitGuardian on commit 7062f00 — a correct catch of a
  * harmless string. Our own .gitleaks.toml deliberately does NOT match lower-case object
  * keys: a variant that did produced 375 findings on this repo and was measured unusable.)
  */
@@ -119,7 +119,7 @@ afterEach(async () => {
   container.remove();
 });
 
-describe('AccountSection re-auth — the client half of the re-auth fix', () => {
+describe('AccountSection re-auth — the client half of 30326784', () => {
   it('sends currentPassword with a changed username', async () => {
     await mount();
     await type(field('Username'), 'coordinator');

@@ -62,7 +62,7 @@ import { declareIntentionallyUnauthenticated, declareAnyAuthenticatedMayWrite } 
  *       properties:
  *         username:
  *           type: string
- *           description: Username
+ *           description: Dashboard username, or the email address of this instance's sign-in
  *           example: admin
  *         password:
  *           type: string
@@ -159,7 +159,7 @@ import { declareIntentionallyUnauthenticated, declareAnyAuthenticatedMayWrite } 
 const router = Router();
 
 // Rate limiting for auth endpoints - Production-safe with admin considerations
-const authLimiter = rateLimit({
+export const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: process.env.NODE_ENV === 'development' ? 100 : 30, // Increased for testing
   message: {
@@ -221,13 +221,16 @@ const validateRegisterRequest = (body: any): body is RegisterRequest => {
  * /auth/login:
  *   post:
  *     summary: User login
- *     description: Authenticate a user with username and password
+ *     description: >-
+ *       Sign in with a dashboard username and password, or with the email address and
+ *       password of this instance's sign-in (the one set from the welcome email's
+ *       set-password link). The `username` field accepts either.
  *     tags: [Authentication]
  *     # The global `security` in config/openapi requires bearerAuth on every operation, so
  *     # without this override the SHIPPED SPEC told customers that the login endpoint needs
  *     # a bearer token — which is both false and impossible, and it is what a generated
  *     # client would try to attach. Found 2026-08-25 by cross-checking the live spec
- *     # against the route census (the class is the route-census drift class).
+ *     # against the route census (the class is an earlier change).
  *     security: []
  *     requestBody:
  *       required: true
@@ -254,6 +257,12 @@ const validateRegisterRequest = (body: any): body is RegisterRequest => {
  *           application/json:
  *             schema:
  *               $ref: '#/components/schemas/ErrorResponse'
+ *       403:
+ *         description: The sign-in is valid but has no dashboard access on this instance
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
  *       429:
  *         description: Too many login attempts
  *         content:
@@ -262,6 +271,12 @@ const validateRegisterRequest = (body: any): body is RegisterRequest => {
  *               $ref: '#/components/schemas/ErrorResponse'
  *       500:
  *         description: Server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ErrorResponse'
+ *       503:
+ *         description: The sign-in could not be checked right now (not a wrong password)
  *         content:
  *           application/json:
  *             schema:
@@ -281,14 +296,34 @@ router.post('/login', authLimiter,
     }
 
     const { username, password } = req.body;
-    const result = await AuthService.login({ username, password });
+    const result = await AuthService.login({ username, password }, undefined, req.ip);
 
-    if (!result) {
-      res.status(401).json({
-        error: 'Authentication failed',
-        message: 'Invalid username or password'
-      });
-      return;
+    switch (result.kind) {
+      case 'invalid':
+        res.status(401).json({
+          error: 'Authentication failed',
+          message: 'Invalid username or password'
+        });
+        return;
+      case 'no-dashboard-access':
+        res.status(403).json({
+          error: 'No dashboard access',
+          message: 'This sign-in is valid, but it has no dashboard access on this instance. Ask the instance owner to give you access.'
+        });
+        return;
+      case 'rate-limited':
+        res.status(429).json({
+          error: 'Too many authentication attempts. Please try again later.'
+        });
+        return;
+      case 'unavailable':
+        res.status(503).json({
+          error: 'Sign-in unavailable',
+          message: 'We could not check your sign-in right now. Please try again in a minute.'
+        });
+        return;
+      case 'ok':
+        break;
     }
 
     res.json({

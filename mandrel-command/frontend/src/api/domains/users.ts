@@ -6,7 +6,7 @@ import { http, unwrapData, type ApiEnvelope } from '../request';
 import type { User } from '../generated/models/User';
 
 /**
- * The per-user preference row (page-scope epic §A). `defaultProjectId` is a UUID —
+ * The per-user preference row (an earlier epic §A). `defaultProjectId` is a UUID —
  * never a project name — so renaming a project cannot break somebody's default.
  * `null` on either field means "not set", which is a real, expected state.
  */

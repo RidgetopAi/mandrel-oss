@@ -39,8 +39,8 @@ export interface ProvenanceConfig {
    * ALARM WORKER master switch — gates the SCHEDULED worker only (runOnce stays callable,
    * which is how the contract tests exercise the production invocation path directly).
    * DEFAULT `NODE_ENV === 'production'`, the same gate and for the same measured reason as
-   * resilienceConfig.alertEnabled: a dev worktree with a notify script configured pages the
-   * same people prod does, and an alert channel carrying dev noise trains its reader to
+   * resilienceConfig.alertEnabled: a dev worktree that can reach the alert notifier pages the
+   * same phone prod does, and an alert channel carrying dev noise trains its reader to
    * ignore it. env: MANDREL_PROVENANCE_ALARM_ENABLED
    */
   alarmEnabled: boolean;

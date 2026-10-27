@@ -24,7 +24,7 @@
  * out-of-scope item 5) — it is a different query, not a different label.
  *
  * ── THE CURRENT HOUR IS MARKED ───────────────────────────────────────
- * The operator: "it's a little odd in how it's presented… could we make the current hour bar a
+ * Operator: "it's a little odd in how it's presented… could we make the current hour bar a
  * different color, that would separate past hours from previous days hours." Folding N
  * days into 24 buckets leaves the chart with no anchor for "now", so one bucket is tinted,
  * keyed in the caption, and annotated in its tooltip.

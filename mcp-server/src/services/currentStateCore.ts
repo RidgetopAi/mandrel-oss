@@ -33,7 +33,7 @@
  *                          current-state node is a shaped thread node plus a lifecycle stamp,
  *                          and only the stamp is written here. (This delegation was MISSING in
  *                          the first cut — the clip was re-implemented inline while this very
- *                          list claimed otherwise. The reviewer N2. If a future change genuinely
+ *                          list claimed otherwise. Reviewer N2. If a future change genuinely
  *                          cannot delegate, say so HERE and list it as an exception rather
  *                          than letting this list quietly overclaim again.)
  *   - trust RENDERING    → not done here at all. The core returns the Trust object; the route
@@ -231,7 +231,7 @@ export interface CurrentState {
    * A context has no lifecycle column, so before this existed the ONLY way one could reach a
    * section was `latestTrustedOutcomes` — which is trust-gated. Trust accrues AFTER the fact
    * (vouching), so a context written minutes ago is `unproven` BY CONSTRUCTION and fell to the
-   * `historical` omission COUNT. Measured on live prod 2026-08-22, anchor 2b3c4d5e: an earlier note
+   * `historical` omission COUNT. Measured on live prod 2026-08-22, anchor: an earlier context
    * (a run report carrying a DECLARED informs edge to the anchor) was absent from
    * `current` at depth 1 and 2, and present at `headline`. `current` is the boot altitude, so
    * the one altitude an agent wakes up on was structurally biased to the settled past.
@@ -704,7 +704,7 @@ function toSectionNode(
   cfg: CurrentStateConfig,
   threadCfg: ThreadConfig
 ): CurrentStateNode {
-  // CONTENT DEPTH IS shapeNode'S JOB (the reviewer N2). This used to re-implement the
+  // CONTENT DEPTH IS shapeNode'S JOB (Reviewer N2). This used to re-implement the
   // headline/summary/full branches AND the ellipsis clip inline — a sixth copy of a rule
   // recallThreadCore already owns, in the very module whose header claims it delegates
   // everything it could have re-implemented. It delegates now: the clip budget, the
@@ -744,7 +744,7 @@ function section(
  *
  * FAIL-OPEN ON UNKNOWN: a null/undefined implementation_status counts as UNBUILT. The
  * alternative — treating "we do not know" as "it shipped" — is precisely the direction the
- * miss went, and an under-count here is the failure that has no
+ * an earlier change miss went, and an under-count here is the failure that has no
  * symptom. The policy list comes from config; nothing is spelled inline.
  */
 function countUnbuilt(nodes: CurrentStateInputNode[], cfg: CurrentStateConfig): number {

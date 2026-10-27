@@ -519,6 +519,7 @@ describe('escape hatch — disables cannot multiply silently', () => {
     //   controllers/git.ts        payload SUBJECT (the project the stats belong to)
     //   controllers/task.ts       creation TARGET + bulk-move DESTINATION
     //   routes/users.ts           the grant/revoke OBJECT, on requireAdmin routes
+    //   __tests__/projectScope*   the guard suite echoing what it just authorized
     //
     // __tests__/embeddingColumn.contract.test.ts is here for a DIFFERENT rule sharing the
     // same rule id: the test-file override adds embedder-dimension selectors,
@@ -535,8 +536,7 @@ describe('escape hatch — disables cannot multiply silently', () => {
     // reads any more.
     //
     // Every one is authorized BEFORE the read: because the resolver
-    // authorizes EVERY candidate and body.project_id/projectId are PROJECT_SCOPE_SOURCES.
-    // Growing this list is a review decision.
+    // authorizes EVERY candidate and body.project_id/projectId are PROJECT_SCOPE_SOURCES. Growing this list is a review decision.
     expect(marked).toEqual([
       '__tests__/embeddingColumn.contract.test.ts',
       'controllers/git.ts',

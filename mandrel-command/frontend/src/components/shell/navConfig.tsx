@@ -4,12 +4,12 @@
  * Sidebar maps over these arrays, so a nav change is a one-line edit here.
  *
  * Reconciled VERBATIM from the LOCKED IA/nav build-spec
- *   riverbend/docs/command-ia-nav-reference.html  (IA-lock an earlier note)
+ *   riverbend/docs/command-ia-nav-reference.html  (IA-lock an earlier context)
  * THREE content groups — Operate / Memory & work / Insight — plus a bottom,
  * hairline-separated UTILITY zone (Projects, Settings). TreeWalker carries a
  * `work` qualifier (Decision 3·A). Calendar is
  * `isNew` (no dedicated screen yet → the ComingSoon placeholder). TreeWalker is
- * now a live screen (its thread data renders honest-empty until the backend thread endpoint shipped).
+ * now a live screen (its thread data renders honest-empty until backend).
  *
  * NOTE (reconciled, flagged for the coordinator): the locked IA lists exactly 11 nav
  * entries. Existing routes NOT in the locked IA (Embedding, Profile, and every
@@ -17,7 +17,8 @@
  * menu) but are intentionally absent from the top-level nav — they get
  * folded/placed in their own later phases.
  *
- * FEEDBACK IS THE ONE DELIBERATE ADDITION TO THE LOCKED 11 ( * 2026-08-08). It sits in the bottom UTILITY zone (Projects · Settings ·
+ * FEEDBACK IS THE ONE DELIBERATE ADDITION TO THE LOCKED 11
+ * (2026-08-08). It sits in the bottom UTILITY zone (Projects · Settings ·
  * Feedback), not in a content group, so the three locked content groups are
  * untouched. Reason: the screen's entire purpose is to be found in the moment a
  * user hits a problem — a reporting surface reachable only by typing /feedback
@@ -29,10 +30,11 @@
  * "Memory & work" beside Tasks because a punch IS a task (one board item with a
  * `stage`), filed from a phone.
  *
- * DECISION INBOX IS THE THIRD ADDITION ( * 2026-09-21). Sits beside Decisions — the answer-fast surface for open decisions,
+ * DECISION INBOX IS THE THIRD ADDITION
+ * (2026-09-21). Sits beside Decisions — the answer-fast surface for open decisions,
  * distinct from the Decisions "why ledger" screen. Carries a live open-count badge
  * (Sidebar.tsx), rendered by item id rather than as static config (the count is a
- * network read, not a compile-time value). 13 entries now (10 content + 3 utility).
+ * network read, not a compile-time value). 14 entries now (11 content + 3 utility).
  */
 import type React from 'react';
 import {
@@ -59,7 +61,7 @@ export interface NavItem {
   /** Route path (absolute). */
   to: string;
   icon: React.FC<IconProps>;
-  /** One-word qualifier rendered after the label (TreeWalker `work`). */
+  /** One-word qualifier rendered after the label (Surveyor `code`, TreeWalker `work`). */
   qualifier?: string;
   /** True for items whose real screen ships in a later phase (→ ComingSoon placeholder). */
   isNew?: boolean;

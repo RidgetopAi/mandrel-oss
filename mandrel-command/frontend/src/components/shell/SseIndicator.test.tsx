@@ -6,7 +6,7 @@
  *   1. the indicator keyed off SSE liveness ONLY, so a failing `/api/*` under a healthy
  *      stream still showed a green "Live";
  *   2. below 600px the label was hidden outright, and `title=` does not exist on touch,
- *      so Operator's phone showed a coloured dot and nothing else.
+ *      so the operator's phone showed a coloured dot and nothing else.
  *
  * SPECIFICITY, not just sensitivity: a live server ANSWERING 500 or 404 is a page-level
  * error and must NOT paint the topbar red, or the indicator becomes noise and gets
@@ -175,7 +175,7 @@ describe('Topbar.module.css — the mobile breakpoint', () => {
   it('hides the label on narrow screens ONLY while the state is healthy', () => {
     expect(mobileBlock).toContain(".sse[data-degraded='false'] .sseLabel");
     // The exact rule that produced the bare dot: an unconditional hide. If it comes
-    // back, "Offline" disappears on the device Operator actually uses.
+    // back, "Offline" disappears on the device the operator actually uses.
     expect(mobileBlock).not.toMatch(/(^|\n)\s*\.sseLabel\s*\{/);
   });
 

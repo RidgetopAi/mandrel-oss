@@ -23,7 +23,7 @@ import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { isInitializeRequest, LATEST_PROTOCOL_VERSION } from '@modelcontextprotocol/sdk/types.js';
 import { logger } from '../utils/logger.js';
-import { MANDREL_VERSION } from '../version.js';
+import { MANDREL_SERVER_NAME, MANDREL_VERSION } from '../version.js';
 import { registerMcpHandlers, type McpHandlerDeps } from './registerMcpHandlers.js';
 import { resolveInstructions } from '../utils/projectEcho.js';
 import { runWithProjectScope } from '../services/effectiveProjectScope.js';
@@ -427,7 +427,8 @@ export class RemoteMcpTransport {
       // session id is the client's only lost state. Rather than return a 404 that every
       // real MCP client (Amp, Claude Code, Codex, …) IGNORES — silently bricking the
       // connection — we REHYDRATE: transparently re-create a valid session bound to that
-      // exact id and handle the request, so the client never sees the drop (      // "rehydrate-on-miss"). Guarded: id-format validation + per-principal rate limit
+      // exact id and handle the request, so the client never sees the drop
+      // ("rehydrate-on-miss"). Guarded: id-format validation + per-principal rate limit
       // below; rehydration runs ONLY here, AFTER the auth middleware.
       if (sessionId) {
         await this.rehydrateAndHandle(sessionId, req, res);
@@ -500,7 +501,7 @@ export class RemoteMcpTransport {
     // caller resolved the active project name; omitted entirely when the feature is off
     // (preserves the prior "no instructions" behavior exactly).
     const server = new Server(
-      { name: 'aidis-mcp-server', version: MANDREL_VERSION }, // <semver>+<revision> — CUSTOMER-VISIBLE (remote HTTP transport)
+      { name: MANDREL_SERVER_NAME, version: MANDREL_VERSION }, // <semver>+<revision> — CUSTOMER-VISIBLE (remote HTTP transport)
       {
         capabilities: { tools: {}, resources: {} },
         ...(instructions ? { instructions } : {}),

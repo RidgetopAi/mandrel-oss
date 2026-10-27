@@ -7,7 +7,7 @@
  * an agent uses to ask "what is this task" — rendered NEITHER, in the text block or the
  * structured channel.
  *
- * MEASURED against live prod 2026-08-31 on which carries blocked_on='human'
+ * MEASURED against live prod 2026-08-31 on an earlier task, which carries blocked_on='human'
  * and due_at=2026-09-15: task_details returned neither field in either channel. The
  * consequence was not cosmetic. That task is the only genuinely time-boxed item in the
  * backlog, and because its strong carriers were unreadable, its deadline was restated in
@@ -112,7 +112,7 @@ describe('task_details returns the deadline fields', () => {
   });
 
   test('a deadline set by task_UPDATE is readable too, not just one set at create', async () => {
-    // Both write paths, per CLASSES.md C5. The reported task's deadline was set by an update.
+    // Both write paths, per CLASSES.md C5. an earlier change's deadline was set by an update.
     await viaTool('task_update', { taskId: taskWithout, dueAt: '2026-12-01T00:00:00.000Z', blockedOn: 'external' });
     const res = await viaTool('task_details', { taskId: taskWithout });
     expect(res.structuredContent.task.dueAt).toBe('2026-12-01T00:00:00.000Z');

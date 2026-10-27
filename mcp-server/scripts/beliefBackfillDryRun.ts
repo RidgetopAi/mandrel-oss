@@ -2,7 +2,7 @@
 /**
  * beliefBackfillDryRun — FULL-PIPELINE pre-prod dry-run of the belief layer (UNCOMMITTED).
  *
- * Purpose (the coordinator/the builder dry-run, the adjudicator lock): run the CURRENT committed
+ * Purpose (Coordinator/Builder dry-run, ref:adjudicator-locked): run the CURRENT committed
  * pipeline (picker fix 0.60/0.95 + auto-record filter → Groq gpt-oss-120b → reconcile/mint)
  * over the REAL riverbend corpus into a DISPOSABLE DB, and MEASURE how many supersedes edges
  * it would actually mint + whether they are right. NEVER touches prod (writes only the ci_*
@@ -12,7 +12,7 @@
  * end-to-end on real data.
  *
  * WHERE THE RETRACT/RE-MINT EXERCISE WENT. The `ADJRUN_RECONCILE_TEST` flag
- * deleted in 6ddf00d is not coming back here: it was coupled to this paid run only because
+ * deleted in 6ddff00 is not coming back here: it was coupled to this paid run only because
  * it drew its sample from the run's minted edges, and reconcileBeliefEdge needs no provider.
  * It is ported to src/tests/beliefEdgeReconciliationRealRows.contract.test.ts, which runs the
  * same retract/re-mint round trip against real `links` rows on the disposable CI DB, for free

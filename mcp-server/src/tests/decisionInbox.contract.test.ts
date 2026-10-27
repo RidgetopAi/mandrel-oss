@@ -1,5 +1,5 @@
 /**
- * Decision Inbox Contract Test
+ * Decision Inbox Contract Test (an earlier task)
  *
  * "An OPEN decision carries a question + options with pros/cons, or is refused."
  *
@@ -363,17 +363,17 @@ describe('decision inbox', () => {
       );
       const id = idFromRecordText(textOf(recordResp));
 
-      const first = await viaPublicTool('decision_discuss', { decisionId: id, note: 'need Coordinator input' }, (a) => decisionsRoutes.handleDiscuss(a, CTX));
+      const first = await viaPublicTool('decision_discuss', { decisionId: id, note: 'need the coordinator input' }, (a) => decisionsRoutes.handleDiscuss(a, CTX));
       expect(first.isError).toBeFalsy();
       let row = (await db.query('SELECT answer_status, answer_note FROM technical_decisions WHERE id = $1', [id])).rows[0];
       expect(row.answer_status).toBe('discussing');
-      expect(row.answer_note).toBe('need Coordinator input');
+      expect(row.answer_note).toBe('need the coordinator input');
 
       const second = await viaPublicTool('decision_discuss', { decisionId: id, note: 'still waiting' }, (a) => decisionsRoutes.handleDiscuss(a, CTX));
       expect(second.isError).toBeFalsy();
       row = (await db.query('SELECT answer_status, answer_note FROM technical_decisions WHERE id = $1', [id])).rows[0];
       expect(row.answer_status).toBe('discussing');
-      expect(row.answer_note).toBe('need Coordinator input\nstill waiting'); // APPENDED, not replaced
+      expect(row.answer_note).toBe('need the coordinator input\nstill waiting'); // APPENDED, not replaced
     }, 30000);
 
     test('refused once decided', async () => {

@@ -44,6 +44,7 @@ import {
 import {
   mintHandoffSupersession,
   TRUNK_CONTEXT_TYPE,
+  HANDOFF_PREDECESSOR_SOURCE,
   type HandoffSupersessionReport,
 } from '../services/handoffSupersession.js';
 import { inferAndMintRelatedTo, INFERENCE_EDGE_TYPE, type InferenceResult } from '../services/threadInference.js';
@@ -482,16 +483,24 @@ export class ContextRoutes {
         : null;
       // PHASE 2 item g: the handoff-timeline supersession, surfaced like every other mint
       // path (an invisible mint is one nobody can notice going wrong).
+      // the warning is shown WITH the edge line, not instead of it — an
+      // untagged handoff that minted a timeline edge still owes the "no workstream tag" note.
       const handoffSupLine =
-        handoffSup && handoffSup.predecessorId !== null
-          ? `supersedes → context ${handoffSup.predecessorId}` +
-            `${handoffSup.created ? '' : ' (already linked)'} (declared handoff-timeline corroboration)`
-          : handoffSup?.warning
-          ? `handoff supersession: ${handoffSup.warning}`
-          : null;
+        [
+          handoffSup && handoffSup.predecessorId !== null
+            ? `supersedes → context ${handoffSup.predecessorId}` +
+              `${handoffSup.created ? '' : ' (already linked)'} ` +
+              (handoffSup.source === HANDOFF_PREDECESSOR_SOURCE.timeline
+                ? '(declared handoff-timeline corroboration)'
+                : `(declared, explicitly named predecessor: ${handoffSup.source})`)
+            : null,
+          handoffSup?.warning ? `handoff supersession: ${handoffSup.warning}` : null,
+        ]
+          .filter((l): l is string => l !== null)
+          .join('\n') || null;
       const inferenceLine = inference ? ContextRoutes.inferenceLineFor(inference) : null;
 
-      // the fallback ran BECAUSE the stated intent did not land. (It does not run
+      // an earlier change: the fallback ran BECAUSE the stated intent did not land. (It does not run
       // when the writer opted out, or when the positional layer already threaded the record —
       // in both of those the floor is met without a guess.)
       const threadFallbackEngaged = threadIntentUnresolved && inference !== null;
@@ -533,12 +542,12 @@ export class ContextRoutes {
                 (linkWarningLines.length > 0
                   ? `\nLink notes:\n` + linkWarningLines.map(w => `   - ${w}`).join('\n')
                   : '') +
-                // threading tags that resolved to nothing → no edge, said out loud.
+                // an earlier change: threading tags that resolved to nothing → no edge, said out loud.
                 (tagMintResult.skips.length > 0
                   ? `\nTag edges skipped:\n` +
                     tagMintResult.skips.map(s => `   - ${s.reason}`).join('\n')
                   : '') +
-                // tag/links-param edges that DID mint, said out loud too — success
+                // an earlier change: tag/links-param edges that DID mint, said out loud too — success
                 // must be as visible as failure or a threaded write reads as an orphan.
                 (linkedLines.length > 0
                   ? `\nLinked:\n` + linkedLines.map(l => `   - ${l}`).join('\n')
@@ -570,7 +579,7 @@ export class ContextRoutes {
                 (positional.offer
                   ? `\nNo branch open — to start one on this record: ${positional.offer}`
                   : '') +
-                // an explicit threading reference that minted nothing, said out
+                // an earlier change: an explicit threading reference that minted nothing, said out
                 // loud with its CONSEQUENCE — placed immediately before the threading line
                 // it explains.
                 (threadingIntentLines.length > 0 ? `\n${threadingIntentLines.join('\n')}` : '') +
@@ -589,19 +598,19 @@ export class ContextRoutes {
               // T5a: structured per-link rejections (reason + the offending spec) so a
               // machine reader sees exactly which explicit links were dropped + why.
               linkWarnings: linkResult.warnings,
-              // THE no-orphan honesty number: NEW edges this write created across
+              // an earlier change — THE no-orphan honesty number: NEW edges this write created across
               // ALL mint paths (tag + links-param + positional + inference), NOT just the
               // explicit `links` param. Invariant, contract-tested per path
               // (storeEdgeReporting.contract.test.ts): equals what get_links reports.
               linksMinted: totalLinksMinted,
-              // the unified per-edge ledger backing that number, each labeled with
+              // an earlier change — the unified per-edge ledger backing that number, each labeled with
               // its provenance (via: 'tag' | 'links-param' | 'anchor' | 'inference').
               edgesMinted,
-              // COUNT of edges minted FROM THREADING TAGS + every tag that resolved
+              // an earlier change: COUNT of edges minted FROM THREADING TAGS + every tag that resolved
               // to nothing (with the reason). Subsumed by edgesMinted but kept — consumers read it.
               tagEdgesMinted: tagMintResult.minted,
               tagEdgeSkips: tagMintResult.skips,
-              // WHAT HAPPENED TO THE THREADING THE WRITER ASKED FOR (stated /
+              // an earlier change — WHAT HAPPENED TO THE THREADING THE WRITER ASKED FOR (stated /
               // landed / fallbackEngaged / unresolved). See the loud text line it mirrors.
               threadingIntent: {
                 stated: threadIntentStated,

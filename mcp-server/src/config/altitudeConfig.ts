@@ -1,5 +1,5 @@
 /**
- * THE ONE VOLUME VOCABULARY for every read tool (SEARCH P3,  * an earlier decision).
+ * THE ONE VOLUME VOCABULARY for every read tool (SEARCH P3).
  *
  * Before this module there were THREE names for one idea and a fourth on the way:
  *   context_search / context_get_recent  response_format: concise | detailed

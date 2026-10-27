@@ -1,5 +1,5 @@
 /**
- * OLLAMA ADJUDICATOR — the Increment-1 Stage-2 provider (the belief-layer design §3/§9a).
+ * OLLAMA ADJUDICATOR — the Increment-1 Stage-2 provider (design §3/§9a).
  *
  * A generative-instruct LLM judges a candidate pair: same subject? supersedes / contests /
  * restates / unrelated, with direction, mode, confidence, rationale. The pinned adjudicator
@@ -53,7 +53,7 @@ export const RawVerdictSchema = z.object({
  * (grammar-constrained decoding). DERIVED from the shared verdict vocab constants so it can
  * NEVER drift from RawVerdictSchema / the zod validator: same enums, one source. Pinning the
  * output to this schema at the token level kills malformed JSON + the validate-retry loop
- * (the serving survey serving-hardening finding). confidence is a plain number here (JSON Schema
+ * (survey serving-hardening finding). confidence is a plain number here (JSON Schema
  * min/max is unreliable across engines) — the range is enforced downstream by clamp01.
  */
 export function buildVerdictJsonSchema(): Record<string, unknown> {
@@ -243,8 +243,8 @@ export function buildAdjudicationPromptParts(
       'A="the PROD database is on host H" B="the DEV database is on host O" →',
       '{"same_subject":false,"verdict":"unrelated","direction":"none","mode":"none"}',
       '// THIRD-RECORD LANGUAGE — A is OLDER and its "replaces" names something that is not B:',
-      'A (date=2026-07-01T09:00:00Z)="the control host replaces the old dev laptop for all agent work"',
-      'B (date=2026-08-01T09:00:00Z)="Mandrel prod runs on the prod box" → the replacement',
+      'A (date=2026-07-01T09:00:00Z)="the control host box replaces the old dev laptop for all agent work"',
+      'B (date=2026-08-01T09:00:00Z)="Mandrel prod runs on the prod host box" → the replacement',
       'language in A is about the LAPTOP, not about B\'s claim, and A is the EARLIER record, so',
       'it could not supersede B even if it were the same subject →',
       '{"same_subject":false,"verdict":"unrelated","direction":"none","mode":"none"}',
@@ -353,7 +353,7 @@ export class OllamaAdjudicator implements AdjudicationProvider {
     const timer = setTimeout(() => controller.abort(), this.cfg.timeoutMs);
     let json: OllamaGenerateResponse;
     try {
-      // SERVING HARDENING: grammar-constrained structured output + greedy
+      // SERVING HARDENING (survey): grammar-constrained structured output + greedy
       // decode + no thinking-mode — all config-driven (BELIEF_ADJUDICATOR_CONFIG), zero literals.
       const format: unknown = this.cfg.structuredOutput ? buildVerdictJsonSchema() : 'json';
       const resp = await fetch(`${this.cfg.endpoint}/api/generate`, {

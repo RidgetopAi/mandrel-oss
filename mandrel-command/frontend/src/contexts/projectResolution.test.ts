@@ -203,7 +203,7 @@ describe('selectFallbackProject — (b) unresolvable name falls back to a REAL-U
     expect(fallback!.id).toBe(PI_RIVET_UUID);
   });
 
-  test('the preference is matched BY ID, so a RENAME cannot detach it (page-scope epic §A)', () => {
+  test('the preference is matched BY ID, so a RENAME cannot detach it (an earlier epic §A)', () => {
     // Same project, new name. Under the old name-keyed preference this returned the
     // durable fallback instead — the user was silently bounced to another project with
     // no error and no way to tell why.
@@ -213,7 +213,7 @@ describe('selectFallbackProject — (b) unresolvable name falls back to a REAL-U
     expect(selectFallbackProject(renamed, noSessions, PI_RIVET_UUID)!.id).toBe(PI_RIVET_UUID);
   });
 
-  test('a preference holding a NAME (the pre-page-scope cache) resolves nothing and falls through', () => {
+  test('a preference holding a NAME (the pre-41293984 cache) resolves nothing and falls through', () => {
     // Defence against a stale cached value of the old shape reaching this function.
     const fallback = selectFallbackProject(allProjects, noSessions, 'pi-rivet');
     expect(fallback!.id).not.toBe(PI_RIVET_UUID);

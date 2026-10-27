@@ -232,6 +232,20 @@
   line-height: 1.7;
 }
 
+/* ---- API tokens ---- */
+.tokenTable {
+  padding: var(--sp-4) var(--sp-5);
+}
+.tokenValue {
+  width: 100%;
+}
+.tokenCopyRow {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  margin: var(--sp-2) 0 var(--sp-3);
+}
+
 @media (max-width: 820px) {
   .layout {
     grid-template-columns: 1fr;

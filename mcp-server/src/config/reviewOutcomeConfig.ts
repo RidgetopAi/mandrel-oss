@@ -3,13 +3,13 @@
  *
  * WHY THIS EXISTS (from the P6 blind test): two
  * independent blind readers, given nothing but a rendered boot package, found the same
- * defect — six the reviewer verdict records were NAMED with their tasks and the word APPROVE
+ * defect — six Reviewer verdict records were NAMED with their tasks and the word APPROVE
  * or REJECT appeared for NONE of them. One reader inferred approval from the fact that the
  * work had merged, and then said why that inference is unsafe: on 2026-08-21 three
  * Reviewers approved a tree the authoritative gate turned RED. MERGED IS NOT APPROVED.
  *
  * The outcome was never missing from the DATA. It sits in the record's own jsonb metadata
- * (`metadata.verdict`), written by the reviewer, and the walk's line renderers simply never
+ * (`metadata.verdict`), written by Reviewer, and the walk's line renderers simply never
  * read it: a verdict rendered as SHAPE is a title clipped at the altitude's budget, and the
  * call is deeper into the prose than the clip reaches. MEASURED on prod 2026-08-26 over the
  * verdict-tagged corpus of project `riverbend` (tags `reviewer-verdict` ∪ `verdict`, 21
@@ -21,7 +21,7 @@
  * the corpus today and a closed list would have to be edited before it could render the
  * next spelling — silently dropping the outcome in exactly the case where a new one appears.
  * This module reads a value and renders it verbatim (bounded and single-lined); it does not
- * decide what a verdict may say. That judgement stays with the reviewer who wrote it.
+ * decide what a verdict may say. That judgement stays with the Reviewer who wrote it.
  *
  * ★ NO ENV KNOBS, ALSO ON PURPOSE — the same call captureVocab.ts makes. These are the
  * shape of a stored record, not an operator's dial: an instance that read a different
@@ -39,7 +39,7 @@ export const REVIEW_OUTCOME_METADATA_KEY = 'verdict' as const;
 
 /**
  * When `metadata.verdict` is an OBJECT rather than a string, the sub-key holding the call.
- * Both shapes are live: `"verdict":"APPROVE-PENDING-GATE"` (e.g. an earlier note) and
+ * Both shapes are live: `"verdict":"APPROVE-PENDING-GATE"` (e.g. an earlier context) and
  * `"verdict":{"call":"APPROVE-WITH-NITS-PENDING-GATE","nits":3,...}`.
  * Reading only the string form would drop the richer record, which is the wrong direction.
  */

@@ -1,6 +1,6 @@
 /**
  * ProjectSelect — THE project selector. One primitive, used by every project-scoped
- * page (page-scope epic §D).
+ * page (an earlier epic §D).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  HOW TO USE THIS (read this block; it is the whole API)

@@ -125,7 +125,7 @@ describe('declared limbs — the empty and self populations', () => {
 
 describe('declared limbs — what must NOT be read as an id or a tag', () => {
   test('a 40-char commit sha does not yield an id8 (word-bounded pattern)', () => {
-    const sha = '938af00da919ba3ffb326f49bb2e6579de369484';
+    const sha = '938af00df00df00df00df00df00df00df00df00d';
     expect(collectNamedId8s({ id: SELF_CTX, type: 'context', body: sha, tags: [] }).bodyId8s).toEqual(
       []
     );

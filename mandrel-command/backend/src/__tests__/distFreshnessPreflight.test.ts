@@ -4,10 +4,8 @@
  * WHY THIS SUITE EXISTS
  * ---------------------
  * package.json declares `"start": "node dist/server.js"`. dist/ is gitignored, so it is
- * untracked box state that no deploy path refreshes — fleet-deploy script ships
- * prebuilt images and never runs `npm run build` on a host. On the prod box,
- * /srv/app/mandrel-command/backend/dist was last written 2026-07-05 against src/
- * last written 2026-08-27, and `npm start` there would have silently served that.
+ * untracked box state that no deploy path refreshes: an image-based deploy never runs
+ * `npm run build` on a host, so `npm start` there silently serves a stale dist/.
  *
  * scripts/preflight-dist.cjs turns that silent success into a loud refusal. It is a
  * GUARD, so it is tested by mutation: each case builds a real backend-shaped tree,
@@ -81,7 +79,7 @@ describe('dist/ launch preflight', () => {
     expect(r.stdout).toContain('dist/ verified against');
   });
 
-  it('REFUSES when a source file changed after the build — the prod case', () => {
+  it('REFUSES when a source file changed after the build — the prod host case', () => {
     const root = tree();
     build(root);
     expect(preflight(root).status).toBe(0); // control: green before the mutation

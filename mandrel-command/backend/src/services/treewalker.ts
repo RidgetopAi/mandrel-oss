@@ -14,7 +14,7 @@
  *      directions) + resolve each node's title/kind + gather trust signals, then call the pure
  *      builders. Cheap: bounded by maxNodes, a handful of set-keyed queries.
  *
- * GROUNDING (the data-gap policy — never fabricate trust or edges):
+ * GROUNDING (data policy — never fabricate trust or edges):
  *   - EDGES are real `links` rows; a genuinely-empty thread returns an empty graph (honest).
  *   - TRUST is the CANONICAL model (PHASE 2 item e): the same bands, math
  *     and config as mcp-server's trustModel.ts, via the mirrored
@@ -236,7 +236,7 @@ export function pickSpineNodeId(
 
 /**
  * A branch's display NAME: the once-on-the-spine `branch:<name>` tag when present, else
- * the spine record's title — the tree model membership/identity split. The old `branch:`
+ * the spine record's title — the membership/identity split. The old `branch:`
  * TITLE-prefix hack is gone (PHASE 2 item f): the prefix is now only a tag GRAMMAR the
  * name is parsed from, never glued onto a label.
  */
@@ -283,8 +283,8 @@ export function buildSpine(
 }
 
 /**
- * Build the STORY in the CANONICAL recall_thread order (PHASE 2 item e, story half —
- * an earlier task). The old bespoke 5-slot narrative (the graph audit PROSE finding) is
+ * Build the STORY in the CANONICAL recall_thread order (PHASE 2 item e, story half).
+ * The old bespoke 5-slot narrative (an earlier audit PROSE finding) is
  * deleted: the walk now runs through the mirrored canonical ordering
  * (config/treewalkerStoryOrder.ts — anchor pinned first, causal rank, temporal, id;
  * parity-pinned against the real recallThreadCore by treewalkerStoryOrderParity.test.ts).

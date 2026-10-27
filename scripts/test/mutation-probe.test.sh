@@ -9,12 +9,12 @@
 #   incident write-ups. Two independent defects have already turned that verdict into
 #   a lie, in opposite directions, and both are pinned here.
 #
-#   THE PROBE THAT DID NOT RUN. The ad-hoc probe used for a real
+#   an earlier change — THE PROBE THAT DID NOT RUN. The ad-hoc probe used for a real
 #   measurement was clobbered, crashed on its own arguments, mutated NOTHING, and the
 #   subsequent run reported `exit 0, 514 passed`. Indistinguishable from "the guard is
 #   fine" — a perfect result produced by a probe that did not exist.
 #
-#   THE PROBE THAT MEASURED THE WRONG FAILURE. `--expect-red` read ANY
+#   an earlier change — THE PROBE THAT MEASURED THE WRONG FAILURE. `--expect-red` read ANY
 #   non-zero exit as "the guard noticed", so a suite that died at a missing fixture,
 #   a branch guard or a syntax error scored as teeth WITHOUT REACHING THE MUTATED
 #   CODE. It did exactly that twice on an earlier task. Same task: `awk -v` expanded

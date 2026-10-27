@@ -142,8 +142,6 @@ afterAll(() => {
 // channel nothing here can reach (`--witness-file`), refuses to return a verdict when the
 // witness is missing, and names this block as the likely cause when the command looks like
 // a test runner. Use --witness-file for any probe of a vitest suite.
-// If you change what is silenced below, scripts/test/mutation-probe-witness-channel.test.sh
-// measures the consequence against the real runner and will say so.
 const SILENCED_CONSOLE_METHODS = ['log', 'error', 'warn', 'info', 'debug'] as const;
 beforeEach(() => {
   for (const method of SILENCED_CONSOLE_METHODS) {

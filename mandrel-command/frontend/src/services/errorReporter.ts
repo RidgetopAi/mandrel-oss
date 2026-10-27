@@ -66,7 +66,7 @@ export const reportError = async (
     return;
   }
 
-  // WHY THIS IS NOT sendBeacon/raw-fetch ANY MORE (the reviewer blocking finding, 2026-07-29):
+  // WHY THIS IS NOT sendBeacon/raw-fetch ANY MORE (Reviewer blocking finding, 2026-07-29):
   // `/api/monitoring/errors` is authenticated — backend/src/routes/monitoring.ts does
   // `router.use(authenticateToken)`, and middleware/auth.ts requires an `Authorization: Bearer`
   // header with NO cookie path. The previous implementation sent neither:

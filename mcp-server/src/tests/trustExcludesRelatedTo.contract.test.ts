@@ -149,7 +149,7 @@ describe('trust integrity — related_to is not an outcome edge (ST-1)', () => {
     const row = search.structuredContent.results.find((r: any) => r.id === ctxId);
     expect(row, 'the context is in the results').toBeTruthy();
     // Cold-start band ON THE WIRE — NOT the `trusted` a decided_by would have earned. The
-    // wire carries band+score only since so the outcome sub-signal is read
+    // wire carries band+score only since an earlier decision, so the outcome sub-signal is read
     // from the service, which is where that arithmetic lives.
     expect(row.trust.band).toBe('unproven');
     const t = await trustForRecord({ id: ctxId, type: 'context' });

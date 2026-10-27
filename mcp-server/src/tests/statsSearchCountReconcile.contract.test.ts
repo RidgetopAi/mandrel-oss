@@ -20,7 +20,7 @@
  *   · decision_stats        — all 9 aggregates                (this task)
  *   · context_stats         — all 4 aggregates, param added   (this task)
  *   · project_insights      — all 3 entity breakdowns, param added (this task)
- *   · task_progress_summary — closed earlier by pinned here too
+ *   · task_progress_summary — closed earlier by an earlier task, pinned here too
  *   · session_status / session_get / session_list — the per-session contextCount /
  *     taskCount / decisionCount (found by an Reviewer, NOT by this guard — see the
  *     population section below for why, and what changed because of it)
@@ -245,7 +245,7 @@ const RECONCILE_MATRIX: Pair[] = [
     entity: 'contexts',
     ops: ['context_stats'],
     searchOps: ['context_search'],
-    // FIXED by an earlier task (scope extended by Coordinator to close the whole class rather than
+    // FIXED by an earlier task (scope extended by the coordinator to close the whole class rather than
     // ship one instance of a three-instance identical defect). It was PINNED HERE as
     // reconciles:false first, then FLIPPED to true when the fix landed — the flip is the
     // point: the entry was never deleted, so the surface went straight from
@@ -936,7 +936,7 @@ describe('stats surfaces reconcile with their search surfaces', () => {
 
   // ── BOTH TOOL SURFACES (an earlier task acceptance 5) ──────────────────────────────────
   // Mandrel advertises TWO surfaces: the flat per-tool API (/mcp/tools/decision_stats, the
-  // routeExecutor path used above) and the gateway (decision({action:'stats'}), what Coordinator
+  // routeExecutor path used above) and the gateway (decision({action:'stats'}), what the coordinator
   // and the agents actually call). A fix applied to only one of them is C5 — two paths that
   // must do the same thing and one that quietly does not.
 

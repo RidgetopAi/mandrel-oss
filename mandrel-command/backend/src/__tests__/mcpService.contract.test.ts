@@ -329,7 +329,7 @@ describe('McpService contract interaction', () => { // db-gate-exempt: contract-
     expect(hadHeaderBlankActor).toBe(false);
   });
 
-  // callMcpEndpoint (the SECOND proxy seam — project_switch / set-primary) must forward the
+  // callMcpEndpoint (the SECOND proxy seam — session_pin / set-primary) must forward the
   // actor with the SAME guard as callTool, so the attribution class is whole.
   it('callMcpEndpoint forwards X-Actor-ID when an actor is supplied', async () => {
     let seenActor: string | undefined | string[] = 'UNSET';
@@ -339,7 +339,7 @@ describe('McpService contract interaction', () => { // db-gate-exempt: contract-
       res.end(JSON.stringify({ success: true, result: {} }));
     });
 
-    await McpService.callMcpEndpoint('/mcp/tools/project_switch', 'POST', { arguments: {} }, 'operator');
+    await McpService.callMcpEndpoint('/mcp/tools/session_pin', 'POST', { arguments: {} }, 'operator');
     expect(seenActor).toBe('operator');
   });
 
@@ -351,7 +351,7 @@ describe('McpService contract interaction', () => { // db-gate-exempt: contract-
       res.end(JSON.stringify({ success: true, result: {} }));
     });
 
-    await McpService.callMcpEndpoint('/mcp/tools/project_switch', 'POST', { arguments: {} }, '  operator  ');
+    await McpService.callMcpEndpoint('/mcp/tools/session_pin', 'POST', { arguments: {} }, '  operator  ');
     expect(seenActor).toBe('operator');
   });
 
@@ -362,7 +362,7 @@ describe('McpService contract interaction', () => { // db-gate-exempt: contract-
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, result: {} }));
     });
-    await McpService.callMcpEndpoint('/mcp/tools/project_switch', 'POST', { arguments: {} });
+    await McpService.callMcpEndpoint('/mcp/tools/session_pin', 'POST', { arguments: {} });
     expect(hadHeaderNoActor).toBe(false);
 
     let hadHeaderBlankActor = true;
@@ -371,7 +371,7 @@ describe('McpService contract interaction', () => { // db-gate-exempt: contract-
       res.writeHead(200, { 'Content-Type': 'application/json' });
       res.end(JSON.stringify({ success: true, result: {} }));
     });
-    await McpService.callMcpEndpoint('/mcp/tools/project_switch', 'POST', { arguments: {} }, '   ');
+    await McpService.callMcpEndpoint('/mcp/tools/session_pin', 'POST', { arguments: {} }, '   ');
     expect(hadHeaderBlankActor).toBe(false);
   });
 });

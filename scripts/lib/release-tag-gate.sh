@@ -2,9 +2,8 @@
 # =============================================================================
 # release-tag-gate.sh — decide whether a ref is fit to ship as a NAMED release
 # =============================================================================
-# Sourced by fleet-deploy script (PRE-FLIGHT: RELEASE-TAG GATE) and exercised
-# directly by its test suite. The decision lives here, apart
-# from the deploy script, for the reason deploy-ref.test script's resolver does: a
+# Sourced by the deploy script (PRE-FLIGHT: RELEASE-TAG GATE) and by hooks/pre-push. The
+# decision lives here, apart from the deploy script, because a
 # 2300-line script that runs a deploy top-to-bottom cannot be sourced by a test, so
 # logic left inside it can only be tested by deploying. Logic in a lib can be
 # driven against throwaway git repos in milliseconds.
@@ -12,7 +11,7 @@
 # WHAT WAS WRONG (measured 2026-08-27). Mandrel's version is customer-visible — a
 # connecting agent reads it in the MCP `initialize` handshake. Tagging was a pure
 # HABIT: scripts/release.sh is manual, dry-run by default, never auto-pushes, and
-# NOTHING invoked it. fleet-deploy script had no notion of whether the ref it was about
+# NOTHING invoked it. The deploy script had no notion of whether the ref it was about
 # to ship carried a version tag at all. The habit held for four days (ten tags
 # across 2026-08-19..22), then lapsed, and 139 untagged commits shipped behind
 # v0.44.2 while every instance advertised a stale version.
@@ -57,12 +56,12 @@ _RTG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 # argument. It used to be implicit — the functions read HEAD — and that was the
 # defect this file was rewritten to close (2026-08-29).
 #
-# WHAT WAS WRONG. fleet-deploy script deploys ${GIT_REMOTE}/${EXPECTED_BRANCH} (or an
+# WHAT WAS WRONG. The deploy script deploys ${GIT_REMOTE}/${EXPECTED_BRANCH} (or an
 # explicit PROD_REF pin), NOT the control tree's checkout. The control tree is
 # routinely BEHIND that — the deploy prints its own WARN saying so. This gate read
 # the control tree's HEAD, so on the v0.50.0 dry run it printed
 #   [PASS] release-tag PRE-FLIGHT GATE: HEAD is tagged v0.49.0
-# in the same run whose plan said PROD_REF = <the v0.50.0 commit>. Two refs, one
+# in the same run whose plan said PROD_REF = 3626f00df00d (v0.50.0). Two refs, one
 # PASS, and the PASS was about the ref that was NOT shipping. The admitted failure
 # mode: push an UNTAGGED commit while the control tree sits on any older tagged
 # commit and this gate reports PASS while the roll ships an untagged release.
@@ -76,7 +75,7 @@ _RTG_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 #
 # The three-state instrument (C1): a ref that does not resolve is CANNOT-MEASURE,
 # and every caller below turns that into FAIL, never into a pass. An empty <ref> is
-# the same case — fleet-deploy script substitutes the literal '<unresolved>' into
+# the same case — the deploy script substitutes the literal '<unresolved>' into
 # PROD_REF on a dry-run whose ref resolution failed, and that must not pass either.
 release_tag_resolve_ref() {
   local repo="$1" ref="$2"
@@ -161,11 +160,11 @@ release_tag_manifest_version() {
 # release.sh (which does check agreement), so no bump commit was ever made. Both
 # shipped with all four manifests still reading 0.50.0 — and the two command
 # manifests reading 0.47.0, four releases stale. Prod advertised
-# "0.50.0+<older commit>" in the handshake for 18h.
+# "0.50.0+ab75f00df00d" in the handshake for 18h.
 #
 # Three guards passed that state: the drift check counts commits since the latest
 # TAG (a tag existed -> drift 0), this gate asked only whether a tag EXISTED at the
-# ref, and fleet-deploy's post-roll assertion compares the container's manifest to
+# ref, and the deploy's post-roll assertion compares the container's manifest to
 # itself. Each measured one side. None compared the two sides, which is the only
 # comparison that separates the fixed case from the broken one.
 release_tag_manifest_agreement() {
@@ -201,9 +200,8 @@ release_tag_manifest_agreement() {
 
 # release_tag_gate_decide <repo_dir> <shipped_ref> <only> <require> <allow_untagged>
 #
-# <shipped_ref> is THE REF THIS DEPLOY WILL SHIP — resolved by
-# deploy_shipped_ref_name() in deploy-ref script, which is the SAME
-# resolution fleet_sync() moves every tree to. It is NOT the control tree's HEAD;
+# <shipped_ref> is THE REF THIS DEPLOY WILL SHIP — resolved by the deploy's own ref
+# resolver, the SAME resolution the deploy moves every tree to. It is NOT the control tree's HEAD;
 # see "THE SUBJECT" above for why that distinction is the whole point of this file.
 #
 # Echoes ONE line: "<VERDICT>\t<detail>" where VERDICT is

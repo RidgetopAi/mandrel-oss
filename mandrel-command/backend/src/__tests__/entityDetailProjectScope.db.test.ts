@@ -336,6 +336,8 @@ describeDb('by-id reads are authorized against the record\'s project', () => {
         '/api/r/:id',
         '/r/:id',
         '/api/projects/:id',
+        '/api/projects/:id/insights',
+        '/api/projects/:id/sessions',
       ]) {
         expect(UNDER_ATTACK).toContain(p);
       }

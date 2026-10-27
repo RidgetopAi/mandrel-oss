@@ -15,7 +15,7 @@
  *     riverbend       |         2078 |            49 |  2127
  *     mandrel       |            0 |            23 |    23
  *     daisy            |            0 |             6 |     6
- *     dev-desktop |            0 |             3 |     3
+ *     mandrel-desktop |            0 |             3 |     3
  *     acme            |            0 |             2 |     2
  *     personal         |            0 |             1 |     1
  * mandrel owns ZERO sessions, so its chart was a STRUCTURAL flat zero — not a low

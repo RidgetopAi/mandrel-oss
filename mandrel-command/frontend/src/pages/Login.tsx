@@ -107,13 +107,14 @@ const Login: React.FC = () => {
             <Form.Item
               name="username"
               rules={[
-                { required: true, message: 'Please enter your username!' },
-                { min: 3, message: 'Username must be at least 3 characters' },
+                { required: true, message: 'Please enter your email or username!' },
+                { min: 3, message: 'Must be at least 3 characters' },
               ]}
             >
               <Input
                 prefix={<UserOutlined />}
-                placeholder="Username"
+                placeholder="Email or username"
+                aria-label="Email or username"
                 autoComplete="username"
               />
             </Form.Item>

@@ -29,7 +29,7 @@
  *       task_update, the Command backend, and bulkUpdateTasks are all unguarded; a
  *       handler-side bump would make `expectedVersion` a lie.
  *
- * CONCURRENCY (auditor-verified safe under exactly these conditions):
+ * CONCURRENCY (the auditor-verified safe under exactly these conditions):
  *   1. The claim is ONE statement — NEVER SELECT-then-UPDATE. Under READ COMMITTED two
  *      concurrent single-statement UPDATEs serialize on the row lock and the loser
  *      re-evaluates the predicate against the winner's COMMITTED row (EvalPlanQual), so it
@@ -385,7 +385,7 @@ RETURNING id::text AS id
  *   • no token        → `(claim_id IS NULL OR claim_expires_at <= now())`. A live claim
  *     blocks the write; a dead one does not (an expired lease is not ownership).
  *
- * BEARER POLICY — DECIDED, do not relitigate (an earlier task pin; the bearer-policy decision accepted residual):
+ * BEARER POLICY — DECIDED, do not relitigate (an earlier task pin; an earlier change accepted residual):
  * the claim token is a BEARER SECRET. A VALID token presented by a DIFFERENT resolved actor
  * IS authorized — the actor string is attribution, never the lock key (D2: binding exclusion
  * to a free-form varchar with no registry is a decorative lock; two workers sharing a name

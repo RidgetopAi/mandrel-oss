@@ -32,12 +32,12 @@
  *
  * 4. IT MUST RUN ON BOTH END PATHS. The explicit `session_end` tool AND the CLOSER
  *    (`SessionTimeoutService.runCloser`, the duration-cap sweep that fires unattended). The
- *    closer is the path that actually bit Operator and the one a lazy test skips.
+ *    closer is the path that actually bit the operator and the one a lazy test skips.
  *
  * ── MUTATION PROOF (do this if you touch finish()) ───────────────────────────────────────
  * Revert SessionRepo.finish() to the absolute SET and re-run: TEST 1 and TEST 2 must both go
  * RED on the `total_tokens` assertion. A probe nobody has watched fail is not a probe
- *. The recorded run of that mutation is in the an earlier task report.
+ *. The recorded run of that mutation is in the earlier task report.
  *
  * DB target: a DISPOSABLE database created by scripts/test-session-counters.sh, which drops
  * it on exit. Run it via that script — NEVER against the production `mandrel` DB.

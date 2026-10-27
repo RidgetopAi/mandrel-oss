@@ -5,7 +5,7 @@
  * chart, and reads through `useDashboardThroughput` (NO project_id → whole
  * workspace). This card owns its own error surface; the shared ThroughputChart
  * owns loading + the HONEST empty state (an empty series ⇒ "No activity in this
- * window", never a fabricated trend — the data-gap policy).
+ * window", never a fabricated trend — data policy).
  */
 import React from 'react';
 import { Alert } from '../../components/ui';

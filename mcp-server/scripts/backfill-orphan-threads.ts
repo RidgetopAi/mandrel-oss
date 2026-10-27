@@ -2,7 +2,7 @@
 
 /**
  * ONE-TIME ORPHAN BACKFILL — CLI entrypoint (reliable-auto-threading ST-6)
- * (branch:mandrel-reliability, task ST-6, spec
+ * (branch:mandrel-reliability, task ST-6 an earlier change, spec
  * docs/specs/reliable-auto-threading.md §C1/C2/C3, §X4).
  *
  * Thin npx-tsx wrapper (mirrors scripts/migrate.ts's invocation style) around the testable
@@ -12,7 +12,7 @@
  *
  * SAFETY (spec §X4): DRY-RUN IS THE DEFAULT — a live write requires an explicit `--apply`.
  * Do NOT run against the prod / `riverbend` DB from a dev build; that real-corpus run is
- * gated by the coordinator/the operator after the reviewer APPROVE.
+ * gated by Coordinator/Operator after Reviewer APPROVE.
  *
  * USAGE:  npx tsx scripts/backfill-orphan-threads.ts --project <name|id> [--dry-run | --apply] [--threshold <n>]
  *         npx tsx scripts/backfill-orphan-threads.ts --help

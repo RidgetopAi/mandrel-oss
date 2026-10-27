@@ -1,5 +1,5 @@
 /**
- * Mandrel Core — SHARED RANKING CONFIG.
+ * Mandrel Core — SHARED RANKING CONFIG (parent 7b8af00d).
  *
  * WHY THIS FILE EXISTS. The four-signal blend that ranks contexts — similarity, recency,
  * importance, type weight — lived as a private const inside handlers/context.ts. That was

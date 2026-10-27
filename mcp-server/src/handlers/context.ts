@@ -917,7 +917,7 @@ class ContextHandler {
         // `boost` above adjusts the displayed `similarity` but NOT the SQL sort key,
         // so a boosted row is not re-ranked. Whether the substring boost SHOULD feed
         // the ranking/order is a ranking change that must go through the eval gate
-        // (the eval gate); it is intentionally out of scope for this display-only fix.
+        //; it is intentionally out of scope for this display-only fix.
         const sortKeyFraction = row.combined_score !== undefined && row.combined_score !== null
           ? parseFloat(row.combined_score)
           : (rawSimilarity && !isNaN(parseFloat(rawSimilarity)) ? parseFloat(rawSimilarity) : 0);
@@ -984,9 +984,9 @@ class ContextHandler {
   /**
    * SINGLE SOURCE OF TRUTH for the context-search id-prefix / partial-tag MATCH and the
    * retrieval GATE it relaxes (an earlier task — the Contexts half of the class-fix
-   * whose Decisions half shipped in 701f00d).
+   * whose Decisions half shipped in 7014f00).
    *
-   * THE BUG (RANKING, not retrieval): an id8 (`2b3c4d5e`) typed in the Contexts search box
+   * THE BUG (RANKING, not retrieval): an id8 (an earlier change) typed in the Contexts search box
    * matched NOTHING. Hex has no semantic content, so the embedder yields a meaningless vector
    * and the target ranks below unrelated prose — no threshold or model tuning can ever fix
    * that. The FIX that matters on prod is therefore the same one Decisions needed: an exact
@@ -997,7 +997,7 @@ class ContextHandler {
    *   - prod runs `MANDREL_EMBEDDER=gemma` (verified in the RUNNING process's /proc/environ,
    *     not just .env) → activeEmbeddingColumn() = 'embedding_gemma';
    *   - `SELECT count(*) FILTER (WHERE embedding_gemma IS NULL) FROM contexts` → **0** of 8077;
-   *   - `2b3c4d5e` itself: has_gemma = t (768 dims), has_legacy = f.
+   *   - an earlier change itself: has_gemma = t (768 dims), has_legacy = f.
    * So on the ACTIVE column the gate `embedding_gemma IS NOT NULL` is TRUE for every row: the
    * target was ALWAYS in the candidate set, and the relaxation below changes NOTHING on prod.
    * The legacy `embedding` (minilm, 1536-d) column is the one with 586 NULLs — a column prod

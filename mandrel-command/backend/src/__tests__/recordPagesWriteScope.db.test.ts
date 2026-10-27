@@ -1,6 +1,6 @@
 /**
  * recordPagesWriteScope — the WRITE surfaces of the three RECORD pages (Contexts, Tasks,
- * Decisions) under the per-page project scope (page-scope epic §A1).
+ * Decisions) under the per-page project scope (an earlier epic §A1).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY THIS EXISTS ALONGSIDE pageScopedProjectScope.db.test.ts

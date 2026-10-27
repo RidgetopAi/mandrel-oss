@@ -1,5 +1,5 @@
 -- Migration 073: ACTOR-KEYED CURRENT-PROJECT — the `actor_project_defaults` table
--- Task: an earlier decision — the permanent fix the guards point at
+-- Task: an earlier change (an earlier decision — the permanent fix the guards point at)
 --
 -- ── WHAT THIS REPLACES (eventually) ────────────────────────────────────────────────────
 -- "Current project" lives in a process-global in-memory Map keyed by CONNECTION id

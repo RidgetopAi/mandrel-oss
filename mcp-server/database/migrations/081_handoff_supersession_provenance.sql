@@ -1,5 +1,5 @@
 -- Migration 081: classify 'auto:handoff-supersession' as DECLARED in the provenance meter
--- (PHASE 2 item g, folds D5-A from an earlier review).
+-- (PHASE 2 item g, folds D5-A from an earlier change).
 --
 -- WHY: storing a new handoff now deterministically mints a `supersedes` edge to the
 -- project's previous newest handoff (src/services/handoffSupersession.ts) — the trunk's

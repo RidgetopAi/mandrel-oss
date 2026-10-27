@@ -46,7 +46,7 @@ const CORRUPT_ID = 'session_voiceitt-bridge';
  * to the `db` mocked below and its tick landed in the spy. Whether it fired inside a given
  * test's window was pure TIMING — so a bare `not.toHaveBeenCalled()` on the whole spy was a
  * latent order-dependent flake for anyone, not a statement about the controller. an earlier Task
- * and the explicit-start change made that start explicit, so the probe no longer runs here; the assertion below
+ * and an earlier change made that start explicit, so the probe no longer runs here; the assertion below
  * is kept as written because it states the real invariant, and stating it is not conditional on
  * which background work happens to share the process.
  *

@@ -27,7 +27,7 @@
  * real pgvector — and requires an identical verdict. Weaken either one and that test goes RED.
  *
  * THE AGREEMENT IS ARITHMETIC, NOT ASPIRATIONAL — and the first version of this file got it
- * WRONG (the reviewer REJECT of 403f00d; "verified narrow, claimed broad"). It said
+ * WRONG (Reviewer REJECT of 403ef00; "verified narrow, claimed broad"). It said
  * the rule "is computed the same way on both sides", having only ever tested fixtures down to
  * 1e-6. It is not enough for both sides to compute "a sum of squares in float": pgvector's
  * `vector` column is float4 and its `<#>` multiplies AND accumulates in FLOAT32, while

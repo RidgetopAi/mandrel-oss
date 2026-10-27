@@ -2,14 +2,14 @@
  * THE REVIEW CALL MUST SURVIVE THE RENDER — contract.
  *
  * THE DEFECT THIS LOCKS, measured before the fix rather than imagined: on prod 2026-08-26,
- * `recall_thread anchor:2b3c4d5e altitude:headline` rendered SEVEN Reviewer verdict
+ * `recall_thread anchor:an earlier change altitude:headline` rendered SEVEN Reviewer verdict
  * contexts and the word APPROVE or REJECT appeared on the line of ONE of them — the one
  * whose author happened to put the call early enough in the first sentence to survive the
- * title clip. Every other verdict was rendered as `[context] ★ REVIEWER VERDICT
+ * title clip. Every other verdict was rendered as `[context] ★ REVIEWER VERDICT — an earlier task
  * (P5a: pass the recall knobs at boot). ROUND:… — trust:trusted score:0.95`. A
  * reader could see that a review HAPPENED and not whether it PASSED, so the only recovery
  * left was inferring approval from the fact that the work merged. MERGED IS NOT APPROVED:
- * on 2026-08-21 three Reviewers approved a tree the authoritative gate then turned RED.
+ * on 2026-08-21 three reviewers approved a tree the authoritative gate then turned RED.
  *
  * WHY IT IS A RENDER BUG AND NOT A STORAGE BUG — the diagnosis this suite encodes: the
  * records were SELECTED (they are on the walk, by id) and the call was STRUCTURED on them
@@ -19,8 +19,8 @@
  * stamp were deleted from the lines tomorrow.
  *
  * THE TWO STORED SHAPES ARE BOTH REAL AND BOTH TESTED. `"verdict":"APPROVE-PENDING-GATE"`
- * is `"verdict":{"call":"APPROVE-WITH-NITS-PENDING-GATE",...}` is an earlier note
- * . A fixture that covered one would have shipped blind to half the corpus.
+ * is an earlier context; `"verdict":{"call":"APPROVE-WITH-NITS-PENDING-GATE",...}` is an earlier context.
+ * A fixture that covered one would have shipped blind to half the corpus.
  *
  * NO DATABASE IS PROVISIONED OR QUERIED — but this file is NOT importable without database
  * ENV: importing recall.routes pulls in handlers/project, whose module-load config throws
@@ -69,11 +69,11 @@ const TRUST: Trust = {
 
 /**
  * The verdict record as it is ACTUALLY STORED — the title is the record's first line, which
- * is what the walk renders and what the clip eats. Taken from an earlier note's own first
+ * is what the walk renders and what the clip eats. Taken from an earlier context's own first
  * line so the fixture is a real one, not a strawman built to be easy.
  */
 const VERDICT_CONTENT =
-  '★ REVIEWER VERDICT — task 12fff00d (P5a: pass the recall knobs at boot). ROUND: 1. APPROVE-WITH-NITS.\n\nGATE: ci.yml exit 0.';
+  '★ REVIEWER VERDICT — an earlier task (P5a: pass the recall knobs at boot). ROUND: 1. APPROVE-WITH-NITS.\n\nGATE: ci.yml exit 0.';
 /**
  * The title the PRODUCT derives for that record — through the product's own clip, never a
  * hand-typed "…". The clip is where the call disappears, so faking it would fake the defect.

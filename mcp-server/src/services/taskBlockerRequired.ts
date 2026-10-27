@@ -199,7 +199,7 @@ export async function assertBlockerNamed(
   // ── HOW EACH DOOR WAS ACTUALLY FOUND (corrected; the earlier version of this comment
   //    claimed more than was true, which is the exact class it was warning about) ──
   //   (b) WAS caught by this file's contract test, on the first run.
-  //   (c) WAS NOT. It was reasoned about here and left UNASSERTED, and the reviewer proved the
+  //   (c) WAS NOT. It was reasoned about here and left UNASSERTED, and Reviewer proved the
   //       gap by mutation: deleting the `!clearing` term below left the suite GREEN 14/14,
   //       because the test named for door (c) passed `status:'blocked'` explicitly and so
   //       exercised door (b) again. Door (c) is now asserted by a test that OMITS the status

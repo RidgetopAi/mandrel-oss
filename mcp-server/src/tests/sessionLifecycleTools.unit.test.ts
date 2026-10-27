@@ -1,6 +1,6 @@
 /**
  * Session-Rework SR-2 — session lifecycle ROUTE HANDLERS, unit tests (mocked seams).
- * an earlier decision.
+ * an earlier task.
  *
  * Fast + deterministic (no DB, no wall-clock). Asserts the orchestration contract of
  * sessionRoutes.{handleStart,handleEnd,handleStatus} at the stable collaborator seams
@@ -100,7 +100,7 @@ describe('SR-2 session lifecycle route handlers (unit)', () => {
 
       // Connection-scoped read of the prior session.
       // Phase 2b: actor is now threaded as an opt so actor-mode resolves the caller's session
-      // (Auditor A). These unit contexts declare no actor, so the opt is { actor: undefined };
+      // (the auditor A). These unit contexts declare no actor, so the opt is { actor: undefined };
       // it is inert in legacy/shadow, and the call is still connection-scoped (no global fallback).
       expect(getActive).toHaveBeenCalledWith(CONN, { actor: undefined });
       // ORDER: end the prior, then start the new (one-active-per-connection).
@@ -181,7 +181,7 @@ describe('SR-2 session lifecycle route handlers (unit)', () => {
       expect(res.structuredContent!.action).toBe('ended');
       expect(res.structuredContent!.sessionId).toBe(active);
       // Phase 2b: actor is now threaded as an opt so actor-mode resolves the caller's session
-      // (Auditor A). These unit contexts declare no actor, so the opt is { actor: undefined };
+      // (the auditor A). These unit contexts declare no actor, so the opt is { actor: undefined };
       // it is inert in legacy/shadow, and the call is still connection-scoped (no global fallback).
       expect(getActive).toHaveBeenCalledWith(CONN, { actor: undefined });
       expect(endSpy).toHaveBeenCalledWith(active);
@@ -210,7 +210,7 @@ describe('SR-2 session lifecycle route handlers (unit)', () => {
       expect(res.structuredContent!.session).toBeNull();
       // Connection-scoped only: never opts into allowGlobalFallback.
       // Phase 2b: actor is now threaded as an opt so actor-mode resolves the caller's session
-      // (Auditor A). These unit contexts declare no actor, so the opt is { actor: undefined };
+      // (the auditor A). These unit contexts declare no actor, so the opt is { actor: undefined };
       // it is inert in legacy/shadow, and the call is still connection-scoped (no global fallback).
       expect(getActive).toHaveBeenCalledWith(CONN, { actor: undefined });
       expect(getActive).not.toHaveBeenCalledWith(CONN, { allowGlobalFallback: true });

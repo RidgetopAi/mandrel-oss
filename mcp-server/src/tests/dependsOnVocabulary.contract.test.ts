@@ -37,7 +37,7 @@ describe('depends_on vocabulary wiring', () => {
   });
 
   test('task→task types exist ONLY for unambiguous signals — the TAG stays weak', () => {
-    // The task-edge minting rule: a strong task→task edge must be earned by an UNAMBIGUOUS signal.
+    // The rule: a strong task→task edge must be earned by an UNAMBIGUOUS signal.
     // depends_on earned its slot from the typed `dependencies` field. subtask_of is minted
     // ONLY from the explicit `parentTaskId` param on task_create (an earlier task — position
     // never mints it): a first-class declared param is exactly the unambiguous signal the

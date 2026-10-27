@@ -77,7 +77,7 @@ afterEach(() => {
  * That property was measured to be a BUG, not a feature: the un-normalized identifier reached
  * `AND project_id = $n` against a uuid column, so a project NAME severed tag/link edge minting
  * (silently, blaming the referent) and hard-failed EVERY tool lacking its own name-aware
- * resolution with a raw Postgres cast error — at least twelve of them, measured on f9de00d;
+ * resolution with a raw Postgres cast error — at least twelve of them, measured on f9d9f00;
  * see projectArgNormalizer.contract.test.ts for the enumeration and why it is a floor rather
  * than a definition. an earlier Task therefore NORMALIZES rung 1 for everyone and refuses an unresolvable
  * one. The guarantee that survives — and that this block now states exactly — is about rung 3:
@@ -215,7 +215,7 @@ describe('project_switch — the human rung, and what a BOUND client may do to i
   });
 
   /**
-   * AMENDED by an earlier task. The property that matters for Coordinator's workflow is that an
+   * AMENDED by an earlier task. The property that matters for the coordinator's workflow is that an
    * UNBOUND human can still switch to ANY project — that is unchanged and asserted here. What
    * changed is the FORM the identifier arrives in: rung 1 is now normalized for everyone, so
    * the switch is performed against the canonical UUID rather than the raw string. Uniform
@@ -246,7 +246,7 @@ describe('project_switch — the human rung, and what a BOUND client may do to i
 
 describe('FAIL-CLOSED param accounting — no project-ish param may go unclassified', () => {
   /**
-   * THE ACCOUNTING TRIPWIRE (a past incident / a past incident #1). It does NOT grep for the tools
+   * THE ACCOUNTING TRIPWIRE (a past incident #1). It does NOT grep for the tools
    * we expect to be project-scoped — that is an allow-list whose default is a silent PASS.
    * It walks EVERY declared parameter of EVERY tool schema (the choke point every tool's
    * params pass through) and requires each one matching the concept token `project` to be

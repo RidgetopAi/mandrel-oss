@@ -48,8 +48,8 @@ export interface SupersessionReceipt {
 }
 
 /**
- * ONE soft supersession candidate that the BACKWARD-SOFT GUARD adjudicated (P5.3 half B,
- * an earlier task). See config/supersessionGuardConfig.ts for the rule and the
+ * ONE soft supersession candidate that the BACKWARD-SOFT GUARD adjudicated (P5.3 half B).
+ * See config/supersessionGuardConfig.ts for the rule and the
  * measured prod cycle that forced it.
  *
  * A finding is recorded for a soft candidate ONLY when the guard did something other than

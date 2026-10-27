@@ -188,7 +188,7 @@ describe('Remote MCP transport — full MCP handshake with valid token', () => {
 
     // serverInfo from initialize
     const serverInfo = client.getServerVersion();
-    expect(serverInfo?.name).toBe('aidis-mcp-server');
+    expect(serverInfo?.name).toBe('mandrel-mcp-server');
 
     // The version a REAL client receives must be the derived single-source string, not a
     // hardcoded literal. Closes the drift hole at remoteMcpTransport.ts:447 only — the
@@ -308,7 +308,7 @@ describe('Remote MCP transport — two-session isolation', () => {
 });
 
 describe('Remote MCP transport — unknown session id is REHYDRATED, not 404 (rehydrate-on-miss)', () => {
-  // an earlier Task / branch:mcp-session-persistence (supersedes an old papercut):
+  // an earlier Task / branch:mcp-session-persistence (supersedes the old papercut):
   // a lost session (idle-evicted, LRU-evicted, or — the big one — wiped by a server
   // restart/deploy) causes the client's NEXT tool call to arrive with a valid bearer token
   // + a session id no longer in the map. Real MCP clients (Amp, Claude Code, Codex, …)

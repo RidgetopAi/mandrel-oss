@@ -68,8 +68,8 @@
  * ── ARCHIVED CHILD ROWS ARE EXCLUDED ────────────────────────────────────
  * Every builder below carries `AND <alias>.archived_at IS NULL`, so a session's counts mean
  * "records this session produced that you can still find" — matching context_search /
- * decision_search / task_list, which have excluded archived rows by default since an earlier task
- * . Measured on live prod 2026-07-30 these counts were inflated by 18 archived
+ * decision_search / task_list, which have excluded archived rows by default since an earlier task.
+ * Measured on live prod 2026-07-30 these counts were inflated by 18 archived
  * contexts, 429 archived decisions and 23 archived tasks.
  *
  * ALL THREE COPIES were changed together (COPY 1 = migration 074, COPY 2 = SessionRepo +

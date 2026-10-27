@@ -72,7 +72,7 @@ async function viaPublicTool(toolName: string, rawArgs: any): Promise<any> {
 async function makeTask(description = SPEC): Promise<string> {
   const res = await db.query(
     `INSERT INTO tasks (project_id, title, description, type, priority, status, stage)
-     VALUES ($1, 'append-affordance fuse', $2, 'general', 'medium', 'todo', 'draft')
+     VALUES ($1, 'an earlier change append-affordance fuse', $2, 'general', 'medium', 'todo', 'draft')
      RETURNING id`,
     [projectId, description],
   );
@@ -90,7 +90,7 @@ const descHistory = (metadata: any): any[] => metadata?.[TASK_DESCRIPTION_HISTOR
 beforeAll(async () => {
   projectId = (
     await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, 'append-affordance fuse') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change append-affordance fuse') RETURNING id`,
       [PROJ_NAME],
     )
   ).rows[0].id;

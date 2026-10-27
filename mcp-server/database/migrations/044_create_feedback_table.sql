@@ -3,7 +3,7 @@
 -- Description:
 --   Creates the `feedback` table that backs the dashboard feedback/issues widget.
 --   Testers submit bug / idea / question reports (with severity + free-text message)
---   directly from Mandrel Command; rows land here for the operator/the coordinator to read. The
+--   directly from Mandrel Command; rows land here for Operator/Coordinator to read. The
 --   `username` is server-derived from the authenticated JWT (never client-trusted).
 --
 -- This migration number (044) is ABOVE BASELINE_THROUGH (42), so it runs normally on

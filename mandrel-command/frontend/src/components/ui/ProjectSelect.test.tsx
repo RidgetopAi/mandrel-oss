@@ -1,5 +1,5 @@
 /**
- * ProjectSelect — THE shared selector's contract (page-scope epic §B/§D).
+ * ProjectSelect — THE shared selector's contract (an earlier epic §B/§D).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY THIS FILE EXISTS (Reviewer nit 1, promoted to a blocker in reject round 1)

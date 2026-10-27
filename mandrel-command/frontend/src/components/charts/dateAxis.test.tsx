@@ -1,7 +1,7 @@
 /**
  * Date axes render as LOCAL CALENDAR DAYS, never as raw ISO.
  *
- * The symptom on Operator's screenshot was an x-axis reading `2026-07-13T00:00:00.000Z`.
+ * The symptom on the operator's screenshot was an x-axis reading `2026-07-13T00:00:00.000Z`.
  * `grep -rn "tickFormatter" frontend/src` returned ZERO hits before this task: not one
  * chart in the app had an axis formatter, so every date axis printed whatever the backend
  * serialised.

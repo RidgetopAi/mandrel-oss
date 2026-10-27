@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NOT-IN-CI: run by scripts/oss-gate.sh stage H (every scripts/test/*.test.sh); not a the CI gate stage.
+# NOT-IN-CI: run by scripts/oss-gate.sh stage H (every scripts/test/*.test.sh); not a CI gate stage.
 #
 # Executes every fenced bash block in loop/README.md whose first line is `# doctest`, in order, in
 # one throwaway directory, against the real CLI wired to a FakeBoard (loop/test/support/doctest-cli.ts)

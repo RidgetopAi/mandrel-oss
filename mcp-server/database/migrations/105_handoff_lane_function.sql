@@ -1,5 +1,5 @@
 -- ═════════════════════════════════════════════════════════════════════════════════════════
--- 105 — mandrel_handoff_lane(): the workstream-lane rule for handoffs.
+-- 105 — mandrel_handoff_lane(): the workstream-lane rule for handoffs. (an earlier Task.)
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 -- Handoff auto-supersession was project-wide, so a ws:research handoff superseded the live
 -- ws:coordinator head. The lane rule lives HERE once; the prefix and default-lane name are ARGUMENTS

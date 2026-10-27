@@ -10,8 +10,8 @@
 
 # The binaries a fixture must never reach by accident. Shadowed BY DEFAULT.
 # Sourced from the incident that produced this harness: a suite ran the real
-# `deploy_prod` with PROD_COMPOSE_PROJECT=mandrel-prod and no docker stub, and a
-# PATH shim caught two `docker compose -p mandrel-prod ... up -d` invocations.
+# prod deploy step with its real compose project name and no docker stub, and a
+# PATH shim caught two `docker compose -p <prod project> ... up -d` invocations.
 # Nothing was harmed only because this box has no docker.
 FH_DANGEROUS_BINARIES=(docker ssh rclone systemctl psql curl scp rsync nc)
 
@@ -22,7 +22,7 @@ FH_LOOPBACK_HOSTS=(127.0.0.1 localhost ::1 0.0.0.0)
 # which is the state a hermetic fixture should behave as if it were in.
 FH_DENY_RC=127
 
-# Harness-error exit code. Exit codes: 0 GREEN, 1 RED,
+# Harness-error exit code. Mirrors the gate's exit codes: 0 GREEN, 1 RED,
 # 2 CANNOT MEASURE. A fixture the harness cannot parse is a 2, never a pass.
 FH_RC_CANNOT_MEASURE=2
 

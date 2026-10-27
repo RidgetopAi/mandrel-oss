@@ -70,7 +70,7 @@ export const useProjects = (
 ) => {
   return useQuery({
     queryKey: projectQueryKeys.list(params),
-    // THE UNIFIED CLIENT, NOT THE GENERATED SERVICE (the reviewer B4). `api.projects.list()`
+    // THE UNIFIED CLIENT, NOT THE GENERATED SERVICE (Reviewer B4). `api.projects.list()`
     // is global by construction — it sends the resolver's explicit `project_id=all`
     // sentinel. `ProjectsService.getProjects` cannot: its generated signature has no
     // project param, so it could only be scoped by `OpenAPI.HEADERS` →

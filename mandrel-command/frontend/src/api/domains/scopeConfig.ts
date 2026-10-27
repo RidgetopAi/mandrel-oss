@@ -1,6 +1,6 @@
 /**
  * scopeConfig — the ONE merge between a page's per-request scope and a domain method's
- * own request config (page-scope epic §A1).
+ * own request config (an earlier epic §A1).
  *
  * ── WHY THIS EXISTS ──────────────────────────────────────────────────────────────────
  * A scoped page calls `api.<domain>.<method>(args, project.scope())`. `scope()` returns an
@@ -22,7 +22,7 @@
  * `withParams` is the common case (nine call sites) and is kept as its own name because
  * that is what a domain method almost always needs. `withConfig` is the general form, for
  * the handful of methods that carry more than params — `contexts.export` (`responseType:
- * 'blob'`). `withParams`
+ * 'blob'`), `surveyor.triggerScan`/`getScanStatus` (their own `timeout`). `withParams`
  * delegates to it, so there is exactly ONE definition of the precedence rules and a
  * change to one cannot leave the other behind.
  *

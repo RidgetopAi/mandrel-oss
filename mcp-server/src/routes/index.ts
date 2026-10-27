@@ -417,7 +417,8 @@ function annotateScopeNarrowing(
  * Central entry point for all active MCP tools (context_update added in T1)
  */
 /**
- * WRITE AUDIT for the project a content-producing call is scoped to ( * report acceptance line 520). Records the project ID plus the RUNG of the precedence
+ * WRITE AUDIT for the project a content-producing call is scoped to
+ * (report acceptance line 520). Records the project ID plus the RUNG of the precedence
  * ladder that produced it — the id alone says WHERE the write went; the rung says WHY,
  * which is what makes a wrong-project write diagnosable instead of merely visible.
  *
@@ -602,7 +603,7 @@ function attachAttributionNotice(resp: McpResponse, resolved: RouteResolution): 
       },
     };
 
-    // MARK LAST, AFTER THE ATTACHMENT SUCCEEDED — never before it (the reviewer probe A).
+    // MARK LAST, AFTER THE ATTACHMENT SUCCEEDED — never before it (Reviewer probe A).
     // `markNoticed` is what CONSUMES the one notice this caller gets for the whole TTL
     // window, so it must only run once the notice has actually been built into a response.
     // Marking first meant any throw between the two lines (a non-iterable `content` is the
@@ -1001,8 +1002,6 @@ async function routeExecutorInner(
         return await threadRoutes.handleCurrent(args, context);
       case 'thread_clear':
         return await threadRoutes.handleClear(args, context);
-
-
       // Unknown tool
       default:
         logger.warn(`Unknown MCP tool requested: ${toolName}`);

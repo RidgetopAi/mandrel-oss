@@ -154,7 +154,7 @@ export const SEARCH_ID_MATCH_SCORE_BOOST = envFloat('SEARCH_ID_MATCH_SCORE_BOOST
 //   - get_recommendations — DELIBERATELY UNGUARDED. See below; the first written rationale
 //     for this was WRONG and is corrected here so future work does not inherit it.
 //
-// get_recommendations, the honest version (the reviewer caught two false claims in the
+// get_recommendations, the honest version (Reviewer caught two false claims in the
 // original rationale — it was said to have "no remedy to offer" and not to delegate into a
 // search engine; BOTH are untrue). The facts:
 //   - it DOES declare a `type` enum (naming|implementation|architecture|testing), so `type:`
@@ -244,7 +244,7 @@ const PROTECTED_TAG_GRAMMAR_PREFIXES = [
 /**
  * A reserved prefix must be a plain PARAMETER NAME. Enforced at module load (below).
  *
- * WHY THIS IS A SECURITY CONTROL, not tidiness (the reviewer REJECT): the name
+ * WHY THIS IS A SECURITY CONTROL, not tidiness (Reviewer REJECT): the name
  * used to be interpolated into `new RegExp(\`^${name}\\s*:…\`)` UNESCAPED, while the
  * tag-grammar protection compared LITERAL strings. So a metacharacter name slipped past the
  * literal check and then matched as a PATTERN:

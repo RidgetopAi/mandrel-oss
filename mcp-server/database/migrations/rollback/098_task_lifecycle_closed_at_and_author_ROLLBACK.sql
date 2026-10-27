@@ -24,7 +24,7 @@
 -- so the rollback lands in a state the suite covers rather than an untested one.
 --
 -- ═══ PART 2 IS NOT REVERSED, AND CANNOT BE ═══
--- 098 also case-folded `tasks.created_by` (`the coordinator` -> `coordinator`). That is NOT undone here and
+-- 098 also case-folded `tasks.created_by` (`Coordinator` -> `coordinator`). That is NOT undone here and
 -- there is no script that could undo it: the original casing was destroyed by the fold, and
 -- nothing recorded which of the folded rows had been capitalised. This is stated rather than
 -- attempted — an "un-fold" that guessed which rows to re-capitalise would be the invention

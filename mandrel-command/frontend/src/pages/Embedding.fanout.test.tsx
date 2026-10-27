@@ -1,5 +1,5 @@
 /**
- * Embedding — ONE selector, SEVEN panels (page-scope epic §E).
+ * Embedding — ONE selector, SEVEN panels (an earlier epic §E).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE DEFECT THIS GUARD EXISTS TO CATCH

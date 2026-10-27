@@ -15,7 +15,7 @@
  *
  * AVOIDING FALSE POSITIVES ON ORDINARY WORDS (the hard requirement): the bare-hex
  * form additionally requires a digit. Every real Mandrel short id has digits
- * (e.g. 1a2b3c4d, 2b3c4d5e), while all-letter hex words that read as
+ * (e.g. b822f00d, an earlier change, 0f39f00d), while all-letter hex words that read as
  * English ("deadbeef", "deface", "facade", "cabbage"→has non-hex, "decade") do NOT,
  * so they are left as plain text. Combined with word-ish boundaries (a match cannot
  * be preceded/followed by a word char or dash) this excludes: hex embedded in an

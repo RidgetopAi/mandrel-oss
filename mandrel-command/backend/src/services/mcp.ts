@@ -26,7 +26,7 @@ export class McpService {
    * (e.g. http://mcp-server:8080), NOT localhost. Fall back to host:port form for
    * same-namespace/dev deploys. This mirrors the MCP_BASE logic in routes/index.ts.
    */
-  private static resolveMcpTarget(): { hostname: string; port: number } {
+  static resolveMcpTarget(): { hostname: string; port: number } {
     const url = process.env.MANDREL_MCP_URL || process.env.AIDIS_MCP_URL;
     if (url) {
       try {

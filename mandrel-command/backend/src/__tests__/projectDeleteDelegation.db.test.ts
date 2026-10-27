@@ -27,10 +27,10 @@
  * on the rows, whatever the return value says.
  *
  * PROVISION FIRST (this creates + migrates the DB; --print-env alone does NOT migrate):
- *   bash scripts/provision-test-db.sh ci_projdel_accff00d
- *   export $(bash scripts/provision-test-db.sh ci_projdel_accff00d --print-env | grep ^DATABASE_)
+ *   bash scripts/provision-test-db.sh ci_projdel_accf37bb
+ *   export $(bash scripts/provision-test-db.sh ci_projdel_accf37bb --print-env | grep ^DATABASE_)
  *   npm test -- projectDeleteDelegation
- *   bash scripts/provision-test-db.sh ci_projdel_accff00d --drop
+ *   bash scripts/provision-test-db.sh ci_projdel_accf37bb --drop
  *
  * Declared with `describeDb`, the ONE gate for a DB-backed suite: it
  * decides run-vs-skip AND injects the reachability assertion, so this suite cannot run
@@ -65,7 +65,7 @@ describeDb('ProjectService.deleteProject — the Command UI delete is gated, not
    */
   beforeEach(async () => {
     projectId = uuid();
-    await pool.query(`INSERT INTO projects (id, name, description) VALUES ($1, $2, 'guard')`, [
+    await pool.query(`INSERT INTO projects (id, name, description) VALUES ($1, $2, 'an earlier change guard')`, [
       projectId,
       `accff00d-victim-${projectId.slice(0, 8)}`,
     ]);

@@ -554,7 +554,7 @@ export const SessionRepo = {
    * check getActiveSession uses to validate an
    * in-RAM cached id: a cached id whose row has since been reaped/ended is treated
    * as a MISS so the caller re-attaches or mints a real session, instead of writing
-   * no-ops against a dead session (the "stale-but-ended" bug). Fails
+   * no-ops against a dead session (the "stale-but-ended" bug, ctx). Fails
    * safe: returns false (never throws) on a DB error.
    */
   async existsActive(sessionId: string): Promise<boolean> {
@@ -920,7 +920,7 @@ export const SessionRepo = {
           --
           -- SOFT-DELETE: archived rows are EXCLUDED, so "this session created
           -- N contexts" means the N you can still find. Measured on prod 2026-07-30 these were
-          -- inflated by 18 archived contexts / 429 decisions / 23 tasks. Found by a reviewer,
+          -- inflated by 18 archived contexts / 429 decisions / 23 tasks. Found by an Reviewer,
           -- NOT by the reconciliation guard, because that guard derived its population from a
           -- NAME pattern (/(_stats|_insights|_progress_summary)$/) and nothing here is named
           -- that way — see OpRegistryEntry.reportsCount, which replaced the pattern.
@@ -1083,7 +1083,7 @@ export const SessionRepo = {
   },
 
   /**
-   * THE ONE STATEMENT THAT WRITES A SESSION COUNTER COLUMN (the reviewer B1).
+   * THE ONE STATEMENT THAT WRITES A SESSION COUNTER COLUMN (Reviewer B1).
    *
    * Every counter column — activity AND tokens — moves through this single
    * `col = COALESCE(col,0) + delta` UPDATE. `applyActivityCounts` and `addTokens` below

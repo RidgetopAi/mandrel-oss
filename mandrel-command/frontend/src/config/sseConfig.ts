@@ -2,7 +2,8 @@
  * SSE configuration — single, named home for the live-update tunables
  * (configs-not-hardcoded). These govern how the client coalesces bursty
  * server-sent DB events into cache invalidations so a storm of same-entity
- * events cannot thrash the UI into constant refetch/flashing ( * live/polling UI needs single-flight coalescing).
+ * events cannot thrash the UI into constant refetch/flashing (
+ * live/polling UI needs single-flight coalescing).
  */
 
 /** Parse a non-negative integer from an env string, falling back on any bad value. */

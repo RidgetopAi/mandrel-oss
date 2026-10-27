@@ -355,7 +355,7 @@ describe('(d) byproduct opens still work, and yield to a deliberately opened pos
     // THIS ASSERTION WAS INVERTED DELIBERATELY, and the old one is worth quoting because it
     // is the defect written down as a contract: "in_progress on a DIFFERENT task moves it
     // (both byproducts — neither is protected)". That is last-writer-wins on a slot, and on
-    // a shared transport it is what let eight concurrent Builders stamp DECLARED membership
+    // a shared transport it is what let eight concurrent builders stamp DECLARED membership
     // onto each other's spines — four confirmations in an earlier task's noteLog, and 93
     // edges on prod whose author's own `task:` tag names a different task than the edge.
     //
@@ -487,8 +487,8 @@ describe('fold-in — LIMB_ID8_PATTERN on a full UUID: measured, not assumed', (
     expect(derived.ambiguousDrops).toBe(0);
   });
 
-  test('the same body through BOTH layers agrees on the count Coordinator measured live: two', () => {
-    // Coordinator's prod fixture: two ids, cited in mixed full-UUID and bare-id8 form. The live
+  test('the same body through BOTH layers agrees on the count the coordinator measured live: two', () => {
+    // The coordinator's prod fixture: two ids, cited in mixed full-UUID and bare-id8 form. The live
     // mint report resolved exactly 2. The limb layer must not see 4.
     const a = 'efc0f00d-1111-4222-8333-444455556666';
     const b = '2e21f00d-9999-4888-8777-666655554444';

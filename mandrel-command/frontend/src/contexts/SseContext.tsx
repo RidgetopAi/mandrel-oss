@@ -32,7 +32,7 @@ export const SseProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     // Subscribe to all entity types
     const entities: AidisEntity[] = ['contexts', 'tasks', 'decisions', 'projects', 'sessions'];
 
-    // ── UNFILTERED ON PURPOSE (page-scope epic §A3) ───────────────────────────────────
+    // ── UNFILTERED ON PURPOSE (an earlier epic §A3) ───────────────────────────────────
     // This used to filter on the ambient `currentProject.id`. That was correct only
     // while the ambient project was also the project every page displayed. It no longer
     // is: the ambient scope is PINNED to the user's default, while each page picks its

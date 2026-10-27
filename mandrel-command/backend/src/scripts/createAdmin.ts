@@ -8,6 +8,7 @@
  * Idempotent: an existing username is left untouched (its password is NOT changed).
  * Exit: 0 created or already present · 1 failed.
  */
+/* eslint-disable no-console -- a CLI: stdout/stderr are its interface */
 import { AuthService } from '../services/auth';
 import { db } from '../database/connection';
 

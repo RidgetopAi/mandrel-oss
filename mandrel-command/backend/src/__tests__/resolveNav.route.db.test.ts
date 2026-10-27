@@ -368,7 +368,7 @@ describeDb('GET /r/:id — navigation spine (DB integration)', () => {
   });
 
   // --- punch routing -----------------------------
-  // Operator's report: the /r/ link for a punch landed on /tasks/:id, which renders no
+  // The operator's report: the /r/ link for a punch landed on /tasks/:id, which renders no
   // attachments — the evidence was there, just on the wrong page. This is the exact
   // browser-facing regression guard: full UUID and short-id both routed through the
   // real HTTP stack against a real punch-carrying row in Postgres.

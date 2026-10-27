@@ -162,7 +162,7 @@ describe('MUTATION PROBE — replay a corrupted incident payload through the PUB
     // task_update description edit path.
     expect(() =>
       validateToolArguments('task_update', {
-        taskId: '440ff00d-1111-2222-3333-444455556666',
+        taskId: '440f0091-1111-2222-3333-444455556666',
         description: CORRUPTED_DESCRIPTION,
       }),
     ).toThrow(/tool-call XML/i);
@@ -176,15 +176,15 @@ describe('SHORT-ID CONTRACT — task_create.dependencies shape', () => {
     // arg uses, instead of being passed raw to the uuid[] column.
     const ok = validateToolArguments('task_create', {
       title: 'depends on something',
-      dependencies: ['440ff00d'],
+      dependencies: ['440f0091'],
     });
-    expect(ok.dependencies).toEqual(['440ff00d']);
+    expect(ok.dependencies).toEqual(['440f0091']);
   });
 
   test('a full UUID dependency PASSES', () => {
     const ok = validateToolArguments('task_create', {
       title: 't',
-      dependencies: ['440ff00d-1111-2222-3333-444455556666'],
+      dependencies: ['440f0091-1111-2222-3333-444455556666'],
     });
     expect(ok.dependencies?.length).toBe(1);
   });

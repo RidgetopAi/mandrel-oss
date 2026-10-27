@@ -62,7 +62,7 @@ const profileUpdateLimiter = rateLimit({
  * 2. NO RATE LIMIT. See `profileUpdateLimiter` above.
  *
  * 3. NO FORMAT VALIDATION. Any non-empty string was stored verbatim, so whitespace was
- *    preserved and the exact-match uniqueness check let "the operator" and "operator" coexist. See
+ *    preserved and the exact-match uniqueness check let "Operator" and "operator" coexist. See
  *    `validateUsername` / `UserService.isUsernameTaken` in services/user.ts.
  *
  * ⚠️ CLIENT CONTRACT CHANGE: a real change now requires `currentPassword` in the body and
@@ -134,6 +134,20 @@ router.put('/profile',
 
     const usernameChanging = nextUsername !== undefined && nextUsername !== current.username;
     const emailChanging = nextEmail !== undefined && nextEmail !== current.email;
+
+    if ((usernameChanging || emailChanging) && current.auth_user_id) {
+      // ONE LOGIN: this row signs in through better-auth, which owns the
+      // email it signs in with. Changing the dashboard copy would split the two, and the row
+      // may hold no dashboard password to re-verify against. Refused, and said so — not a
+      // REAUTH_REQUIRED that no password could ever satisfy.
+      res.status(409).json({
+        success: false,
+        error: 'Conflict',
+        code: 'SIGN_IN_MANAGED',
+        message: 'This account signs in with your Mandrel sign-in; its username and email cannot be changed here.'
+      });
+      return;
+    }
 
     if (usernameChanging || emailChanging) {
       // RE-AUTHENTICATION (issue 1).
@@ -247,12 +261,22 @@ router.post('/change-password', authenticateToken,
     }
 
     // Update password
-    const success = await UserService.updatePassword(userId, {
+    const outcome = await UserService.updatePassword(userId, {
       currentPassword,
       newPassword
     });
 
-    if (!success) {
+    if (outcome === 'managed-by-sign-in') {
+      res.status(409).json({
+        success: false,
+        error: 'Conflict',
+        code: 'SIGN_IN_MANAGED',
+        message: 'Your password is your Mandrel sign-in password, so it is changed with a set-password link, not here.'
+      });
+      return;
+    }
+
+    if (outcome !== 'changed') {
       res.status(400).json({
         success: false,
         error: 'Bad Request',
@@ -279,7 +303,7 @@ router.post('/change-password', authenticateToken,
  * GET /api/users/preferences
  * Read the CURRENT user's preferences (theme + default project). The read half of
  * the pair — the Command UI's SettingsContext seeds from this and treats
- * localStorage purely as a cache (page-scope epic §A).
+ * localStorage purely as a cache (an earlier epic §A).
  */
 router.get('/preferences', authenticateToken,
   async (req: AuthenticatedRequest, res: Response) => {
@@ -321,7 +345,7 @@ router.get('/preferences', authenticateToken,
  * PATCH /api/users/preferences
  * Update the CURRENT user's preferences: `theme` and/or `defaultProjectId`.
  *
- * `defaultProjectId` (page-scope epic §A) is a UUID, or `null` to clear. It replaces the
+ * `defaultProjectId` (an earlier epic §A) is a UUID, or `null` to clear. It replaces the
  * instance-wide `projects.metadata.is_primary` flag as the UI's default-project source:
  * that flag was global (one user clearing it cleared everyone's) and was carried as a
  * project NAME, so a rename broke it. This is per-user and stores the id.

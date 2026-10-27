@@ -1,6 +1,6 @@
 {
   "_README": "GOLDEN PARITY FIXTURE — a RECORDING of the pre-change actor registry, captured by executing the source at the commit named in _capturedFromCommit (via `git show`), NOT a hand-written oracle. Consumed by tests/actorRegistry.unit.test.ts to prove that with MANDREL_ACTOR_COMPOSITE_ENABLED off (the shipped default) the actor stack is byte-identical to main. Regenerate ONLY with an explicit decision to change legacy behavior — this file is the thing that says \"the default path did not move\".",
-  "_capturedFromCommit": "f9df00db343b9264696fd32dda9a6999f3a18926",
+  "_capturedFromCommit": "f9d9f00df00df00df00df00df00df00df00df00d",
   "_capturedUnderEnv": {
     "MANDREL_ACTOR_REGISTRY_EXTRA": "<unset>",
     "MANDREL_ACTOR_DEFAULT_KIND": "<unset>",

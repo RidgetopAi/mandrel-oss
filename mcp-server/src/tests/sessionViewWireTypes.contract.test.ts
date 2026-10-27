@@ -1,5 +1,6 @@
 /**
- * v_session_summaries WIRE TYPES — what the driver actually hands JavaScript ( * Reviewer B2).
+ * v_session_summaries WIRE TYPES — what the driver actually hands JavaScript
+ * (Reviewer B2).
  *
  * ── THE DEFECT THIS EXISTS TO CATCH ─────────────────────────────────────────────────────
  * `COUNT(*)` returns **bigint**. node-pg ships no int8 parser and this repo installs none

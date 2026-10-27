@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# NOT-IN-CI: run by scripts/oss-gate.sh stage H (every scripts/test/*.test.sh); not a the CI gate stage.
+# NOT-IN-CI: run by scripts/oss-gate.sh stage H (every scripts/test/*.test.sh); not a CI gate stage.
 #
 # End to end for the reference loop: one punch from ready to merged, in pr mode and again in direct
 # mode, against a temp bare origin + clone, a FakeBoard, and fake `claude` and `gh` scripts.

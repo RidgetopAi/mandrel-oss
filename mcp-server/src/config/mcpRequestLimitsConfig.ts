@@ -1,5 +1,6 @@
 /**
- * MCP REQUEST LIMITS — how much an MCP request may carry, on both MCP surfaces.
+ * MCP REQUEST LIMITS — how much an MCP request may carry, on both MCP surfaces
+ * (security sweep).
  *
  * WHY THIS EXISTS: @modelcontextprotocol/sdk ≤ 1.30.0 read request bodies with no size or
  * batch bound (GHSA-f897-62hf-6gxq) and one request could exhaust server memory

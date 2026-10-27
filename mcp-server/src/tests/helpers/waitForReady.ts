@@ -8,7 +8,7 @@
  * server can answer — in particular whether it can reach Postgres. Several integration
  * tests went straight from `await health.start()` to a request that hits the DB.
  *
- * That gap is not theoretical. In the connection-exhaustion incident the host ran out of Postgres client slots, the
+ * That gap is not theoretical. In an earlier change the host ran out of Postgres client slots, the
  * DCR cap middleware's fail-CLOSED catch turned the resulting SQLSTATE 53300 into an HTTP
  * 503, and the failure surfaced as `expected [200,201] to include 503` on a business
  * assertion about registration caps — pointing at OAuth code that was entirely innocent.
@@ -30,11 +30,11 @@
  *
  * IMPORTANT — this is defence in depth, NOT a fix for connection exhaustion. It makes the
  * failure legible and correctly attributed; it does not create capacity. The actual fix
- * for the connection-exhaustion incident is bounding the suite's connection footprint (DATABASE_POOL_* pins in
- * scripts/lib/gate-env.sh) plus the capacity controls in the CI gate.
+ * for an earlier change is bounding the suite's connection footprint (DATABASE_POOL_* pins)
+ * plus the gate's capacity controls.
  *
  * AND IT IS NOT VERDICT-NEUTRAL — say it plainly, because the surrounding work is. Every
- * control in scripts/lib/gate-db-capacity.sh can only ever refuse to certify (all six of
+ * capacity control can only ever refuse to certify (all six of
  * its exit sites are the HARNESS_ERROR code); none of them can turn a failing test into a
  * passing one. THIS HELPER CAN. It polls for up to `timeoutMs` (10 s), so a run that
  * momentarily could not reach Postgres — and recovered inside that window — now proceeds

@@ -25,7 +25,7 @@ export interface DecisionListProps {
   isError: boolean;
   /**
    * True when the page has NO project to scope to and is not merely still loading one
-   * (page-scope epic). The reads are gated off in that state, so without this branch the
+   *. The reads are gated off in that state, so without this branch the
    * rail would render "No decisions" and imply an empty ledger rather than an absent
    * project.
    */

@@ -48,7 +48,7 @@
 -- schema-contract reference (scripts/schema-reference.sql.txt) is regenerated to include
 -- these tables so the CI drift gate (the CI gate stage 0c) stays GREEN and honest.
 --
--- ⚠️  REBUILD — SUPERSEDES + DROPS A DEAD LEGACY SURVEYOR SCHEMA (operator-approved, 2026-06-27).
+-- ⚠️  REBUILD — SUPERSEDES + DROPS A DEAD LEGACY SURVEYOR SCHEMA (the operator-approved, 2026-06-27).
 -- The 000 baseline carries an EARLIER, abandoned Surveyor iteration: a denormalized single-table
 -- `surveyor_scans` (with nodes/connections/clusters as jsonb columns + summary_l0/l1/l2), a
 -- `surveyor_warnings` table, and a `v_surveyor_scan_summaries` view. A repo-wide search
@@ -66,10 +66,10 @@
 -- `v_surveyor_scan_summaries` existing. The new normalized `surveyor_scans` has NONE of those,
 -- so if the new schema is already present (or the DB is fresh) the guard detects NO legacy shape
 -- and performs NO destructive action — the create-IF-NOT-EXISTS half then no-ops and existing
--- normalized rows are preserved. (NOTHING deploys from this branch; the coordinator/the reviewer review this
+-- normalized rows are preserved. (NOTHING deploys from this branch; Coordinator/Reviewer review this
 -- drop, and prod is CN1-gated.)
 
--- ── SHAPE-GUARDED drop of the dead legacy schema (operator-approved; drops junk regardless of rows) ──
+-- ── SHAPE-GUARDED drop of the dead legacy schema (the operator-approved; drops junk regardless of rows) ──
 DO $$
 DECLARE
   has_legacy_view BOOLEAN;
@@ -85,10 +85,10 @@ BEGIN
   );
 
   IF has_legacy_view OR has_legacy_cols THEN
-    -- LEGACY shape detected → drop the abandoned junk (operator-approved), regardless of row
+    -- LEGACY shape detected → drop the abandoned junk (the operator-approved), regardless of row
     -- count. View first (it depends on the legacy table), then the tables (CASCADE mops up
     -- any leftover dependents such as the legacy warnings FK + indexes).
-    RAISE NOTICE 'Surveyor 053: LEGACY denormalized schema detected — dropping dead junk (Operator-approved): v_surveyor_scan_summaries, surveyor_warnings, surveyor_scans.';
+    RAISE NOTICE 'Surveyor 053: LEGACY denormalized schema detected — dropping dead junk (the operator-approved): v_surveyor_scan_summaries, surveyor_warnings, surveyor_scans.';
     DROP VIEW  IF EXISTS public.v_surveyor_scan_summaries;
     DROP TABLE IF EXISTS public.surveyor_warnings CASCADE;
     DROP TABLE IF EXISTS public.surveyor_scans    CASCADE;

@@ -6,8 +6,8 @@
  * Thin wrapper around services/graphBackfill.ts (logic-in-src, thin-executable-in-scripts —
  * the repo pattern, and what lets the contract test import the core under `rootDir: src`).
  *
- * THIS IS THE FILE A SCHEDULED RUN INVOKES. A scheduler
- * should invoke it with `--apply` and WITHOUT `--include-declared`, so an unattended run performs
+ * THIS IS THE FILE A SCHEDULED RUN INVOKES, with `--apply` and WITHOUT `--include-declared`,
+ * so an unattended run performs
  * the guessed + repair legs only. The CN2-gated declared leg needs a human to type the flag.
  *
  * SAFE BY DEFAULT: no `--apply` means dry run, exactly like every other backfill here.

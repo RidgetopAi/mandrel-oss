@@ -47,7 +47,7 @@ function envUnitFloat(name: string, fallback: number): number {
  * NOTE ON THE SHAPE OF THE ENV READ (all four helpers here): the read is its OWN statement,
  * `const raw = process.env[name];`, and the normalising happens on the NEXT line. That is not
  * style — writing it as `const raw = (process.env[name] ?? '').trim()` makes the deploy gate's
- * env-accounting classifier (scripts/test/clean-gate.test.sh) read `const raw = (` as an
+ * env-accounting classifier read `const raw = (` as an
  * arrow-function DEFINITION, so it derives a via-callers helper literally named `raw` and then
  * greps the whole repo for calls to it — flagging `git.raw(['ls-tree', …])` in the command
  * backend as an env read with a computed argument. Measured: that exact mutation turned the

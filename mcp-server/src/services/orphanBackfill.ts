@@ -1,6 +1,6 @@
 /**
  * ONE-TIME ORPHAN BACKFILL — Component C of reliable-auto-threading (CORE logic)
- * (branch:mandrel-reliability, task ST-6, spec
+ * (branch:mandrel-reliability, task ST-6 an earlier change, spec
  * docs/specs/reliable-auto-threading.md §C1/C2/C3, §X4).
  *
  * THE PROBLEM (measured): 49% of existing contexts are born orphans (zero edges) because

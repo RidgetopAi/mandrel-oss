@@ -17,7 +17,7 @@
  * `/api/resolve/:id` all returned 200 with the victim's rows.
  *
  * That left this branch in the state it exists to abolish, one family over:
- * `/api/projects/:id` was tight while their
+ * `/api/projects/:id` and `/api/surveyor/projects/:projectId/*` were tight while their
  * immediate neighbours were open.
  *
  * =============================================================================
@@ -33,7 +33,7 @@
  * is the defect projectScopeResolver.ts exists to prevent.
  *
  * `router.param` is the choke point that already works in this codebase for exactly this
- * shape (routes/projects.ts). It runs during
+ * shape (routes/surveyor.ts, and routes/projects.ts on this branch). It runs during
  * ROUTING, before any handler on that router, and — the property that matters — a NEW
  * `/:id` route added to one of these routers tomorrow INHERITS the check without anyone
  * remembering to add it. That is the difference between a construction and a list.

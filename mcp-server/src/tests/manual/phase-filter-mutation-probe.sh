@@ -11,7 +11,7 @@
 #                   in the contract test exist.
 #
 # THE SECOND READ PATH GETS ITS OWN TWO DIRECTIONS (added in REJECT ROUND 1, Reviewer
-# an earlier review verdict, F1). The same commit changed task_progress_summary(groupBy:'phase') --
+# an earlier verdict F1). The same commit changed task_progress_summary(groupBy:'phase') --
 # the tool's DEFAULT grouping -- and directions A and B do not touch it: they mutate the
 # candidate GENERATOR the task_list filter uses, while the summary goes through the SQL
 # RECOGNISER and the CANONICAL fold. Reviewer proved that gap by reverting both helpers to

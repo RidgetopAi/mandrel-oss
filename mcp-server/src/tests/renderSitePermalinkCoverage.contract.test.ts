@@ -1,6 +1,6 @@
 /**
  * RENDER-SITE PERMALINK COVERAGE — the population is the RENDER SITES, not the type array.
- * an earlier task (follows an earlier change).
+ * an earlier task (follows).
  *
  * =============================================================================
  * WHAT WENT WRONG, AND WHY NO EXISTING GUARD COULD HAVE CAUGHT IT

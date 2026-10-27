@@ -7,7 +7,7 @@
  *   - lazy  (default, "lazy+core"): each gateway = name + one-line description + a MINIMAL honest
  *     input schema: the `{action:{enum:[…]}}` discriminator PLUS registry-derived required-param
  *     hints (names + small closed enums) for the gateway's un-guessable WRITE actions (liftCore-
- *     Params) — the context win, tuned to close the first-call gap (the auditor recommendation).
+ *     Params) — the context win, tuned to close the first-call gap (the auditor rec).
  *   - full: each gateway = the whole-tool action-discriminated `oneOf` (same branch composition
  *     discover.explain serves — shared via buildGatewayBranchSchema, so they cannot drift).
  *
@@ -70,7 +70,7 @@ interface LiftedCoreProp {
 }
 
 /**
- * lazy+CORE param lifting (Phase 3, the auditor recommendation, plan §1.2).
+ * lazy+CORE param lifting (Phase 3, the auditor rec, plan §1.2).
  *
  * For a gateway, compute the MINIMAL set of REQUIRED-param hints to lift into the lazy envelope so
  * a blind first call to an UN-GUESSABLE write contract can succeed without a `discover.explain`

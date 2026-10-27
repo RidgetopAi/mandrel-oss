@@ -13,7 +13,7 @@ import type { EmbeddingScope, EmbeddingDataset } from './types';
  * The explicit sentinel for "every project" (J3). A WORD, not `null`, so the unrestricted
  * mode cannot be reached by omitting an argument and is legible at the call site.
  *
- * ONE SENTINEL, ONE VALUE (the reviewer round 5). This module used to declare its own
+ * ONE SENTINEL, ONE VALUE (Reviewer round 5). This module used to declare its own
  * `'all-projects'` while services/projectListScope.ts declared `'ALL_PROJECTS'`. Two
  * literals for one concept could not be MIXED UP today — the types are non-comparable, so
  * a swap is a compile error — but they are a rename hazard: the day someone widens either

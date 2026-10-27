@@ -36,5 +36,6 @@ if [[ "${BELIEF_COST_LOCAL:-0}" == "1" ]]; then
 fi
 
 cd "$REPO_DIR"
+# ambient-scrub-exempt: `compose exec` runs a command inside the ALREADY-RUNNING container; it creates no container, so no interpolated value is delivered anywhere.
 exec docker compose exec -T -e LOG_CONSOLE=false -e AIDIS_LOG_CONSOLE=false \
   "${BELIEF_COST_SERVICE:-mcp-server}" node "$ENTRY" "$@"

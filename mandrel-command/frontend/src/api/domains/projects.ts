@@ -18,7 +18,7 @@ export const projectsApi = {
    * This endpoint is project-scoped like any other list (`resolveListScope`), so with the
    * ambient header pinned to the user's default it returns ONE row — and this list is what
    * fills every `<ProjectSelect>` on every page. A one-option selector looks perfectly
-   * healthy and makes the whole selector rework inert (the reviewer B4).
+   * healthy and makes the whole selector rework inert (Reviewer B4).
    *
    * `globalReadConfig` sends the resolver's explicit `project_id=all` sentinel, so the
    * request is EXPLICITLY unscoped rather than accidentally unscoped. It is applied HERE,

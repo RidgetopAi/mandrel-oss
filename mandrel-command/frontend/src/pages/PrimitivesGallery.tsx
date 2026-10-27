@@ -288,8 +288,7 @@ const PrimitivesGallery: React.FC = () => {
     () => [
       // Product-neutral fixture names on purpose. This gallery is BUILT AND SHIPPED to
       // every tenant, so real project names out of our own Mandrel are company branding
-      // in a customer's bundle — the exact class the internal-refs ban (scripts/oss-gate.sh STAGE R)
-      // exists to stop, and what it caught here on 2026-08-08.
+      // in a customer's bundle.
       { id: 'aaaaaaaa-1111-4111-8111-111111111111', name: 'demo-alpha' },
       { id: 'bbbbbbbb-2222-4222-8222-222222222222', name: 'demo-beta' },
       { id: 'cccccccc-3333-4333-8333-333333333333', name: 'demo-gamma' },
@@ -711,7 +710,7 @@ const PrimitivesGallery: React.FC = () => {
                     <Radio value="first">FREE — act, self-checks catch it</Radio>
                     <Radio value="second">NOTIFY — act, tell the operator after</Radio>
                     <Radio value="third">GATE — the operator approves first</Radio>
-                    <Radio value="fourth" disabled>DISABLE — the operator does it</Radio>
+                    <Radio value="fourth" disabled>DISABLE — the operator does it himself</Radio>
                   </RadioGroup>
                 </div>
               </div>

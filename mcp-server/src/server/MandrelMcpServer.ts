@@ -19,7 +19,7 @@
  * - Circuit breaker pattern
  */
 
-import { MANDREL_VERSION } from '../version.js';
+import { MANDREL_SERVER_NAME, MANDREL_VERSION } from '../version.js';
 import { formatInstructions, PROJECT_INSTRUCTIONS_ENABLED } from '../config/projectEchoConfig.js';
 import { logger, CorrelationIdManager } from '../utils/logger.js';
 import { RequestLogger } from '../middleware/requestLogger.js';
@@ -86,7 +86,7 @@ export default class MandrelMcpServer {
 
     this.server = new Server(
       {
-        name: 'aidis-mcp-server',
+        name: MANDREL_SERVER_NAME,
         version: MANDREL_VERSION, // <semver>+<revision>, see ../version.ts — CUSTOMER-VISIBLE
       },
       {
@@ -424,7 +424,8 @@ export default class MandrelMcpServer {
         logger.info('🧪 Skipping database initialization (AIDIS_SKIP_DATABASE=true)');
       }
 
-      // Refuse to start when the embedding model cannot load (no silent mock fallback).
+      // Boot-time embedder check (never a silent mock): MANDREL_EMBEDDING_VERIFY_STARTUP=strict
+      // (default) refuses to start (main.ts exits 1); =warn logs one loud line and starts.
       await embeddingService.verifyStartup();
 
       // Phase 6.3: Start background services via backgroundServices module
@@ -510,7 +511,7 @@ export default class MandrelMcpServer {
 
         // SR-1: Park ALL active sessions as 'interrupted' (resumable) on shutdown.
         //
-        // REPLACES the old stdio-only endSession: shutdown used to end
+        // REPLACES the old stdio-only endSession (ctx): shutdown used to end
         // ONLY the 'stdio' connection's session, leaving every bridge/http/remote
         // session 'active' with ended_at NULL forever (they accumulated, and a restart
         // minted duplicates because the RAM map was empty). Now we mark them ALL

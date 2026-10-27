@@ -10,8 +10,11 @@
  *   • useUpdateTheme     → PATCH /api/users/preferences      (api.users.updatePreferences)
  *   • useRevokeSessions  → POST  /api/users/revoke-sessions  (api.users.revokeSessions)
  *   • useDeleteProject   → DELETE /api/projects/:id          (api.projects.remove)
+ *   • useApiTokens       → GET    /api/api-tokens            (api.apiTokens.list)
+ *   • useCreateApiToken  → POST   /api/api-tokens            (api.apiTokens.create)
+ *   • useRevokeApiToken  → DELETE /api/api-tokens/:id        (api.apiTokens.revoke)
  *
- * DELETED HERE (page-scope epic §A): `useSetPrimaryProject` / `useClearPrimaryProject`.
+ * DELETED HERE (an earlier epic §A): `useSetPrimaryProject` / `useClearPrimaryProject`.
  * They wrote `projects.metadata.is_primary` — an INSTANCE-WIDE flag, so one user setting
  * "their" default set it for everyone, and `clearPrimary` cleared it for everyone with no
  * user scoping in the SQL at all. The default project is now a per-user preference
@@ -20,9 +23,10 @@
  * consumers (mcp-server bootstrap) — but nothing in this UI calls them any more, and
  * leaving unused hooks here is how the next author reintroduces the instance-wide write.
  */
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '../../api';
 import type { ProfileUpdate } from '../../api/domains/users';
+import { SETTINGS_CONFIG } from './config';
 
 /** PUT /api/users/profile — update username / email, then refresh the cached profile. */
 export function useUpdateProfile() {
@@ -85,6 +89,48 @@ export function useDeleteProject() {
     mutationFn: (projectId: string) => api.projects.remove(projectId, { confirm: true }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['projects'] });
+    },
+  });
+}
+
+/** The react-query key for the current user's API-token list. */
+export const API_TOKENS_QUERY_KEY = ['settings', 'api-tokens'] as const;
+
+/** GET /api/api-tokens — the current user's tokens (never the token itself). */
+export function useApiTokens() {
+  return useQuery({
+    queryKey: API_TOKENS_QUERY_KEY,
+    queryFn: () => api.apiTokens.list(),
+    staleTime: SETTINGS_CONFIG.apiTokensStaleMs,
+  });
+}
+
+/**
+ * POST /api/api-tokens. The resolved value carries the PLAINTEXT token — the caller must
+ * move it into component state and then `reset()` this mutation, so react-query's mutation
+ * cache does not keep holding it after the show-once modal closes.
+ */
+export function useCreateApiToken() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (name: string) => api.apiTokens.create(name),
+    // Evict the finished mutation (whose `data` IS the plaintext) from the MutationCache as
+    // soon as nothing observes it. reset() alone only detaches the observer; the default
+    // gcTime would keep the token in memory for five more minutes.
+    gcTime: 0,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: API_TOKENS_QUERY_KEY });
+    },
+  });
+}
+
+/** DELETE /api/api-tokens/:id — revoke; the next request made with the token is refused. */
+export function useRevokeApiToken() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: string) => api.apiTokens.revoke(id),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: API_TOKENS_QUERY_KEY });
     },
   });
 }

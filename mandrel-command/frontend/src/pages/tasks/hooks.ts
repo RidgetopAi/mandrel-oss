@@ -351,7 +351,7 @@ function invalidateTaskCaches(qc: ReturnType<typeof useQueryClient>, id?: string
 /**
  * POST /api/tasks — create a task from the CRUD drawer's create mode.
  *
- * ── THE WRITE SCOPE (page-scope epic §A1) ─────────────────────────────────────────────
+ * ── THE WRITE SCOPE (an earlier epic §A1) ─────────────────────────────────────────────
  * `controllers/task.ts` reads `project_id` from the BODY, so this write was never going to
  * land in the ambient project the way `decision_record`/`decision_update`/`context_store`
  * would. It is scoped anyway, and the scope is derived from the SAME `project_id` the
@@ -399,7 +399,8 @@ export function useUpdateTask() {
 }
 
 /**
- * DELETE /api/tasks/:id — the drawer's delete-confirm. A SOFT delete since  * the backend sets `archived_at` (matching MCP `task_delete`), so the card drops off the
+ * DELETE /api/tasks/:id — the drawer's delete-confirm. A SOFT delete since an earlier task:
+ * the backend sets `archived_at` (matching MCP `task_delete`), so the card drops off the
  * board and the counts fall, but the record survives in the Archived view and can be
  * restored. Refreshes every task-derived read on success.
  */

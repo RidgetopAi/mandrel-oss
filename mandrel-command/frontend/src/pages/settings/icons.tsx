@@ -88,8 +88,8 @@ export const SectionIcon: React.FC<IconProps & { name: IconKey }> = ({ name, siz
   }
 };
 
-/** Paper-plane (Notifications). */
-export const ChatIcon: React.FC<IconProps> = ({ size = 15, className }) => (
+/** Chat paper-plane (Notifications). */
+export const chatIcon: React.FC<IconProps> = ({ size = 15, className }) => (
   <svg {...base(size)} className={className}>
     <path d="M21 4L3 11l6 2 2 6 3-4 4 3z" />
   </svg>

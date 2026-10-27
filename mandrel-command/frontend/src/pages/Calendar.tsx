@@ -4,16 +4,16 @@
  * (P0.3 primitives + P0.2 tokens, ZERO antd), all data through the unified `api`
  * client via react-query (src/pages/calendar/hooks.ts).
  *
- * WHAT THIS SCREEN IS (the data-gap policy · an earlier decision): Mandrel records
+ * WHAT THIS SCREEN IS (data-gap policy · an earlier decision): Mandrel records
  * are HISTORICAL, so this is the **activity-by-date** view — each day cell shows that
  * day's MOMENTUM score (ring + number, from `/api/momentum-series`, TZ-correct per an earlier task)
  * plus its session/context counts and any task whose `due_date` lands on it.
- * Every day cell is CLICKABLE → opens the day-summary card (built separately
- * ; this shell renders the `<DaySummary/>` boundary). The old "Unscheduled"
+ * Every day cell is CLICKABLE → opens the day-summary card (built separately,
+ * this shell renders the `<DaySummary/>` boundary). The old "Unscheduled"
  * backlog rail and the mock's drag-to-schedule / sprint / export layers are DROPPED —
  * this is a daily-summary tool, not a planning board.
  *
- * PROJECT SCOPE (page-scope epic §E): the page owns its scope via `usePageProject` and opens
+ * PROJECT SCOPE (an earlier epic §E): the page owns its scope via `usePageProject` and opens
  * on the user's DEFAULT project (it used to open on 'all'). Only the INITIAL VALUE changed:
  * the wire contract is untouched — the selection is still sent RAW as `?project=`, literal
  * `'all'` included, which the backend reads as explicitly unscoped and which beats the
@@ -56,7 +56,7 @@ const Calendar: React.FC = () => {
   const [selectedDate, setSelectedDate] = React.useState<Date | null>(null);
 
   // Scoped by the ONE switch in the topbar: one project at a time, opening
-  // on the user's default. No "All projects" here (the project-switch walkthrough F2).
+  // on the user's default. No "All projects" here (an earlier walkthrough F2).
   const project = usePageProject();
   const pageScope = { scope: project.scope, enabled: project.ready };
   const tz = getBrowserTimeZone();
@@ -175,7 +175,7 @@ const Calendar: React.FC = () => {
           )}
 
           {/* The day card INHERITS the Calendar's selection — it has no selector of its
-              own, by design (page-scope epic §E). It gets the same raw project value and the
+              own, by design (an earlier epic §E). It gets the same raw project value and the
               same per-request scope, so the card and the grid behind it can never
               disagree about which project they are showing. */}
           {selectedDate && project.projectId && (

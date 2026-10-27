@@ -233,7 +233,7 @@ describe('(a) REGRESSION — static bearer path is byte-for-byte intact (BACKWAR
       requestInit: { headers: { Authorization: `Bearer ${TEST_TOKEN}` } },
     });
     await client.connect(transport);
-    expect(client.getServerVersion()?.name).toBe('aidis-mcp-server');
+    expect(client.getServerVersion()?.name).toBe('mandrel-mcp-server');
     const tools = await client.listTools();
     expect(tools.tools.map(t => t.name)).toContain('mandrel_ping');
     await client.close();
@@ -321,7 +321,7 @@ describe('(d) OAUTH on /mcp — a minted access token authorizes; wrong aud/iss 
       requestInit: { headers: { Authorization: `Bearer ${token}` } },
     });
     await client.connect(transport); // initialize over /mcp with an OAuth JWT
-    expect(client.getServerVersion()?.name).toBe('aidis-mcp-server');
+    expect(client.getServerVersion()?.name).toBe('mandrel-mcp-server');
     const result: any = await client.callTool({ name: 'mandrel_ping', arguments: {} });
     expect(JSON.stringify(result)).toContain('mandrel_ping');
     await client.close();

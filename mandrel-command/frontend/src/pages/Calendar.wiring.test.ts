@@ -22,7 +22,7 @@ const allTsSrcs = [{ f: 'Calendar.tsx', src: pageSrc }, ...partSrcs];
 const HEX = /#[0-9a-fA-F]{3,8}\b/g;
 
 /**
- * ── THE AXIOS BAN IS A LINT RULE NOW (page-scope epic) ─────────────────────────────────
+ * ── THE AXIOS BAN IS A LINT RULE NOW ─────────────────────────────────
  * `@typescript-eslint/no-restricted-imports` in `.eslintrc.cjs` bans axios value imports
  * across ALL of src/, in every import spelling, with the type-only exclusion handled by
  * the rule itself. It replaced a hand-written regex matcher that this suite used to feed
@@ -64,7 +64,7 @@ describe('Calendar rebuild — token-driven', () => {
   });
 });
 
-describe('Calendar — the page owns its project scope, and does not re-invent it (page-scope epic)', () => {
+describe('Calendar — the page owns its project scope, and does not re-invent it', () => {
   /**
    * Source-level DRIFT guards only. They cannot prove the request is scoped correctly —
    * that is what the behavioural suites do, against the header a request would actually

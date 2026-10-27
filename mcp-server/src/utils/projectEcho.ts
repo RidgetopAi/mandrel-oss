@@ -106,7 +106,8 @@ export async function buildWriteEcho(
 export async function resolveInstructions(connectionId: string | undefined): Promise<string> {
   try {
     // A BOUND client is answered from the binding, WITHOUT initializeSession. Two reasons,
-    // both from     //
+    // both from an earlier task / an earlier decision:
+    //
     //  1. THIS STRING IS THE EARLIEST LIE. It is emitted at `initialize`, before any tool
     //     call can run, and it told a bound client "Active Mandrel project: daily log.
     //     Mandrel scopes all writes to this ACTIVE project" while its writes went to the

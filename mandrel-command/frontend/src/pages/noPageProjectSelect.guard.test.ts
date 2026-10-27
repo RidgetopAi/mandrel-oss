@@ -50,7 +50,7 @@ function productTsxFiles(dir = SRC, out: string[] = []): string[] {
  * True if `text` renders the component exported as `exportName` from a module whose
  * specifier ends with `moduleSuffix` — under WHATEVER local name the file imported it as.
  * Resolves `import { X }`, `import { X as Y }`, and `import Y from '.../X'` from the
- * import declarations, then matches JSX tags against those local names (walkthrough
+ * import declarations, then matches JSX tags against those local names (an earlier walkthrough
  * N1: matching the literal tag let `import { ProjectSelect as PS }` through).
  */
 export function rendersImported(

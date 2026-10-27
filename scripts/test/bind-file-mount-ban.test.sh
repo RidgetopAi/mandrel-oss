@@ -3,7 +3,7 @@
 # bind-file-mount-ban.test.sh — a committed compose file may not bind-mount a
 # SINGLE FILE out of this repo's own tree.
 # =============================================================================
-# an earlier Task. Sibling of scripts/check-bind-mount-drift.sh, one layer earlier:
+# an earlier Task. Sibling of a live-box drift detector, one layer earlier:
 # the detector finds the class on a live box, this stops the next one being
 # WRITTEN. GUARDS-CLASS: stale-file-bind-mount
 #
@@ -13,8 +13,8 @@
 #   the pre-update inode and the container serves the old bytes until it is
 #   recreated — with no signal anywhere: the commit is on the box, the host file
 #   is correct, the deploy exits 0. Measured on prod 2026-08-23:
-#   the deployed scripts/lib/notify.sh was inode 1564100 on the host and
-#   1541506 inside mandrel-prod-mcp-server after a fast-forward.
+#   a bind-mounted script was inode 1564100 on the host and 1541506 inside the
+#   container after a fast-forward.
 #   A DIRECTORY bind mount does not have the property: lookup is per-open.
 #
 # THE POPULATION, AND WHY IT IS THIS ONE
@@ -42,8 +42,8 @@
 #   * It says nothing about a mount created outside a committed compose file (a
 #     hand-run `docker run -v`, a gitignored per-tenant overlay). Those are the
 #     live detector's population, not this one.
-#   * It does not prove any container is currently fresh. That is
-#     scripts/check-bind-mount-drift.sh, and it needs a docker daemon.
+#   * It does not prove any container is currently fresh. That needs a live
+#     detector and a docker daemon.
 #
 # Run:  bash scripts/test/bind-file-mount-ban.test.sh
 # Exit: 0 GREEN · 1 RED · 2 CANNOT MEASURE
@@ -60,7 +60,13 @@ BIND_BAN_DEPLOY_ROOT="${BIND_BAN_DEPLOY_ROOT:-/srv/mandrel}"
 # Filename globs that define a compose file.
 BIND_BAN_COMPOSE_GLOB="${BIND_BAN_COMPOSE_GLOB:-docker-compose*.yml docker-compose*.yaml compose*.yml compose*.yaml}"
 # Discovery FLOOR. A broken glob must read as CANNOT-MEASURE, never as clean.
-BIND_BAN_MIN_COMPOSE_FILES="${BIND_BAN_MIN_COMPOSE_FILES:-3}"
+# The value is per-repository and lives in the floors config.
+# shellcheck source=scripts/test/lib/population-floors.config.sh
+. "$SELF_DIR/lib/population-floors.config.sh" 2>/dev/null \
+  || { echo "CANNOT MEASURE: floors config $SELF_DIR/lib/population-floors.config.sh is unreadable" >&2; exit 2; }
+BIND_BAN_MIN_COMPOSE_FILES="${BIND_BAN_MIN_COMPOSE_FILES:-${POPULATION_FLOOR_COMPOSE_FILES:-}}"
+[[ "$BIND_BAN_MIN_COMPOSE_FILES" =~ ^[1-9][0-9]*$ ]] \
+  || { echo "CANNOT MEASURE: compose-file floor '$BIND_BAN_MIN_COMPOSE_FILES' is not a positive integer" >&2; exit 2; }
 # The co-located exception marker.
 BIND_BAN_MARKER="${BIND_BAN_MARKER:-BIND-FILE-MOUNT-OK:}"
 
@@ -145,10 +151,9 @@ PYEOF
 # =============================================================================
 # ONE POPULATION, TWO READINGS.
 # Discovery of the compose FILES lives in the enumerator above and nowhere else.
-# A second discovery pass written in a different tool is the a past incident shape,
-# and it bit during authoring: a `find`-based copy silently missed
-# a reverse-proxy compose file on this box (`find` here is bfs 4.1.1;
-# the production host has GNU findutils), so the dumb pass was reading a SMALLER population
+# A second discovery pass written in a different tool is the past incident shape,
+# and it bit during authoring: a `find`-based copy silently missed a nested
+# compose file on a box whose `find` is bfs 4.1.1 (another has GNU findutils), so the dumb pass was reading a SMALLER population
 # than the parser and would have reported a confident clean zero for that file.
 #
 # The dumb cross-check is therefore about PARSING, not discovery: line-local,

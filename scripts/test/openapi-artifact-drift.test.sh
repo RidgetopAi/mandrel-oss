@@ -8,7 +8,7 @@
 #   frontend/.openapi/openapi.json and frontend/src/api/generated/** — and until this
 #   stage NOTHING regenerated or compared them. The only thing keeping the shipped
 #   artifacts equal to the code was a human remembering to run a script, and measured
-#   on an earlier release (v0.50.0) they were not equal: the spec was missing 4 whole paths,
+#   on an earlier change (v0.50.0) they were not equal: the spec was missing 4 whole paths,
 #   disagreed on 9 more, and 5 generated service files differed. The drift had
 #   accumulated across several unrelated tasks. The artifact a customer reads to
 #   understand our API — including which routes require a credential — could, and did,
@@ -104,9 +104,9 @@ hdr "1. toolchain preflight (a missing tool is a fact about the BOX, not the com
 command -v node >/dev/null 2>&1 || die "node not on PATH"
 command -v npm  >/dev/null 2>&1 || die "npm not on PATH"
 
-# Resolve the two generators the shipped command needs, FROM the directories that
-# will run them. Without this a sandboxed `npx` would try the network, fail, and the
-# diff stage would report a RED that says nothing about the commit.
+# Resolve the generators the shipped command needs, FROM the directories that will run
+# them. Without this a sandboxed `npx` would try the network, fail, and the diff stage
+# would report a RED that says nothing about the commit.
 # Prints the name of the first tool that does not resolve; returns 0 when all do.
 # `typescript` (tsc) is checked because ts-node and the stages after this one need it.
 _openapi_drift_missing_tool() {
@@ -121,15 +121,37 @@ _openapi_drift_missing_tool() {
       echo "$pkg"; return 1
     fi
   done
+  # `require.resolve` can succeed from a package reachable OUTSIDE this checkout (a parent
+  # node_modules / NODE_PATH) while the checkout has no linked `.bin/<tool>` — and the
+  # shipped `npm run openapi:export` runs the BIN (`sh: ts-node: not found`, rc=127,
+  # merged-ref gate 2026-10-23). Measure what the command will execute.
+  _openapi_drift_bin_linked ts-node || { echo "ts-node (no linked .bin/ts-node)"; return 1; }
   return 0
 }
+_openapi_drift_bin_linked() {
+  local tool="$1" d
+  for d in "$REPO_DIR/mandrel-command/backend" "$REPO_DIR/mandrel-command"; do
+    [[ -x "$d/node_modules/.bin/$tool" ]] && return 0
+  done
+  return 1
+}
 
-# NEVER INSTALL HERE. Under scripts/oss-gate.sh this directory is the gate's OWN
-# working tree; a reinstall that is interrupted leaves mandrel-command/node_modules
-# half-empty and the next stage dies with `tsc: not found`. The gate's deps stage
-# owns installation; a missing tool is could-not-measure (exit 2), named.
+# NEVER INSTALL BY DEFAULT. Under mandrel-oss's scripts/oss-gate.sh this directory is the
+# gate's OWN working tree; a reinstall that is interrupted leaves
+# mandrel-command/node_modules half-empty and the next stage dies with `tsc: not found`.
+# A missing tool is could-not-measure (exit 2), named. ONLY a caller that owns a
+# single-use checkout opts in, with OPENAPI_DRIFT_SELF_PROVISION=1, and the install itself
+# lives in scripts/lib/openapi-drift-self-provision.sh, so this file carries no install
+# invocation.
 if ! MISSING_TOOL="$(_openapi_drift_missing_tool)"; then
-  die "toolchain package '$MISSING_TOOL' does not resolve from mandrel-command — run the gate's deps stage (the lockfile install in mandrel-command) first; this test never installs into the tree it measures"
+  if [[ "$OPENAPI_DRIFT_SELF_PROVISION" != 1 ]]; then
+    die "toolchain package '$MISSING_TOOL' does not resolve from mandrel-command — run the gate's deps stage (the lockfile install in mandrel-command) first; this test never installs into the tree it measures unless OPENAPI_DRIFT_SELF_PROVISION=1"
+  fi
+  echo "  toolchain package '$MISSING_TOOL' does not resolve from mandrel-command"
+  bash "$REPO_DIR/scripts/lib/openapi-drift-self-provision.sh" "$REPO_DIR" "$TMP/self_provision_npm_ci.log" \
+    || die "self-provisioning failed (see above) — an environmental fact about this box, not a verdict on the commit"
+  MISSING_TOOL="$(_openapi_drift_missing_tool)" \
+    || die "toolchain package '$MISSING_TOOL' still does not resolve after self-provisioning — see mandrel-command/package.json"
 fi
 echo "  toolchain resolves: node $(node -v), openapi-typescript-codegen, swagger-jsdoc, ts-node, typescript"
 

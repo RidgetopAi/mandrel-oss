@@ -12,16 +12,10 @@ brand	LICENSE	Copyright (c) 2026 RidgetopAi	The MIT licence must name the copyri
 *	mcp-server/vendor/models/**	*	Third-party MiniLM tokenizer vocabulary: ordinary English words.
 id	mcp-server/src/tests/handoffCarriedFields.contract.test.ts	*	The subject under test parses "spine <id>" and "task <id>" references out of handoff prose; the ids are fixture values.
 id	mcp-server/src/tests/searchIdTokenInSentence.contract.test.ts	*	The subject under test extracts an 8-hex id from a sentence such as "what is decision <id> about"; the ids are fixture values.
-id	mcp-server/src/tests/gateExitCodeRendered.contract.test.ts	REVIEWER VERDICT	A verbatim review-verdict text fixture whose header names the reviewed task id.
-id	mcp-server/src/tests/reviewOutcomeRendered.contract.test.ts	REVIEWER VERDICT	A verbatim review-verdict text fixture whose header names the reviewed task id.
 # hexref: the documented synthetic example ids. Prose that needs an example id uses one of these;
 # none names a real record.
 hexref	**	1a2b3c4d	Documented synthetic example id (internal-refs.patterns, hexref class).
 hexref	**	2b3c4d5e	Documented synthetic example id (internal-refs.patterns, hexref class).
-hexref	**	3c4d5e6f	Documented synthetic example id (internal-refs.patterns, hexref class).
-hexref	**	4d5e6f7a	Documented synthetic example id (internal-refs.patterns, hexref class).
-hexref	**	5e6f7a8b	Documented synthetic example id (internal-refs.patterns, hexref class).
-hexref	**	6f7a8b9c	Documented synthetic example id (internal-refs.patterns, hexref class).
 hexref	**	a1b2c3d4	Synthetic example id (alternating digit/letter), used in doc comments and fixtures.
 hexref	**	abc12345	Synthetic example id used by tag-grammar tests and their doc comments.
 # hexref: synthetic fixture ids. Tests that need a specific id use a made-up value; the f00d suffix marks
@@ -40,7 +34,6 @@ hexref	**	9305f00d	Synthetic fixture id a test feeds in and asserts on; resolves
 hexref	**	353ef00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
 hexref	**	2e21f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
 hexref	**	2522f00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
-hexref	**	12fff00d	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
 hexref	**	deadbe0f	Synthetic fixture id a test feeds in and asserts on; resolves to no real record.
 hexref	mandrel-command/frontend/src/utils/navIdLinkify.test.ts	e5f6a7b8	Synthetic fixture id (pairs with a1b2c3d4) in a two-id linkify case.
 hexref	mandrel-command/backend/src/__tests__/resolveJson.route.db.test.ts	facef00d	The suite's reserved fixture prefix, listed in its prefix-namespace comment.

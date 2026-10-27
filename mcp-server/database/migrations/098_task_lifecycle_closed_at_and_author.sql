@@ -10,7 +10,7 @@
 --     a close and the record did not say when it happened. The single largest event in our
 --     backlog history — the 2026-08-19 cull of 107 tasks — had its date INFERRED from
 --     `updated_at`, which is wrong the moment anything else touches the row.
---   * `created_by` carries TWO SPELLINGS OF ONE ACTOR: `coordinator` (24 rows) and `the coordinator` (7).
+--   * `created_by` carries TWO SPELLINGS OF ONE ACTOR: `coordinator` (24 rows) and `Coordinator` (7).
 --     Any `GROUP BY created_by` reports one person as two, and any `WHERE created_by='coordinator'`
 --     silently drops 7 rows. Same class as the `needs-operator`/`needs:operator` collision that
 --     migration 093's tranche reported, and as commit 55411b9.
@@ -88,7 +88,7 @@
 --
 -- ═══ PART 2 — THE `created_by` CASE FOLD ═══
 -- This IS backfilled, and the distinction from the refusal above is the whole point:
--- lowercasing `the coordinator` to `coordinator` DESTROYS NO INFORMATION AND INVENTS NONE. It is a
+-- lowercasing `Coordinator` to `coordinator` DESTROYS NO INFORMATION AND INVENTS NONE. It is a
 -- deterministic function of a value that is already there. Backfilling a cancellation date
 -- would invent a fact nothing measured; folding a spelling asserts nothing that was not
 -- already asserted. Those are different acts and only one of them is a guess.
@@ -103,8 +103,8 @@
 --
 -- ═══ DEPLOY ═══
 -- CN2, migration-bearing, ROLL-FORWARD ONLY — pinning code back does not revert schema.
--- Ships through the normal migration path (mcp-server/docker-entrypoint.sh owns migrations,
--- NOT fleet-deploy script). ORDER-INDEPENDENT in both directions, by construction, per the
+-- Ships through the normal migration path (mcp-server/docker-entrypoint.sh owns migrations).
+-- ORDER-INDEPENDENT in both directions, by construction, per the
 -- trigger argument above.
 -- IDEMPOTENT: ADD COLUMN IF NOT EXISTS, CREATE OR REPLACE FUNCTION, DROP+CREATE TRIGGER, a
 -- guarded ADD CONSTRAINT, and a backfill whose WHERE clause is self-limiting. Re-running

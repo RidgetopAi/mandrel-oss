@@ -1,7 +1,7 @@
 /**
  * Fail-loud startup guard for the remote Streamable HTTP MCP transport.
  *
- * WHY THIS EXISTS (a past outage):
+ * WHY THIS EXISTS (a past incident — the Tailspin-class outage):
  *   The remote `/mcp` transport is FAIL-CLOSED: if `MCP_AUTH_TOKEN` is unset it
  *   returns 503 per-request, and if `MCP_ALLOWED_HOSTS` is unset the SDK's
  *   DNS-rebinding protection 403s the real public Host. On the Jun-13 deploy those
@@ -124,7 +124,7 @@ export function formatMissingEnvFatal(missing: string[]): string {
   const lines = [
     '❌ FATAL: remote MCP HTTP transport is enabled but required env var(s) are missing/empty.',
     '   The server is REFUSING TO START rather than boot into a broken fail-closed state',
-    '   (would 503/403 every /mcp request — a past outage).',
+    '   (would 503/403 every /mcp request — see a past incident, the Tailspin outage).',
     '',
     '   Missing:',
   ];

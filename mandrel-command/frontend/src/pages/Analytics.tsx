@@ -16,7 +16,7 @@
  *
  * The legacy placeholder tabs (four "coming soon" panes) are CUT — the locked mock has none.
  *
- * PROJECT SCOPE (page-scope epic §E): the page owns its scope via `usePageProject`, opens on
+ * PROJECT SCOPE (an earlier epic §E): the page owns its scope via `usePageProject`, opens on
  * the user's DEFAULT project (it used to open on "every project"), keeps `?project=` in the
  * URL as the source of truth, and passes that scope EXPLICITLY to every read — both as
  * the endpoint's `project_id` query param and as the per-request `X-Project-ID` header.
@@ -51,7 +51,7 @@ const Analytics: React.FC = () => {
   const [actor, setActor] = React.useState<string>(ALL_ACTORS);
 
   // Scoped by the ONE switch in the topbar: one project at a time, opening
-  // on the user's default. No "All projects" here (the project-switch walkthrough F2).
+  // on the user's default. No "All projects" here (an earlier walkthrough F2).
   const project = usePageProject();
   // ONE scope object, spread into every read, so a hook cannot be wired up with the
   // project but without the request scope (or the other way round).

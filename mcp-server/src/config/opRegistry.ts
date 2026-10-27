@@ -35,6 +35,7 @@ import { CONTEXT_TYPES_LIST, GENERIC_CONTEXT_TYPE } from './contextTypes.js';
 // this description tells a user which values will thread, and a stale copy of it sends
 // them to write tags the write boundary quarantines.
 import { lensAxesSummary } from './threadingVocabConfig.js';
+import { decisionQuestionDescription, taskCreateDescription } from './deploymentVocabularyConfig.js';
 // DERIVED PROSE: the model-facing help text for the learning-loop enums is
 // GENERATED from the single-source vocabulary, so a value can never be advertised in one
 // tool's description and forgotten in another's. Before this, the implementation-status list
@@ -129,10 +130,9 @@ export type OpKind = 'gateway' | 'flat';
  * ─────────────────────────────────────────────────────────────────────────────────────────
  * HOW A VALUE IS DERIVED — by TRACING THE HANDLER, never from the op's name
  * ─────────────────────────────────────────────────────────────────────────────────────────
- * The mechanism above was right on its first pass and the VALUES were not.
- * a scan-status poller shipped as 'read' while its handler called `persistScan()`, and its
- * sibling scan trigger shipped as 'write' while persisting nothing (its own comment said
- * persisting was the poller's job). A pair that is exactly BACKWARDS is the signature of
+ * The mechanism above was right on its first pass and the VALUES were not: a scan-poll op
+ * shipped as 'read' while its handler persisted a whole scan, and its trigger sibling shipped
+ * as 'write' while persisting nothing. A pair that is exactly BACKWARDS is the signature of
  * classifying by NAME — the very thing this field exists to prevent. Because the pin states
  * its values independently, both files agreed on the same wrong value and review could not
  * see it; only reading the handler could.
@@ -225,7 +225,7 @@ export interface OpRegistryEntry {
    */
   gatewayActions?: Record<string, string>;
   /**
-   * DOES THIS OP REPORT A COUNT OF SOFT-DELETABLE RECORDS? (the reviewer F1.)
+   * DOES THIS OP REPORT A COUNT OF SOFT-DELETABLE RECORDS? (Reviewer F1.)
    *
    * DENY BY DEFAULT: absent/false means "this op reports no such count". Set it to `true` on
    * every op that returns a number derived from `contexts`, `technical_decisions`, or `tasks`
@@ -237,7 +237,7 @@ export interface OpRegistryEntry {
    * reconciled with their search surfaces (src/tests/statsSearchCountReconcile.contract.test.ts)
    * used to derive its population by matching opIds against /(_stats|_insights|_progress_summary)$/.
    * That reads like a derivation and is really a memory of the names we had already seen. An
-   * The reviewer wired two schema-complete ops into this registry to test it: `naming_stats`
+   * Reviewer wired two schema-complete ops into this registry to test it: `naming_stats`
    * tripped the guard, and `session_record_counts` PASSED SILENTLY — an entire family of
    * count-reporting session tools (session_status / session_get / session_list) was invisible
    * to the guard for no reason other than what it is called. They were, in fact, counting
@@ -470,7 +470,8 @@ export const OP_REGISTRY: readonly OpRegistryEntry[] = [
       limit: 'Maximum number of results to return (default 10)',
       minSimilarity: 'Minimum similarity threshold (0-100) to include a result',
       offset: 'Number of leading results to skip (pagination)',
-      // `response_format` is DELIBERATELY ABSENT from this map (SEARCH P3,       // an earlier decision). It is still ACCEPTED as a deprecated alias (concise->summary,
+      // `response_format` is DELIBERATELY ABSENT from this map (SEARCH P3).
+      // It is still ACCEPTED as a deprecated alias (concise->summary,
       // detailed->full) because it is shipped on customer instances we do not control, but
       // it is no longer ADVERTISED — `altitude` is the parameter, and a surface that
       // documents two names for one idea is how we got three.
@@ -718,7 +719,7 @@ export const OP_REGISTRY: readonly OpRegistryEntry[] = [
       affectedComponents: 'Optional. Array of component names this decision affects',
       tags: 'Optional. Array of tags for searchability',
       answerStatus: `THE DECISION INBOX. Optional. One of: ${vocabList(ANSWER_STATUSES)} (defaults to "${ANSWER_STATUS_DEFAULT}" — omit this and record behaves exactly as before). Setting "open" REQUIRES a non-empty \`question\` and >=2 \`options\`, each with >=1 pro and >=1 con — refused with a typed [DECISION_OPEN_INVALID:<field>] error naming exactly what's missing, and NOTHING is written, otherwise.`,
-      question: 'Required when answerStatus:"open" (else optional/ignored). The one sentence being decided — what the operator is answering in seconds.',
+      question: decisionQuestionDescription(),
       options: 'Required (>=2) when answerStatus:"open". Array of { key, label, pros: string[] (>=1), cons: string[] (>=1), recommended?: boolean }. `key` is what decision_answer selects on — must be unique.',
       deadline: 'Optional. ISO-8601 timestamp: when this decision needs an answer by. Purely informational — nothing auto-transitions on it.',
       links: 'Optional array of typed edges to mint FROM this decision to other records (first-class linking). Each item is EITHER explicit {"edgeType":"<one of the edge-type vocab>","to":"<id8|uuid>","toType":"task|decision|context"} OR shorthand {"task":"<ref>"} | {"decision":"<ref>"} | {"context":"<ref>"} (→ informs / decided_by / learned_from). Refs accept an id8 or full UUID, resolved in the current project. A bad/unresolvable link is reported as a warning (link notes) but NEVER blocks the record — the decision + the good links still save.',
@@ -857,7 +858,7 @@ export const OP_REGISTRY: readonly OpRegistryEntry[] = [
     effect: 'write',
     kind: 'gateway', gateway: 'task', action: 'create',
     category: 'Task Management',
-    description: 'Create a new task for agent coordination. Set `type` to the right kind (e.g. "bug", "feature") at creation time; task_update can re-classify it later. AGENTS: on deployments that list your actor in MANDREL_AGENT_ACTORS, a create is REFUSED with [TASK_CREATE_AGENT_FOLD_IN] unless tagged `needs-operator` — fold the finding into your lane or report it in your return; only an item needing a human decision becomes a task.',
+    description: taskCreateDescription(),
     humanDescriptions: {
       title: 'Task title (required)',
       description: 'Longer task description / details',
@@ -1318,7 +1319,6 @@ export const OP_REGISTRY: readonly OpRegistryEntry[] = [
       'DEPRECATED — use branch_close. WARNS and delegates: steps off the current branch. Idempotent.',
     humanDescriptions: {},
   },
-
 ];
 
 /** Fast opId → entry lookup (derived; do not hand-maintain). */
@@ -1329,7 +1329,7 @@ export const OP_BY_ID: ReadonlyMap<string, OpRegistryEntry> = new Map(
 /**
  * The closed set of EVERY canonical opId, in registry order.
  *
- * No count in this sentence, deliberately: it said "58" while OP_REGISTRY held 60 (the reviewer
+ * No count in this sentence, deliberately: it said "58" while OP_REGISTRY held 60 (Reviewer
  * N4). A hand-copied count reads as evidence of having counted and drifts on the next tool
  * (Lesson: a-count-carries-its-command). `ALL_OP_IDS.length` is the answer, and
  * opEffectClassification.contract.test.ts pins the membership by NAME.

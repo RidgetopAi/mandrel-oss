@@ -50,7 +50,7 @@ function envBool(name: string, fallback: boolean): boolean {
 export const ADVERTISE_OUTPUT_SCHEMAS = envBool('MANDREL_ADVERTISE_OUTPUT_SCHEMAS', true);
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
- * PHASE 2 — gateway surface + `discover` + lazy tools/list (rebuild plan §1.2/§8 and its decision).
+ * PHASE 2 — gateway surface + `discover` + lazy tools/list (rebuild plan §1.2/§8, dec).
  *
  * These flags gate the WHOLE new 10-tool gateway surface. THE CORE INVARIANT: every flag
  * DEFAULTS to today's behaviour, so at the defaults the advertised `tools/list` is
@@ -132,7 +132,7 @@ export function getFlatToolsPolicy(): FlatToolsPolicy {
  * "lazy+core" (gatewaySurface.ts) DELIBERATELY lifts required-param hints + closed enums for the
  * un-guessable WRITE actions into the envelope (context ContextType enum, decision.record's 5
  * required, graph edge types, …) to close the measured 60%→100% first-call gap (the auditor rec
- * the auditor recommendation). MEASURED lazy+core = 1318 o200k tokens — a MEASURED, intentional trade (NOT creep),
+ * an earlier change). MEASURED lazy+core = 1318 o200k tokens — a MEASURED, intentional trade (NOT creep),
  * and still a 93.7% cut vs the 21,012-token flat surface (54 tools w/ outputSchemas) / ~9x vs the
  * ~11.6k stripped surface. The ceiling sits ~80 tokens above the measured number so it still
  * catches genuine future creep. If lazy+core is ever tuned to lift more, re-measure and re-justify
@@ -142,7 +142,7 @@ export function getFlatToolsPolicy(): FlatToolsPolicy {
  * branch_unassign — and the lazy envelope carries the action enum, so the surface grew.
  * MEASURED with the meter's own instrument (`encode(JSON.stringify({tools}))`, o200k_base,
  * gpt-tokenizer) on both refs:
- *   base main@f6df00d  TOTAL 1400 tokens / 6114 bytes · `graph` envelope 221 tokens / 944 bytes
+ *   base main@f6daf00  TOTAL 1400 tokens / 6114 bytes · `graph` envelope 221 tokens / 944 bytes
  *   head (this tree)   TOTAL 1407 tokens / 6148 bytes · `graph` envelope 228 tokens / 978 bytes
  * The delta is +7 tokens and it is ENTIRELY the two action NAMES in `graph`'s action enum —
  * every other envelope is byte-identical, and NO param was lifted (`spine` was added to
@@ -162,7 +162,7 @@ export function getFlatToolsPolicy(): FlatToolsPolicy {
  * BREAKDOWN, not by the failure. All four numbers from the meter's own instrument
  * (`encode(JSON.stringify({tools}))`, o200k_base, gpt-tokenizer), run on this tree with the
  * change progressively removed:
- *   base ref 61df00d (no op, no description edit)  1425 tokens / 6225 bytes
+ *   base ref 61d4f00 (no op, no description edit)  1425 tokens / 6225 bytes
  *   + the one-clause gateway description edit      1432 (+7)
  *   + the `move` name in project's action enum     1434 (+2)
  *   + lazy+core lifting its three params           1494 (+60)   ← shipped
@@ -183,7 +183,7 @@ export function getToolListTokenBudget(): number {
 
 /**
  * MANDREL_LAZY_CORE_ENUM_MAX — DEFAULT 12. The largest CLOSED enum (value count) that lazy+core
- * inlines as an actual schema-prop `enum` on the lazy list (plan §1.2 / the auditor recommendation
+ * inlines as an actual schema-prop `enum` on the lazy list (plan §1.2 / the auditor rec
  * "≤ ~12 values"). A required param whose enum EXCEEDS this is lifted by NAME only (its allowed
  * values stay one `discover.explain` call away) — this is exactly what keeps decision.record's
  * 15-value `decisionType` from bloating the budget while `impactLevel`(4) / ContextType(10) /

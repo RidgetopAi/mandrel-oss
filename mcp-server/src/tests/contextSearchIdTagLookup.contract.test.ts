@@ -1,8 +1,8 @@
 /**
  * CONTEXT SEARCH id-prefix + partial-tag lookup — Contract Test
  *
- * The Contexts half of the class-fix whose Decisions half shipped in 701f00d.
- * Operator pasted the id8 `2b3c4d5e` into the Contexts search box and got nothing.
+ * The Contexts half of the class-fix whose Decisions half shipped in 7014f00.
+ * The operator pasted the id8 an earlier change into the Contexts search box and got nothing.
  *
  * THE BUG IS RANKING, NOT RETRIEVAL. Hex has no semantic content, so the embedder yields a
  * meaningless vector and the target ranks below unrelated prose. The score boost is what
@@ -20,7 +20,7 @@
  *
  * WHY THE UN-EMBEDDED (`idTargetNull`) CASES ARE STILL HERE — they are NOT the prod case.
  * Measured on prod 2026-07-17: 0 of 8077 rows are NULL on the active gemma column, and
- * `2b3c4d5e` has a 768-d gemma vector, so prod's gate already admitted it. The un-embedded
+ * an earlier change has a 768-d gemma vector, so prod's gate already admitted it. The un-embedded
  * rows live on the LEGACY `embedding` column (586 NULLs) — which prod does not read. These
  * cases pin the gate relaxation + the SIM_EXPR COALESCE as ROLLBACK defense-in-depth:
  * embeddingConfig.ts is an explicitly reversible registry, and under a minilm rollback those
@@ -151,7 +151,7 @@ let baselineProjectId: string; // hierarchical explicitly disabled → baseline 
 let prodShapeProjectId: string;
 let prodShapeTarget: string;
 
-/** The real reported shape: an UN-EMBEDDED context, findable ONLY via the id path. */
+/** The real shape: an UN-EMBEDDED context, findable ONLY via the id path. */
 let idTargetNull: string;
 /** An EMBEDDED context carrying the tags (the partial-tag path operates on candidates). */
 let idTargetEmb: string;
@@ -201,7 +201,7 @@ describe('context_search id-prefix + partial-tag lookup', () => {
     // specific column here is what made the earlier revision unable to run under prod's
     // gemma config. Log the config instead, so a failure report says which one it ran under.
     console.log(
-      `[id-lookup] running under MANDREL_EMBEDDER=${activeEmbedder().key} ` +
+      `[an earlier change] running under MANDREL_EMBEDDER=${activeEmbedder().key} ` +
       `(column=${activeEmbeddingColumn()}, dims=${DIM})`,
     );
 
@@ -298,7 +298,7 @@ describe('context_search id-prefix + partial-tag lookup', () => {
   });
 
   // ── Criterion 1: id-lookup ───────────────────────────────────────────────────
-  test('id-lookup: an 8-hex id-PREFIX returns the UN-EMBEDDED context at rank #1 (the reported case)', async () => {
+  test('id-lookup: an 8-hex id-PREFIX returns the UN-EMBEDDED context at rank #1 (the case)', async () => {
     const prefix = idTargetNull.slice(0, 8);
     const resp = await viaPublicTool({ query: prefix, projectId, limit: 20 });
     const r = rows(resp);

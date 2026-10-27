@@ -1,7 +1,8 @@
 /**
  * ORDERED-AND-PAGED SURFACES MUST CARRY A TOTAL ORDER — Command backend.
  *
- * The MCP-server half of this class shipped in batch 8 ( * mcp-server/src/tests/searchOrderTotal.contract.test.ts). This file is the Command-backend
+ * The MCP-server half of this class shipped in batch 8
+ * (mcp-server/src/tests/searchOrderTotal.contract.test.ts). This file is the Command-backend
  * sibling and reuses that file's construction deliberately.
  *
  * THE DEFECT. `ORDER BY <key> DESC` where `<key>` is not unique is a PARTIAL order: rows that
@@ -47,7 +48,7 @@
  * OUT: `ORDER BY <key> ... LIMIT n` with no paging ("newest wins", "top N"). A partial order
  * there makes the PICK arbitrary among equals — a weaker defect than a corrupted SET.
  * This file does NOT claim to enumerate every ORDER BY in the Command backend. It covers the
- * five sites named in each driven through its SHIPPED service entry point
+ * five sites named in an earlier task, each driven through its SHIPPED service entry point
  * (never a hand-rebuilt query) against a real migrated Postgres.
  *
  * EACH TWO-ORDER PROBE FIRST PROVES THE TIE IS REAL — a tiebreak assertion over a population

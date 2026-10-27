@@ -51,7 +51,8 @@ const NavItemLink: React.FC<{ item: NavItem; onNavigate?: () => void; badge?: Re
 };
 
 /**
- * The Decision Inbox nav badge — the live open-decision count ( * an earlier task DONE WHEN 5). Renders NOTHING at zero (and while loading/erroring): an
+ * The Decision Inbox nav badge — the live open-decision count
+ * (an earlier task DONE WHEN 5). Renders NOTHING at zero (and while loading/erroring): an
  * empty inbox and "could not measure" must not both render as a visible zero pill.
  */
 const DecisionInboxBadge: React.FC = () => {

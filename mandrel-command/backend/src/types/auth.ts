@@ -8,7 +8,7 @@ export interface User {
   role: string;
   theme?: string;
   /**
-   * This user's default project (page-scope epic §A) — a UUID, or null when they have set
+   * This user's default project (an earlier epic §A) — a UUID, or null when they have set
    * none. Per-user and stored as an ID, replacing the instance-wide, name-keyed
    * `projects.metadata.is_primary` flag the UI used to read.
    */
@@ -22,6 +22,13 @@ export interface User {
   // before they can use the app. New provisions are flagged true; existing admins
   // are grandfathered (false). Cleared on a successful policy-compliant change.
   must_change_password?: boolean;
+  /**
+   * The better-auth user this dashboard row is linked to (migration 109), or
+   * null for a dashboard-password-only login. A linked row signs in with the better-auth email
+   * + password and may have NO password_hash; its password is changed through better-auth
+   * (the set-password link), never through POST /users/change-password.
+   */
+  auth_user_id?: string | null;
 }
 
 export interface UserSession {

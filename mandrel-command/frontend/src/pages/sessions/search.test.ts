@@ -105,8 +105,8 @@ describe('symptom 3 — a match never crosses a field boundary', () => {
   });
 
   it('but a single term never spans the seam between two fields', () => {
-    // 'daisycoordinator' is only "present" if the fields were concatenated first.
-    expect(matchesSearch(seam, 'daisycoordinator')).toBe(false);
+    // 'daisyridge' is only "present" if the fields were concatenated first.
+    expect(matchesSearch(seam, 'daisyridge')).toBe(false);
   });
 
   it('nor does a single term span a word boundary inside one field', () => {

@@ -1,8 +1,8 @@
 /**
- * AN id8 INSIDE A SENTENCE MUST RESOLVE — Contract Test.
+ * AN id8 INSIDE A SENTENCE MUST RESOLVE — Contract Test (Mandrel task bdd5f00d).
  *
  * THE BUG (measured on live prod 2026-08-22 during the P1 retrieval baseline, arm
- * `prod-http`, limit 5 — P1 baseline rows X16/X17)
+ * `prod-http`, limit 5 — reports/artifacts/retrieval-quality/7a02f00d-baseline/, rows X16/X17)
  * ---------------------------------------------------------------------------------------
  *   X16  query = "<id8>"                       → the record at RANK 1, score 1.2699 (far
  *                                                outside the 0.34–0.59 semantic band).
@@ -110,7 +110,7 @@ async function searchTasks(query: string): Promise<string> {
   return JSON.stringify(resp?.structuredContent ?? {}) + (resp?.content?.map((c: any) => c.text).join('\n') ?? '');
 }
 
-describe('id-token extraction — an id8 inside a sentence resolves', () => {
+describe('id-token extraction — an id8 inside a sentence resolves (task bdd5f00d)', () => {
   beforeAll(async () => {
     projectId = (
       await db.query(

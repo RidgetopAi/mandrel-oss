@@ -1,6 +1,6 @@
 /**
  * Sessions Foundation Phase 4 — header-less TIGHTENING contract.
- * Proves the config-gated `requireActor` mechanism (Auditor review §4.3/§5
+ * Proves the config-gated `requireActor` mechanism (the auditor review §4.3/§5
  * "header-less writes rejected", fail loud):
  *
  *   - DARK by default (SESSION_CONFIG.requireActor=false): a header-less write action creates

@@ -1,12 +1,12 @@
 /**
  * projectSetPrimaryAuth — SECURITY gate for the mcp-server's POST /api/v2/projects/:id/set-primary
- * MUTATION endpoint (sibling sweep of the session-routes auth fix / the trust-boundary change).
+ * MUTATION endpoint (sibling sweep of an earlier change / trust boundary).
  *
  * Regression guard for an unauthenticated MUTATION: this route flips which project is primary for
  * every new session and was mounted on :8080 with NO auth middleware, so an anonymous caller could (reserved-port-ok: doc comment naming prod's :8080, binds nothing)
  * change prod state directly. This exercises the REAL route wired in HealthServer through the REAL
  * bearerAuth() static guard (MCP_AUTH_TOKEN) — the same mount-level pattern the /api/v2/sessions
- * family uses (714f00d). The sole legitimate caller is the Command backend (:5000), which presents (reserved-port-ok: doc comment naming prod's :5000, binds nothing)
+ * family uses (714af00). The sole legitimate caller is the Command backend (:5000), which presents (reserved-port-ok: doc comment naming prod's :5000, binds nothing)
  * MCP_AUTH_TOKEN as the INTERNAL SERVICE TOKEN via McpService.callMcpEndpoint → authHeader().
  *
  * MUTATION-PROBE: remove `bearerAuth()` from the set-primary mount in healthServer.ts and every

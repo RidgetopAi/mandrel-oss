@@ -1,9 +1,9 @@
 /**
  * agentFoldInGuard — THE FOLD-IN RULE AS A GATE, NOT A PARAGRAPH.
- * (REALIGN step 5.)
+ * (REALIGN step 5, an earlier decision.)
  *
  * ═══ THE RULE ═══
- * An agent (the builder, the reviewer, the auditor, ops-bot, researcher — whoever config/agentActorsConfig
+ * An agent (Builder, Reviewer, the auditor, ops-bot, researcher — whoever config/agentActorsConfig
  * names) that finds something either FIXES IT IN ITS LANE or REPORTS IT TO COORDINATOR in its
  * return. It creates a Mandrel task only when the item needs the operator's decision, and it says so
  * by tagging the task `needs-operator`. Everything else is a task the coordinator did not ask for, and the
@@ -38,6 +38,7 @@ import {
   AGENT_ACTORS_ENV,
   readAgentActors,
 } from '../config/agentActorsConfig.js';
+import { DEPLOYMENT_VOCABULARY, humanPossessive } from '../config/deploymentVocabularyConfig.js';
 import { MandrelClassifiedError } from '../utils/mcpErrorStatus.js';
 
 /** Stable machine code, mirroring CALLER_IDENTITY_ERROR_CODES' contract. */
@@ -59,10 +60,10 @@ export class AgentFoldInError extends MandrelClassifiedError {
     super(
       `[${AGENT_FOLD_IN_ERROR_CODE}] task_create from agent actor '${actor}' refused: an agent ` +
         `does not file tasks. The fold-in rule: if you found this inside your lane, FIX IT ` +
-        `in this lane now; if it is outside your lane, put it in your return under ` +
-        `"FOUND, NOT FIXED" with file:line and a one-line fix shape — a human decides whether it ` +
+        `in this lane now; if it is outside your lane, put it in your return to ${DEPLOYMENT_VOCABULARY.coordinatorName} under ` +
+        `"FOUND, NOT FIXED" with file:line and a one-line fix shape — ${DEPLOYMENT_VOCABULARY.coordinatorName} decides whether it ` +
         `becomes a task. Nothing was written.` +
-        `\n\n💡 The ONE exception: an item that needs a human decision. Add the tag ` +
+        `\n\n💡 The ONE exception: an item that needs ${humanPossessive(DEPLOYMENT_VOCABULARY.humanName)} decision. Add the tag ` +
         `\`${AGENT_FOLD_IN_EXEMPT_TAG}\` (and \`from:<your role>\`) and re-send. ` +
         `Which actors this applies to is the ${AGENT_ACTORS_ENV} list on this deployment.`,
       403,

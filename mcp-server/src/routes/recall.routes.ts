@@ -133,7 +133,7 @@ class RecallRoutes {
 
       let result: ThreadResult;
       try {
-        // NO CAST (the reviewer N1): BuildThreadArgs.altitude is now typed
+        // NO CAST (Reviewer N1): BuildThreadArgs.altitude is now typed
         // ThreadContentAltitude, and TS has already narrowed `altitude` to exactly that by
         // this line via the isProjectionAltitude early return above. The compiler enforces
         // the axis split; shapeNode's throw is the backstop for callers it cannot see.
@@ -310,7 +310,8 @@ function threadOmittedLine(r: ThreadResult): string {
  * Shape ONE node for the structured channel: the node as the altitude already shaped it,
  * plus its permalink, with trust reduced to the wire shape.
  *
- * WHAT REPLACED THE SEPARATE `full|lean` STRUCTURED MODE (SEARCH P3,  * an earlier decision). recall_thread used to carry a SECOND size knob —
+ * WHAT REPLACED THE SEPARATE `full|lean` STRUCTURED MODE (SEARCH P3).
+ * recall_thread used to carry a SECOND size knob —
  * MANDREL_RECALL_STRUCTURED_MODE — whose whole job was to trim (a) node bodies the prose had
  * already printed and (b) the four trust fields the prose signal line reproduces. Both halves
  * are now structural rather than optional: the body is whatever `altitude` said it is (the
@@ -385,8 +386,8 @@ function nodeHeadline(n: ThreadNode): string {
   const title = n.title ?? '(untitled)';
   // THE REVIEW CALL RIDES IN THE TYPE STAMP, not in the title. At this
   // altitude the title is a CLIP of the record's first line, so an outcome living in the
-  // prose is an outcome the clip eats — measured on prod over where 6 of 7
-  // The reviewer verdict nodes rendered with no APPROVE/REJECT anywhere on their line. The
+  // prose is an outcome the clip eats — measured on prod over an earlier spine, where 6 of 7
+  // Reviewer verdict nodes rendered with no APPROVE/REJECT anywhere on their line. The
   // stamp is outside the clip, so it cannot be truncated away.
   // THE GATE RUN RIDES THE SAME STAMP, for the same reason and against the same measurement
   //: at this altitude the title is a CLIP of the record's first line, so a

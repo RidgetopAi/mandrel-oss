@@ -1,6 +1,6 @@
 -- Migration 091: THE LEXICAL LAYER — an identifier-preserving tsvector next to a prose one,
 -- on contexts, technical_decisions and tasks.
--- (SEARCH P2a, design spike an earlier note.)
+-- (SEARCH P2a, design spike an earlier context.)
 --
 -- ══ WHY THE OBVIOUS BUILD IS WRONG ═══════════════════════════════════════════════════════
 -- "Add a tsvector column and a GIN index" would make our WORST case worse, and it took a
@@ -139,7 +139,7 @@ COMMENT ON FUNCTION mandrel_search_tsv(text) IS
 --   file.ext[:line]   anchorGate.ts:122   (matching the TAIL of `services/anchorGate.ts:122`
 --                     is exactly why a query for the bare form finds the document form)
 --   SCREAMING_SNAKE   MANDREL_SEARCH_MIN_SIMILARITY
---   7-40 char hex     532f00d / a commit sha / a record id prefix
+--   7-40 char hex     5320f00 / a commit sha / a record id prefix
 --
 -- `length(...) <= 128` bounds the unbounded head of the file.ext alternative: a pathological
 -- document can otherwise produce a multi-kilobyte "identifier" that bloats the index for

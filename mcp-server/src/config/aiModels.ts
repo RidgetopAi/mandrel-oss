@@ -14,7 +14,7 @@
  * loop wants model-grain analytics). The DB column stays TEXT; THIS config is the enum.
  * Env-extendable (configs-not-hardcoded): MANDREL_AI_MODELS_EXTRA lets ops add models
  * without a code change — comma-separated `value:label:provider` triples, e.g.
- *   MANDREL_AI_MODELS_EXTRA="claude-example-5:Claude Example 5:anthropic,grok-4:Grok 4:xai"
+ *   MANDREL_AI_MODELS_EXTRA="claude-example-5:Claude an auditor 5:anthropic,grok-4:Grok 4:xai"
  */
 
 export interface AiModelOption {

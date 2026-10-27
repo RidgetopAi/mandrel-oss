@@ -6,7 +6,7 @@
 -- exposed only a truncated id, the project, and active/inactive — so there was no way to tell
 -- whether a session existed because the orb EXPLICITLY started it or because a write lazily
 -- minted one. Screenshot + timestamp correlation was the only recourse. W1 (atomic task claim,
--- the bearer-policy decision) and W2 (actor-bound session resolution) built the mechanism; this is the
+-- an earlier change) and W2 (actor-bound session resolution) built the mechanism; this is the
 -- instrument that lets an operator CHECK it.
 --
 -- WHY A COLUMN AND NOT A DERIVATION: "why does this row exist" is a fact known exactly once —

@@ -1,5 +1,5 @@
 /**
- * task_create Type-Surfacing Contract Test  (the executable fuse for the type-surfacing fix)
+ * task_create Type-Surfacing Contract Test  (the executable fuse for an earlier change)
  *
  * THE BUG (a tool-use-eval wrong-success, same schema-from-zod class as the
  * retrieval drift):
@@ -63,7 +63,7 @@ async function viaPublicTool(toolName: string, rawArgs: any, handler: (a: any) =
   return handler(validated);
 }
 
-describe('task_create type-surfacing contract (fuse, zero SQL on write)', () => {
+describe('task_create type-surfacing contract (an earlier change fuse, zero SQL on write)', () => {
   beforeAll(async () => {
     projectId = (await db.query(
       `INSERT INTO projects (name, description) VALUES ($1, 'task_create type fuse') RETURNING id`,

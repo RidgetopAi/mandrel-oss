@@ -7,7 +7,7 @@
  * WIRED: the backend now serves this per-day series
  * (GET /api/tasks/throughput, range-scoped + zero-filled). When the window has activity the
  * two lines plot REAL counts; an empty `series` means ZERO task activity of either kind in
- * the window → an HONEST empty state (the data-gap policy), never a fabricated trend.
+ * the window → an HONEST empty state (data policy), never a fabricated trend.
  */
 import React from 'react';
 import {

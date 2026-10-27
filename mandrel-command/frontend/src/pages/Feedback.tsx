@@ -28,8 +28,7 @@
  *     prod systemd holds 0 feedback rows, but the tenant fleet — where testers actually
  *     use this UI — holds 4, and ALL 4 carry `page = '/feedback'`:
  *       mandrel-operator 3 rows (2026-06-12, 06-19 ×2), mandrel-contoso 1 row (2026-06-14);
- *       every other tenant 0. Counted per-container the way an out-of-band feedback report
- *       walks the fleet, not from prod alone.
+ *       every other tenant 0. Counted per container, not from prod alone.
  *     So the bad rows are real, they include a CUSTOMER tenant, and 4/4 is the empirical
  *     confirmation of this defect rather than a theory about it.
  *     (An earlier version of this comment said "every single row was being written", which

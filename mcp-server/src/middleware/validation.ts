@@ -463,7 +463,7 @@ const baseDescription = artifactFreeText(z.string().max(cap('projects.descriptio
 // definition served two opposite jobs: the tags you WRITE onto a record, and the tags you
 // FILTER a search by. Wrapping the single shared definition would have made `context_search`
 // THROW on a signature-bearing filter value — refusing to let you SEARCH for the poison you
-// are trying to find. An earlier the builder correctly declined to make that call unilaterally;
+// are trying to find. An earlier Builder correctly declined to make that call unilaterally;
 // an earlier decision authorizes the split.
 //
 // The split is the fix, and the names carry the distinction so a new boundary cannot pick the
@@ -748,7 +748,7 @@ const contextSchemas = {
     index: coercedInt(z.number().int().min(0).optional()),
     // What the caller MEASURED after fetching the artifact. Hex shapes are checked here so a
     // garbage "observation" can never be silently compared and silently pass.
-    // NOTE (the reviewer N-B, the optional half): tightening these to the config's exact hex
+    // NOTE (Reviewer N-B, the optional half): tightening these to the config's exact hex
     // lengths would change the DERIVED tools/list inputSchema — i.e. the golden fixture, which
     // is the reviewer's to regenerate from the merged source. The nit was explicitly "fix it if
     // it's free"; a wire-surface change is not free, so it is deliberately NOT made here. The
@@ -1005,8 +1005,8 @@ const decisionSchemas = {
     // every search result but was not QUERYABLE, so the half-executed-decision class could be
     // seen only one record at a time by someone who had already found the records some other
     // way. That blind spot let an earlier decision read `planned` for 12 days after the work
-    // shipped and then had an audit DERIVE "unstarted" from it. an earlier Task
-    // . Enum DERIVED from config/decisionVocab.ts — the SAME implementationStatusEnum
+    // shipped and then had an audit DERIVE "unstarted" from it. an earlier Task.
+    // Enum DERIVED from config/decisionVocab.ts — the SAME implementationStatusEnum
     // decision_update and decision_record use, never a second copy of the list.
     implementationStatus: implementationStatusEnum.optional(),
     // THE DECISION INBOX filter: answerStatus:'open' is the
@@ -1074,7 +1074,7 @@ const decisionSchemas = {
     implementationStatus: implementationStatusEnum.optional(),
     successCriteria: artifactFreeText(z.string().max(cap('technical_decisions.success_criteria'))).optional(),
     problemStatement: artifactFreeText(z.string().max(cap('technical_decisions.problem_statement'))).optional(),
-    // CONTRACT SYMMETRY (follow-up to the dependency id8 resolver): supersededBy was the LAST
+    // CONTRACT SYMMETRY (follow-up to an earlier change): supersededBy was the LAST
     // decision id arg still demanding a full `.uuid()` — it rejected the id8 short form
     // every other id-accepting arg (decisionId here, task deps, link endpoints) accepts.
     // Now uuidOrShortId(); the handler resolves an id8 → full UUID (resolveEntityId,
@@ -1502,13 +1502,13 @@ const taskSchemas = {
             data.metadata !== undefined || data.title !== undefined ||
             data.description !== undefined || data.tags !== undefined ||
             data.blockedOn !== undefined || data.dueAt !== undefined ||
-            // a DEPENDENCIES-ONLY update is the whole point of making the column
+            // an earlier change: a DEPENDENCIES-ONLY update is the whole point of making the column
             // writable — "this task now waits on that one" must be a legal call on its own,
             // or the channel is advertised and then rejected. Omitting it here would have
             // reproduced the declared-but-unreachable defect one layer up from the one this
             // change exists to fix, which is precisely how this file's catalogue got long.
             data.dependencies !== undefined ||
-            // a note ALONE is the whole point — "just record a status note" must
+            // an earlier change: a note ALONE is the whole point — "just record a status note" must
             // be a legal call, or the affordance is advertised and then rejected, which is
             // the "declared but unreachable" defect this file has catalogued repeatedly.
             data.notes !== undefined ||
@@ -1628,8 +1628,8 @@ const taskSchemas = {
     taskId: uuidOrShortId(),
     // ATTRIBUTION ONLY — never the lock key (SPEC D2). NOT a "default": the actor derived at
     // the edge (OAuth sub / X-Actor-ID) takes PRECEDENCE over this argument — declared data may
-    // REFINE, never REPLACE, a verified identity (closing
-    // an earlier note). With composites off (the shipped default) a caller that HAS a derived
+    // REFINE, never REPLACE, a verified identity (an earlier task / an earlier decision, closing
+    // an earlier context). With composites off (the shipped default) a caller that HAS a derived
     // actor has this argument ignored; with them on it replaces only the handle segment under
     // that caller's own principal; it is used verbatim only when no actor is derivable.
     // Resolution lives in tasks.routes.ts#claimActor via refineActor() — one choke point.
@@ -1977,8 +1977,7 @@ export const validationSchemas = {
   // DEPRECATED anchor aliases (retired by PHASE 1 — WARN and delegate to branch_*).
   thread_set: threadSchemas.thread_set,
   thread_current: threadSchemas.thread_current,
-  thread_clear: threadSchemas.thread_clear,
-
+  thread_clear: threadSchemas.thread_clear
   // Git Integration Tools - DELETED (C4, 2026-06-09)
   // 3 dormant git MCP tools (git_session_commits, git_commit_sessions,
   // git_correlate_session) removed; live gitTracker service retained.
@@ -2457,8 +2456,8 @@ function normalizeDecisionSynonyms(toolName: string, args: any): any {
 
     // alternativesConsidered synonyms.
     //
-    // `options` is now ALSO a REAL, distinctly-shaped param (THE DECISION INBOX
-    // and its follow-up): `[{key, label, pros, cons, recommended?}]`. Only treat it as the
+    // `options` is now ALSO a REAL, distinctly-shaped param (THE DECISION INBOX):
+    // `[{key, label, pros, cons, recommended?}]`. Only treat it as the
     // legacy alternativesConsidered synonym when it does NOT look like a decision-inbox
     // options array — i.e. no entry carries `key` (the field decision_answer selects on,
     // and the one thing the legacy shape — bare strings, or {name, reasonRejected} — never

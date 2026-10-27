@@ -25,7 +25,7 @@ export class TaskController {
    * NOT A NEW DERIVATION. `req.user?.username` is the same principal `createTask` already
    * forwards as `X-Actor-ID` on its delegated `task_create`; `normalizeActor` is the
    * existing `config/sessionActor.ts` rule that exists precisely so this surface and the
-   * mcp-server cannot diverge on casing — which is what collapses `the operator` and `operator` into
+   * mcp-server cannot diverge on casing — which is what collapses `Operator` and `operator` into
    * one actor instead of two buckets on the board.
    *
    * `undefined` when there is no derivable principal, and the stamp rule's answer to that

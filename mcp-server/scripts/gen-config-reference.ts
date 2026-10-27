@@ -77,6 +77,8 @@ export const MODULE_SECTIONS: Record<string, string> = {
   'attributionNoticeConfig.ts': 'Sessions & identity',
   'projectEchoConfig.ts': 'Sessions & identity',
   'betterAuthConfig.ts': 'Server & auth',
+  'dashboardAuthConfig.ts': 'Server & auth',
+  'setPasswordConfig.ts': 'Server & auth',
   'oauthClientConfig.ts': 'Server & auth',
   'toolSurfaceConfig.ts': 'Server & auth',
   'fieldLimits.ts': 'Server & auth',
@@ -118,6 +120,7 @@ export const ALLOWED_VALUES: Record<string, string[]> = {
   MANDREL_BELIEF_TIER1_PROVIDER: ['openai-compat', 'anthropic', 'ollama', 'subq'],
   MANDREL_BELIEF_TIER2_PROVIDER: ['anthropic', 'openai-compat', 'ollama', 'subq'],
   MANDREL_EMBEDDER: ['minilm', 'gemma'],
+  MANDREL_EMBEDDING_VERIFY_STARTUP: ['warn', 'strict'],
   MANDREL_BACKWARD_SOFT_UNDECIDED_POLICY: ['honor', 'suppress'],
   MANDREL_CURRENT_STATE_NODE_ALTITUDE: ['headline', 'summary', 'full'],
   MANDREL_SMART_SEARCH_DEFAULT_ALTITUDE: ['headline', 'summary', 'full'],
@@ -309,7 +312,7 @@ export const JARGON_RE = new RegExp(
     '\\(\\)', // function calls
     '\\b[A-Z]{1,3}-?\\d+(?:\\.\\d+)?[a-z]?\\b', // BL-9, SK5, P5.1, D2
     '\\b(?=[0-9a-f]*[0-9])(?=[0-9a-f]*[a-f])[0-9a-f]{8}\\b', // hex ids
-    '\\bLesson\\b|\\bspec\\b|\\bBUILD\\b|\\bWS\\d\\b|\\bBreak-\\d\\b',
+    '\\bLesson\\b|\\bspec\\b|\\bOperator\\b|\\briverbend\\b|\\bAuditor\\b|\\bBUILD\\b|\\bWS\\d\\b|\\bBreak-\\d\\b',
     '^WHY\\b|\\bWHY\\b|^NOTE\\b|^MEASURED\\b|\\bmeasured\\b|\\bMeasured\\b',
     '^THE LIVE CONFIG|^MUTABLE ON PURPOSE|^Functions, not consts',
     '\\b[Ww]e\\b|\\b[Oo]ur\\b|\\bus\\b|^THE\\b|Stage-\\d|\\bInc(?:rement|-)|[≥≤→]|\\bCoT\\b|load-bearing|\\bsingle-sourced\\b',

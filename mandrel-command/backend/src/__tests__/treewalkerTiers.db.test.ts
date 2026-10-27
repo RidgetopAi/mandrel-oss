@@ -7,7 +7,7 @@
  *                         branch_memberships table, migration 086 — one row per write,
  *                         keyed on the RECORDED position spine). Was the LOOSE
  *                         declared+informs predicate over link_provenance until SK2
- *                        .
+ *.
  *                         (P1 'auto:positional' + tag/links-arg provenance), newest-active
  *                         first, named by the once-on-the-spine `branch:` tag else title,
  *                         open positions marked. A GUESSED-only spine must NOT appear —
@@ -163,7 +163,7 @@ describeDb('TreeWalker derived tiers (PHASE 2, DB integration)', () => {
       // A SOFT (belief-adjudicator) supersession onto the NEWEST handoff: the trunk's
       // corroboration flag promises DECLARED, so this must NOT flip h3 (Reviewer NIT 1).
       //
-      // this row used to be edge_type='supersedes' with the adjudicator stamp. That
+      // an earlier change: this row used to be edge_type='supersedes' with the adjudicator stamp. That
       // combination is now UNWRITABLE — links_supersedes_declared_only (migration 087) rejects
       // any `supersedes` whose GENERATED provenance_class is not 'declared' — so the fixture
       // carries the channel an inferred supersession can actually occupy. The assertion is

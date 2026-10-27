@@ -34,7 +34,7 @@ export const ATTACHMENTS_BULK_MAX_IDS = 100;
 export const attachmentsApi = {
   /**
    * GET /api/attachments?taskIds=… — ONE read for a whole board (lane B's bulk route; on
-   * the `/attachments` prefix so no `/tasks/:id` route can capture it — the reviewer #1).
+   * the `/attachments` prefix so no `/tasks/:id` route can capture it — Reviewer #1).
    * Flat list ordered by taskId then createdAt; a task id outside the caller's project
    * scope is silently omitted, so an absent task is NOT an error and never throws.
    * Chunked at `ATTACHMENTS_BULK_MAX_IDS` transparently; `[]` for no ids (no request).

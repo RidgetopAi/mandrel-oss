@@ -2,7 +2,7 @@
  * runScopedTmp — the ONE way a test names a file in the temp namespace.
  *
  * WHY THIS FILE EXISTS (measured, 2026-08-01/02)
- *   Two overlapping `scripts/ci-clean-gate.sh` runs fabricated a RED on a healthy ref,
+ *   Two overlapping clean-gate runs fabricated a RED on a healthy ref,
  *   repeatedly. One of the reasons was tests naming FIXED absolute paths in the shared
  *   temp namespace — six suites pinned `/tmp/mandrel-<name>-port-registry.json` — so two
  *   concurrent runs read and wrote each other's file. `/tmp` on the gate box is a single
@@ -10,7 +10,7 @@
  *   with no owner.
  *
  * WHAT IT DOES
- *   Resolves under `os.tmpdir()`, which honours $TMPDIR. ci-clean-gate.sh now EXPORTS a
+ *   Resolves under `os.tmpdir()`, which honours $TMPDIR. The clean gate now EXPORTS a
  *   per-run TMPDIR inside its throwaway worktree parent, so every path built here is
  *   automatically private to one gate run and is deleted with it. Nothing else is
  *   required of the caller, which is the point: the safe form has to be the easy one or
@@ -23,8 +23,8 @@
  *   nobody else can touch at all, pass `unique: true` and get a per-process suffix.
  *
  * ENFORCEMENT
- *   scripts/test/shared-namespace-guard.test.sh REDs on a test file that writes a literal
- *   '/tmp/...' path, so the rule cannot be un-learned by the next test.
+ *   A shared-namespace guard REDs on a test file that writes a literal '/tmp/...' path,
+ *   so the rule cannot be un-learned by the next test.
  */
 
 import * as os from 'node:os';

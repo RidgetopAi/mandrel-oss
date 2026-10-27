@@ -4,7 +4,7 @@
  * Every recalled record gets a computed trust signal — ranked by DEMONSTRATED reliability
  * (the loop's ground-truth outcomes), not age. This is the differentiator: the STALE
  * benchmark shows the whole field scores <10% at detecting an invalid memory; nobody
- * scores memory by real outcomes. We can, because the builder→the reviewer→loop pipeline
+ * scores memory by real outcomes. We can, because the Builder→Reviewer→loop pipeline
  * manufactures ground-truth (technical_decisions.outcome_status, set by the GAP1
  * Evaluator), and the T2a typed-edge graph lets us propagate it.
  *
@@ -109,8 +109,8 @@ export { emptySupersessionGuardAudit } from './trustModel.js';
  *  authoritative list, not a copy). */
 export const OUTCOME_OUT_EDGE_TYPES = ['informs', 'decided_by', 'learned_from'] as const;
 
-/** The IN edge types that point AT a DECISION from the work that IMPLEMENTED it (SK3,
- *  an earlier decision). The OUT walk above is DIRECTIONAL, and that is the gap it leaves:
+/** The IN edge types that point AT a DECISION from the work that IMPLEMENTED it (SK3).
+ *  The OUT walk above is DIRECTIONAL, and that is the gap it leaves:
  *  a task→decision `decided_by` edge points AT the decision, so a decision never inherited
  *  the outcomes of the tasks decided by it — the exact records the loop manufactures
  *  ground-truth for. Walking this list in reverse closes that, at READ time, with zero
@@ -139,7 +139,7 @@ if ((OUTCOME_OUT_EDGE_TYPES as readonly string[]).includes('related_to')) {
   );
 }
 
-// ── HARD TRUST INVARIANT (task-source edge minting, the task-edge minting rule Q2) ───────────────
+// ── HARD TRUST INVARIANT (task-source edge minting, an earlier change Q2) ───────────────
 // `depends_on` is task→task SCHEDULING STRUCTURE, not outcome evidence. Task A depending
 // on task B says NOTHING about whether B's outcome is A's evidence — a task routinely
 // depends on work that failed, was abandoned, or is not started. If it were an outcome

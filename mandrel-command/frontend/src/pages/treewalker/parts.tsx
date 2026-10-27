@@ -43,7 +43,7 @@ export function stepMarkerClass(step: StoryStep): string {
 
 /**
  * Truncate a string to `maxChars`, appending an ellipsis when it was cut. Used for an
- * unnamed drawer's spine title (BranchRail, P2 an earlier decision) — a
+ * unnamed drawer's spine title (BranchRail, P2 an earlier decision / an earlier task) — a
  * named branch's own name is shown in full and never runs through this.
  */
 export function truncateTitle(text: string, maxChars: number): string {

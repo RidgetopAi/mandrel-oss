@@ -21,7 +21,7 @@ export interface PasswordUpdateData {
  * all of them live before this:
  *   - leading/trailing whitespace was stored verbatim, so " operator" and "operator" are two
  *     different rows that render identically in every UI that shows a username;
- *   - the uniqueness check was exact-match, so "the operator" and "operator" could coexist — a
+ *   - the uniqueness check was exact-match, so "Operator" and "operator" could coexist — a
  *     phishing surface anywhere a username is rendered as identity;
  *   - characters that have no business in a handle (spaces, control characters, RTL marks,
  *     lookalike unicode) were accepted.
@@ -102,7 +102,7 @@ export class UserService {
 
   static async getUserById(id: string): Promise<Omit<User, 'password_hash'> | null> {
     const result = await pool.query(`
-      SELECT id, username, email, role, theme, default_project_id, is_active, must_change_password, created_at, updated_at, last_login
+      SELECT id, username, email, role, theme, default_project_id, is_active, must_change_password, auth_user_id, created_at, updated_at, last_login
       FROM admin_users
       WHERE id = $1
     `, [id]);
@@ -184,7 +184,7 @@ export class UserService {
 
   /**
    * CASE-INSENSITIVE uniqueness. The old check was `WHERE username = $1`, which let
-   * "the operator" and "operator" coexist. Reserving the case-folded handle is the fix, because the
+   * "Operator" and "operator" coexist. Reserving the case-folded handle is the fix, because the
    * confusion this prevents is a HUMAN one — nobody reading a UI distinguishes them.
    */
   static async isUsernameTaken(username: string, excludeUserId: string): Promise<boolean> {
@@ -204,7 +204,19 @@ export class UserService {
     return result.rows.length > 0;
   }
 
-  static async updatePassword(userId: string, passwordData: PasswordUpdateData): Promise<boolean> {
+  /**
+   * Change the caller's DASHBOARD password.
+   *
+   * `managed-by-sign-in`: the row has no dashboard password because it was created for a
+   * better-auth login (migration 109). Its one password belongs to better-auth
+   * and is changed there (a set-password link). Refused rather than "set": accepting a new
+   * dashboard password here, with no current one to re-verify, would let a hijacked session
+   * mint a second, permanent credential for the account.
+   */
+  static async updatePassword(
+    userId: string,
+    passwordData: PasswordUpdateData
+  ): Promise<'changed' | 'wrong-current-password' | 'managed-by-sign-in'> {
     // Get current user with password hash
     const userResult = await pool.query(
       'SELECT password_hash FROM admin_users WHERE id = $1',
@@ -212,10 +224,13 @@ export class UserService {
     );
 
     if (userResult.rows.length === 0) {
-      return false;
+      return 'wrong-current-password';
     }
 
-    const currentHash = userResult.rows[0].password_hash;
+    const currentHash: string | null = userResult.rows[0].password_hash;
+    if (!currentHash) {
+      return 'managed-by-sign-in';
+    }
 
     // Verify current password
     const isValidCurrentPassword = await AuthService.verifyPassword(
@@ -224,7 +239,7 @@ export class UserService {
     );
 
     if (!isValidCurrentPassword) {
-      return false;
+      return 'wrong-current-password';
     }
 
     // Hash new password
@@ -240,7 +255,7 @@ export class UserService {
     // Invalidate all existing sessions for this user (force re-login)
     await AuthService.invalidateAllUserSessions(userId);
 
-    return true;
+    return 'changed';
   }
 
   static async deleteUser(id: string): Promise<boolean> {

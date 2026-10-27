@@ -1,5 +1,6 @@
 /**
- * PUNCH LIST COMPLETENESS Contract Test (migration 101,  * an earlier task — the STRUCTURED punch contract).
+ * PUNCH LIST COMPLETENESS Contract Test (migration 101, 
+ * an earlier task — the STRUCTURED punch contract).
  *
  * "DRAFT SAYS WHICH FIELD IS MISSING": setting stage='ready' requires title +
  * metadata.punch.doneWhen (a NON-EMPTY ARRAY of `{ text, owner: lane|human, proof? }`

@@ -84,10 +84,10 @@
  *      apply. It never silently skips.
  *
  * RUN (throwaway DB — provision FIRST; --print-env alone does not migrate):
- *   bash scripts/provision-test-db.sh ci_skew_bc8ef00d
- *   eval "$(bash scripts/provision-test-db.sh ci_skew_bc8ef00d --print-env)"
+ *   bash scripts/provision-test-db.sh ci_skew_bc8e4c7e
+ *   eval "$(bash scripts/provision-test-db.sh ci_skew_bc8e4c7e --print-env)"
  *   npx jest revokeSessionsClockDomain --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_skew_bc8ef00d --drop
+ *   bash scripts/provision-test-db.sh ci_skew_bc8e4c7e --drop
  */
 
 import request from 'supertest';

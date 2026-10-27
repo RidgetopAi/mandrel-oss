@@ -1,7 +1,7 @@
 /**
  * Tool-native record linking — acceptance contract test.
  *
- * THE POINT (Operator's "reproduce the linking model with ZERO SQL" bar):
+ * THE POINT (the operator's "reproduce the linking model with ZERO SQL" bar):
  *   The record-linking model (mandrel-record-linking-convention) threads
  *   tasks↔contexts↔decisions into one searchable story. All session it was threaded
  *   BY HAND with raw SQL for the parts the tools didn't expose. This proves the WHOLE

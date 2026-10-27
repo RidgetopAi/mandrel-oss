@@ -9,9 +9,10 @@
 #   only gets THIS member's dependency tree resolved deterministically from the root
 #   lock — not all workspaces (no frontend/shared bloat).
 
-# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to whatever image the
-# build host has CACHED, so a build without --pull can stay on an older patch past a Node
-# security release (22.23.4). An exact tag forces the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
+# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to
+# whatever image the build host has CACHED — the fleet build does not --pull, so the
+# fleet stayed on 22.23.3 / 22.22.3 (sweep) past the 22.23.4 security release. An exact tag forces
+# the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
 # Stage 1: Dependencies stage (production-only, for the runtime node_modules)
 FROM node:22.23.4-alpine AS deps
 RUN apk add --no-cache libc6-compat

@@ -63,7 +63,7 @@ export interface ExpandDecision {
  *
  * That is not assumed to be harmless: scoring the eval's cone against this one over the
  * 14 labeled anchors returns the SAME node set on all 14 (identical micro P/R), differing
- * only in the size of one anchor's cone (`2b3c4d5e`, 3 vs 5 members) without changing what
+ * only in the size of one anchor's cone (an earlier change, 3 vs 5 members) without changing what
  * that walk returns. Epic ancestors/descendants are explicitly out of scope for this task.
  */
 export function buildAnchorCone(anchorId: string, anchorLimbs: DeclaredLimbs): ReadonlySet<string> {
@@ -76,10 +76,10 @@ export function buildAnchorCone(anchorId: string, anchorLimbs: DeclaredLimbs): R
  * overlap(r) = |limbs(r) ∩ cone| / |limbs(r)| — "how much of what this record names is the
  * branch you asked for".
  *
- * A RATIO and not a count, for a measured reason: on anchor `3c4d5e6f` three multi-topic
- * session handoffs are labeled IN while on `4d5e6f7a` five records of the identical shape
+ * A RATIO and not a count, for a measured reason: on anchor an earlier change three multi-topic
+ * session handoffs are labeled IN while on an earlier change five records of the identical shape
  * are labeled OUT. No threshold on a COUNT separates those; the fraction does, because on
- * the whole day genuinely was that branch.
+ * an earlier change the whole day genuinely was that branch.
  *
  * Throws on an empty set rather than returning 0 or NaN: "no limbs" is a different state
  * with its own branch above, and silently scoring it 0 would fold the third state into the

@@ -20,7 +20,9 @@ import { deriveActor } from '../config/actorRegistry.js';
 import { PROJECT_BINDING_HEADER } from '../config/projectBindingConfig.js';
 import { LOOP_ID_HEADER } from '../config/positionKeyConfig.js';
 import { bearerAuth, dualBearerAuth, bridgeAuth } from '../middleware/bearerAuth.js';
+import { defaultApiTokenVerifier } from '../services/apiTokenAuth.js';
 import { mountOAuthRoutes } from './oauthRoutes.js';
+import { mountDashboardAuthDisabled } from './dashboardAuthRoutes.js';
 import { BETTER_AUTH_CONFIG } from '../config/betterAuthConfig.js';
 import type { RemoteMcpTransport } from './remoteMcpTransport.js';
 import { httpStatusForToolOutcome } from '../utils/mcpErrorStatus.js';
@@ -121,15 +123,18 @@ export class HealthServer {
     // (returns null) when MANDREL_OAUTH_ENABLED!=true, so the default static-bearer-only
     // deployment is unaffected. The auth routes are scoped to <basePath> + the explicit
     // .well-known + /sign-in + /consent paths and never intercept /mcp or /mcp/tools/*.
-    mountOAuthRoutes(this.app);
+    // ONE LOGIN: with OAuth off there is no better-auth login to check, and
+    // the internal dashboard sign-in says so explicitly (`not-enabled`) rather than 404 — so a
+    // 404 at the Command backend can only mean a wrong path / version skew (could not check).
+    if (!mountOAuthRoutes(this.app)) mountDashboardAuthDisabled(this.app);
 
-    // NO APP-WIDE BODY PARSER. An `app.use(express.json({limit:'10mb'}))` used to sit here
-    // and ran BEFORE every route's auth guard, so an unauthenticated caller could make this
-    // process parse 10 MB of JSON per request on /mcp, /mcp/tools/* and every REST mutation.
-    // Each route that reads a body now parses it AFTER its guard, with its own bound from
-    // config/mcpRequestLimitsConfig.ts (the /api/v2/sessions and /api/decisions routers and
-    // the OAuth routes already carried their own). The app-wide urlencoded parser went with
-    // it: no route on this app reads a form body.
+    // NO APP-WIDE BODY PARSER. An `app.use(express.json({limit:'10mb'}))`
+    // used to sit here and ran BEFORE every route's auth guard, so an unauthenticated caller
+    // could make this process parse 10 MB of JSON per request on /mcp, /mcp/tools/* and every
+    // REST mutation. Each route that reads a body now parses it AFTER its guard, with its own
+    // bound from config/mcpRequestLimitsConfig.ts (the /api/v2/sessions and /api/decisions
+    // routers, the OAuth/dashboard/set-password routes already carried their own). The
+    // app-wide urlencoded parser went with it: no route on this app reads a form body.
   }
 
   /**
@@ -138,7 +143,7 @@ export class HealthServer {
   private setupRoutes(): void {
     // Mount session analytics REST API routes.
     //
-    // SECURITY (an earlier task / the trust-boundary change): this family serves AND mutates
+    // SECURITY (an earlier task / trust boundary): this family serves AND mutates
     // real session data (ids, project names, timestamps, modified files, lifecycle) and was
     // reachable UNAUTHENTICATED on the public internet — both via an nginx bypass on
     // command.example.com and directly on mandrel.example.com (:8080). Gate the WHOLE
@@ -168,7 +173,7 @@ export class HealthServer {
 
     // THE DECISION INBOX — REST half.
     //
-    // Same posture as /api/v2/sessions (an earlier task / the trust-boundary change): this
+    // Same posture as /api/v2/sessions (an earlier task / trust boundary): this
     // surface serves and MUTATES real decision data (decision_answer/decision_discuss), so
     // it is gated at the mount with the SAME static Bearer guard — UNCONDITIONAL +
     // FAIL-CLOSED, never behind the dark bridge flag. ONE guard here = every current AND
@@ -202,7 +207,7 @@ export class HealthServer {
     this.app.get('/health/mcp', this.handleMcpHealthCheckExpress.bind(this));
     this.app.get('/health/database', this.handleDatabaseHealthCheckExpress.bind(this));
     this.app.get('/health/embeddings', this.handleEmbeddingsHealthCheckExpress.bind(this));
-    // Idle-reaper liveness — the seam an external monitor polls.
+    // Idle-reaper liveness — the seam an out-of-process alerter polls.
     this.app.get('/health/reaper', this.handleReaperHealthCheckExpress.bind(this));
 
     // Remote Streamable HTTP MCP transport (NEW — bearer-auth guarded).
@@ -215,9 +220,14 @@ export class HealthServer {
       //     else 401 + WWW-Authenticate discovery hint.
       //   - OAuth DISABLED → bearerAuth(): the pre-existing static-only guard, byte-for-byte
       //     (incl. the 503 fail-closed when MCP_AUTH_TOKEN is unset).
-      const auth = BETTER_AUTH_CONFIG.enabled ? dualBearerAuth() : bearerAuth();
-      // AUTH, THEN PARSE: the body is read only after `auth` passes, and only up to
-      // MCP_MAX_REQUEST_BODY_BYTES — an unauthenticated body is never parsed at all.
+      // BOTH also accept a per-user API token (`mdl_…`, Settings → API tokens)
+      // — dualBearerAuth by default, the static guard ONLY here by explicit opt-in, so the
+      // service-token mounts above stay static-only.
+      const auth = BETTER_AUTH_CONFIG.enabled
+        ? dualBearerAuth()
+        : bearerAuth({ apiTokens: defaultApiTokenVerifier });
+      // AUTH, THEN PARSE: the body is read only after `auth` passes, and only
+      // up to MCP_MAX_REQUEST_BODY_BYTES — an unauthenticated body is never parsed at all.
       // GET/DELETE carry no body, so they mount no parser.
       const mcpBody = mcpJsonBody(MCP_MAX_REQUEST_BODY_BYTES, 'jsonrpc');
       this.app.post('/mcp', auth, mcpBody.parse, this.remoteMcp.handlePost, mcpBody.onError);
@@ -255,11 +265,11 @@ export class HealthServer {
 
     // Project API.
     //
-    // SECURITY (sibling sweep of the trust-boundary change):
+    // SECURITY (sibling sweep of an earlier change / trust boundary):
     // POST /api/v2/projects/:id/set-primary MUTATES prod state — it flips which project is
     // primary for every new session — and was reachable UNAUTHENTICATED directly on
-    // mandrel.*:8080, so an anonymous caller could change that state. Gate it with the SAME
-    // mount-level static Bearer guard the /api/v2/sessions family uses (714f00d): the sole
+    // :8080, so an anonymous caller could change that state. Gate it with the SAME
+    // mount-level static Bearer guard the /api/v2/sessions family uses (714af00): the sole
     // legitimate caller is the Command backend (:5000, authenticates the USER via JWT), which
     // already presents MCP_AUTH_TOKEN as the INTERNAL SERVICE TOKEN on this proxied call
     // (McpService.callMcpEndpoint → authHeader()). UNCONDITIONAL + FAIL-CLOSED (not behind the
@@ -439,14 +449,14 @@ export class HealthServer {
    * WHY THIS ENDPOINT EXISTS
    *   SessionTimeoutService counts consecutive failed sweeps and logs one REAPER-DOWN
    *   line at the configured threshold — but a `logger.error` only reaches someone
-   *   already reading logs. The alerting lives OUT of this process so the MCP server keeps no
-   *   outward-facing notifier dependency. This route is the seam between the two: the
-   *   detector publishes its verdict, and an external monitor polls it and pages.
+   *   already reading logs. The alerting lives OUT of this process, so the MCP server keeps
+   *   no outward-facing notifier dependency. This route is the seam between the two: the
+   *   detector publishes its verdict, an external alerter polls it and pages.
    *
    * WHY IT ALWAYS RETURNS 200 (deliberate, and it differs from /health/database)
    *   Two consumers would misread a 5xx here. docker-compose's mcp-server healthcheck
-   *   spiders /health, and mandrel-health unit does `curl -f /health || systemctl
-   *   restart mandrel` — both are wired to /health, not here, and this route is kept
+   *   spiders /health, and a host watchdog may do `curl -f /health || restart` — both are
+   *   wired to /health, not here, and this route is kept
    *   OUT of that aggregate on purpose. A wedged reaper is a poisoned DB row: a restart
    *   does not clear it, so escalating this into a restart trigger would flap the whole
    *   server while fixing nothing. The verdict is the `down` FIELD; the status code
@@ -541,7 +551,7 @@ export class HealthServer {
     try {
       const toolName = String(req.params.toolName);
       // No JSON body (missing, or not sent as application/json) is the caller's error: 400,
-      // never a TypeError 500.
+      // never a TypeError 500 (Reviewer N1).
       if (!req.body || typeof req.body !== 'object' || Array.isArray(req.body)) {
         res.status(400).json({ success: false, error: 'Request body must be a JSON object sent with Content-Type: application/json' });
         return;
@@ -549,8 +559,8 @@ export class HealthServer {
       const rawArgs = req.body.arguments || req.body.args || {};
       // Schema-driven coercion happens in validateToolArguments.
       const args = rawArgs;
-      // TOOL-INPUT ELEMENT LIMIT — before anything walks the arguments. A throw lands in the
-      // catch below as McpError -32602 → 400.
+      // TOOL-INPUT ELEMENT LIMIT — before anything walks the arguments. A
+      // throw lands in the catch below as McpError -32602 → 400.
       assertToolInputWithinLimit(toolName, args);
 
       // THE COLLAPSE. `|| 'http-default'` merges every caller that presents

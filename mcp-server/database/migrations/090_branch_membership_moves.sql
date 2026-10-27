@@ -1,6 +1,6 @@
 -- Migration 090: MUTABLE BRANCH MEMBERSHIP — a record's branch can be DECLARED after the
 -- fact, and every change to it leaves an append-only trace.
--- (P3 of the build spec.)
+-- (P3, an earlier task / an earlier spine, build spec.)
 --
 -- ══ WHAT CHANGES, AND WHY IT NEEDS STORAGE OF ITS OWN ════════════════════════════════════
 -- Until now `branch_memberships.record_id` was a write-once fact: positionalMint inserted it

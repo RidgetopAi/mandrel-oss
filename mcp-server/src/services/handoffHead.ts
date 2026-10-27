@@ -17,7 +17,7 @@
  *      the query then falls through to the newest row that happens to have no inbound
  *      edge — which, in a chain with a gap in it, is a DEAD handoff several generations
  *      back. That is the shape that served a four-generations-dead handoff on 2026-08-23
- *     .
+ *.
  *   3. It has no third state. Ambiguity and absence both render as "none recorded".
  *
  * ── THE ALGORITHM, IN ONE PARAGRAPH ─────────────────────────────────────────────────
@@ -54,7 +54,7 @@
  * FIELD without parsing prose.
  *
  * ── WHAT THE TWO SEEDS DO *NOT* BUY — the residual, named ────────────────────────────
- * Ported from runtime/lib/handoff-head.sh's own header, because overstating a cross-check
+ * Ported from the shell resolver's own header, because overstating a cross-check
  * is the same defect class this module exists to fix. Both seeds are wrong TOGETHER when:
  *   1. a handoff-shaped record is stored under a DIFFERENT context_type — invisible to the
  *      chain (which is minted only for `handoff`) and to both seed queries;

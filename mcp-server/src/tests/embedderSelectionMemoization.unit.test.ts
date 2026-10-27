@@ -2,7 +2,7 @@
  * THE EMBEDDER SELECTION IS NEVER MEMOIZED.
  *
  * WHAT BROKE
- *   `bash scripts/ci-clean-gate.sh` — the authoritative gate — returned GREEN and then RED
+ *   The authoritative clean gate returned GREEN and then RED
  *   on the SAME ref, same box. The failing assertion was embedResilienceGemma's
  *   "active column must be the gemma column: expected 'embedding' to be 'embedding_gemma'".
  *   config/embeddingConfig.ts memoized the selection in three module-scope `export const`s

@@ -69,10 +69,6 @@ jest.mock('../services/auth', () => ({
   },
 }));
 
-jest.mock('../services/project', () => ({
-  ProjectService: { getProjectById: jest.fn() },
-}));
-
 jest.mock('../services/projectAccess', () => {
   const actual = jest.requireActual('../services/projectAccess');
   return {
@@ -82,6 +78,10 @@ jest.mock('../services/projectAccess', () => {
     },
   };
 });
+
+jest.mock('../services/project', () => ({
+  ProjectService: { getProjectById: jest.fn() },
+}));
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const { ProjectAccessService } = require('../services/projectAccess');
@@ -499,12 +499,16 @@ describe('project scope — cross-source behaviour', () => {
 // PATH PARAMS — the door an app-level middleware structurally cannot see
 // =============================================================================
 // `req.params` does not exist until Express has ROUTED, so projectContextMiddleware runs
-// too early to see `/projects/:id`. A path param carrying a project id had only a uuid
-// SHAPE check, so any authenticated user could read any project. authorizeProjectPathParam
-// is the router-level choke point that closes it, delegating to the SAME
-// ProjectAccessService. The router under test is the REAL routes/projects.ts
-// (`router.param('id', …)`), mounted as server.ts mounts it; only the controller's
-// service is stubbed, and `getProjectById` being called IS "the handler ran".
+// too early to see `/projects/:id`. routes/projects.ts (`/:id`, `/:id/insights`,
+// `/:id/sessions`, …) had only a uuid SHAPE check on it, so any authenticated user could
+// read any project's name, description and insights. authorizeProjectPathParam is the
+// router-level choke point that closes it, delegating to the SAME ProjectAccessService.
+//
+// The router under test is the REAL routes/projects.ts (`router.param('id', …)`), mounted
+// as server.ts mounts it, authenticated by the real authenticateToken with bearer tokens;
+// only the controller's service is stubbed, and `getProjectById` being called IS "the
+// handler ran". (this replaced a stand-in router plus a source text-scan,
+// which stayed GREEN with the real wrapper mutated to a bare `next()`.)
 describe('authorizeProjectPathParam — the router-level door', () => {
   // eslint-disable-next-line @typescript-eslint/no-var-requires
   const { ProjectService } = require('../services/project');
@@ -583,18 +587,29 @@ describe('authorizeProjectPathParam — the router-level door', () => {
     }
   });
 
-  it('EVERY projects route carrying :id is covered by the guard (population, not sample)', () => {
-    // Derived from the shipping route file, so the guard being unwired cannot pass
-    // unnoticed: it is registered once with router.param, and this asserts the file still
-    // registers it alongside every `/:id` path.
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const fs = require('fs');
-    const src = fs.readFileSync(require('path').resolve(__dirname, '../routes/projects.ts'), 'utf8');
-    const idRoutes = src.match(/['"]\/:id[^'"]*['"]/g) ?? [];
-    expect(idRoutes.length).toBeGreaterThanOrEqual(5);
-    // Asserted STRUCTURALLY, not as one literal: the param must be wired, and the wiring
-    // must reach authorizeProjectPathParam.
-    expect(src).toMatch(/router\.param\(\s*['"]id['"]\s*,/);
-    expect(src).toContain('authorizeProjectPathParam(');
+  it('EVERY route carrying :id on the real router consults the grant and refuses (population, not sample)', async () => {
+    // POPULATION: the route layers Express itself registered on the shipping router — read
+    // from router.stack, not regexed out of the source — filtered to paths with an `:id`
+    // key. Each is driven as a zero-grant non-admin and must (a) be refused 403 and (b) have
+    // consulted ProjectAccessService for THIS project: (b) is the witness that the guard ran,
+    // which a 403 alone is not (DELETE's requireAdmin also answers 403 to a non-admin).
+    type RouteLayer = { route?: { path: string; methods: Record<string, boolean> } };
+    const idRoutes = (projectsRouter.stack as RouteLayer[]).flatMap(({ route }) =>
+      route && /(^|\/):id(\/|$)/.test(route.path)
+        ? Object.keys(route.methods).map((method) => ({ method, path: route.path }))
+        : []
+    );
+    // Empty-population trap: /:id GET/PUT/DELETE, set-primary, insights, sessions.
+    expect(idRoutes.length).toBeGreaterThanOrEqual(6);
+    for (const { method, path } of idRoutes) {
+      ProjectAccessService.userHasProjectAccess.mockReset();
+      ProjectAccessService.userHasProjectAccess.mockResolvedValue(false);
+      const url = `/api/projects${path.replace(':id', PROJECT_A)}`;
+      const agent = request(app) as unknown as Record<string, (u: string) => request.Test>;
+      const res = await agent[method](url).set('Authorization', BEARER.user);
+      expect({ method, path, status: res.status }).toEqual({ method, path, status: 403 });
+      expect(ProjectAccessService.userHasProjectAccess).toHaveBeenCalledWith(expect.anything(), PROJECT_A);
+    }
+    expect(ProjectService.getProjectById).not.toHaveBeenCalled();
   });
 });

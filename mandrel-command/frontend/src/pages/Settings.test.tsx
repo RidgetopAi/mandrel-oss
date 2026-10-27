@@ -5,8 +5,10 @@
  *   • the default Account section renders the profile seeded from the auth user;
  *   • the section rail switches panels;
  *   • the LIVE Appearance theme control applies + PERSISTS through api.users.updatePreferences;
- *   • the honest data-gap sections (Actors & identity / Notifications / API & tokens) render
- *     their gap note and disabled affordances (never faked controls);
+ *   • the honest data-gap sections (Actors & identity / Notifications) render their gap
+ *     note and disabled affordances (never faked controls);
+ *   • API tokens is LIVE: the rail opens a section that lists through api.apiTokens.list
+ *     (its create/show-once/revoke flow is ApiTokensSection.test.tsx);
  *   • the Danger zone targets the active project.
  * Structural wiring (no antd, unified client, no hex, gap sections don't mutate) is asserted
  * in Settings.wiring.test.ts.
@@ -26,6 +28,7 @@ vi.mock('../api', () => ({
       revokeSessions: vi.fn(),
     },
     projects: { setPrimary: vi.fn(), clearPrimary: vi.fn(), remove: vi.fn() },
+    apiTokens: { list: vi.fn(), create: vi.fn(), revoke: vi.fn() },
   },
 }));
 
@@ -33,7 +36,7 @@ const setThemeMode = vi.fn();
 const updateSettings = vi.fn();
 
 vi.mock('../contexts/AuthContext', () => ({
-  useAuthContext: () => ({ user: { username: 'operator', email: 'operator@example.com' } }),
+  useAuthContext: () => ({ user: { username: 'operator', email: 'operator@example.com', role: 'admin' } }),
 }));
 vi.mock('../contexts/ThemeContext', () => ({
   useTheme: () => ({ themeMode: 'dark', setThemeMode }),
@@ -72,6 +75,11 @@ const mockApi = api as unknown as {
     clearPrimary: ReturnType<typeof vi.fn>;
     remove: ReturnType<typeof vi.fn>;
   };
+  apiTokens: {
+    list: ReturnType<typeof vi.fn>;
+    create: ReturnType<typeof vi.fn>;
+    revoke: ReturnType<typeof vi.fn>;
+  };
 };
 
 let container: HTMLDivElement;
@@ -95,6 +103,23 @@ async function mount() {
       </QueryClientProvider>,
     );
   });
+}
+
+/**
+ * Wait for `probe` to return a value, flushing React between polls. A react-query list
+ * resolves over several ticks (promise -> state -> render), so a fixed number of flushes is
+ * a race (Reviewer F2: one microtask passed on a loaded box and failed 4/4 on an idle one).
+ */
+async function waitFor<T>(probe: () => T | null | undefined, what: string, timeoutMs = 3000): Promise<T> {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const v = probe();
+    if (v) return v;
+    if (Date.now() > deadline) throw new Error(`timed out waiting for ${what}`);
+    await act(async () => {
+      await new Promise((r) => setTimeout(r, 10));
+    });
+  }
 }
 
 /** Click the first <button> whose visible text matches (trimmed, case-insensitive). */
@@ -163,14 +188,35 @@ describe('Settings — honest data-gap sections name the gap (no faked controls)
     expect(container.textContent).toContain('managed by the Runtime');
   });
 
-  it('API & tokens disables the rotate control and names the gap', async () => {
+});
+
+describe('Settings — API tokens is LIVE', () => {
+  it('the rail opens the section, which lists the user\'s tokens from api.apiTokens.list', async () => {
+    mockApi.apiTokens.list.mockResolvedValue([
+      {
+        id: 't-1',
+        // A name that appears NOWHERE else in the section (the create row's help text says
+        // “loop on laptop”, so that string cannot prove the list rendered).
+        name: 'fixture-row-zq7',
+        prefix: 'mdl_AbCd1234',
+        createdAt: '2026-10-20T10:00:00.000Z',
+        lastUsedAt: null,
+        expiresAt: null,
+      },
+    ]);
     await mount();
-    await clickButton('API & tokens');
-    expect(container.textContent).toContain('no Command backend endpoint');
-    const rotate = Array.from(container.querySelectorAll('button')).find((b) =>
-      (b.textContent ?? '').includes('Rotate'),
-    ) as HTMLButtonElement | undefined;
-    expect(rotate?.disabled).toBe(true);
+    await clickButton('API tokens');
+    // Only a rendered LIST ROW satisfies this: the row carries the fixture's name.
+    const row = await waitFor(
+      () =>
+        Array.from(container.querySelectorAll('tr')).find((tr) =>
+          (tr.textContent ?? '').includes('fixture-row-zq7'),
+        ),
+      'the API token list row',
+    );
+    expect(mockApi.apiTokens.list).toHaveBeenCalled();
+    expect(row.textContent).toContain('mdl_AbCd1234');
+    expect(container.textContent).not.toContain('no Command backend endpoint');
   });
 });
 

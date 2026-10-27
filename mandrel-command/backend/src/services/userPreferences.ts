@@ -1,6 +1,6 @@
 /**
  * userPreferences — the per-user preference row on `admin_users` (theme +
- * default_project_id). The page-scope epic §A.
+ * default_project_id). an earlier Epic §A.
  *
  * ── WHY A SERVICE AND NOT INLINE IN THE ROUTE ────────────────────────────────────────
  * Setting a default project is an AUTHORIZATION decision, not a form field. "May this

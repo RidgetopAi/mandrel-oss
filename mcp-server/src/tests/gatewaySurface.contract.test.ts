@@ -3,8 +3,8 @@
  *
  * DB-free, deterministic guards for the DARK gateway machinery (plan §1–§3, §9):
  *   1. LEGACY BYTE-IDENTITY  — at surface=legacy (the DEFAULT), buildAdvertisedTools is the exact
- *      72-tool flat surface (the byte-identity guard the whole "dark" invariant rests on).
- *   2. 72/72 PARITY          — every one of the 72 registry ops is reachable BOTH via a
+ *      67-tool flat surface (the byte-identity guard the whole "dark" invariant rests on).
+ *   2. 67/67 PARITY          — every one of the 67 registry ops is reachable BOTH via a
  *      (gateway,action) resolution AND via its flat name in the routeExecutor switch; the reverse
  *      (no dangling resolver entry) also holds; and the resolver agrees with the §2 mapping table.
  *   3. STRICT-KEY PER BRANCH — an undeclared key on a gateway branch is rejected with an
@@ -72,7 +72,7 @@ describe('legacy surface is byte-identical to HEAD (the dark invariant)', () => 
     // a READ that enumerates which tag values exist and how many records carry each.
     // 70 -> 72 with the decision inbox:
     // decision_answer / decision_discuss.
-    // 72 -> 67: the five code-scan ops were removed.
+    // 72 -> 67: the five code-scan ops removed.
     expect(legacy).toHaveLength(67);
   });
 
@@ -83,7 +83,7 @@ describe('legacy surface is byte-identical to HEAD (the dark invariant)', () => 
   });
 });
 
-// ───────────────────────── 2. 72/72 PARITY ─────────────────────────
+// ───────────────────────── 2. 67/67 PARITY ─────────────────────────
 describe('67/67 parity — every op reachable via BOTH the gateway path and the flat name', () => {
   const routesSrc = readFileSync(ROUTES_INDEX, 'utf8');
 
@@ -153,7 +153,7 @@ describe('67/67 parity — every op reachable via BOTH the gateway path and the 
     // 69 -> 70: the tag census: project_tags.
     // 70 -> 72: the decision inbox:
     // decision_answer / decision_discuss.
-    // 72 -> 67: the five code-scan ops were removed.
+    // 72 -> 67: the five code-scan ops removed.
     expect(ALL_OP_IDS).toHaveLength(67);
   });
 });
@@ -196,7 +196,7 @@ describe('strict-key per branch — undeclared keys rejected, actionable, name d
 
 // ───────────────────────── 4. GATEWAY SURFACE SHAPE ─────────────────────────
 describe('gateway surface shape (surface=gateway)', () => {
-  test('lazy = 8 gateway envelopes + 3 flat tools, honest envelopes (action first), no outputSchema', () => {
+  test('lazy = 7 gateway envelopes + 3 flat tools, honest envelopes (action first), no outputSchema', () => {
     const tools = buildAdvertisedTools(true, 'gateway', 'lazy');
     expect(tools).toHaveLength(10);
     const names = tools.map((t) => t.name);

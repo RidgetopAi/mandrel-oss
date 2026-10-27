@@ -83,7 +83,7 @@ describe('ink-on-accent tokens (button ink decoupled from --bg)', () => {
   });
 
   it('--on-accent light is the approved dark ink (#04110f, ~6.6:1 AA on the deepened light teal)', () => {
-    // Coordinator's approved default: brand-consistent dark-ink-on-teal,
+    // The coordinator's approved default: brand-consistent dark-ink-on-teal,
     // AA-solid on the light teal #159B8B. --on-crit stays white.
     expect(light['on-accent']).toBe('#04110f');
     expect(light['on-accent']).not.toBe(light['bg']);

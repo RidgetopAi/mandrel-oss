@@ -2,7 +2,7 @@
  * Resolve the disposable, migrated database a DB-backed test must run against —
  * or FAIL LOUDLY. There is deliberately no default.
  *
- * WHY THERE IS NO DEFAULT (folded in on Coordinator's call)
+ * WHY THERE IS NO DEFAULT (folded in on the coordinator's call)
  * ------------------------------------------------------------------
  * Four OAuth integration tests each carried their own last-resort literal:
  *   process.env.X_DB_NAME || process.env.DATABASE_NAME || 'ci_better_auth_ba1'

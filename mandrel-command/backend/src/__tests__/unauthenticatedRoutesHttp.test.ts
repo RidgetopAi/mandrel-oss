@@ -1,5 +1,5 @@
 /**
- * unauthenticatedRoutesHttp.test.ts — the RUNTIME half of an earlier task.
+ * unauthenticatedRoutesHttp.test.ts — the RUNTIME half of an earlier task and an earlier change.
  *
  * `unauthenticatedRouteCoverage.test.ts` asserts the SHAPE of the served router (that an
  * enforcing classification is in each route's chain). This file asserts the BEHAVIOUR that
@@ -173,8 +173,8 @@ describe('the infra-metadata leaks', () => {
 
 describe('the DELIBERATELY public surface still works, and no longer leaks', () => {
   it('GET /api/health is 200 with NO credential — the container healthcheck depends on it', async () => {
-    // docker-compose.yml:601 / docker-compose.prod file:295 wget --spider,
-    // fleet-deploy script:927,1198 and prod-rollback script:93,364 retry_http 200.
+    // the command-backend healthcheck in docker-compose.yml (wget --spider) and the deploy
+    // smoke checks retry until 200.
     const res = await request(app).get('/api/health');
     expect(res.status).toBe(200);
     expect(res.body.data.status).toBe('healthy');
@@ -197,7 +197,7 @@ describe('the DELIBERATELY public surface still works, and no longer leaks', () 
     expect(res.body).not.toHaveProperty('error');
   });
 
-  it('GET /api/feature-flags is 200 with NO credential — an uptime probe expects exactly this', async () => {
+  it('GET /api/feature-flags is 200 with NO credential — an edge probe expects exactly this', async () => {
     const res = await request(app).get('/api/feature-flags');
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('flags');

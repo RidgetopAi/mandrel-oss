@@ -1,7 +1,7 @@
 /**
  * UNRESOLVABLE THREADING INTENT — the no-silent-orphan floor.
  *
- * THE BUG THIS REPRODUCES (measured on 61df00d before the fix)
+ * THE BUG THIS REPRODUCES (measured on 61d4f00 before the fix)
  * -----------------------------------------------------------
  * A threading tag (`task:`/`decision:`) sets `hasExplicitTag`, which sets
  * `explicitThreadIntent`, which SUPPRESSES the B1 inference fallback in
@@ -10,7 +10,8 @@
  * character silently costs the capture its threading, and the person who typed it is the
  * least likely to notice.
  *
- * That is a direct violation of Mandrel's floor guarantee ( * ref:reliable-threading): **every store ends with at least one edge or a SURFACED reason.**
+ * That is a direct violation of Mandrel's floor guarantee
+ * (ref:reliable-threading): **every store ends with at least one edge or a SURFACED reason.**
  *
  * WHAT IS ASSERTED, AND ON WHAT
  * -----------------------------
@@ -96,7 +97,7 @@ const id8 = (uuid: string) => uuid.replace(/-/g, '').slice(0, 8);
 async function freshCase(label: string): Promise<{ projectId: string; conn: string }> {
   const projectId = (
     await db.query(
-      `INSERT INTO projects (name, description) VALUES ($1, 'unresolvable-tag fixture') RETURNING id`,
+      `INSERT INTO projects (name, description) VALUES ($1, 'an earlier change fixture') RETURNING id`,
       [`uthread-${label}-${STAMP}`]
     )
   ).rows[0].id;

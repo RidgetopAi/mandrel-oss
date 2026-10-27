@@ -62,13 +62,11 @@ export function evaluateMemoryCheck(
  *   PUBLIC-AND-REDUCED — something with no credential must be able to call it, so it is
  *     stripped to a bare verdict instead of authenticated. Authenticating these breaks
  *     the deploy. MEASURED consumers, not assumed:
- *       docker-compose.yml:601 / docker-compose.prod file:295  container healthcheck
+ *       docker-compose.yml                                    command-backend container healthcheck
  *         → `wget --spider http://localhost:5000/api/health`   (status code only)
- *       fleet-deploy script:927,1198                       `retry_http 200 .../api/health`
- *       prod-rollback script:93,364                        `PROD_BACKEND_HEALTH_URL=.../api/health`
+ *       deploy and rollback smoke checks                      retry until 200 on .../api/health
  *     Every one of those reads the STATUS CODE and never the body, so reducing the body
  *     costs nothing and removes the recon.
- *     NOTE a `/healthz` + `/readyz` on `localhost:8080` is the MCP SERVER's, not these.
  *     No in-tree consumer of the backend's own /healthz|/livez|/readyz was found; they are
  *     kept public anyway (an unknown external prober is likelier than an unknown reader of
  *     pool internals) and reduced instead.
@@ -96,7 +94,7 @@ router.get('/version', authenticateToken, getVersion);
 router.get(
   '/health',
   declareIntentionallyUnauthenticated(
-    'container healthcheck (docker-compose.yml:601) call this with no credential and read only the status code; body reduced to a bare verdict'
+    'the command-backend container healthcheck (docker-compose.yml) and the deploy smoke checks call this with no credential and read only the status code; body reduced to a bare verdict'
   ),
   (_req: Request, res: Response) => {
     res.json({ success: true, data: { status: 'healthy', timestamp: new Date().toISOString() } });

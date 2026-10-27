@@ -1,10 +1,11 @@
 /**
- * Sessions Foundation Phase 2b — ACTOR-MODE create/resolve contract tests ( * an earlier decision). Drives the REAL SessionLifecycleService.ensureSessionForActor /
+ * Sessions Foundation Phase 2b — ACTOR-MODE create/resolve contract tests.
+ * Drives the REAL SessionLifecycleService.ensureSessionForActor /
  * createSessionForActor / getActiveSession (actor branch) + SessionRepo.createForActorLocked
  * + the session_status route against a REAL Postgres (disposable CI DB; migrations 062/063/064
  * applied). resolverMode is flipped to 'actor' per-test and restored after.
  *
- * PROVES (the four Auditor fixes + the guardrails, all load-bearing):
+ * PROVES (the four the auditor fixes + the guardrails, all load-bearing):
  *   D1  anonymous normalization BEFORE the resolver → N anonymous actions share ONE session.
  *   D2  a resolved 'interrupted' session is reactivated to 'active' by the gate.
  *   B   advisory-locked get-or-create: two DIFFERENT actors on the SAME connection each get
@@ -73,7 +74,7 @@ describe('D1 — anonymous callers share ONE session (normalize before the resol
     for (let i = 0; i < 5; i++) {
       // No actor + a DIFFERENT connection each time — legacy would mint 5; actor mode
       // normalizes to ACTOR_ANONYMOUS and shares ONE session via the resolver's newest-open
-      // step. (Since an earlier change, anonymous classifies 'agent', so that newest-open lookup is
+      // step. (Since an earlier change anonymous classifies 'agent', so that newest-open lookup is
       // NOT day-restricted — the sharing holds regardless of the UTC day boundary.)
       const id = await SessionLifecycleService.ensureSessionForActor({
         actor: undefined,

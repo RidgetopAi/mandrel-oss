@@ -1,5 +1,6 @@
 /**
- * POSITION AGE NOTICE — stale-position VISIBILITY on the write path ( * The reviewer finding on P1 locked model an earlier decision).
+ * POSITION AGE NOTICE — stale-position VISIBILITY on the write path
+ * (Reviewer finding on P1 an earlier task, locked model an earlier decision).
  *
  * STANDING PRINCIPLE (the operator): NO HARDCODED VARIABLES. The threshold lives HERE as a named
  * value with a stated default and an env override.

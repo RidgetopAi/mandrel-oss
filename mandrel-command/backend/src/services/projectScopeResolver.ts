@@ -115,7 +115,7 @@ export interface ProjectSourceSpec {
  * is empty at that point. The routers that take a project path param are authorized at
  * their own choke point instead, with `router.param()` + {@link authorizeProjectPathParam}
  * below, which calls the SAME ProjectAccessService. (This paragraph said "no route takes a
- * project as one" until an adversarial sweep found a project PATH-param door (`/api/projects/:id`) —
+ * project as one" until an adversarial sweep found `/api/surveyor/projects/:projectId/*` —
  * five live routes, authenticateToken + a uuid SHAPE check and no authorization. The
  * claim was wrong, which is worse than the hole: it told the next reader not to look.)
  *

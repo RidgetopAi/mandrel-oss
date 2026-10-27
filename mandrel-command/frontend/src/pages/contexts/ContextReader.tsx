@@ -14,7 +14,7 @@
  *
  * ACTOR NOTE: the contexts read model does not currently serialise an `actor` (no such
  * column/metadata — verified). The chip renders ONLY when an actor is present, so it is
- * gracefully omitted today rather than faked (the data-gap policy).
+ * gracefully omitted today rather than faked (data-gap policy).
  */
 import React from 'react';
 import { Link } from 'react-router-dom';

@@ -14,7 +14,7 @@ export default defineConfig({
     // ci_* DB), and several integration tests boot a real server on a FIXED port.
     // Running test FILES in parallel forks therefore causes cross-file contention:
     // two files mutate/read the same tables in an overlapping window (order-dependent
-    // flake — the reviewer hit it on the decision tests) and two server-boot files race
+    // flake — Reviewer hit it on the decision tests) and two server-boot files race
     // for the same port. Pin file execution to a SINGLE fork so files run one-at-a-time,
     // making the suite ORDER-INDEPENDENT and contention-free. `it`/`test` cases within a
     // file still run normally; only cross-FILE parallelism is removed. Runtime cost is

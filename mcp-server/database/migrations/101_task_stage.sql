@@ -45,7 +45,7 @@
 --
 -- ═══ DEPLOY ═══
 -- CN2, migration-bearing, ROLL-FORWARD ONLY. Ships through the normal migration path
--- (mcp-server/docker-entrypoint.sh owns migrations, NOT fleet-deploy script).
+-- (mcp-server/docker-entrypoint.sh owns migrations).
 -- IDEMPOTENT: guarded ADD COLUMN, guarded ADD CONSTRAINT, CREATE OR REPLACE FUNCTION,
 -- DROP+CREATE TRIGGER, a self-limiting backfill. Re-running changes nothing.
 

@@ -1,6 +1,6 @@
 /**
  * ONE-TIME ORPHAN BACKFILL — DB-backed contract test for scripts/backfill-orphan-threads.ts
- * (branch:mandrel-reliability, task ST-6, spec §C1/C2/C3, §X4).
+ * (branch:mandrel-reliability, task ST-6 an earlier change, spec §C1/C2/C3, §X4).
  *
  * Proves the Component-C backfill against a real migrated Postgres (the CI disposable ci_*
  * DB): it enumerates a project's orphan contexts and drives the SAME ST-4 inference helper

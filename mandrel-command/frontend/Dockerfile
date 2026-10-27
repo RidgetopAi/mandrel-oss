@@ -8,9 +8,10 @@
 #   dependency tree resolved deterministically from the root lock — no backend/shared
 #   bloat. The frontend ships as a static nginx bundle, so node_modules is build-only.
 
-# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to whatever image the
-# build host has CACHED, so a build without --pull can stay on an older patch past a Node
-# security release (22.23.4). An exact tag forces the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
+# NODE BASE PINNED TO A PATCH: a floating `node:22-*` tag resolves to
+# whatever image the build host has CACHED — the fleet build does not --pull, so the
+# fleet stayed on 22.23.3 / 22.22.3 (sweep) past the 22.23.4 security release. An exact tag forces
+# the pull. Floor asserted by mcp-server/src/tests/nodeBaseImageFloor.contract.test.ts.
 # Stage 1: Dependencies stage
 FROM node:22.23.4-alpine AS deps
 RUN apk add --no-cache libc6-compat
@@ -60,6 +61,9 @@ ENV INLINE_RUNTIME_CHUNK=false
 # Scoped to THIS builder stage; the nginx runtime stage below is a separate FROM.
 # Build-arg overridable (configs-not-hardcoded): --build-arg FRONTEND_BUILD_HEAP_MB=8192
 ARG FRONTEND_BUILD_HEAP_MB=4096
+# Who a risk-gated punch card waits on (pages/punch/config.ts). Empty = the default
+# wording; an install that names its operator passes --build-arg.
+ARG VITE_PUNCH_RISK_GATE_LABEL=
 ENV NODE_OPTIONS="--max-old-space-size=${FRONTEND_BUILD_HEAP_MB}"
 RUN npm run build -w mandrel-command-frontend
 
@@ -69,7 +73,7 @@ RUN find frontend/build -name "*.map" -delete && \
     find frontend/build -name "*.txt" ! -name "robots.txt" -delete
 
 # Stage 3: Nginx production runtime
-FROM nginx:1.25-alpine AS production
+FROM nginx:1.31.8-alpine AS production
 
 # Install minimal runtime dependencies
 RUN apk add --no-cache \

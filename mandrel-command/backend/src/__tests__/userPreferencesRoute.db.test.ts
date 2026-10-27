@@ -1,6 +1,6 @@
 /**
  * ROUTE-LEVEL guard for `GET` / `PATCH /api/users/preferences`
- * (page-scope epic §A / §A5, migration 076 `admin_users.default_project_id`).
+ * (an earlier epic §A / §A5, migration 076 `admin_users.default_project_id`).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE DEFECT THIS EXISTS TO CATCH (Reviewer B2, reject round 1)
@@ -113,8 +113,8 @@ describeDb('GET/PATCH /api/users/preferences — the ROUTE, not the service', ()
 
     await pool.query(
       `INSERT INTO projects (id, name, description, status)
-       VALUES ($1,'prefroute-granted','page-scope granted','active'),
-              ($2,'prefroute-denied','page-scope PLANTED denied','active')`,
+       VALUES ($1,'prefroute-granted','41293984 granted','active'),
+              ($2,'prefroute-denied','41293984 PLANTED denied','active')`,
       [P_GRANTED, P_DENIED]
     );
     await pool.query(

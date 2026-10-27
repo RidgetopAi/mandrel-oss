@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE — do not edit. Regenerate with `npm run docs:config` (in mcp-server/). -->
 
-This page lists all 317 `MANDREL_*` settings the Mandrel server reads.
+This page lists all 327 `MANDREL_*` settings the Mandrel server reads.
 
 ## How to set a setting
 
@@ -85,6 +85,7 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_BELIEF_ENABLED` | boolean | (built-in text) | Master switch for supersession (belief) detection. When true, each stored context or decision is checked in the background against its nearest neighbours and outdated records are linked as superseded. When false nothing is adjudicated, no model is called and no cost is incurred. |
 | `MANDREL_BELIEF_PAIR_EXCLUDE_AUTO_RECORD_KINDS` | list | `tick-proposal, dispatch-proof, pick-log, gate-log` | Machine-written record kinds (read from the record's metadata kind) that are never compared as either side of a candidate pair. Empty disables the filter. |
 | `MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES` | list | (built-in list of 7) | Records whose content starts with one of these prefixes are never compared as either side of a candidate pair. This keeps repetitive machine-written records out of adjudication. Empty disables the filter. |
+| `MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA` | list | (empty list) | Extra content prefixes, comma-separated, added to MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES: records your own publishers write on a fixed template, which supersession should never compare. Empty adds nothing. |
 | `MANDREL_BELIEF_PAIR_MAX_COSINE` | number | `0.95` | Candidate pairs more similar than this are dropped before adjudication, because near-identical restatements produce false supersession verdicts. |
 | `MANDREL_BELIEF_PAIR_MIN_COSINE` | number | `0.6` | A neighbour must be at least this similar (cosine) to a new record to be compared with it. Below this the pair is never sent to the model. |
 | `MANDREL_BELIEF_PAIR_TOP_K` | integer | `8` | At most this many of the most similar same-project records are compared with each new record. |
@@ -131,8 +132,8 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_RECALL_CONCISE_MAXLEN` | integer | `500` | Characters of each record's content returned when a caller asks for the concise response format. |
 | `MANDREL_RECALL_DEFAULT_FORMAT` | one of concise \| detailed | `detailed` | Response format used when the caller does not choose one: detailed returns full records, concise returns truncated content. |
 | `MANDREL_RECORD_HEADLINE_MAX_CHARS` | integer | `180` | Maximum length of the one-line headline shown for a record, including prefix and ellipsis. |
-| `MANDREL_SEARCH_ABSENT_TERM_ORDINALS_ORDINARY` | boolean | `true` | Ordinals ARE ordinary words. |
-| `MANDREL_SEARCH_ABSENT_TERM_TOLERATED_ABSENT` | integer | `1` | Multi-word tolerance — one unfamiliar token does not veto a question whose other terms match. |
+| `MANDREL_SEARCH_ABSENT_TERM_ORDINALS_ORDINARY` | boolean | `true` | Treat ordinals such as 7th or 22nd as ordinary words, so a date ordinal the corpus never contains does not empty a search. |
+| `MANDREL_SEARCH_ABSENT_TERM_TOLERATED_ABSENT` | integer | `1` | How many unfamiliar names (absent from every record and not ordinary English) a search may contain and still return results, provided enough of its other words match (MANDREL_SEARCH_ABSENT_TERM_TOLERATED_MIN_MATCHED). More than this and the search returns empty; 0 means no tolerance (any unfamiliar name empties the search). |
 | `MANDREL_SEARCH_ABSENT_TERM_TOLERATED_MIN_MATCHED` | integer | `3` | How many of a question's other content terms must occur in the corpus before one absent term is tolerated. |
 | `MANDREL_SEARCH_ABSENT_TERM_VETO` | boolean | `true` | Return no results when the query contains a term that appears in no record of the project and is not an ordinary English word, rather than returning loosely related records. |
 | `MANDREL_SEARCH_IDENTIFIER_PRECEDENCE` | boolean | `true` | Rank records that contain an exact identifier you typed above every record that does not, so identifier hits are not diluted by prose ranking. |
@@ -140,7 +141,8 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_SEARCH_LEXICAL_QUERY_MAX_CHARS` | integer | (derived from other settings) | Longest search query, in characters, that is sent to keyword search. Defaults to the general search query limit. |
 | `MANDREL_SEARCH_NEAR_MISS_LONG_DISTANCE` | integer | `2` | Largest edit distance still counted as a near-miss for a term at or above the long length. |
 | `MANDREL_SEARCH_NEAR_MISS_LONG_LENGTH` | integer | `9` | Term length at which the larger near-miss edit-distance allowance starts. |
-| `MANDREL_SEARCH_NEAR_MISS_MIN_LENGTH` | integer | `5` | Near-miss spelling — an absent term within a small (Damerau-Levenshtein) edit distance of a word in the retrieved records is a misspelling of a corpus term, not an absent thing. |
+| `MANDREL_SEARCH_NEAR_MISS_MIN_LENGTH` | integer | `5` | Shortest word, in characters, that can count as a misspelling of a word in the retrieved records rather than as an unfamiliar name. Shorter words are within one edit of too many others. |
+| `MANDREL_SEARCH_NEAR_MISS_PROJECT_FALLBACK` | boolean | `true` | Before returning an empty result, also check the unfamiliar words against every word in the project (not only the retrieved records) for a near-miss spelling. Costs one scan of the project's search index, only on searches that would otherwise come back empty. |
 | `MANDREL_SEARCH_NEAR_MISS_SHORT_DISTANCE` | integer | `1` | Largest edit distance still counted as a near-miss for a term shorter than the long length. |
 | `MANDREL_SEARCH_PROSE_MATCH_MODE` | one of any \| all \| off | `all` | How prose queries match: any returns records containing any query term (higher recall), all requires every term, off disables the prose channel. |
 | `MANDREL_SEARCH_RRF_K` | integer | `60` | Smoothing constant k in reciprocal rank fusion, the formula that merges keyword and semantic rankings. Larger values flatten the difference between top ranks. |
@@ -244,6 +246,7 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_HANDOFF_HEAD_REFUSAL_REMEDY` | string | (built-in text) | Repair instructions shown when a handoff chain is ambiguous, for example after a fork. |
 | `MANDREL_HANDOFF_LANE_TAG_PREFIX` | string | `ws:` | Tag prefix that marks a handoff's lane. |
 | `MANDREL_HANDOFF_MODE_VOCABULARY` | string | `facilitate, define-to-lock, build, debug, research` | Comma-separated handoff modes the server recognises without comment. Any other mode is stored too, with a note. An empty value recognises none. |
+| `MANDREL_HANDOFF_SUPERSEDES_TAG_PREFIX` | string | `supersedes:` | Tag prefix naming an explicit handoff predecessor. |
 | `MANDREL_TAG_COLLISION_WRITE_MAX_EXISTING` | integer | `3` | How many existing spellings one tag-collision warning names before it summarises. |
 | `MANDREL_TAG_COLLISION_WRITE_MAX_WARNINGS` | integer | `3` | How many colliding tags one write reports before it only counts the rest. |
 | `MANDREL_TAG_COLLISION_WRITE_WARNING_ENABLED` | boolean | `true` | Warn when a task or decision is written with a tag spelled differently from an existing tag. |
@@ -285,6 +288,9 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | Setting | Type | Default | Description |
 | --- | --- | --- | --- |
 | `MANDREL_ADVERTISE_OUTPUT_SCHEMAS` | boolean | `true` | Include each tool's output schema in the tool list. Turn off to shrink the list by about 45%; results are unaffected. |
+| `MANDREL_DASHBOARD_SESSION_SWEEP_INTERVAL_MINUTES` | number | `60` | Minutes between sweeps that delete expired dashboard sign-in sessions (the sweep itself is on unless MANDREL_DASHBOARD_SESSION_SWEEP_ENABLED is false). |
+| `MANDREL_DASHBOARD_SIGNIN_RATE_MAX` | number | `10` | Failed dashboard sign-in attempts allowed per email and client address within MANDREL_DASHBOARD_SIGNIN_RATE_WINDOW_MS before further attempts get 429. Successful sign-ins never count. |
+| `MANDREL_DASHBOARD_SIGNIN_RATE_WINDOW_MS` | number | (built-in text) | Length of the window, in milliseconds, over which failed dashboard sign-ins are counted against MANDREL_DASHBOARD_SIGNIN_RATE_MAX. |
 | `MANDREL_FLAT_TOOLS` | one of accept \| reject | `accept` | With the gateway tool surface, whether the individual (non-gateway) tool names are still accepted. Three flat tools (recall_thread, smart_search, get_recommendations) are always accepted. |
 | `MANDREL_LAZY_CORE_ENUM_MAX` | integer | `12` | Largest closed set of values (an enum) that the lazy tool list spells out in a tool's schema. Longer sets are listed by name only; ask discover.explain for the values. |
 | `MANDREL_OAUTH_ALLOW_SIGNUP` | boolean | `false` | Let anyone create an account on the OAuth server's email-and-password endpoint. Off by default, so only existing accounts can sign in. |
@@ -302,6 +308,9 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_OAUTH_RESOURCE` | string | (built-in text) | Exact public URL of the /mcp endpoint, used as the token audience. Defaults to the issuer followed by /mcp. |
 | `MANDREL_OAUTH_SECRET` | string | (derived from other settings) | Secret used to sign and encrypt OAuth tokens. Required in production when OAuth is enabled; generate one with `openssl rand -hex 32`. Falls back to BETTER_AUTH_SECRET if that is set. |
 | `MANDREL_OAUTH_TRUSTED_ORIGINS` | list | (derived from other settings) | Origins the OAuth library trusts for cookies and redirects. Defaults to the issuer plus the CORS origins. |
+| `MANDREL_SET_PASSWORD_STATUS_RATE_MAX` | number | `30` | Calls per client allowed to the set-password page's status check within MANDREL_SET_PASSWORD_STATUS_RATE_WINDOW_MS before it answers 429. |
+| `MANDREL_SET_PASSWORD_STATUS_RATE_WINDOW_MS` | number | `60000` | Length of the window, in milliseconds, for MANDREL_SET_PASSWORD_STATUS_RATE_MAX. |
+| `MANDREL_SET_PASSWORD_TTL_HOURS` | number | `48` | How many hours a newly minted set-password link keeps working. |
 | `MANDREL_TEXT_ANTI_ABUSE_CEILING` | integer | `5000000` | Largest size, in characters, accepted for any unbounded text field such as record content. |
 | `MANDREL_TOOL_SURFACE` | one of legacy \| gateway | `legacy` | Which tool surface the server advertises: legacy lists every tool individually; gateway groups them into a small set of gateway tools. |
 | `MANDREL_TOOLLIST_MODE` | one of lazy \| full | `lazy` | With the gateway surface, how tools are advertised: lazy sends a minimal action list per gateway and full sends complete schemas. |
@@ -315,6 +324,7 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_EMBED_ALERT_ENABLED` | boolean | `true when NODE_ENV=production, otherwise false` | Send an alert when embedding keeps failing. On by default only when NODE_ENV=production; failures are still logged and recorded either way. |
 | `MANDREL_EMBED_ALERT_NOTIFY_SCRIPT` | string | (empty) | Path of a script run to deliver the embedding-failure alert. Empty means alerts are logged only. |
 | `MANDREL_EMBEDDER` | one of minilm \| gemma | `minilm` | Which embedding model builds the search index: minilm is built in and runs offline, gemma runs through an Ollama server. |
+| `MANDREL_EMBEDDING_VERIFY_STARTUP` | one of warn \| strict | `strict` | What the server does when the embedding model cannot load or be reached at startup: strict (the default) refuses to start; warn logs one loud error line and starts anyway. Mock embeddings are used only with MANDREL_EMBEDDINGS_ALLOW_MOCK. |
 | `MANDREL_EMBEDDINGS_ALLOW_MOCK` | boolean | `false` | Mock embeddings are allowed only on an explicit opt-in: MANDREL_EMBEDDINGS_ALLOW_MOCK=true, or running under the test runner (vitest / node env=test). |
 | `MANDREL_GEMMA_COLUMN` | string | `embedding_gemma` | Gemma embedder (MANDREL_EMBEDDER=gemma): database column that stores its vectors. |
 | `MANDREL_GEMMA_DOC_PREFIX` | string | `title: none \| text: ` | Gemma embedder (MANDREL_EMBEDDER=gemma): text prepended to every document before it is embedded. |

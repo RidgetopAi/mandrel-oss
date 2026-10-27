@@ -49,8 +49,8 @@ function parseLockPid(raw: string): number | null {
  * a RECYCLED pid: inside a container the PID namespace resets on restart, so the old
  * holder's pid (e.g. 48) can be reassigned to a brand-new, genuinely-live process.
  * process.kill(48,0) then succeeds and the old pid-only logic falsely concluded "still
- * running" → singleton_lock_failed → 502 "no session" storm (incident 2026-06-27,
- * an earlier decision). The start-time is the kernel-assigned identity that does NOT
+ * running" → singleton_lock_failed → 502 "no session" storm (incident 2026-06-27).
+ * The start-time is the kernel-assigned identity that does NOT
  * survive that reset, so a mismatch proves the pid was recycled → stale.
  *
  * `startTime` is null when we cannot disambiguate: a legacy single-`<pid>` lock, a

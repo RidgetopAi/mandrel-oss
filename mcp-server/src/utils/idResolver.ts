@@ -3,7 +3,7 @@
  *
  * THE CLASS THIS FIXES: every tool's output DISPLAYS the full UUID, but agents and
  * humans routinely reference a record by its leading 8-hex-char prefix (the "short id"
- * — the form Mandrel task/decision references use, e.g. `2b3c4d5e`). The id-taking
+ * — the form Mandrel task/decision references use, e.g. an earlier change). The id-taking
  * mutate/detail tools (task_update, task_details, decision_update, decision_get) used
  * to require a full UUID and reject that prefix, so a tool-only agent literally could
  * not resolve a short id → full UUID through the public tool surface. This module
@@ -65,7 +65,7 @@ export function isFullUuid(value: string): boolean {
 export function isUuidOrShortId(value: string): boolean {
   if (typeof value !== 'string') return false;
   if (isFullUuid(value)) return true;
-  // Strip hyphens for the length/hex check so `2b3c4d5e` and `13-1e-f0-54...` both pass,
+  // Strip hyphens for the length/hex check so an earlier change and `13-1e-f0-54...` both pass,
   // but reject anything containing a non-hex char.
   const hexOnly = value.replace(/-/g, '');
   return hexOnly.length >= MIN_SHORT_ID_LENGTH && /^[0-9a-f]+$/i.test(hexOnly);
@@ -185,7 +185,7 @@ export async function resolveEntityId(
   // Full UUID: canonical form, pass straight through (back-compat).
   if (isFullUuid(rawId)) return rawId;
 
-  // ── SHAPE FLOOR AT THE CHOKE POINT (the reviewer follow-up) ──────────────
+  // ── SHAPE FLOOR AT THE CHOKE POINT (Reviewer follow-up) ──────────────
   // This check used to live ONLY in the zod layer (isUuidOrShortId), so every ROUTE argument
   // was validated but this resolver — which EVERY path funnels through — enforced nothing.
   // The tag path never touches zod: autoMintFromTags reads raw strings out of `tags` and
@@ -532,7 +532,7 @@ export function extractIdTokens(query: string | undefined): string[] {
  * MATCHING IS DELIBERATELY NARROW — anchored at the start AND requiring the remainder to be
  * a single whitespace-free token. That is what keeps ordinary prose out of the guard: a
  * genuine search for `type: what does this field mean` has spaces in the value and is NOT
- * caught, while the actual misuse shape (`id:3c4d5e6f`, `tags:["ref:x"]`) always is. A false
+ * caught, while the actual misuse shape (`id:an earlier change`, `tags:["ref:x"]`) always is. A false
  * positive here would block a legitimate search, so the guard errs toward silence.
  *
  * Tag-grammar prefixes (`ref:`, `task:`, `decision:`, …) are NOT reservable on ANY tool —
@@ -559,7 +559,7 @@ export function reservedArgPrefixInQuery(
  * Does `q` have the shape `<name>:<single whitespace-free token>`? Case-insensitive on the
  * NAME, which is compared LITERALLY.
  *
- * NO REGEX IS BUILT FROM `name` (the reviewer REJECT). The previous version
+ * NO REGEX IS BUILT FROM `name` (Reviewer REJECT). The previous version
  * interpolated the name into `new RegExp(...)` unescaped, so an env-supplied metacharacter
  * name (`'[a-z]+'`) matched as a PATTERN and reserved `ref:` — breaking the boot ritual the
  * literal-string protection was supposed to guarantee — while a malformed one (`'['`) threw

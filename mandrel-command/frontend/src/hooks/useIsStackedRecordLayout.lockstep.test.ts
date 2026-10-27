@@ -1,5 +1,6 @@
 /**
- * RECORD_LAYOUT_STACK_MAX_WIDTH — CSS lockstep guard ( * clause 3; round-1 REJECTION on this same punch — the critic measured this exact gap).
+ * RECORD_LAYOUT_STACK_MAX_WIDTH — CSS lockstep guard
+ * (clause 3; round-1 REJECTION on this same punch — the critic measured this exact gap).
  *
  * WHY THIS FILE EXISTS: `RECORD_LAYOUT_STACK_MAX_WIDTH` (useIsStackedRecordLayout.ts) and
  * the `960px` literal in Contexts.module.css / Decisions.module.css are TWO INDEPENDENT

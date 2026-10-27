@@ -69,7 +69,7 @@ class TasksRoutes {
 
   /**
    * Resolve the ATTRIBUTION actor for a claim — through the ONE actor choke point,
-   * `deriveActor` (closing an earlier note).
+   * `deriveActor` (an earlier task / an earlier decision, closing an earlier context).
    *
    * WHAT THIS LINE USED TO BE, AND WHY IT WAS WRONG:
    *   normalizeActor(args.actor) ?? normalizeActor(context?.actor) ?? ACTOR_ANONYMOUS
@@ -82,7 +82,7 @@ class TasksRoutes {
    * It also FALSIFIED the composite's namespace invariant, because `normalizeActor` passes the
    * delimiter through by design: a caller could send `actor: '<victim-sub>/<handle>'` and write
    * the VICTIM'S composite actor into `claim_actor` — cross-principal impersonation created by
-   * the very feature that promises it cannot happen (the reviewer probe, 2026-07-25).
+   * the very feature that promises it cannot happen (Reviewer probe, 2026-07-25).
    *
    * NOW: `refineActor(<the actor derived at the edge>, <caller-declared handle>)`. The declared
    * handle is delimiter-sanitized and de-prioritised — with composites enabled it replaces the
@@ -111,7 +111,7 @@ class TasksRoutes {
   }
 
   /**
-   * Fail LOUD if the resolved attribution actor cannot fit `tasks.claim_actor` (the reviewer N2).
+   * Fail LOUD if the resolved attribution actor cannot fit `tasks.claim_actor` (Reviewer N2).
    *
    * The caller-supplied `actor` argument is zod-capped at the column width, but the DERIVED
    * actor is not — and a composite is `<sub>/<handle>`, so a long OAuth sub plus a handle can
@@ -638,14 +638,14 @@ class TasksRoutes {
               // array (never absent) — an absent key would leave a JSON reader unable to tell
               // "no warnings" from "this build does not report them".
               tagWarnings: tagNoteLines,
-              // the edges this task was born with, per source, plus every ref that
+              // an earlier change: the edges this task was born with, per source, plus every ref that
               // resolved to nothing. Mirrors how context_store/decision_record report theirs.
               edgesMinted,
               mintedBySource: {
                 tags: tagMint.minted,
                 dependencies: depMint.minted,
                 links: linkResult.minted,
-                // the declared `parentTaskId` param's structural subtask_of edge.
+                // an earlier change: the declared `parentTaskId` param's structural subtask_of edge.
                 parent: parentMint.minted,
                 // PHASE 1: positional edges (membership/refs — never subtask_of).
                 positional: positionalMintedCount,
@@ -951,7 +951,7 @@ class TasksRoutes {
         // short ids into the `dependencies uuid[]` column is the exact cast-error defect an earlier task
         // fixed on the create path; this path must not reintroduce it.
         resolvedUpdateDependencies,
-        // the append affordance. Appends to metadata.noteLog; never touches
+        // an earlier change — the append affordance. Appends to metadata.noteLog; never touches
         // description.
         { notes: args.notes },
         // Batch-5 lane K — RE-CLASSIFY. `type` is validated at the edge against the same
@@ -1045,7 +1045,7 @@ class TasksRoutes {
       if (args.assignedTo !== undefined) applied.push(`Assigned To: ${args.assignedTo}`);
       // T1 item 5: title/description/tags edits.
       if (args.title !== undefined) applied.push(`Title: ${rawValue(args.title)}`);
-      // say WHERE the replaced text went, at the moment of need. "Description
+      // an earlier change: say WHERE the replaced text went, at the moment of need. "Description
       // updated" alone is what let a full replace read as a harmless edit. The refusal IS
       // the instruction — and so is the confirmation.
       if (args.description !== undefined) {

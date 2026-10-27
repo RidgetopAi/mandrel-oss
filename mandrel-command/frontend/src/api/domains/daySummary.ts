@@ -4,7 +4,7 @@
  *
  * SCOPE PRECEDENCE (load-bearing): the endpoint reads the `project` QUERY param
  * ('all' or a uuid) and treats it as AUTHORITATIVE — the controller prefers the
- * query param over the auto-attached `X-Project-ID` header (backend commit 1e8f00d),
+ * query param over the auto-attached `X-Project-ID` header (backend commit 1e8af00),
  * so the Calendar's own filter always wins over the globally selected project. In
  * particular `project=all` correctly means unscoped even while a global project is
  * header-selected.
@@ -12,7 +12,7 @@
  * `project` is sent RAW — the literal `'all'` included. Turning `'all'` into "omit the
  * param" would change its meaning from EXPLICITLY UNSCOPED to "scoped by the header".
  *
- * ── THE `config` PARAMETER IS REQUIRED, ON PURPOSE (page-scope epic §A1) ────────────────
+ * ── THE `config` PARAMETER IS REQUIRED, ON PURPOSE (an earlier epic §A1) ────────────────
  * The hand-rolled `X-Project-ID` this used to build is now the shared primitive's job:
  * the Day summary inherits Calendar's selection and is called with that page's
  * `usePageProject().scope()`. Required, not optional, so an unscoped call site cannot

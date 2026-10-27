@@ -2,7 +2,7 @@
 # =============================================================================
 # compose-code-default-agreement.test.sh
 # -----------------------------------------------------------------------------
-# Guards a DIFFERENT property from its sibling compose-flag-declarations suite.
+# Guards a DIFFERENT property from a compose flag-declaration check.
 #
 #   sibling  : "is this flag DECLARED in the tracked base compose, and does the
 #              declaration still render the value we pinned by hand?"
@@ -51,7 +51,7 @@
 #   4. `env_file:` / `--env-file` values, and the gitignored PER-TENANT OVERLAYS
 #      (docker-compose.<handle>.yml). Not in the repo; invisible by construction. This
 #      is the biggest hole and it is the reason the base declaration must exist at all.
-#   5. Anything OUTSIDE compose: a non-compose deployment's env file carries its
+#   5. Anything OUTSIDE compose: systemd prod (/etc/app/prod/mcp.env) carries its
 #      own values and is not a file in this repo.
 #   6. On the CODE side the extraction is per-row REGEX, not a TypeScript parse. A var
 #      read through an indirection this file's row does not name — a helper, a computed
@@ -189,7 +189,7 @@ DEFAULT_CONTRACT=(
   # deliberately so — it is harmless, and removing it is a separate decision from
   # removing its ability to abort a boot.
   # ---------------------------------------------------------------------------
-  "mcp-server~DB_LOG_LEVEL~DB_LOG_LEVEL~EXEMPT~~~value is never read by ANY code in the package (1 grep hit, its own example line); de-required 2026-08-26 so it is no longer a boot contract either — no code literal exists to compare against"
+  "mcp-server~DB_LOG_LEVEL~DB_LOG_LEVEL~EXEMPT~~~value is never read by ANY code in the package (1 grep hit, its own example line); de-required 2026-08-26 an earlier task, so it is no longer a boot contract either — no code literal exists to compare against"
   "mcp-server~COMMAND_BASE_URL~COMMAND_BASE_URL~PASSTHROUGH~~~empty is the point: commandUrlConfig.ts:95-106 then derives this instance's OWN origin from MCP_ALLOWED_HOSTS"
   # Fail-closed gate: the default is expressed as an early return, not a literal
   # argument. The regex pins that return value, which IS the default.
@@ -202,9 +202,8 @@ DEFAULT_CONTRACT=(
   # ---------------------------------------------------------------------------
   # DIVERGES, deliberately (Reviewer ruling 2): the code default is
   # NODE_ENV==='production' — TRUE inside every fleet container — but tenants must not
-  # page Operator's phone about their own quiet graphs (per-tenant alerting is future
-  # work), so the base compose pins them OFF explicitly. Prod re-enables in
-  # docker-compose.prod file ("true" + the notify delivery mounts). The regex pins the
+  # page the operator's phone about their own quiet graphs (per-tenant alerting is future
+  # work), so the base compose pins them OFF explicitly. The regex pins the
   # code-side expression so a future literal-true default here reclassifies loudly.
   # ---------------------------------------------------------------------------
   "mcp-server~MANDREL_PROVENANCE_ALARM_ENABLED~MANDREL_PROVENANCE_ALARM_ENABLED~DIVERGES~mcp-server/src/config/provenanceConfig.ts~alarmEnabled: envBool\\('MANDREL_PROVENANCE_ALARM_ENABLED', (.*)\\),~process.env.NODE_ENV === 'production'"
@@ -226,8 +225,7 @@ DEFAULT_CONTRACT=(
   # honest classification would have been EXEMPT, i.e. the hole. Two guards, one root cause.
   "mcp-server~MANDREL_ATTRIBUTION_NOTICE_ENABLED~MANDREL_ATTRIBUTION_NOTICE_ENABLED~CODE~mcp-server/src/config/attributionNoticeConfig.ts~envBool\\('MANDREL_ATTRIBUTION_NOTICE_ENABLED', ([a-z]*)\\)~"
   # The other five are empty passthroughs. envStr/envInt fold '' into the fallback
-  # (attributionNoticeConfig.ts), which is exactly what docker-compose.prod file's inline
-  # empty declarations depend on and what src/tests/attributionNotice.unit.test.ts asserts
+  # (attributionNoticeConfig.ts), which is exactly what inline empty declarations depend on and what src/tests/attributionNotice.unit.test.ts asserts
   # by loading the module fresh with all six set to "" and comparing to all six absent.
   "mcp-server~MANDREL_ATTRIBUTION_SUGGESTED_ACTOR~MANDREL_ATTRIBUTION_SUGGESTED_ACTOR~PASSTHROUGH~~~empty is the point: a multi-user instance does not know the caller's name, so the code default (null) renders the honest <your-name> placeholder; a single-user tenant sets a real name in its env file"
   "mcp-server~MANDREL_ATTRIBUTION_NOTICE_SETUP_URL~MANDREL_ATTRIBUTION_NOTICE_SETUP_URL~PASSTHROUGH~~~empty so the customer-facing URL has ONE source (DEFAULT_ATTRIBUTION_SETUP_URL); a literal here would fork the link into two tracked files"
@@ -237,7 +235,7 @@ DEFAULT_CONTRACT=(
   # ---------------------------------------------------------------------------
   # EXCEPTION RESOLVED 2026-07-30. This was the file's one deliberate
   # DIVERGES row: compose materialised `shadow` while the code default was `enforce`,
-  # justified as a soak window. Operator approved enforcing, the soak ended, and the
+  # justified as a soak window. The operator approved enforcing, the soak ended, and the
   # declaration became a PASSTHROUGH — so there is no longer a divergence to justify
   # and the old justification is GONE rather than left standing. A stale rationale for
   # a resolved divergence is the drift this gate exists to kill.
@@ -302,12 +300,12 @@ DEFAULT_CONTRACT=(
 
   # --- one-compose fold: declarations moved from the 7 gitignored
   # --- per-tenant overrides into the tracked base, so they enter this contract ----
-  "mcp-server~MCP_AUTH_TOKEN~MCP_AUTH_TOKEN~PASSTHROUGH~~~real credential (static bridge bearer); empty means 'no static token configured' and a deploy preflight is expected to fail loud for real instances"
+  "mcp-server~MCP_AUTH_TOKEN~MCP_AUTH_TOKEN~PASSTHROUGH~~~real credential (static bridge bearer); empty means 'no static token configured'"
   # mcp-server~MANDREL_JWT_SECRET row REMOVED: the Option-1 shared
   # secret is retired — the command backend keeps the only copy; the mcp-server's
   # browser-JWT verify path is intentionally unavailable (bridgeAuthConfig
   # commandJwtSecret() → null). Re-adding the declaration re-opens F-01's posture.
-  "mcp-server~MCP_ALLOWED_HOSTS~MCP_ALLOWED_HOSTS~PASSTHROUGH~~~every tenant env sets it explicitly (measured across all 7, 2026-08-03) and the hosted provisioner mints it; empty means the code's own host-check default applies"
+  "mcp-server~MCP_ALLOWED_HOSTS~MCP_ALLOWED_HOSTS~PASSTHROUGH~~~set per instance in its env file; empty means the code's own host-check default applies"
   # DIVERGES, deliberately: the bundled install defaults to the 11-tool gateway
   # surface the README describes; the code default stays `legacy` so a bare `node` start and the
   # existing tenant overlays keep today's flat surface. The regex pins the code side.
@@ -336,22 +334,35 @@ DEFAULT_CONTRACT=(
   # loudest state, MEASURED 2026-08-29 across the fleet). an earlier Task moved the CODE toward
   # compose: with MANDREL_BELIEF_ENABLED unset the hook now turns on only when the configured
   # provider's credential is present, and the no-credential default is the named constant
-  # BELIEF_ENABLED_NO_CREDENTIAL_DEFAULT = false. Compose no longer declares MANDREL_BELIEF_ENABLED
-  # at all (a forced `false` defeated the key-derived default), so it has no row here;
-  # scripts/test/supersession-compose-forwarding.test.sh pins that it is not fixed to false.
+  # BELIEF_ENABLED_NO_CREDENTIAL_DEFAULT = false — which is what compose declares. (Compose passes
+  # credentials through as empty by default, so the two sides now agree.)
+  # an earlier Task made it a PASSTHROUGH: a pinned compose `false` defeated the key-derived default
+  # for a self-hoster who sets a key (mandrel-oss supersession-compose-forwarding.test.sh).
+  "mcp-server~MANDREL_BELIEF_ENABLED~MANDREL_BELIEF_ENABLED~PASSTHROUGH~~~envBool folds '' into the code default — off unless an adjudicator credential is present (BELIEF_ENABLED_NO_CREDENTIAL_DEFAULT)"
   "mcp-server~MANDREL_BELIEF_ADJUDICATOR_PROVIDER~MANDREL_BELIEF_ADJUDICATOR_PROVIDER~PASSTHROUGH~~~a provider only means anything on an instance that is ON, and there is exactly one place that posture is written down (that instance's env file); envStr folds '' into the code default so this line states no opinion"
-  "mcp-server~ANTHROPIC_API_KEY~ANTHROPIC_API_KEY~PASSTHROUGH~~~real credential: interpolated passthrough only, never a literal in a tracked file. Source name is the documented .env name so docs/manual/supersession.md works as written"
-  "mcp-server~GROQ_API_KEY~MANDREL_BELIEF_GROQ_API_KEY~PASSTHROUGH~~~real credential; same shell-precedence reasoning as ANTHROPIC_API_KEY above"
-  "mcp-server~SUBQ_API_KEY~SUBQ_API_KEY~PASSTHROUGH~~~real credential; same sourcing as ANTHROPIC_API_KEY above"
+  "mcp-server~ANTHROPIC_API_KEY~ANTHROPIC_API_KEY~PASSTHROUGH~~~real credential: interpolated passthrough only, never a literal in a tracked file. Same source name as the container name, the self-hoster's .env contract; compose resolves interpolation from the SHELL before --env-file, so run it from a shell that does not export another instance's key"
+  "mcp-server~SUBQ_API_KEY~SUBQ_API_KEY~PASSTHROUGH~~~real credential; same contract and same ambient scrub as ANTHROPIC_API_KEY above"
+  "mcp-server~GROQ_API_KEY~MANDREL_BELIEF_GROQ_API_KEY~PASSTHROUGH~~~real credential; MANDREL_BELIEF_-prefixed source name (no self-hoster doc names Groq), and covered by the same ambient scrub"
+  # four passthroughs so a deployment's own value reaches the server; the
+  # code defaults are the shipped ones and an empty interpolation states no opinion.
+  "mcp-server~MANDREL_BELIEF_TIER1_PROVIDER~MANDREL_BELIEF_TIER1_PROVIDER~PASSTHROUGH~~~empty folds into BELIEF_TIER1_DEFAULT_PROVIDER (envStr); an instance running tiered on another provider names it in its env file"
   "mcp-server~MANDREL_BELIEF_DAILY_SPEND_CAP_USD~MANDREL_BELIEF_DAILY_SPEND_CAP_USD~PASSTHROUGH~~~empty folds into the code default of 2 (beliefCostConfig.ts envNonNeg); forwarded so the cap set in .env reaches the server"
+  "mcp-server~MANDREL_EMBEDDING_VERIFY_STARTUP~MANDREL_EMBEDDING_VERIFY_STARTUP~PASSTHROUGH~~~empty folds into EMBEDDING_VERIFY_STARTUP_DEFAULT (envStr); forwarded so an instance that must boot with its embedder down can set warn"
+  "mcp-server~MANDREL_HANDOFF_DEFAULT_LANE~MANDREL_HANDOFF_DEFAULT_LANE~PASSTHROUGH~~~empty folds into DEFAULT_HANDOFF_DEFAULT_LANE (handoffLaneConfig envNonEmpty treats '' as unset)"
+  "mcp-server~MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA~MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA~PASSTHROUGH~~~envStrList of '' is the empty list, which is the code default — nothing extra excluded"
   # DIVERGES, deliberately: the compose dev default keeps the HISTORICAL base-compose
   # literal (13000 = the dev frontend HOST port, 3000 = the container port) while the
-  # code default is 3000,3001. Every real tenant sets CORS_ORIGIN in its env file
-  # (written by the hosted provisioner), so this literal only
+  # code default is 3000,3001. A real instance sets CORS_ORIGIN in its env file, so this literal only
   # ever reaches a bare dev stack — where 13000 is the port the browser actually uses.
   # Aligning either side is a behaviour decision, not a drift fix; pinned from both ends.
   "mandrel-command-backend~CORS_ORIGIN~CORS_ORIGIN~DIVERGES~mandrel-command/backend/src/config/environment.ts~process\\.env\\.CORS_ORIGIN \\|\\| '([^']*)'~http://localhost:3000,http://localhost:3001"
-  "mandrel-command-backend~FRONTEND_URL~FRONTEND_URL~EXEMPT~~~value is never read by backend code (grep process.env.FRONTEND_URL -> 0 hits, measured 2026-08-03); de-required from backend/.env.example 2026-08-26 so no longer a boot contract — it is minted per tenant by the hosted provisioner and read by nobody"
+  # DIVERGES, deliberately: the code default (parseTrustProxy('') ->
+  # 'loopback', environment.ts) is right for a single loopback nginx. Every tenant sits behind THREE proxies (host
+  # nginx -> Traefik -> tenant frontend nginx), so under 'loopback' every client shares one
+  # per-IP rate-limit bucket. The tenant compose pins 3. Pinned from both ends: change the
+  # code default or the compose default and this row goes RED for a human to re-justify.
+  "mandrel-command-backend~TRUST_PROXY~TRUST_PROXY~DIVERGES~mandrel-command/backend/src/config/environment.ts~if \\(value === ''\\) return '([^']*)';~loopback"
+  "mandrel-command-backend~FRONTEND_URL~FRONTEND_URL~EXEMPT~~~value is never read by backend code (grep process.env.FRONTEND_URL -> 0 hits, measured 2026-08-03); de-required from backend/.env.example 2026-08-26 an earlier task, so no longer a boot contract — it is set per instance and read by nobody"
 )
 # ↑ ANTI-SHRINK FLOOR, co-located on the table it guards (same posture as the sibling
 # test). It is also ANCHORED TO THE ARTIFACT below: the floor must be >= the number of
@@ -375,7 +386,16 @@ DEFAULT_CONTRACT=(
 # Floor 64 -> 70 (attribution notice): six MANDREL_ATTRIBUTION_* declarations added with
 # their rows (1 CODE + 5 PASSTHROUGH). Raised because the population GREW by six — the
 # guard correctly reported the floor had fallen below the artifact it guards.
-DEFAULT_CONTRACT_FLOOR=71
+# Floor 70 -> 71: mandrel-command-backend TRUST_PROXY declaration added
+# with its DIVERGES row (tenant 3 hops vs code 'loopback'). Raised because the population
+# GREW by one.
+# Floor 71 -> 75: four PASSTHROUGH declarations added (belief tier-1
+# provider, daily spend cap, embedder startup check, handoff default lane). Raised because
+# the population GREW by four.
+# Floor 75 -> 76 (round 2): the belief extra-exclusion-prefix passthrough.
+# Floor 76 -> 77: the SUBQ_API_KEY passthrough. Raised because the
+# population GREW by one.
+DEFAULT_CONTRACT_FLOOR=77
 
 # =============================================================================
 # THE CHECKER — written to a temp file so the mutation probes in section 4 can run

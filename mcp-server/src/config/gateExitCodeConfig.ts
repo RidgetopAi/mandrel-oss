@@ -21,8 +21,7 @@
  * same rule applied to the gate's own three-state contract.
  *
  * ═══ THE NAMESPACE IS A CONTRACT, NOT A GUESS ════════════════════════════════════════
- * stated verbatim in scripts/ci-clean-gate.sh's header and consumed by
- * gate-shadow script:
+ * stated verbatim in the clean gate's header:
  *     0  GREEN         — MEASURED: the CI gate ran in the clean checkout and passed
  *     1  RED           — MEASURED: the CI gate ran in the clean checkout and failed
  *     2  HARNESS ERROR — "I could not measure." NOT a verdict on the commit
@@ -50,7 +49,7 @@
  * corpus is the same doctrine, not a departure from it.
  *
  * ⚠️ `refToGate` IS DELIBERATELY NOT AN ALIAS. It means "the ref that SHOULD be gated"
- * (measured: "merge of batch10/belief-failopen@<sha> into mandrel main") — an
+ * (measured: "merge of batch10/belief-failopen@9305f00d into mandrel main") — an
  * intention, not a ref a run executed on. Rendering it as the latter is exactly the
  * substitution this task exists to stop. `refChecked` is a boolean and is not a ref either.
  *
@@ -116,11 +115,9 @@ export const GATE_RC_LABELS: Readonly<Record<number, string>> = Object.freeze({
  * that is NOT part of the 0/1/2/3 verdict namespace and the one a reader most needs warned
  * about: a static GREEN is a 48-of-65 subset and is NOT the ship condition.
  *
- * ⚠️ IT HAS A SECOND SOURCE, and this constant is the DEPENDENT one:
- * scripts/lib/gate-stages.sh:73 `GATE_RC_STATIC_GREEN="${GATE_RC_STATIC_GREEN:-40}"`.
- * A hand-copied number in a second language is exactly the drift this repo keeps paying for,
- * so it is not left to a comment: gateExitCodeRendered.contract.test.ts READS that shell file
- * and goes RED if the two defaults ever disagree. The render degrades honestly even then —
+ * ⚠️ IT HAS A SECOND SOURCE, and this constant is the DEPENDENT one: the gate's own shell
+ * default `GATE_RC_STATIC_GREEN="${GATE_RC_STATIC_GREEN:-40}"`. A contract test reads that
+ * shell file and goes RED if the two defaults ever disagree. The render degrades honestly even then —
  * the raw code is always printed, so a mismatch mislabels, it does not erase.
  */
 export const GATE_RC_STATIC_GREEN = 40;
@@ -154,7 +151,7 @@ export const GATE_RC_LABEL = 'gate-rc' as const;
 /** Separates the code from its label: `gate-rc:1=RED`. */
 export const GATE_RC_LABEL_SEPARATOR = '=' as const;
 
-/** Introduces the ref the run executed on: `gate-rc:1=RED@<sha>`. */
+/** Introduces the ref the run executed on: `gate-rc:1=RED@9305f00d`. */
 export const GATE_REF_SEPARATOR = '@' as const;
 
 /**

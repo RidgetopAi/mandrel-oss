@@ -1,8 +1,8 @@
 /**
- * task_create `dependencies` short-id resolution contract  (fuse for the dependency id8 resolver)
+ * task_create `dependencies` short-id resolution contract  (fuse for an earlier change)
  *
- * THE BUG (hit live 2026-07-16): task_create({dependencies:["2b3c4d5e"]}) →
- *   "❌ Error: invalid input syntax for type uuid: 1a2b3c4d"
+ * THE BUG (hit live 2026-07-16): task_create({dependencies:["an earlier change"]}) →
+ *   "❌ Error: invalid input syntax for type uuid: an earlier change"
  * The 8-hex short id is the form we SHOW everywhere and every OTHER id-taking tool
  * accepts (link/get_links/task_update/task_details/…) via the ONE shared resolver — but
  * `dependencies` passed its raw strings straight into the `dependencies uuid[]` column and
@@ -45,7 +45,7 @@ async function viaPublicTool(toolName: string, rawArgs: any, handler: (a: any) =
   return handler(validated);
 }
 
-describe('task_create dependencies id8 resolution (the dependency id8 resolver fuse, zero SQL on write)', () => {
+describe('task_create dependencies id8 resolution (an earlier change fuse, zero SQL on write)', () => {
   beforeAll(async () => {
     projectId = (await db.query(
       `INSERT INTO projects (name, description) VALUES ($1, 'task_create dep resolve fuse') RETURNING id`,

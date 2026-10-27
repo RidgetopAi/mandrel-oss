@@ -89,7 +89,7 @@ function envStr(name: string, fallback: string | null): string | null {
 /**
  * ⚠️ THE ENV NAME IS PASSED AS A STRING LITERAL AT EACH CALL SITE BELOW, AND MUST STAY THAT
  * WAY. This file used to route all six through an `ATTRIBUTION_NOTICE_ENV` constant object —
- * tidier to read, and it turned the clean gate RED (STAGE 0a5, on an earlier ref): the env-read
+ * tidier to read, and it turned the clean gate RED (STAGE 0a5, ref): the env-read
  * accounting guard extracts env var NAMES statically and fails closed on any it cannot
  * resolve, and `envBool('MANDREL_ATTRIBUTION_NOTICE_ENABLED', …)` is "a via-callers helper called
  * with a COMPUTED first arg (the name escapes extraction)". Six FAIL lines, one per knob.

@@ -31,7 +31,7 @@
  * that reaches it. So this module ASKS THE CATALOG (`pg_constraint`), which the migration
  * has no way to avoid updating, because creating the FK IS how the cascade is created.
  *
- * ── ONE ROW PER TABLE, NOT PER CONSTRAINT (the 4dcf00d blocker) ─────────────────────────
+ * ── ONE ROW PER TABLE, NOT PER CONSTRAINT (the 4dcbf00 blocker) ─────────────────────────
  * The first version of this query returned one row per FK CONSTRAINT while `byTable` is
  * keyed by TABLE NAME, so a table with TWO cascading FKs to `projects` (an ordinary shape:
  * `owner_project_id` / `source_project_id`) produced two UNION-ALL branches with the same
@@ -156,7 +156,7 @@
  * SECURITY: the only user-derived value in any SQL here is the project id, bound as a
  * parameter. Table/column identifiers and the table-name literals are emitted BY POSTGRES
  * (`::regclass::text`, `quote_ident`, `quote_literal`) from the catalog, never assembled
- * from user input. Verified by the reviewer against a table literally named
+ * from user input. Verified by Reviewer against a table literally named
  * `evil"; DROP TABLE projects; --`.
  */
 

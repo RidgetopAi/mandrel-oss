@@ -1,5 +1,5 @@
 /**
- * Record permalinks in tool output — contract test ( * an earlier decision).
+ * Record permalinks in tool output — contract test.
  *
  * THE CLAIMABLE GUARANTEE: every id-emitting Mandrel tool RESULT carries a plain, clickable
  * permalink `<this instance's Command UI>/r/<id8>` for the record it returns — produced by
@@ -16,12 +16,12 @@
  * of which content block it renders — so it lives in BOTH:
  *   • the human-readable TEXT block  (for text-surfacing clients), AND
  *   • the machine-readable STRUCTURED payload  (for JSON-surfacing clients like the Claude
- *     Code harness Coordinator runs in, which renders structuredContent, NOT the text block).
+ *     Code harness the coordinator runs in, which renders structuredContent, NOT the text block).
  * This suite asserts the permalink is present in BOTH channels, and that both come from the
  * SAME shared helper (one source of truth — never a per-site URL copy).
  *
- * This drives the REAL routeExecutor + REAL Postgres (disposable DB from
- * scripts/test-record-permalinks.sh — NEVER the production `mandrel` DB). For each
+ * This drives the REAL routeExecutor + REAL Postgres (a disposable DB —
+ * NEVER the production `mandrel` DB). For each
  * record-returning tool it asserts:
  *   (a) the returned TEXT contains recordUrl(id) pointing at /r/<id8>, and
  *   (b) the STRUCTURED payload carries that same recordUrl(id) as a per-record field.

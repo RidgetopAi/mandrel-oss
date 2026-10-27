@@ -12,7 +12,7 @@
 #     2. mandrel-command/frontend/src/api/generated/**        (frontend codegen)
 #
 #   Nothing regenerated or verified either one, so both drifted silently. Measured on
-#   (v0.50.0), by regenerating and diffing: the checked-in spec was missing 4
+#   an earlier change (v0.50.0), by regenerating and diffing: the checked-in spec was missing 4
 #   whole paths and disagreed on 9 more, and 5 generated service files differed. The
 #   drift had accumulated across several unrelated tasks, because the only thing
 #   keeping the artifacts equal to the source was a human remembering to run a script.
@@ -66,7 +66,14 @@ if [[ -z "${_MANDREL_OPENAPI_DRIFT_CONFIG_SOURCED:-}" ]]; then
   OPENAPI_DRIFT_MIN_PATHS="${OPENAPI_DRIFT_MIN_PATHS:-20}"
   OPENAPI_DRIFT_MIN_CLIENT_FILES="${OPENAPI_DRIFT_MIN_CLIENT_FILES:-20}"
 
-  export OPENAPI_DRIFT_REGEN_DIR OPENAPI_DRIFT_REGEN_SCRIPT \
+  # --- install policy ----------------------------------------
+  # 0 (default): a toolchain that does not resolve is COULD-NOT-MEASURE; the drift test
+  # never installs into the tree it measures. 1: run
+  # scripts/lib/openapi-drift-self-provision.sh first — ONLY for a caller that owns a
+  # single-use checkout.
+  OPENAPI_DRIFT_SELF_PROVISION="${OPENAPI_DRIFT_SELF_PROVISION:-0}"
+
+  export OPENAPI_DRIFT_SELF_PROVISION OPENAPI_DRIFT_REGEN_DIR OPENAPI_DRIFT_REGEN_SCRIPT \
          OPENAPI_DRIFT_SPEC_PATH OPENAPI_DRIFT_CLIENT_DIR \
          OPENAPI_DRIFT_EXPORTER_TS OPENAPI_DRIFT_LIVE_ROUTE_TS \
          OPENAPI_DRIFT_MIN_PATHS OPENAPI_DRIFT_MIN_CLIENT_FILES

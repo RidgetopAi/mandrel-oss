@@ -6,8 +6,8 @@
  * with a ONE-HOP `NOT EXISTS (… edge_type='supersedes')`. That predicate answers "does
  * anything at all point a supersedes edge at this row" — it does not walk the chain, it
  * does not care whether the pointer came from a LIVE handoff of THIS project, and it has
- * no idea what to do when the answer is ambiguous. Measured consequence (an earlier note
- * , 2026-08-23): a handoff four generations deep in a declared supersession chain
+ * no idea what to do when the answer is ambiguous. Measured consequence
+ * (2026-08-23): a handoff four generations deep in a declared supersession chain
  * was served as "the handoff", and the MODE/PATH trip-wire that exists to stop a session
  * inheriting a stale stance read a dead record.
  *

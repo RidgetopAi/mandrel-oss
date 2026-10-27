@@ -1,5 +1,5 @@
 /**
- * projectHeaders — the AMBIENT fallback ladder (page-scope epic §A2).
+ * projectHeaders — the AMBIENT fallback ladder (an earlier epic §A2).
  *
  * The axios interceptor (services/api.ts) and the generated-client header resolver
  * (api/client.ts) BOTH delegate here, so this one suite guards the rule for both.
@@ -98,7 +98,7 @@ describe('resolveProjectHeader — rung 3 (the settings cache)', () => {
 
   test('a settings cache holding a NON-uuid is ignored, not sent', () => {
     localStorage.setItem('aidis_user_settings', JSON.stringify({ defaultProjectId: 'Alpha' }));
-    // The pre-page-scope cache stored a project NAME here. It must never be sent as an id.
+    // The pre-41293984 cache stored a project NAME here. It must never be sent as an id.
     expect(resolveProjectHeader()).toBeUndefined();
   });
 });

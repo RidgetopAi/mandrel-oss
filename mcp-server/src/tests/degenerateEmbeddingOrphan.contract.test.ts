@@ -11,7 +11,7 @@
  *     zero row sim=NaN → dropped by any min-similarity filter. Invisible to recall.
  *   - `inferAndMintRelatedTo` on a zero-embedding source, with a genuine 0.9-similar
  *     neighbour in the pool, returned
- *       {minted:false, candidateId:'2b3c4d5e…', similarity:null, reason:'no-neighbor-above-threshold'}
+ *       {minted:false, candidateId:'an earlier change…', similarity:null, reason:'no-neighbor-above-threshold'}
  *     — it named a "best" candidate that was never ranked (every distance was NaN, so the row
  *     order was arbitrary), reported `similarity:null` over the wire, and blamed the
  *     neighbourhood for a defect in the capture's own vector.
@@ -118,7 +118,7 @@ describe('the JS predicate and the SQL predicate are ONE rule', () => {
   // seventeen orders of magnitude away from where the two implementations actually part company
   // — so it "proved agreement" while sampling only the easy middle. `degeneracyOf` evaluated in
   // float64 and pgvector evaluates in float32, and every STORABLE vector between ~1e-23 and
-  // ~1e-161 per component got opposite verdicts (Reviewer REJECT of 403f00d; the band is
+  // ~1e-161 per component got opposite verdicts (Reviewer REJECT of 403ef00; the band is
   // reproduced in this file's sibling probe and documented in degenerate.ts).
   //
   // 1e-22 and 1e-23 STRADDLE the float32 underflow edge: (1e-22)² = 1e-44 is a representable

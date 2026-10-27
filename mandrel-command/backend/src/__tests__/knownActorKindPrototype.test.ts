@@ -20,7 +20,7 @@
  * green forever. Two guards, two different questions.
  *
  * ═══ WHERE THE POPULATION COMES FROM, AND WHY NOT FROM THE REGISTRY ══════════════════
- * The operative rule (Coordinator, 2026-08-28, after this class produced three doors in two
+ * The operative rule (the coordinator, 2026-08-28, after this class produced three doors in two
  * files): WHEN THE DEFECT CAN LIVE IN THE ACCESS PATH, THE GUARD MUST ENUMERATE FROM A
  * SOURCE THE IMPLEMENTATION'S PATH DOES NOT CONTROL. Deriving this population from
  * BUILTIN_ACTOR_KINDS — the obvious, "properly derived" choice — is exactly what cannot

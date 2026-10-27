@@ -302,7 +302,7 @@ export class SessionAnalyticsService {
 
       // ════════════════════════════════════════════════════════════════════════════════
       //  WHY THE CONTEXT/TASK SERIES IS NOT SESSION-ANCHORED WHEN PROJECT-SCOPED
-      // 
+      //
       // ════════════════════════════════════════════════════════════════════════════════
       // `daily_sessions` below can only ever see rows whose OWNING SESSION is in scope
       // (`FROM sessions s WHERE s.project_id = <scope>`). Counting a project's contexts
@@ -320,7 +320,7 @@ export class SessionAnalyticsService {
       //     mandrel       |            0 |            23 |    23
       //     assistant-agent     |            5 |             2 |     7
       //     daisy            |            0 |             6 |     6
-      //     dev-desktop |            0 |             3 |     3
+      //     mandrel-desktop |            0 |             3 |     3
       //     acme            |            0 |             2 |     2
       //     personal         |            0 |             1 |     1
       // mandrel owns ZERO sessions, so its Workspace Activity chart was a structural
@@ -360,7 +360,7 @@ export class SessionAnalyticsService {
       // was FALSE. Other read paths still hand-write a per-session child count and bypass
       // the builder, so this change makes THIS endpoint disagree with them about archived
       // rows. WHICH paths, and what each one currently answers, is asserted by
-      // __tests__/sessionCountRule.contract.test.ts — not listed here. Tracked separately.
+      // __tests__/sessionCountRule.contract.test.ts — not listed here. Tracked: an earlier change.
       //
       // There is no prose enumeration at this line ON PURPOSE. One lived here and was
       // rewritten three times; every rewrite fixed its predecessor's false statement and
@@ -581,7 +581,7 @@ export class SessionAnalyticsService {
   /**
    * Get most productive sessions (ranked by contexts, duration, and tokens)
    *
-   * ── A MISSED READER, FOUND DURING THE SESSION-COUNTER REMEDIATION ───────────────────────────
+   * ── A MISSED READER, FOUND DURING THE REMEDIATION ───────────────────────────
    * This one still joined `LEFT JOIN contexts c ON s.id = c.session_id AND c.project_id =
    * s.project_id` — the exact wrong predicate the rest of that task deleted, and it is NOT
    * in the task's own list of fixed readers. It is live: GET /api/v2/sessions/productive.
@@ -1010,7 +1010,7 @@ export class SessionAnalyticsService {
         FROM sessions s
         LEFT JOIN projects p ON s.project_id = p.id
         ${whereClause}
-        -- TOTAL ORDER (the MCP-server half is the search total-order fix). s.started_at is
+        -- TOTAL ORDER (the MCP-server half is an earlier change). s.started_at is
         -- NOT UNIQUE — sessions started in the same instant tie, and this list is
         -- LIMIT/OFFSET paged below. Page 1 and page 2 are two independent sorts of the same
         -- tied block, so a partial order can hand the caller one session twice and never

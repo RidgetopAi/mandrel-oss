@@ -4,7 +4,7 @@
 -- WHY: `task_update` is an unconditional last-writer-wins write — the UPDATE's WHERE is
 -- `id` ONLY (handlers/tasks.ts:331), with no project, status, or assignee guard. A second
 -- worker that OBSERVES an active assignment can overwrite it and BOTH calls return success
--- (externally reproduced by an Amp-orb evaluation probe). Independent agents therefore
+-- (externally reproduced: Amp-orb evaluation probe). Independent agents therefore
 -- cannot safely coordinate THROUGH Mandrel — every multi-agent topology is forced back onto
 -- a single trusted scheduler. We already patched around this once with a file lock
 -- (runtime/control-plane/dispatch-claim.ts, which says verbatim "since a bare task_update
@@ -21,7 +21,7 @@
 --
 -- WHY claim_id AND NOT claim_actor IS THE LOCK KEY (SPEC D2): `assigned_to`/`claim_actor` is
 -- a free-form varchar(200) — not an FK, not a uuid, validated against no actor registry. If
--- mutual exclusion were keyed on the actor string, two Builders, two tick runs, or any two
+-- mutual exclusion were keyed on the actor string, two builders, two tick runs, or any two
 -- callers that share an actor name would BOTH satisfy the predicate and BOTH "hold" the
 -- claim — decorative exactly for the collision class this migration exists to kill. Re-entry
 -- and renewal require presenting the matching claim_id, so correctness is also fully

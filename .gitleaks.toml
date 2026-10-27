@@ -121,7 +121,7 @@ paths = [
   # Personal, non-product project tree (`projects/dc-viz`, a Spotify demo) —
   # `projects/` is already gitignored (not part of the Mandrel product). The
   # leaked values were a public Spotify client-id, triaged DEAD.
-  '''(^|/)projects/''',
+  '''^projects/''',
 ]
 
 # =============================================================================
@@ -169,7 +169,7 @@ paths = [
 #     SQL `... PASSWORD '<literal>'`     CAUGHT since 2026-09-08 (rule
 #         mandrel-credential-sql-password, below). MEASURED MISS before that: commit
 #         (2025-12-01) carried the LIVE postgres superuser password as
-#         `ALTER USER postgres PASSWORD '<12 chars>'` in scripts/prod-host-setup.sh, and
+#         `ALTER USER postgres PASSWORD '<12 chars>'` in a host setup script, and
 #         `gitleaks 8.18.4 detect --log-opts='<sha>^..<sha>' -c .gitleaks.toml`
 #         reported "no leaks found" with all three rules above in force (the auditor record
 #         E4). The name/value separator there is a SPACE and a
@@ -210,7 +210,7 @@ keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd"
   description = "credential-shaped literals triaged as placeholders / published dev defaults / test fixtures (2026-07-27)"
   regexTarget = "match"
   # The DECLARED placeholder surface: `.env*.example` files exist to publish key
-  # NAMES with fake values (gate-env.sh consumes exactly this surface). The default
+  # NAMES with fake values (the CI gate's env stage consumes exactly this surface). The default
   # gitleaks rules still scan these files; only THIS rule is scoped off them.
   paths = [
     '''\.example$''',
@@ -244,17 +244,17 @@ keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd"
     # 2026-07-27 miss — gitleaks' stopword list is why it slipped; exempting it here
     # re-opens the exact hole) and `DUMMY_*` (the hook's acceptance probe plants
     # `DB_PASSWORD=DUMMY_ShouldBeCaught_…` and requires a REFUSAL; a fixture that must
-    # be committable is written DISARMED — see scripts/test/gitleaks-credential-shapes.test.sh).
+    # be committable is written DISARMED).
     '''\.\.\.$''',                             # sk-..., sk-ant-..., SG.... (elided examples)
     '''=['"]?user_pw\b''',                      # README.md quick-start compose sample
     # --- the PUBLISHED dev default (documented in every .env.example) ------
     '''=['"]?mandrel_dev_password\b''',
     # --- test fixtures (enumerated; these files are the gate's own fixtures) -
     '''=['"]?spine_test_pw\b''',               # mandrel-command/backend/src/__tests__/resolve*.route.db.test.ts
-    '''=['"]?sk-do-not-print\b''',             # scripts/test/clean-gate.test.sh (leak-probe canary)
-    '''=['"]?canarypass\b''',                  # scripts/test/authed-probe.test.sh (stub login)
-    '''=['"]?OldWeakPw123\b''',                # scripts/test/db-rotate.test.sh (rotation before/after fixture)
-    '''=['"]?RotatedStr0ngPw456\b''',          # scripts/test/db-rotate.test.sh (rotation before/after fixture)
+    '''=['"]?sk-do-not-print\b''',             # a CI test's leak-probe canary
+    '''=['"]?canarypass\b''',                  # a probe test's stub login
+    '''=['"]?OldWeakPw123\b''',                # a rotation test's before/after fixture
+    '''=['"]?RotatedStr0ngPw456\b''',          # a rotation test's before/after fixture
     # --- the REDACTION MARKER itself (2026-08-27) --------------------------
     # Our own probe/gate logs print SCRUBBED assignments, e.g.
     #   [PASS] guard went RED - 'POSTGRES_PASSWORD=***REDACTED***' is gone
@@ -271,11 +271,11 @@ keywords = ["password","passwd","secret","token","apikey","api_key","pass","pwd"
     # real-looking token in the same file is still RED. Found by the history-wide
     # scan; every value is a documented example or a test fixture, none authenticates.
     '''=['"]?example-(?:token|key|gh)\b''',    # loop/README.md quick-start examples
-    '''=['"]?smoketest-fixture-token-[0-9a-f]{8}\b''',  # scripts/test/deep-smoke-auth.test.sh (history)
-    '''=['"]?with=equals=kept\b''',            # scripts/test/deep-smoke-auth.test.sh (history)
-    '''=['"]?wrong-session-token-value\b''',   # scripts/test/deep-smoke-auth.test.sh (history)
-    '''=['"]?compose_flag_test_dummy\b''',     # scripts/test/compose-flag-declarations.test.sh (history)
-    '''=['"]?list_form_p@ss\b''',              # scripts/test/preflight-db-password.test.sh (history)
+    '''=['"]?smoketest-fixture-token-[0-9a-f]{8}\b''',  # a smoke-auth test (history)
+    '''=['"]?with=equals=kept\b''',            # a smoke-auth test (history)
+    '''=['"]?wrong-session-token-value\b''',   # a smoke-auth test (history)
+    '''=['"]?compose_flag_test_dummy\b''',     # a compose-flag test (history)
+    '''=['"]?list_form_p@ss\b''',              # a password-preflight test (history)
     # HISTORY-ONLY: the supersession tests once assigned these two FAKE fixture
     # values as literals; they are now assembled at runtime. Two exact
     # literals, not a path and not a shape, so a new literal in those files is still RED.

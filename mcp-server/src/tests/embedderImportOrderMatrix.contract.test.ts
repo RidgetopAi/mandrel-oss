@@ -19,7 +19,7 @@
  *   surfaced when that clearing did not happen. Depending on that behaviour is depending on
  *   a vitest implementation detail for product correctness. This harness removes the
  *   dependency and asks the question directly — and it is how the failure was finally
- *   reproduced ON DEMAND at f9df00d, with the field's exact message:
+ *   reproduced ON DEMAND at f9d1f00, with the field's exact message:
  *
  *     AssertionError: active column must be the gemma column:
  *       expected 'embedding' to be 'embedding_gemma'

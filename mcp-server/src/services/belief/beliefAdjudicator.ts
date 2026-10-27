@@ -6,8 +6,8 @@
  *   → mint a `supersedes` edge (links.mintEdge) ONLY for a high-confidence supersession
  *   → record EVERY verdict in belief_adjudications (audit + idempotency).
  *
- * the belief-layer design §3/§4. Runs ASYNC, off any write critical path, SERIAL (concurrency from
- * beliefConfig, locked at 1 — the embedder shares the box, an earlier capacity recon). This
+ * Design an earlier change §3/§4. Runs ASYNC, off any write critical path, SERIAL (concurrency from
+ * beliefConfig, locked at 1 — the embedder shares the box, capacity recon). This
  * module is the exercised-end-to-end surface the belief-eval drives; the live post-store
  * BullMQ hook + gated backfill scan are the Inc-2 activation seam (not wired into the live
  * write path here, to keep embedder priority + zero prod blast radius this increment).
@@ -115,7 +115,7 @@ export async function adjudicatePair(
     let edgeMetadata: Record<string, unknown> = {};
     if (outcome.action === 'soft_possibly_superseded') {
       // The `reason[]` key (below_confidence / below_cosine) was DELETED with the two-tier bar
-      // in the no-hard-tier change — it recorded WHICH threshold a candidate missed, and there are no
+      // in an earlier change — it recorded WHICH threshold a candidate missed, and there are no
       // thresholds. `rationale` is the adjudicator's own WHY and is what trust.ts's
       // readEdgeReason prefers; it still reads reason[] off the historical rows that carry it.
       edgeMetadata = {

@@ -1,5 +1,6 @@
 /**
- * sessionConfig — the session-lifecycle knobs (Session-Rework SR-1,  * ref:session-rework).
+ * sessionConfig — the session-lifecycle knobs (Session-Rework SR-1, 
+ * ref:session-rework).
  *
  * STANDING PRINCIPLE (the operator, binds this + all future builds): NO HARDCODED VARIABLES.
  * Every session-lifecycle tunable — the idle/close window and the re-attach window —
@@ -53,8 +54,8 @@ function envEnum<T extends string>(name: string, allowed: readonly T[], fallback
 }
 
 /**
- * Sessions Foundation Phase 2a — the shared-resolver mode (the auditor review §6 Phase 2,
- * an earlier decision). The ENTIRE Phase 2a deliverable is INERT by default: this flag
+ * Sessions Foundation Phase 2a — the shared-resolver mode (the auditor review §6 Phase 2).
+ * The ENTIRE Phase 2a deliverable is INERT by default: this flag
  * decides whether the new resolveSession() is even consulted.
  *
  *   'legacy' (DEFAULT) — current behavior EXACTLY. The new resolver is NOT consulted;
@@ -74,7 +75,7 @@ export interface SessionConfig {
   /**
    * idleTimeoutSec — a session with no activity for this long is CLOSED by the idle
    * reaper (status=inactive + ended_at stamped, RAM entry evicted). Also the END
-   * trigger described in the model. The operator: 1 HOUR (was 2h).
+   * trigger described in the model. Operator: 1 HOUR (was 2h).
    * Env: MANDREL_SESSION_IDLE_TIMEOUT_SEC. Default 3600 (1h).
    */
   idleTimeoutSec: number;
@@ -83,7 +84,7 @@ export interface SessionConfig {
    * (ended_at NULL, status active|interrupted) session for the SAME connection id
    * within this window is RE-ATTACHED instead of minting a new one. This is the core
    * fix for random-spawning after a server restart. KEPT EQUAL to idleTimeoutSec by
-   * default (the operator: "keep them equal") — a session is re-attachable exactly as long
+   * default (Operator: "keep them equal") — a session is re-attachable exactly as long
    * as the reaper has not yet closed it. Env: MANDREL_SESSION_REATTACH_WINDOW_SEC.
    * Default = idleTimeoutSec (1h).
    */
@@ -234,7 +235,7 @@ export interface SessionConfig {
 }
 
 /**
- * THE LIVE CONFIG — read once at module load. Defaults are operator-aligned values
+ * THE LIVE CONFIG — read once at module load. Defaults are the operator-aligned values
  * (1h window, re-attach == idle); both env-overridable. The re-attach window defaults
  * to whatever the idle timeout resolves to, so the "keep them equal" invariant holds
  * even when only the idle timeout is overridden — but it can still be overridden

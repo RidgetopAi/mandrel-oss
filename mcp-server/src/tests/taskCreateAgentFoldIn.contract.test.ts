@@ -21,6 +21,7 @@
  */
 
 import { describe, test, expect, beforeAll, afterAll, afterEach } from 'vitest';
+import { DEPLOYMENT_VOCABULARY } from '../config/deploymentVocabularyConfig.js';
 import { db } from '../config/database.js';
 import { validateToolArguments } from '../middleware/validation.js';
 import { routeExecutor } from '../routes/index.js';
@@ -100,7 +101,7 @@ describe('env set — the four acceptance assertions', () => {
     const text = textOf(res);
     // The message tells the agent what to do INSTEAD — both branches of the rule.
     expect(text).toMatch(/fix it/i);
-    expect(text).toMatch(/put it in your return/i);
+    expect(text).toContain(`return to ${DEPLOYMENT_VOCABULARY.coordinatorName}`);
     expect(text).toContain(AGENT_FOLD_IN_EXEMPT_TAG);
     expect(await rowsWritten()).toBe(before);
   });
@@ -139,9 +140,9 @@ describe('spellings fold through the ONE actor normalizer and the ONE tag key', 
     expectRefused(await create('builder', []));
   });
 
-  test('the known `needs:operator` spelling satisfies the exemption', async () => {
+  test('the known `needs:<human>` colon spelling satisfies the exemption', async () => {
     process.env[AGENT_ACTORS_ENV] = ROSTER;
-    expectAccepted(await create('builder', ['needs:operator']));
+    expectAccepted(await create('builder', [AGENT_FOLD_IN_EXEMPT_TAG.replace('-', ':')]));
   });
 
   test('readAgentActors: blank → empty set; garbage entries dropped', () => {

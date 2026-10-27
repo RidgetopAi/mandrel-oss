@@ -1,6 +1,6 @@
 /**
  * P1 — A HANDOFF IS TRUNK MATERIAL BY TYPE
- * (spec an earlier note.)
+ * (spec an earlier context.)
  *
  * THE RULE UNDER TEST: a context whose `context_type` is `handoff` is ALWAYS a trunk record
  * and NEVER a branch member. The classification is made from the TYPE alone; the branch the

@@ -9,7 +9,7 @@
  *   catches the thrown validation error → res.status(500)) means the user's content is
  *   rejected wholesale — silent data loss from the caller's point of view.
  *
- * THE FIX (store-full + embed-bounded — Operator's no-data-loss bar):
+ * THE FIX (store-full + embed-bounded — the operator's no-data-loss bar):
  *   The handler ALREADY does the right thing: it stores request.content.trim() in FULL
  *   (contexts.content is Postgres TEXT) and embeds only request.content.substring(0,1000)
  *   (handlers/context.ts), so the local embedding model's token limit is never reached

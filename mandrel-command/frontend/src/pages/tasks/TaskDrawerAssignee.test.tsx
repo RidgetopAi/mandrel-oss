@@ -22,11 +22,11 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-const P_RIVERBEND = 'aaaa1111-1111-4111-8111-aaaa11111111';
+const P_COORDINATOR = 'aaaa1111-1111-4111-8111-aaaa11111111';
 
 vi.mock('../../contexts/ProjectContext', () => ({
-  useProjectContext: () => ({ setSelectedProjectId: () => undefined, allProjects: [{ id: P_RIVERBEND, name: 'riverbend' }] }),
-  useEffectiveProjectId: () => P_RIVERBEND,
+  useProjectContext: () => ({ setSelectedProjectId: () => undefined, allProjects: [{ id: P_COORDINATOR, name: 'riverbend' }] }),
+  useEffectiveProjectId: () => P_COORDINATOR,
 }));
 
 vi.mock('../../api', () => ({
@@ -56,7 +56,7 @@ const NOW = new Date().toISOString();
 const makeTask = (over: Partial<Task> = {}): Task =>
   ({
     id: 'aaaaaaaa-0000-0000-0000-000000000001',
-    project_id: P_RIVERBEND,
+    project_id: P_COORDINATOR,
     title: 'Wire the drawer',
     description: '',
     type: 'feature',
@@ -194,7 +194,7 @@ describe('Assignee is a COMBOBOX, not a Select — free text still submits', () 
   });
 
   it('CREATES with a free-text assignee that is not in the options list', async () => {
-    mount(<TaskDrawer open mode="create" onClose={noop} onCreated={noop} onDeleted={noop} pageProjectId={P_RIVERBEND} />);
+    mount(<TaskDrawer open mode="create" onClose={noop} onCreated={noop} onDeleted={noop} pageProjectId={P_COORDINATOR} />);
     await settle();
 
     typeInto(document.querySelector('[aria-label="Task title"]') as HTMLInputElement, 'New work');

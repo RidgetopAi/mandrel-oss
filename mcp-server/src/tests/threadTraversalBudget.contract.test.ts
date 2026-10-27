@@ -6,7 +6,7 @@
  *
  *   DEPTH 3 WAS WORSE THAN DEPTH 2. Distinct nodes reachable at depth 1/2/3 on five real
  *   anchors: 11/36/83 · 50/109/231 · 4/9/41 · 7/19/94 · 17/46/92. The third hop is where a
- *   branch stops being a branch: anchored on the P0-security depth 3
+ *   branch stops being a branch: anchored on the P0-security an earlier task, depth 3
  *   admitted an unrelated Calendar PNG-export handoff that then ordered SECOND and THIRD in
  *   the returned story. It is absent at depth 2 on all five.
  *

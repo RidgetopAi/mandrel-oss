@@ -50,5 +50,9 @@ export const tags = [
   {
     name: 'Task Attachments',
     description: 'Punch List task attachments — before screenshots and evidence images'
+  },
+  {
+    name: 'API Tokens',
+    description: 'Per-user API tokens for /mcp and the Punch List loop (Settings → API tokens)'
   }
 ];

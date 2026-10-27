@@ -15,7 +15,7 @@
  * ════════════════════════════════════════════════════════════════════════════════════
  * WHY THIS GUARD TURNS THE READ-PATH TOUCH OFF, AND WHY THAT IS NOT CHEATING
  * ════════════════════════════════════════════════════════════════════════════════════
- * Since `runWithProjectScope` fires `noteToolActivity` for EVERY tool call,
+ * Since an earlier task, `runWithProjectScope` fires `noteToolActivity` for EVERY tool call,
  * read or write. Left on, it would advance the column here whether or not the write path
  * did anything — the guard would be green with the feature deleted, which is the
  * definition of hollow. So `SESSION_CONFIG.activityTouchOnRead` is flipped OFF for the

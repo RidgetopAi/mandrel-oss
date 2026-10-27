@@ -1,6 +1,5 @@
 /**
- * ALTITUDE PROJECTION — the ONE place a record is shrunk for the wire (SEARCH P3,
- * an earlier decision).
+ * ALTITUDE PROJECTION — the ONE place a record is shrunk for the wire (SEARCH P3).
  *
  * DB-FREE ON PURPOSE (no `pg`, no db import), exactly like recallThreadCore.ts, whose
  * shapeNode() this module is the generalisation of. shapeNode was already a pure function
@@ -128,7 +127,7 @@ export function projectBody(
 /**
  * TRUST ON THE WIRE — band + score, and nothing else (an earlier decision Part 2).
  *
- * The operator: "we just show the trust... the confidence score. Our trust score." Everything else
+ * Operator: "we just show the trust... the confidence score. Our trust score." Everything else
  * today's blob carries is DROPPED here: outcome{}, freshness, superseded, softSuperseded,
  * abstain, supersession, reason, promotionRequirement.
  *
@@ -157,7 +156,7 @@ export interface WireTrust {
  * ★ WHY A SECOND SHAPE EXISTS, AND WHY IT IS NOT A HEDGE (SEARCH P3 round 2).
  * an earlier Decision reduced trust to {band, score} and justified it in its own rationale:
  * "the counter-argument — that consumers may depend on supersession or abstain — is answered
- * by those consumers FETCHING THE RECORD BY ID, WHICH RETURNS FULL DETAIL". The reviewer
+ * by those consumers FETCHING THE RECORD BY ID, WHICH RETURNS FULL DETAIL". Reviewer
  * verified that sentence FALSE: round 1 applied projectTrust() to the by-id path too, so
  * supersession and abstain became machine-readable NOWHERE. A justification that is not true
  * is not a justification — either the rationale changes or the code does, and the coordinator called

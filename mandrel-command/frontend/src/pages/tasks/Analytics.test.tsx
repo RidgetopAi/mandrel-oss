@@ -4,7 +4,7 @@
  * layout) and proves:
  *   - the LIVE KPIs (completion rate, avg cycle time, WIP·blocked) render REAL numbers;
  *   - the honest data-GAP states (throughput per-day series, completed-by-actor) render a
- *     "not yet available" state — never a fabricated series (the data-gap policy);
+ *     "not yet available" state — never a fabricated series (data policy);
  *   - the status key + priority + aging panels derive from real rows/stats;
  *   - the aging list is clickable (opens the task).
  */

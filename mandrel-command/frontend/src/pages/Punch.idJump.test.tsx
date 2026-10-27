@@ -2,7 +2,7 @@
  * Punch board id-jump destination.
  *
  * ONE place decides where a resolved record opens: the backend resolver
- * (`idResolver.ts urlForRecord`, taught the `isPunchSql` bit by an earlier change to it). It already
+ * (`idResolver.ts urlForRecord`, taught the `isPunchSql` bit by an earlier change). It already
  * routes a PUNCH task to `/punch/:id` and an ordinary (non-punch) task to `/tasks/:id`
  * in `record.url` — that decision rides in the resolve response itself, per record.
  *
@@ -13,7 +13,7 @@
  * Tasks page itself) for a non-punch task. This test drives the id-jump for BOTH cases
  * from the Punch board and asserts the actual navigation destination, so deleting the
  * override (or reintroducing it) is not invisible to the suite — the critic's T2 finding
- * on an earlier revision, closed: "no Punch.wiring/IdJumpResult assertion covers the search or the
+ * on an earlier change, closed: "no Punch.wiring/IdJumpResult assertion covers the search or the
  * urlFor override, so deleting the one line that makes clause (b) land on /punch/<id>
  * instead of /tasks/<id> leaves all 305 tests green".
  *

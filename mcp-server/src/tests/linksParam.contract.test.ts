@@ -1,6 +1,5 @@
 /**
- * FIRST-CLASS `links` PARAM — contract + robustness tests (Mandrel Core Redesign T5a,
- * an earlier decision).
+ * FIRST-CLASS `links` PARAM — contract + robustness tests (Mandrel Core Redesign T5a).
  *
  * Tests are armor (spec §6). This locks the explicit `links` write parameter on BOTH
  * context_store and decision_record:

@@ -15,11 +15,11 @@
  * 2026-08-23 (project `riverbend`) into
  * runtime/lib/__fixtures__/boot-recall-collapse/walk-cycle-eb98f00d.json:
  *
- *     superseded_by 2b3c4d5e   tier:declared
- *     superseded_by 3c4d5e6f   tier:declared
- *     superseded_by 4d5e6f7a   tier:soft  conf:0.85    ← the contradiction
+ *     an earlier change  superseded_by an earlier change   tier:declared
+ *     an earlier change  superseded_by an earlier change   tier:declared
+ *     an earlier change  superseded_by an earlier change   tier:soft  conf:0.85    ← the contradiction
  *
- * `3c4d5e6f` was the LIVE handoff head. The soft edge halved its trust score and put the live
+ * an earlier change was the LIVE handoff head. The soft edge halved its trust score and put the live
  * head under the fold. The declared edges are reproduced here with the same shape the product
  * mints them with (`handoffSupersession.ts` → created_by NOT the belief label), and the soft
  * edge with the shape the belief reconciler mints (`possibly_supersedes` + confidence

@@ -12,7 +12,7 @@
  *   This was ALREADY reachable before the cap fix: the old caps summed to ~11,255 chars
  *   (description 5000 + rationale 2000 + problemStatement 2000 + successCriteria 2000 + (reserved-port-ok: char budget in a doc comment, not a port)
  *   title 255) — comfortably past 8000. Deriving the prose caps from their TEXT columns
- *   would have made it routine rather than occasional.
+ * would have made it routine rather than occasional.
  *
  * THE FIX: bound the embed text in the ONE shared builder (buildDecisionEmbeddingText),
  * not at the two call sites — so record, re-embed, and any future call site inherit it.

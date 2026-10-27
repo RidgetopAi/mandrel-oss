@@ -8,8 +8,8 @@
  *     MODE: build — …what we are doing, and what NOT to do…
  *     PATH: roots → tree:canonical → trunk(@x) ⟶ branch:y (spine an earlier task)
  *
- * — are recovered by a REGEX over the free-text body of a handoff
- * (riverbend/runtime/lib/handoff-fields.sh:40). That works for exactly one corpus: ours,
+ * — are recovered by a REGEX over the free-text body of a handoff. That works for exactly
+ * one corpus: ours,
  * because we invented the convention and we write it by hand.
  *
  * MEASURED, 2026-08-23, rendering our own boot package against a FOREIGN project: MODE and
@@ -31,7 +31,7 @@
  * two optional string fields do not earn a migration across 8 instances), under ONE
  * reserved namespace object:
  *
- *     {"handoff": {"mode": "build", "spine": "2b3c4d5e"}}
+ *     {"handoff": {"mode": "build", "spine": "b341f00d"}}
  *
  * Namespaced rather than top-level `metadata.mode` deliberately. `metadata` is a free-form
  * object the CALLER owns and `context_update` MERGES into — a customer using `mode` for
@@ -173,8 +173,7 @@ export const CARRIED_FIELDS_SPINE_UNRESOLVED = 'unresolved in this project';
 
 /**
  * The kind word printed for a spine whose type could not be read. NOT "task": guessing a
- * kind we did not read is the same confidently-wrong move as guessing the id. Mirrors
- * riverbend/runtime/lib/handoff-fields.sh's HANDOFF_SPINE_UNKNOWN_KIND.
+ * kind we did not read is the same confidently-wrong move as guessing the id.
  */
 export const CARRIED_FIELDS_SPINE_UNKNOWN_KIND = 'record';
 

@@ -50,7 +50,7 @@ describe('isValidUuid', () => {
  * Self-heal guard (contoso dashboard bug). A corrupt persisted project id like
  * `session_voiceitt-bridge` must be purged so the app recovers on its own.
  *
- * `loadValidStoredProject` and its six cases were DELETED with the page-scope epic: that commit
+ * `loadValidStoredProject` and its six cases were DELETED with that commit
  * removed its last production caller, leaving a function referenced only by its own test —
  * a guard guarding nothing. The self-heal it performed still exists and is still tested:
  * `resolveProjectHeader` does the purge now, over a four-rung ladder rather than one key

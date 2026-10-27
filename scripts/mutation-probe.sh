@@ -24,10 +24,10 @@
 #   non-zero exit as "the guard noticed". A suite that dies at a missing fixture, a
 #   syntax error, a branch guard, a crashed dependency — every one of those exits
 #   non-zero WITHOUT EVER REACHING THE MUTATED CODE, and every one was scored as
-#   teeth. It produced two false greens on where the probes died at
-#   fleet-deploy's branch guard before reaching the CN1 code and this script printed
-#   "guard has teeth". The defence existed, but it lived in ONE CALLER
-#   (cn1-customer-gate.test script's --probe-bypass-blocked helper), so the next author to
+#   teeth. It produced two false greens on an earlier task, where the probes died at
+#   the deploy script's branch guard before reaching the CN1 code and this script printed
+#   "guard has teeth". The defence existed, but it lived in ONE CALLER's
+#   --probe-bypass-blocked helper, so the next author to
 #   reach for --expect-red got the unsafe behaviour by default.
 #
 #   DEFECT 2 (failed CLOSED — silently unprobeable lines). The anchor and replacement
@@ -472,8 +472,8 @@ $(grep -nF -- "$WITNESS" "$RUNLOG" | head -3 | sed 's/^/    /')
       HINT="  THE COMMAND LOOKS LIKE A TEST RUNNER, so check the channel before the mutation.
   mcp-server's vitest.setup.ts replaces console.log/error/warn/info/debug with no-op
   spies in a beforeEach for EVERY test, so a witness printed with console.* from inside
-  test-run code emits NOTHING even though the mutation landed perfectly (an earlier
-  defect — it cost two probe rounds). Do NOT weaken the probe until something prints.
+  test-run code emits NOTHING even though the mutation landed perfectly (an earlier defect
+  — it cost two probe rounds). Do NOT weaken the probe until something prints.
   Use --witness-file, which no spy can reach:
     --witness $(printf '%q' "$WITNESS") --witness-file \"\$SOME_TMP/witness.txt\"
   and have the mutated code write it:

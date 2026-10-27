@@ -39,8 +39,8 @@ import { LEXICAL_SEARCH_CONFIG } from '../config/lexicalSearchConfig.js';
 import { HYBRID_SEARCH_CONFIG, maxFusedScore } from '../config/hybridSearchConfig.js';
 import { runLexicalSearch, type LexicalRow, type LexicalSearchResult } from '../services/lexicalSearch.js';
 import { fuseByRank, type RankedChannel } from '../services/rankFusion.js';
-import { findAbsentTerms } from '../services/absentTerms.js';
-import { decideEmptyState, reconcileWithResolvedRecords, vocabularyOf, type EmptyStateVerdict } from '../services/absentTermVeto.js';
+import { findAbsentTerms, fetchProjectNearMissVocabulary } from '../services/absentTerms.js';
+import { decideEmptyState, reconcileWithResolvedRecords, vocabularyOf, nearMissFallbackLexemes, type EmptyStateVerdict } from '../services/absentTermVeto.js';
 
 /**
  * Width of the already-derived title echoed into the debug ranking log. This is a LOG LINE
@@ -96,8 +96,8 @@ interface MergeCandidate {
      *
      * P2b needs this as a FACT rather than as an amount buried in the score, because rank
      * fusion throws scores away. MEASURED: with the identifier tier added and this flag
-     * missing, the bare-id query `2b3c4d5e` fell from rank 1 to rank 4 — records that MENTION
-     * that id8 in their text took the identifier tier, while the record whose id IS that id8
+     * missing, the bare-id query an earlier change fell from rank 1 to rank 4 — records that MENTION
+     * that id8 in their text took the identifier tier, while the record whose id IS an earlier change
      * does not contain its own id in its text and so had no identifier hit at all. See the
      * tier ladder in fuseWithLexical().
      */
@@ -317,6 +317,8 @@ export class SmartSearchHandler {
         // resolves to "no lexical layer" and the merge is byte-for-byte the pre-P2b one.
         let lexical: LexicalSearchResult | null = null;
         let empty: EmptyStateVerdict | null = null;
+        let absentProbe: Awaited<ReturnType<typeof findAbsentTerms>> | null = null;
+        let rowVocabulary: ReadonlySet<string> = new Set();
         if (LEXICAL_SEARCH_CONFIG.enabled) {
             // FAIL-PARTIAL, exactly as the semantic sources do. A lexical failure names
             // itself in degradedSources and the semantic answer still ships; it must never
@@ -342,6 +344,8 @@ export class SmartSearchHandler {
                     ...rows.map(r => `${r.title} ${r.summary}`),
                 ]);
                 empty = decideEmptyState(ab, vocab);
+                absentProbe = ab;
+                rowVocabulary = vocab;
             }
         }
 
@@ -355,7 +359,22 @@ export class SmartSearchHandler {
                 const t = (c.result.metadata as Record<string, unknown>)?.tags;
                 return Array.isArray(t) ? t.filter((x): x is string => typeof x === 'string') : [];
             });
-            empty = reconcileWithResolvedRecords(empty, idHits.map(c => c.result.id), resolvedTags);
+            const idHitIds = idHits.map(c => c.result.id);
+            empty = reconcileWithResolvedRecords(empty, idHitIds, resolvedTags);
+
+            // WOULD-EMPTY FALLBACK: before refusing, look the vetoing terms up
+            // against the whole project's lexemes. AFTER the reconcile on purpose: a term that
+            // names a resolved record (a bare-tag lookup) is not absent, so it must never pay
+            // for this scan. Only a veto that survives reconciliation does. A failed lookup
+            // leaves the veto standing and NAMES itself in degradedSources.
+            const fallback = absentProbe ? nearMissFallbackLexemes(absentProbe, empty) : [];
+            if (absentProbe && fallback.length > 0) {
+                try {
+                    empty = reconcileWithResolvedRecords(
+                        decideEmptyState(absentProbe, rowVocabulary, await fetchProjectNearMissVocabulary(projectId, fallback)),
+                        idHitIds, resolvedTags);
+                } catch (e) { logger.error('❌ smart_search near-miss fallback failed', e as Error); degradedSources.push('near-miss-fallback'); }
+            }
         }
 
         // ═══ BUILD 4 — THE EMPTY STATE ═══
@@ -842,7 +861,7 @@ export class SmartSearchHandler {
                 // `decisionGaps` was ALSO a dead path — computed here, returned on this object,
                 // and read by NEITHER channel of the sole caller (routes/search.routes.ts
                 // renders only knowledgeGaps and puts only knowledgeGaps in structuredContent).
-                // The second instance of the absent-is-not-perfect fix class noted below; both are gone now.
+                // The second instance of the class noted below; both are gone now.
                 coverage,
                 teamEfficiency: this.assessTeamEfficiency(taskStats)
                 // NOTE: a `recommendations: await this.getRecommendations(...)`
@@ -960,7 +979,7 @@ export class SmartSearchHandler {
             // established. The END STATE is certain, and it is the end state that matters
             // here — this read must target `tasks`.
             //
-            // Then commit c68f00d wrapped this query in an information_schema existence check
+            // Then commit c688f00 wrapped this query in an information_schema existence check
             // that returned {total: 0} when the table was missing — converting a LOUD
             // `relation "agent_tasks" does not exist` into a PLAUSIBLE SILENT ZERO.
             //

@@ -310,7 +310,7 @@ interface RepairRow {
 
 /**
  * THE REPAIR POPULATION, AS ONE SQL FRAGMENT — the fix for the starvation defect
- * (the reviewer REJECT round 1, T1-1).
+ * (Reviewer REJECT round 1, T1-1).
  *
  * ── WHAT WENT WRONG ──────────────────────────────────────────────────────────────────
  * The population used to be "every guessed-family edge", and the per-run cap took the first
@@ -360,7 +360,7 @@ const REPAIR_POPULATION_SQL = (col: string): string => `
    -- without this line one leg of one job respected a user's deletion and the other
    -- re-labeled and re-pointed edges into records the user had deleted.
    --
-   -- MEASURED at 67ef00d on the prod snapshot: 19 archived contexts, and ZERO edges in this
+   -- MEASURED at 67e6f00 on the prod snapshot: 19 archived contexts, and ZERO edges in this
    -- population touching one. That zero is the reason to fix it now rather than a reason not
    -- to: the defect is currently unexercised, so nothing would have surfaced it, and the
    -- archived population only grows. A guard written against today's corpus would pass

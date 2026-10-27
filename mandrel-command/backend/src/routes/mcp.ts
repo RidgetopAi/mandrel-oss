@@ -162,7 +162,7 @@ async function resolveScopeBinding(
 
   const grants = await ProjectAccessService.listAccessibleProjectIds(user.id);
   if (grants.length === 0) {
-    // THE headline case (the reviewer nit 1): deny-by-default now covers the ambient path.
+    // THE headline case (Reviewer nit 1): deny-by-default now covers the ambient path.
     return {
       kind: 'refuse',
       status: 403,

@@ -70,7 +70,7 @@ function renderCoverage(coverage: ProjectCoverage): string {
 
   // EDGE PROVENANCE: the declared/guessed split renders WHEREVER the
   // coverage number renders — a coverage figure without it read 97-98% for 15 days over a
-  // dead declared-minting mechanism (the graph audit), because a guess-edge and a
+  // dead declared-minting mechanism (graph an earlier audit), because a guess-edge and a
   // declared-edge count identically. Empty populations say so; they are never omitted and
   // never rendered as a percentage of nothing.
   const provenanceLine =
@@ -428,7 +428,7 @@ export class SearchRoutes {
           // (a single paginated source where total = candidate count is honest + useful),
           // total==returned is the honest number here. Surfaced to the coordinator — a genuine
           // cross-source total would need a defined semantics + the countDecisions from the
-          // an earlier sibling (not in this tree), not a same-shape COUNT.
+          // an earlier change sibling (not in this tree), not a same-shape COUNT.
           total: results.length,
           // WHICH DIAL ANSWERED. A response that has clipped its bodies must SAY which
           // altitude did it, or a caller reading a truncated record cannot tell a short

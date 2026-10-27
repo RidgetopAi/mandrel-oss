@@ -74,15 +74,22 @@ Connect Claude Code (run this once):
   claude mcp add --transport http mandrel http://localhost:8080/mcp --header "Authorization: Bearer <token>" --header "X-Actor-ID: <you>"
 ```
 
-What the host ports are:
+What the host ports are, and the `.env` setting that moves each:
 
-| Port | Service |
-| --- | --- |
-| 8080 | MCP server (`/mcp`) and `/health` |
-| 5000 | dashboard backend (REST API) |
-| 3000 | dashboard frontend |
+| Port | Service | Setting |
+| --- | --- | --- |
+| 8080 | MCP server (`/mcp`) and `/health` | `MANDREL_MCP_HOST_PORT` |
+| 3000 | dashboard | `MANDREL_DASHBOARD_HOST_PORT` |
+| 5000 | dashboard backend (REST API) | `MANDREL_DASHBOARD_API_HOST_PORT` |
+| none | PostgreSQL | `MANDREL_POSTGRES_HOST_PORT` |
+| none | Redis | `MANDREL_REDIS_HOST_PORT` |
 
-All of them are bound to `127.0.0.1` only; nothing is exposed to your network.
+All of them are bound to `127.0.0.1` only; nothing is exposed to your network. PostgreSQL and
+Redis have no fixed host port unless you set one: the installed stack never reaches them from
+the host, and a database or Redis you already run on 5432 or 6379 never conflicts. Host tools
+(psql, redis-cli, services run from source) need one: set the setting above. (Docker still gives each a
+random `127.0.0.1` port; `docker compose port postgres 5432` shows it.) `install.sh` prints the
+MCP endpoint and dashboard URL on whichever ports are in use.
 
 ## Verify
 
@@ -144,15 +151,25 @@ The service names are `postgres`, `redis`, `mcp-server`, `mandrel-command-backen
 `mandrel-command-frontend`. A slow machine on first build may only need a longer wait:
 `MANDREL_INSTALL_TIMEOUT=1800 ./install.sh`. Re-running `install.sh` is safe.
 
-### Port 8080, 5000 or 3000 is already in use
+### A port is already in use
 
-`docker compose up` fails with `port is already allocated` or `address already in use`. Find the
-process holding the port (`ss -ltnp | grep -E ':(8080|5000|3000)\b'` on Linux), stop it, and re-run
-`./install.sh`. The host ports are set in `docker-compose.yml` through `TENANT_MCP_PORT` (8080),
-`TENANT_BACKEND_PORT` (5000) and `TENANT_FRONTEND_PORT` (3000); if you move the MCP port, also pass
-the new URL to the installer so it prints the right config, for example
-`TENANT_MCP_PORT=8081 MANDREL_MCP_URL=http://localhost:8081/mcp ./install.sh`.
-Put `TENANT_MCP_PORT=8081` in `.env` so later `docker compose` commands see it too.
+`install.sh` checks every host port before it starts anything. If one is taken it stops and
+prints, for each busy port, the service that needs it and the line to add to `.env`:
+
+```text
+install.sh: ERROR: host port 8080 (127.0.0.1) is already in use; Mandrel's mcp-server service needs it.
+  See what holds it:  Linux: ss -ltnp 'sport = :8080'   macOS: lsof -nP -iTCP:8080 -sTCP:LISTEN
+  Or move Mandrel's mcp-server: add this line to /path/to/mandrel-oss/.env and re-run ./install.sh:
+      MANDREL_MCP_HOST_PORT=18080
+```
+
+Either stop the other program or add that line to `.env`, then re-run `./install.sh`. The installer
+then prints the MCP endpoint on the new port and adds `localhost:<port>` and
+`127.0.0.1:<port>` to `MCP_ALLOWED_HOSTS` (the server refuses a Host header it does not list,
+port included; set them yourself if you start the stack by hand). An MCP client you configured
+earlier needs the new URL. The older `TENANT_*_PORT` names still work; the `MANDREL_*_HOST_PORT` names win when both
+are set. If the check reports a port busy that Docker can in fact bind, skip it with
+`MANDREL_SKIP_PORT_CHECK=1 ./install.sh`.
 
 ### The install check reports mock embeddings
 

@@ -1,5 +1,6 @@
 /**
- * `completed_at` STAMPS ON THE TRANSITION ONLY — Contract Test ( * migration 099).
+ * `completed_at` STAMPS ON THE TRANSITION ONLY — Contract Test
+ * (migration 099).
  *
  * ═══ THE DEFECT THIS LOCKS SHUT ═══
  * Migration 094's trigger keyed on "does this row END UP completed with no stamp", which is

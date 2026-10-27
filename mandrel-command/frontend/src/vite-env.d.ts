@@ -38,6 +38,9 @@ interface ImportMetaEnv {
   readonly VITE_DAY_SUMMARY_PNG_PREFIX?: string;
   readonly VITE_DAY_SUMMARY_SHARE_BASE?: string;
 
+  // Punch board (see pages/punch/config.ts riskGateLabel)
+  readonly VITE_PUNCH_RISK_GATE_LABEL?: string;
+
   // Behavioural tunables
   readonly VITE_AUTH_CLOCK_SKEW_MS?: string;
   readonly VITE_SEARCH_DEBOUNCE_MS?: string;

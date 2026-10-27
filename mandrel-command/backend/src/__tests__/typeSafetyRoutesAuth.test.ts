@@ -1,6 +1,6 @@
 /**
  * typeSafetyRoutesAuth.test.ts — SECURITY gate for the `/api/type-safety/*` family
- * (an earlier task — Lesson-011 sibling of the session-routes auth fix).
+ * (an earlier task — Lesson-011 sibling of the session-routes fix).
  *
  * Regression guard for the exposure: every `/api/type-safety/*` route was mounted with
  * NO auth middleware, so all six returned 200 to UNAUTHENTICATED callers on the public

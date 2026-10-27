@@ -34,7 +34,8 @@ export const SPINE_TYPES = ['context', 'decision', 'task'] as const;
 export type SpineType = (typeof SPINE_TYPES)[number];
 
 /**
- * HOW a position came to exist — and therefore WHICH RULE SET governs it ( * migration 082; matches branch_positions.origin CHECK):
+ * HOW a position came to exist — and therefore WHICH RULE SET governs it
+ * (migration 082; matches branch_positions.origin CHECK):
  *
  *   'declared'  — branch_open ONLY. A stated stance. P1 semantics, BYTE-IDENTICAL to
  *                 v0.23.0. Explicit intent outranks every byproduct (R0).

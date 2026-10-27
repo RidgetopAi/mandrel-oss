@@ -1,5 +1,5 @@
 /**
- * Per-Session Project Isolation Contract Test  (the executable fuse for the session-isolation fix)
+ * Per-Session Project Isolation Contract Test  (the executable fuse for an earlier change)
  *
  * ROOT BUG: `projectHandler.switchProject()` only mutated the in-memory
  * `sessionStates` map; it never updated the `sessions` DB row. So after an agent
@@ -68,7 +68,7 @@ async function storeContextForConnection(connectionId: string): Promise<string> 
   return res.rows[0].project_id;
 }
 
-describe('Per-session project isolation contract (the session-isolation fix fuse)', () => {
+describe('Per-session project isolation contract (an earlier change fuse)', () => {
   beforeAll(async () => {
     // Two distinct projects P1, P2
     const p1 = await db.query(

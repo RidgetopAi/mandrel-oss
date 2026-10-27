@@ -1,7 +1,7 @@
 /**
- * branch_current MUST NOT REFUSE A READ UNDER STRICT ANCHOR KEYING —  * an earlier decision.
+ * branch_current MUST NOT REFUSE A READ UNDER STRICT ANCHOR KEYING.
  *
- * MEASURED 2026-09-19 (Coordinator): with MANDREL_ANCHOR_STRICT_SESSION_KEYING=true and no
+ * MEASURED 2026-09-19 (the coordinator): with MANDREL_ANCHOR_STRICT_SESSION_KEYING=true and no
  * resolved DB session for the connection (ActiveSessionStore miss — a cold boot, or any
  * fleet restart that wipes the RAM cache), branch_current THREW ANCHOR_NO_SESSION_IDENTITY.
  * That is the wrong answer for a READ: branch_current answers "where am I standing", and

@@ -1,6 +1,6 @@
 /**
  * THE `phase` TAG GRAMMAR — the ONE definition of what "phase N" is spelled like.
- *
+ * (an earlier task.)
  *
  * ═══ THE DEFECT ══════════════════════════════════════════════════════════════════════
  * `task_list`'s `phase` parameter built its lookup as the single literal `phase-${phase}`,

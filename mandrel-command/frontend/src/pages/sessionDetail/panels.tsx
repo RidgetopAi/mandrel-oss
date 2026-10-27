@@ -1,7 +1,7 @@
 /**
  * The five session-detail tab bodies — Contexts / Tasks / Decisions / Files / Timeline —
  * each rendering REAL data from the unified `api.sessions.*` reads and each owning an
- * honest empty state (the data-gap policy: an empty array shows "nothing recorded", never a
+ * honest empty state (policy: an empty array shows "nothing recorded", never a
  * fabricated row). Contexts/Tasks/Decisions/Timeline come from `api.sessions.get(id)`;
  * Files comes from `api.sessions.files(id)` (GET /api/v2/sessions/:id/files).
  */

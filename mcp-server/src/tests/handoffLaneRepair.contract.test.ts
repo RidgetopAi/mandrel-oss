@@ -1,14 +1,20 @@
 /**
  * Migration 105 + handoffLaneRepair contract: the repair deletes cross-lane
  * auto:handoff-supersession edges (ws:research -> ws:coordinator), keeps same-lane auto edges
- * (ws:coordinator -> untagged) and cross-lane edges with a different created_by, and is idempotent.
+ * (ws:coordinator -> untagged), cross-lane edges with a different created_by, and
+ * cross-lane auto edges whose predecessor the writer named with a supersedes: tag; a cross-lane
+ * edge claiming predecessor_source 'context-tag' is still deleted (context: is same-lane only);
+ * idempotent.
  */
 import { describe, test, expect, afterAll } from 'vitest';
 import { db } from '../config/database.js';
 import { mintEdge } from '../services/links.js';
 import { EDGE_MINT_VIA } from '../config/edgeProvenanceConfig.js';
 import { repairCrossLaneHandoffSupersession } from '../services/handoffLaneRepair.js';
-import { HANDOFF_SUPERSESSION_CREATED_BY } from '../services/handoffSupersession.js';
+import {
+  HANDOFF_SUPERSESSION_CREATED_BY,
+  HANDOFF_PREDECESSOR_SOURCE,
+} from '../services/handoffSupersession.js';
 import {
   READ_HANDOFF_LANE_TAG_PREFIX as PFX,
   READ_HANDOFF_DEFAULT_LANE as DEF,
@@ -26,10 +32,10 @@ async function mkCtx(tags: string[], label: string): Promise<string> {
     )
   ).rows[0].id;
 }
-async function mkEdge(from: string, to: string, by: string): Promise<void> {
+async function mkEdge(from: string, to: string, by: string, metadata: Record<string, unknown> = {}): Promise<void> {
   await mintEdge(
     { fromId: from, fromType: 'context', toId: to, toType: 'context', edgeType: 'supersedes',
-      projectId, createdBy: by, via: EDGE_MINT_VIA.handoffTimeline, metadata: {} },
+      projectId, createdBy: by, via: EDGE_MINT_VIA.handoffTimeline, metadata },
     db
   );
 }
@@ -57,16 +63,28 @@ describe('handoff lane repair (migration 105)', () => {
     const untagged = await mkCtx([], 'untagged');
     const coordinator = await mkCtx([`${PFX()}${DEF()}`], 'coordinator');
     const research = await mkCtx([`${PFX()}research`], 'research');
+    const named = await mkCtx([`${PFX()}research`], 'named');
+    const cited = await mkCtx([`${PFX()}research`], 'cited');
     const other = 'manual:someone';
 
     await mkEdge(research, coordinator, HANDOFF_SUPERSESSION_CREATED_BY); // cross-lane auto -> DELETED
     await mkEdge(coordinator, untagged, HANDOFF_SUPERSESSION_CREATED_BY); // same lane auto -> kept
     await mkEdge(research, untagged, other); // cross-lane, other author -> kept
+    await mkEdge(named, coordinator, HANDOFF_SUPERSESSION_CREATED_BY, {
+      predecessor_source: HANDOFF_PREDECESSOR_SOURCE.supersedesTag,
+    }); // cross-lane auto, but EXPLICITLY named by the writer -> kept
+    await mkEdge(cited, coordinator, HANDOFF_SUPERSESSION_CREATED_BY, {
+      predecessor_source: HANDOFF_PREDECESSOR_SOURCE.contextTag,
+    }); // cross-lane auto claiming context-tag -> DELETED (context: never crosses a lane)
 
-    expect(await repairCrossLaneHandoffSupersession(db)).toBe(1);
+    expect(await repairCrossLaneHandoffSupersession(db)).toBe(2);
     const after = await edgeKeys();
     expect(after).toEqual(
-      [`${coordinator}>${untagged}@${HANDOFF_SUPERSESSION_CREATED_BY}`, `${research}>${untagged}@${other}`].sort()
+      [
+        `${coordinator}>${untagged}@${HANDOFF_SUPERSESSION_CREATED_BY}`,
+        `${research}>${untagged}@${other}`,
+        `${named}>${coordinator}@${HANDOFF_SUPERSESSION_CREATED_BY}`,
+      ].sort()
     );
 
     expect(await repairCrossLaneHandoffSupersession(db)).toBe(0);

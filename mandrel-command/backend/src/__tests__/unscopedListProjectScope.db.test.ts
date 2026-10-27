@@ -383,7 +383,18 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
       // is exactly why they failed the gate and not any local run. Matching on the key
       // substring rather than an enumerated list of names, because enumerating the names I
       // happen to have seen is the mistake this whole task keeps making.
-      .replace(/"(\w*[Dd]uration\w*)":\s*"?-?[\d.]+"?/g, '"$1":<elapsed>');
+      .replace(/"(\w*[Dd]uration\w*)":\s*"?-?[\d.]+"?/g, '"$1":<elapsed>')
+      // ...and the one value DERIVED from that elapsed time under a non-duration name.
+      // `productivity_score` = calculateActivityScore({durationMinutes, …}) (sessionScore.ts:46,
+      // perHour 1.5, rounded to 0.1), so for an OPEN session it ticks every 4 minutes with
+      // no writer. MEASURED (gate RED at an earlier change and an earlier change): Stage 1's vitest leaves one
+      // open session in the shared DB, and the A/B admin sweeps of /api/sessions/summaries
+      // differed on exactly `productivity_score` 0.7 -> 0.8 and nothing else. The population
+      // is whole: calculateActivityScore has two callers — /sessions/:id (unswept, param) and
+      // /sessions/summaries. Normalised, not frozen: summaries returns project rows, which
+      // FROZEN_VOLATILE must not; its ids and project_name are still compared, and LANDED
+      // below requires it to still move.
+      .replace(/"productivity_score":\s*"?-?[\d.]+"?/g, '"productivity_score":<elapsed>');
 
   const hitAll = async (persona: Persona): Promise<Record<string, string>> => {
     const out: Record<string, string> = {};
@@ -655,7 +666,7 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
       expect(movedForAdmin).toContain('/api/sessions');
       // The duration family is normalised away above, so these are the assertions that the
       // session aggregates still carry a live signal through it rather than going inert.
-      for (const p of ['/api/sessions/trends', '/api/sessions/stats-by-period', '/api/sessions/analytics']) {
+      for (const p of ['/api/sessions/trends', '/api/sessions/stats-by-period', '/api/sessions/analytics', '/api/sessions/summaries']) {
         expect(movedForAdmin).toContain(p);
       }
     });

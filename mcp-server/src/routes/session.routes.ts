@@ -57,7 +57,7 @@ import { logger } from '../utils/logger.js';
  * SessionManagementHandler.createNewSession). No raw SQL here — delegates to
  * projectHandler.listProjects.
  *
- * ID-FIRST (the reviewer BLOCKER 1). This helper's own doc comment and the
+ * ID-FIRST (Reviewer BLOCKER 1). This helper's own doc comment and the
  * `session_start.project` schema BOTH described it as a "NAME-or-id lookup" — but the
  * implementation matched `p.name` ONLY and never looked at `p.id`. The claim was in two
  * places; the behaviour was in neither (a past incident — a comment is a claim, not a fact).

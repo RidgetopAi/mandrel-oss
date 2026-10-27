@@ -3,7 +3,7 @@
  * pattern). Source-level invariants — cheap, deterministic, drift-proof:
  *   1. import ZERO antd (the legacy Code-Health/AI/System/Task tabs + antd are CUT);
  *   2. wire data through the UNIFIED `api.*` client (not axios/generated), and ONLY to
- *      live/built endpoints — never a fabricated "actor" read (the data-gap policy);
+ *      live/built endpoints — never a fabricated "actor" read (data-gap policy);
  *   3. REUSE the shared P0.6 charting module (components/charts) — no new chart component,
  *      no chart library imported directly (recharts/plotly/@ant-design/plots);
  *   4. carry no hardcoded hex colours in the stylesheet (token-driven).
@@ -24,7 +24,7 @@ const allTsSrcs = [{ f: 'Analytics.tsx', src: pageSrc }, ...partSrcs];
 const HEX = /#[0-9a-fA-F]{3,8}\b/g;
 
 /**
- * ── THE AXIOS BAN IS A LINT RULE NOW (page-scope epic) ─────────────────────────────────
+ * ── THE AXIOS BAN IS A LINT RULE NOW ─────────────────────────────────
  * `@typescript-eslint/no-restricted-imports` in `.eslintrc.cjs` bans axios value imports
  * across ALL of src/, in every import spelling, with the type-only exclusion handled by
  * the rule itself. It replaced a hand-written regex matcher that this suite used to feed
@@ -64,7 +64,7 @@ describe('Analytics rebuild — unified client, live/built endpoints only', () =
     // The filter's options now come from `usePageProject`, which reads the ONE central
     // list and the ONE central sort (contexts/ProjectContext). A second copy of a list is
     // how two screens end up ordering the same projects differently, so the absence is
-    // the assertion — the deleted read must not creep back (page-scope epic §D).
+    // the assertion — the deleted read must not creep back (an earlier epic §D).
     expect(hooks).not.toMatch(/api\.projects\.list\(/);
   });
 
@@ -160,7 +160,7 @@ describe('Analytics rebuild — token-driven', () => {
   });
 });
 
-describe('Analytics — the page owns its project scope, and does not re-invent it (page-scope epic)', () => {
+describe('Analytics — the page owns its project scope, and does not re-invent it', () => {
   /**
    * Source-level DRIFT guards only. They cannot prove the request is scoped correctly —
    * that is what the behavioural suites do, against the header a request would actually

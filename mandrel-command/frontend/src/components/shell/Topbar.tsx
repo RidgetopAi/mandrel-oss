@@ -5,7 +5,7 @@
  * menu. These stay put regardless of rail state (reference: "Topbar unaffected").
  *
  * The project switch here is the ONE control that scopes every page.
- * The page-scope epic §B had removed it in favour of a
+ * an earlier Epic §B had removed it in favour of a
  * selector on each page; the operator's punch returns the master switch to the top bar and
  * deletes the per-page ones. See shell/ProjectSwitch for what it writes.
  */

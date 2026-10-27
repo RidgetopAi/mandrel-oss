@@ -1,6 +1,6 @@
 /**
  * TRUST PARITY — the executable drift guard for the mirrored canonical trust model
- * (PHASE 2 item e, the graph audit "no parity test" finding).
+ * (PHASE 2 item e, an earlier audit "no parity test" finding).
  *
  * TreeWalker's backend cannot IMPORT mcp-server source (measured: backend/Dockerfile
  * copies only backend/ into the build context; the packages also differ CJS vs ESM), so
@@ -268,7 +268,7 @@ describe('treewalker trust — parity with the canonical mcp-server model', () =
 
   const STATUS_MATRIX: StatusFixture[] = [
     // The SK7 case itself: one hygiene cancellation is the record's only linked work.
-    statusFixture('one cancelled task, fresh (the cancelled-task case)', ['cancelled'], [], 3),
+    statusFixture('one cancelled task, fresh (the case)', ['cancelled'], [], 3),
     statusFixture('a cancelled task alongside a completed one', ['completed', 'cancelled'], [], 3),
     statusFixture('cancelled task at half-life age', ['cancelled'], [], 30),
     // The whole vocabulary at once, both directions.

@@ -118,7 +118,7 @@ import { buildTaskEmbeddingTextFromRow } from '../services/embedding/taskEmbeddi
 // that started REJECTING would be a breaking change for every customer in the worst
 // possible packaging (SCOPE §8.6).
 import { validateAndNormalizeTags } from '../utils/threadingTags.js';
-// TAG SPELLING — the write-time half of the tag-spelling collision check. Structural, carries
+// 98662108 — the write-time half of the tag-spelling collision check. Structural, carries
 // no vocabulary, and warns without changing the tag. See services/tagSpellingWriteCheck.ts.
 import { tagSpellingWriteWarnings, tagSpellingWriteWarningsForTask } from '../services/tagSpellingWriteCheck.js';
 // P5.5 / migration 093. The write path must tolerate a database that does not have the
@@ -500,7 +500,7 @@ class TasksHandler {
             // A warning only an operator can see is a warning the author of the tag never
             // reads, and the author is the only person who can fix the tag.
             const created = this.mapTask(result.rows[0]);
-            // SPELLING COLLISIONS RIDE THE SAME CHANNEL as the grammar warnings,
+            // 98662108 — SPELLING COLLISIONS RIDE THE SAME CHANNEL as the grammar warnings,
             // for the same reason: only the tag's author can fix the tag, and only if they
             // are told. Appended AFTER the grammar warnings because a malformed threading
             // value is a broken join and a colliding spelling is a split queue — the broken
@@ -698,7 +698,7 @@ class TasksHandler {
             // tag happens to live in `tags`. So every branch-keyed consumer of task_list
             // answered "which branch?" from the tag alone, and a task with a DECLARED
             // membership and no tag was counted as belonging to NOTHING. Measured by
-            // The reviewer by running runtime's branch-board: its "no-branch open = 100",
+            // Reviewer by running runtime's branch-board: its "no-branch open = 100",
             // labelled a drift signal, counted 14 declared spine members as branchless.
             // task_details has returned both carriers since an earlier change; the LIST could not,
             // and the list is what a board reads.
@@ -780,8 +780,8 @@ class TasksHandler {
     }
 
     /**
-     * SEMANTIC TASK SEARCH — the reader for the vectors migration 088 baked (an earlier task
-     * , tranche B: "turn the task source on").
+     * SEMANTIC TASK SEARCH — the reader for the vectors migration 088 baked
+     * (tranche B: "turn the task source on").
      *
      * WHY IT DID NOT ALREADY EXIST. Tranche B built the whole WRITE half — the columns, the
      * inline embed on create/update, the embed text, the backfill registration — and 3,807
@@ -1072,7 +1072,7 @@ class TasksHandler {
             if (v.warnings.length > 0) {
                 logger.warn(`🏷️  task_update linking-grammar normalization: ${v.warnings.join(' ')}`);
             }
-            // Tag spelling — the UPDATE path too. task_update REPLACES the tag set, so a re-tag
+            // 98662108 — the UPDATE path too. task_update REPLACES the tag set, so a re-tag
             // introduces a colliding spelling exactly as readily as a create does; warning
             // only on create would fix the reported half and leave the other open
             // (CLASSES.md C5 — if you fixed one path, show the others).
@@ -1708,7 +1708,7 @@ class TasksHandler {
             // metadataMergeSql helper the single task_update path uses, instead of the old
             // wholesale `metadata = $n` REPLACE that silently DROPPED every sibling key not
             // in the incoming object. That REPLACE left the Lesson-011 "whole class"
-            // incomplete after the single-path merge fix (f7af00d) — bulk clobbered while
+            // incomplete after the single-path merge fix (f7a4f00) — bulk clobbered while
             // single merged. Now both share the shallow-merge semantics: set/overwrite
             // incoming keys, keep untouched keys, and an explicit `null` deletes a key.
             //
@@ -1824,7 +1824,7 @@ class TasksHandler {
             // depend on WHICH endpoint edited the record, which is exactly the drift the
             // unconditional re-derivation removes. After COMMIT: the rows are durable, and a
             // derivation failure degrades to NOT-DERIVED instead of rolling back the user's
-            // update — AND (the reviewer) it is what makes the rollback-degradation
+            // update — AND (Reviewer) it is what makes the rollback-degradation
             // path safe, since this is the only write path holding an explicit transaction.
             // THE POSITION IS UNCHANGED BY still after COMMIT, still degrading.
             //

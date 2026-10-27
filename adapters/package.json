@@ -1,6 +1,6 @@
 {
   "name": "@mandrel/mcp-adapter-http",
-  "version": "1.0.0",
+  "version": "0.70.1",
   "description": "HTTP protocol adapter for Mandrel Core Service - bridges Claude Code MCP to Mandrel HTTP API",
   "main": "mcp-http-adapter.js",
   "bin": {
@@ -31,7 +31,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/RidgetopAi/mandrel-oss.git",
+    "url": "https://github.com/riverbend/aidis.git",
     "directory": "adapters"
   },
   "dependencies": {

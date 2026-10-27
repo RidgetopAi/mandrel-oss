@@ -49,7 +49,7 @@ const DYNAMIC_ENV_READ_BANS = [
   },
   // A single `as` cast (`(import.meta.env as Record<string,string>)[name]`) slips
   // the shapes above because the cast node wraps the env member — measured during
-  // this task's own mutation probe, and flagged by the reviewer (N1). Note the cast
+  // this task's own mutation probe, and flagged by Reviewer (N1). Note the cast
   // form does not even leak: Vite then inlines `{}` and every read is silently
   // undefined — a functional bug, still banned. One cast layer is covered; a
   // double cast (`as unknown as X`) is not — the bundle scan remains the choke point.
@@ -67,7 +67,7 @@ const DYNAMIC_ENV_READ_BANS = [
   },
 ];
 
-// ── RUNTIME axios LOADS (page-scope epic) ──────────────────────────────────────────
+// ── RUNTIME axios LOADS ──────────────────────────────────────────
 // `@typescript-eslint/no-restricted-imports` (configured below) is an ES-MODULE rule:
 // it sees `import … from 'axios'` in every spelling, but NOT `await import('axios')`
 // and NOT `require('axios')`. MEASURED on this toolchain (eslint 8.57.1 /
@@ -146,7 +146,7 @@ module.exports = {
     // Whole-env inlining ban — see DYNAMIC_ENV_READ_BANS at the top of this file.
     'no-restricted-syntax': ['error', ...DYNAMIC_ENV_READ_BANS, ...AXIOS_RUNTIME_LOAD_BANS],
 
-    // ── DIRECT axios VALUE IMPORTS ARE BANNED src-wide (page-scope epic) ─────────────
+    // ── DIRECT axios VALUE IMPORTS ARE BANNED src-wide ─────────────
     //
     // Every request must go through the unified client in `src/api` so it carries the
     // shared interceptor (auth header, project scope, error normalisation). A module
@@ -200,7 +200,7 @@ module.exports = {
 
   overrides: [
     {
-      // ── THE ONE AXIOS VALUE IMPORT (page-scope epic) ────────────────────────────────
+      // ── THE ONE AXIOS VALUE IMPORT ────────────────────────────────
       // `src/services/api.ts` IS the axios instance every other module consumes through
       // src/api; it must import the library. This is the only exemption, and it was
       // measured, not assumed — see the rule's comment above for the command. Kept as a

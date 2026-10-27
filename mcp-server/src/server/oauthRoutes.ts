@@ -31,6 +31,8 @@ import { getAuth, type AuthInstance } from './auth.js';
 import { BETTER_AUTH_CONFIG, OAUTH_SUPPORTED_SCOPES, oauthIssuerIdentifier } from '../config/betterAuthConfig.js';
 import { renderSignInPage, renderConsentPage } from './oauthPages.js';
 import { dcrClientCapMiddleware } from '../services/oauthClientGuard.js';
+import { mountSetPasswordRoutes } from './setPasswordPage.js';
+import { mountDashboardAuthRoutes } from './dashboardAuthRoutes.js';
 
 /**
  * Adapt a Web Fetch-API handler (request: Request) => Promise<Response> — which the
@@ -135,6 +137,12 @@ export function mountOAuthRoutes(app: Application, authOverride?: AuthInstance):
     res.setHeader('Content-Type', 'text/html; charset=utf-8');
     res.status(200).send(renderConsentPage(req.query as Record<string, string>));
   });
+  // (4b) One-time set-password page for a provisioned login user (sign-up S5).
+  mountSetPasswordRoutes(app, auth);
+  // (4c) Internal dashboard sign-in (ONE login): the Command backend asks
+  // better-auth "is this email+password right?" — static service token only, not published by
+  // the tenant router. See server/dashboardAuthRoutes.ts.
+  mountDashboardAuthRoutes(app, auth);
 
   // (2a) PER-TENANT DCR CAP: reject a dynamic client registration once this
   // instance already holds OAUTH_CLIENT_CONFIG.perTenantCap clients. Mounted on the exact
@@ -149,7 +157,7 @@ export function mountOAuthRoutes(app: Application, authOverride?: AuthInstance):
   app.all(`${basePath}/*splat`, toNodeHandler(auth));
 
   logger.info(
-    `🔐 OAuth authorization-server MOUNTED: ${basePath}/* + 3 discovery docs + /sign-in + /consent ` +
+    `🔐 OAuth authorization-server MOUNTED: ${basePath}/* + 3 discovery docs + /sign-in + /consent + /sign-in/set-password + internal dashboard sign-in ` +
     `(issuer=${BETTER_AUTH_CONFIG.issuer}, resource=${BETTER_AUTH_CONFIG.resource}).`
   );
   return auth;

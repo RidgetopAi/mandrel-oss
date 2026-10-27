@@ -9,7 +9,7 @@
 #   * `regenerate` is THIS FILE'S REASON TO EXIST. It is the ONLY producer of
 #     scripts/schema-reference.sql.txt — the committed artifact both gates diff
 #     against — and it is the remedy named by the CI gate, by
-#     .github/workflows/ci.yml, by a per-instance schema audit, by the reference
+#     .github/workflows/ci.yml, by the per-instance schema audit, by the reference
 #     file's own header, and by ~20 migration headers. Deleting this script would
 #     leave no way to update the contract it defines.
 #   * `verify` is a standalone convenience you can run by hand. THE GATE IS
@@ -127,7 +127,7 @@ $PGSUPER psql -q -c "DROP ROLE IF EXISTS \"$DBUSER\";" >/dev/null 2>&1 || true
 PROV_ERR="/tmp/schema_contract_provision_${SFX}.txt"
 # password via stdin, never on psql's argv (ps-visible). ON_ERROR_STOP is what makes the
 # stdin form fail closed: without it psql exits 0 on a SQL error and `set -e` cannot see it
-# (the reviewer F3 — measured: -c error exit 1, stdin error exit 0, stdin+flag exit 3).
+# (Reviewer F3 — measured: -c error exit 1, stdin error exit 0, stdin+flag exit 3).
 if $PGSUPER psql -q -v ON_ERROR_STOP=1 >/dev/null 2>"$PROV_ERR" <<SQL
 CREATE ROLE "$DBUSER" LOGIN PASSWORD '$DBPASS';
 SQL

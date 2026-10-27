@@ -12,7 +12,7 @@
   // scripts/route-census.ts left `npx tsc --noEmit` (the old STAGE 3 command)
   // at rc=0 and matched 0 jest test files.
   //
-  // This is the same hole, and the same fix, that an earlier task closed for
+  // This is the same hole, and the same fix, that earlier task closed for
   // mcp-server. See mcp-server/tsconfig.typecheck.json.
   //
   // THE RULES ARE NOT LOOSENED. This extends the build config verbatim, so

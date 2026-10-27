@@ -7,7 +7,7 @@
  *  - tasks.total, decisions.total, tasks.in_progress → this card's own insights query
  *    (its own loading skeleton / error dash, so a slow insights read never blocks the grid).
  *
- * DATA GAP (the data-gap policy): the mock's per-project 30-day sparkline + literal "active
+ * DATA GAP (policy): the mock's per-project 30-day sparkline + literal "active
  * branches" are NOT served. The sparkline is omitted; the footer shows the REAL
  * in-progress-task count as the active-work signal, with a Tooltip explaining the
  * substitution — no fabricated branch names.

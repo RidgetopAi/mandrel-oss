@@ -1,7 +1,7 @@
 /**
  * BELIEF LAYER v1 — the config (Phase 4, Increment 1: supersession detection).
  *
- * THE MOAT (the belief-layer design, as locked): cosine gives us the
+ * THE MOAT (belief-layer design, locked): cosine gives us the
  * RELEVANCE axis; the belief layer adds the TRUTH-NOW axis — it adjudicates whether a
  * relevant record still holds, or has been SUPERSEDED / CONTESTED. "Everyone retrieves;
  * we adjudicate." This module is the SINGLE home for every belief knob.
@@ -146,7 +146,7 @@ export interface SupersessionModeResolution {
  * An explicit provider always wins over the keys. Pure: reads only `env`, returns names, never values.
  */
 export function resolveSupersessionMode(
-  env: Record<string, string | undefined> = process.env // env-read: via-callers
+  env: Record<string, string | undefined> = process.env // env-read: object-passthrough(pure resolver reads SUBQ_API_KEY / ANTHROPIC_API_KEY / MANDREL_BELIEF_ADJUDICATOR_PROVIDER from the env object it is handed; tests pass their own)
 ): SupersessionModeResolution {
   const present = (name: string): boolean => {
     const v = env[name];
@@ -213,7 +213,7 @@ function adjudicatorCredentialPresent(): boolean {
 }
 
 /**
- * THE BELIEF KNOBS (the belief-layer design §3, locked defaults per the belief-layer lock).
+ * THE BELIEF KNOBS (design §3, locked defaults per an earlier change).
  *
  * Two-stage detection: Stage-1 (cosine) NOMINATES candidate pairs cheaply; Stage-2 (the
  * adjudicator LLM) is the only thing that ADJUDICATES. Cosine never decides a verdict
@@ -271,7 +271,7 @@ export interface BeliefConfig {
    * pick-logs were ~18% of the original 1111 mints, and after fixing them the gate-logs were
    * the single biggest remaining FP class (~10%). NOTE (2026-07-07): the durable write-site
    * kind-stamp for these (in the riverbend control-plane record writer) is PREPARED but
-   * HELD as /tmp/belief-writesite-fix.patch — NOT applied (it edits a LIVE hourly cron;
+   * HELD as /home/user/belief-writesite-fix.patch — NOT applied (it edits a LIVE hourly cron;
    * awaits the operator). Until that patch lands, NO record carries `pick-log`/`gate-log`, so these
    * two entries are inert placeholders and `pairExcludeContentPrefixes` below is the CURRENT
    * defense for the whole untagged tick-auto-record class. Apply the patch to
@@ -293,8 +293,9 @@ export interface BeliefConfig {
    * ZERO real belief atoms — a prefix (not a substring), so a record that merely MENTIONS
    * "Picked by priority" or "CN1" mid-body is NOT excluded. "Picked by " (trailing space)
    * covers all scoper reasons (priority / next-tag / auto-buildable); the CNx + classify
-   * phrases are the risk classifier's verdict rationales; the last entry is the COMPANY MAP
-   * registry snapshot (a separate machine-written class). Until the write-site kind-stamp
+   * phrases are the risk classifier's verdict rationales. A deployment's OWN machine-written
+   * classes are appended from MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA (see
+   * PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA below), so this list stays generic. Until the write-site kind-stamp
    * patch is applied, THIS LIST IS THE ONGOING SOLE DEFENSE for untagged tick records (not a
    * one-time backfill) — if the scoper/risk/registry wording changes, update it. Prefixes must
    * not contain SQL LIKE metachars (`%`/`_`); none currently do. Empty list disables. Env
@@ -317,7 +318,7 @@ export interface BeliefConfig {
   contestMinConfidence: number;
   /**
    * adjudicator_concurrency — how many adjudications run at once. LOCKED at 1 (design §4 +
-   * an earlier capacity recon): the adjudicator shares the Ollama daemon + CPUs with the LIVE
+   * capacity recon): the adjudicator shares the Ollama daemon + CPUs with the LIVE
    * embedder, so it runs SERIAL, off any write critical path, embedder-priority. Raising
    * this contends with customer write embeddings — do not, without a dedicated box. Env:
    * MANDREL_BELIEF_ADJUDICATOR_CONCURRENCY. Default 1.
@@ -355,6 +356,14 @@ export interface BeliefConfig {
 }
 
 /**
+ * Deployment-specific content prefixes APPENDED to pairExcludeContentPrefixes — records a
+ * deployment's own publishers write on a fixed template (e.g. a periodic registry snapshot),
+ * which are never belief atoms. Comma-separated; default empty (nothing extra excluded).
+ * Env: MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA.
+ */
+export const PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA: string[] = envStrList('MANDREL_BELIEF_PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA', []);
+
+/**
  * THE LIVE CONFIG — read once at module load. Defaults are the design/lock values; every
  * one is env-overridable for the belief-eval sweep.
  */
@@ -377,7 +386,7 @@ export const BELIEF_CONFIG: BeliefConfig = {
     'CN4 (money & commitments) tripped by',
     'cannot positively classify as clean-internal-eng',
     'positively safe-internal-eng (owner',
-  ]),
+  ]).concat(PAIR_EXCLUDE_CONTENT_PREFIXES_EXTRA),
   pairTopK: envInt('MANDREL_BELIEF_PAIR_TOP_K', 8),
   contestMinConfidence: envFloat('MANDREL_BELIEF_CONTEST_MIN_CONFIDENCE', 0.5),
   adjudicatorConcurrency: envInt('MANDREL_BELIEF_ADJUDICATOR_CONCURRENCY', 1),
@@ -410,7 +419,7 @@ export interface BeliefAdjudicatorConfig {
    */
   temperature: number;
   /**
-   * SERVING HARDENING (the serving survey cross-cutting finding): our #1 pain — a verdict that
+   * SERVING HARDENING (survey cross-cutting finding): our #1 pain — a verdict that
    * FLIPS when the prompt is nudged — is partly a SERVING-CONFIG bug, not model capacity. The
    * fix (independent of model choice) is greedy decode + grammar-constrained JSON + no
    * thinking-mode CoT for the verdict. These four knobs bake that in, config-driven.

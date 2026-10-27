@@ -171,6 +171,11 @@ name by default; override with `MANDREL_ACTOR_ID`). The MCP server advertises th
 tool surface by default (`MANDREL_TOOL_SURFACE=gateway`). Re-running keeps your existing `.env`
 values, including the admin password.
 
+If a port Mandrel needs is already taken on your machine, `install.sh` stops before it starts
+anything and prints the `.env` line that moves it (for example `MANDREL_MCP_HOST_PORT=18080`).
+PostgreSQL and Redis get no fixed host port by default, so a database or Redis you already run on
+5432 or 6379 never conflicts. Every port setting is in the "Host ports" block of `.env.example`.
+
 The full **[user manual](docs/manual/index.md)** covers install, connecting an agent, concepts,
 everyday use, supersession and operations. Developing Mandrel itself (host `npm run dev:*`)? See
 [CONTRIBUTING.md](CONTRIBUTING.md).

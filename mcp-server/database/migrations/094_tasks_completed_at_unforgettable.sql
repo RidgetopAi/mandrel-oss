@@ -1,6 +1,6 @@
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 -- 094 — `tasks.completed_at` becomes UNFORGETTABLE: an auto-stamping trigger plus a
---       CHECK backstop.
+--       CHECK backstop. (an earlier task.)
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 --
 -- ═══ WHAT WAS WRONG ═══
@@ -36,8 +36,8 @@
 --            it recovers the REAL moment when a caller blanks the column, instead of
 --            inventing a fresh one.
 --   (2) row is already completed and already stamped -> UNTOUCHED. Never overwrite a real
---            timestamp. This is the defect that `COALESCE` was introduced to fix (an earlier task
---            : a bare `completed_at = CURRENT_TIMESTAMP` moved the stamp forward on
+--            timestamp. This is the defect that `COALESCE` was introduced to fix
+--            (a bare `completed_at = CURRENT_TIMESTAMP` moved the stamp forward on
 --            every re-save, silently compressing every lead time computed from it).
 --   (3) TRANSITION OUT of completed (UPDATE, OLD.status='completed', NEW.status<>'completed')
 --         -> `completed_at := NULL`. Mirrors services/task.ts and handlers/tasks.ts.
@@ -99,8 +99,7 @@
 --
 -- ═══ DEPLOY ═══
 -- CN2, migration-bearing, ROLL-FORWARD ONLY — pinning code back does not revert schema.
--- Ships through the normal migration path (mcp-server/docker-entrypoint.sh owns migrations,
--- NOT fleet-deploy script).
+-- Ships through the normal migration path (mcp-server/docker-entrypoint.sh owns migrations).
 -- ORDER-INDEPENDENT: the application layer keeps its own COALESCE clauses (defence in depth,
 -- see the task record), and they compute the same value the trigger would, so
 -- migration-first and code-first both land in the same state.

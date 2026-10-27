@@ -3,7 +3,7 @@
  *
  *  1. Source checkout, MANDREL_XENOVA_CACHE_DIR unset → the vendored model under
  *     mcp-server/vendor/models/ is found and a REAL 384-value embedding is produced.
- *  2. Model cannot load, no mock opt-in → verifyStartup() throws naming the searched dir and
+ *  2. Model cannot load, no mock opt-in, strict mode → verifyStartup() throws naming the searched dir and
  *     MANDREL_XENOVA_CACHE_DIR; generateEmbedding returns no mock.
  *  3. Explicit MANDREL_EMBEDDINGS_ALLOW_MOCK=true → missing model yields mock embeddings.
  *
@@ -53,7 +53,8 @@ describe('embedding model resolution', () => {
     expect(r.embedding.slice(0, 384).some((v) => v !== 0)).toBe(true);
   }, 60000);
 
-  it('(2) unloadable model without opt-in: startup throws naming dir + setting; no mock', async () => {
+  it('(2) unloadable model without opt-in, MANDREL_EMBEDDING_VERIFY_STARTUP=strict: startup throws naming dir + setting; no mock', async () => {
+    vi.stubEnv('MANDREL_EMBEDDING_VERIFY_STARTUP', 'strict');
     vi.stubEnv('MANDREL_XENOVA_CACHE_DIR', MISSING);
     vi.stubEnv('MANDREL_EMBEDDINGS_ALLOW_MOCK', '');
     vi.stubEnv('VITEST', '');

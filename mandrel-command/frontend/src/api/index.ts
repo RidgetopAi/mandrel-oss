@@ -31,6 +31,7 @@ import { dashboardApi } from './domains/dashboard';
 import { embeddingApi } from './domains/embedding';
 import { monitoringApi } from './domains/monitoring';
 import { usersApi } from './domains/users';
+import { apiTokensApi } from './domains/apiTokens';
 import { feedbackApi } from './domains/feedback';
 import { resolveApi } from './domains/resolve';
 import { treewalkerApi } from './domains/treewalker';
@@ -50,6 +51,7 @@ export const api = {
   embedding: embeddingApi,
   monitoring: monitoringApi,
   users: usersApi,
+  apiTokens: apiTokensApi,
   feedback: feedbackApi,
   resolve: resolveApi,
   treewalker: treewalkerApi,

@@ -199,8 +199,8 @@ describe('hardcoded test ports — a port is exclusive to a HOST, not to a range
     });
 
     test('THE REGRESSION IT EXISTS FOR: the exact pre-fix line goes RED', () => {
-      // Verbatim from betterAuthOAuth.integration.test.ts:58 as it stood before an earlier task
-      // , including the comment that accompanied it — which was accurate about
+      // Verbatim from betterAuthOAuth.integration.test.ts:58 as it stood before an earlier task,
+      // including the comment that accompanied it — which was accurate about
       // the reserved ranges and prevented nothing.
       const preFix = // fixed-port-ok: fixture/expectation, binds nothing
         "// 19097: deliberately OUTSIDE the live fleet's docker-proxy port ranges\n" +

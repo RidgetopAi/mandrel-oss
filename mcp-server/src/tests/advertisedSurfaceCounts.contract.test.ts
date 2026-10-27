@@ -20,7 +20,7 @@
  * surface of a known, deliberately-unusual size, then asserts the rendered header carries THAT
  * fixture's numbers — and it does this with TWO fixtures of DIFFERENT sizes, so the header's
  * numbers must MOVE. A literal (any literal — 54, 11, 62, or a fresh pair) is a constant; a
- * constant cannot equal both fixtures. This is the a past incident rule-8 discipline: the expected
+ * constant cannot equal both fixtures. This is the past incident rule-8 discipline: the expected
  * values are written LITERALLY here, computed by hand from the fixture, never read back out of the
  * product — a guard that reads the product's own count could not detect a change to it.
  *
@@ -240,7 +240,7 @@ describe('advertised-surface counts are MEASURED, never stated', () => {
 
   // ── T6: the BODY mandrel_help renders must add up to the number its HEADER claims ────────
   //
-  // The Reviewer finding on 22cf00d. The header counted the ADVERTISED surface (62 operations)
+  // The Reviewer finding on 22c7f00. The header counted the ADVERTISED surface (62 operations)
   // while the body enumerated the FLAT catalog (60 entries) — two honest-looking derivations of
   // the same fact that disagreed by exactly the `session_pin` fan-out (one flat entry, three
   // gateway actions). A header contradicting its own body misleads the very agent this task

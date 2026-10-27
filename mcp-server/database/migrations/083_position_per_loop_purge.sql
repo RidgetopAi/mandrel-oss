@@ -6,7 +6,7 @@
 -- resolvePositionKeys). Under MANDREL_SESSION_RESOLVER_MODE=actor one DB session is
 -- shared by EVERY connection of an actor, so a session-id key let one agent's position
 -- stamp false DECLARED-tier `informs` edges onto a concurrent agent's writes — measured
--- twice on prod 2026-08-13 (two edges, both pruned).
+-- twice on prod 2026-08-13 (edges and an earlier change, both pruned).
 --
 -- WHAT THIS DELETES: rows whose session_key is a UUID — those are the keys written from
 -- the old resolved-DB-session path, unreachable under connection keying (connection ids

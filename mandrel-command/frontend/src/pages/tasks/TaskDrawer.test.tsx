@@ -13,7 +13,7 @@
  * create target (page project → the no-project-must-pick case).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  THE CREATE TARGET CHANGED (page-scope epic §A1)
+ *  THE CREATE TARGET CHANGED (an earlier epic §A1)
  * ════════════════════════════════════════════════════════════════════════════════════
  * Create mode used to seed its project from `useEffectiveProjectId()` — the AMBIENT
  * project. With a per-page selector that is a DIFFERENT value by design: the ambient one
@@ -41,7 +41,7 @@ let mockAllProjects: Array<{ id: string; name: string }> = [];
 let mockEffectiveId: string | undefined;
 
 /** REAL uuids — `scopedRequestConfig` rejects anything that is not one. */
-const P_RIVERBEND = 'aaaa1111-1111-4111-8111-aaaa11111111';
+const P_COORDINATOR = 'aaaa1111-1111-4111-8111-aaaa11111111';
 const P_DAISY = 'bbbb2222-2222-4222-8222-bbbb22222222';
 
 vi.mock('../../contexts/ProjectContext', () => ({
@@ -80,7 +80,7 @@ const NOW = new Date().toISOString();
 const makeTask = (over: Partial<Task> = {}): Task =>
   ({
     id: 'aaaaaaaa-0000-0000-0000-000000000001',
-    project_id: P_RIVERBEND,
+    project_id: P_COORDINATOR,
     title: 'Wire the drawer',
     description: 'existing description',
     type: 'feature',
@@ -175,10 +175,10 @@ const confirmDialog = () =>
 beforeEach(() => {
   vi.clearAllMocks();
   mockAllProjects = [
-    { id: P_RIVERBEND, name: 'riverbend' },
+    { id: P_COORDINATOR, name: 'riverbend' },
     { id: P_DAISY, name: 'daisy' },
   ];
-  mockEffectiveId = P_RIVERBEND;
+  mockEffectiveId = P_COORDINATOR;
   mockApi.tasks.create.mockResolvedValue({ id: 'new-task-9' });
   mockApi.tasks.update.mockResolvedValue({});
   mockApi.tasks.remove.mockResolvedValue(undefined);
@@ -348,12 +348,12 @@ describe('TaskDrawer — create flow', () => {
       {
         title: 'Ship the drawer',
         priority: 'high',
-        project_id: P_RIVERBEND,
+        project_id: P_COORDINATOR,
         type: 'docs',
         assigned_to: 'builder',
       },
       // …and the request is SCOPED to the same project the payload names.
-      { headers: { 'X-Project-ID': P_RIVERBEND } },
+      { headers: { 'X-Project-ID': P_COORDINATOR } },
     );
     // onSuccess ran → the new task id is selected (parent reopens it in edit mode).
     expect(onCreated).toHaveBeenCalledWith('new-task-9');
@@ -361,9 +361,9 @@ describe('TaskDrawer — create flow', () => {
 
   it('seeds create mode from the PAGE project, not the ambient default', async () => {
     // THE BUG THIS PINS: the page is showing daisy; the ambient default is riverbend.
-    // Before the page-scope epic the drawer read the ambient one and a task created from the
+    // Before an earlier epic the drawer read the ambient one and a task created from the
     // daisy board was filed in riverbend — where the user was not looking.
-    mockEffectiveId = P_RIVERBEND;
+    mockEffectiveId = P_COORDINATOR;
     mount(
       <TaskDrawer
         open
@@ -381,7 +381,7 @@ describe('TaskDrawer — create flow', () => {
 
     const [payload, config] = mockApi.tasks.create.mock.calls[0];
     expect(payload).toMatchObject({ project_id: P_DAISY });
-    expect(payload.project_id).not.toBe(P_RIVERBEND);
+    expect(payload.project_id).not.toBe(P_COORDINATOR);
     // Present-and-correct on the scope too: naming the page project in the body while the
     // header still said the ambient default is a request naming TWO projects.
     expect(config).toEqual({ headers: { 'X-Project-ID': P_DAISY } });

@@ -5,7 +5,7 @@
  * own loading/error/empty surface (the components render the P0.3 states).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
- *  EVERY HOOK TAKES THE PAGE'S SCOPE, AND IT IS NOT OPTIONAL (page-scope epic)
+ *  EVERY HOOK TAKES THE PAGE'S SCOPE, AND IT IS NOT OPTIONAL
  * ════════════════════════════════════════════════════════════════════════════════════
  * The Dashboard used to send NO project on any of these reads and describe itself as
  * "Mandrel-wide". Both halves were wrong. `/api/dashboard/stats`, `/api/sessions`,

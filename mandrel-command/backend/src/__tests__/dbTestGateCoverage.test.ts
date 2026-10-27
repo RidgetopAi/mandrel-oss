@@ -499,7 +499,7 @@ function isRegistrationCall(node: TS.CallExpression): boolean {
 
 /**
  * Does this identifier occupy a NAME slot of its parent — i.e. is it a member name or a
- * declaration name rather than a value being read? 
+ * declaration name rather than a value being read?  (an earlier Task.)
  *
  * WHY THIS EXISTS. `referencedName` used to answer "is this identifier's TEXT a
  * registrar name", and never asked what the identifier was DOING. So the `test` in

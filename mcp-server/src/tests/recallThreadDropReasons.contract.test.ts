@@ -142,7 +142,7 @@ describe('nodes[].dropped on the wire', () => {
   });
 
   test('the TEXT channel is unchanged — the drop reason adds a field, not a byte', async () => {
-    // Coordinator's constraint: our shell parses the prose today and this is not a flag day. The
+    // The coordinator's constraint: our shell parses the prose today and this is not a flag day. The
     // structured field must be additive. Asserted at the shape the shell anchors on.
     const text = responseText(await viaTool('recall_thread', { anchor: head, depth: 3, altitude: 'headline' }));
     for (const line of text.split('\n')) {

@@ -10,7 +10,7 @@
  * ---------------
  * `projectScopeChokePoint.contract.test.ts` pinned a fixed test port in the tenant block.
  * On the control host dev box there is no Docker fleet, so it bound fine and every local run was
- * green. On the prod prod box a tenant container's docker-proxy already holds that
+ * green. On the prod host prod box a tenant container's docker-proxy already holds that
  * port, so the same test threw EADDRINUSE inside a beforeAll hook — which surfaced as a
  * 10s hook timeout and FAIL-CLOSED aborted a prod fleet deploy at the clean gate.
  *
@@ -60,7 +60,7 @@ const REPO_ROOT = resolve(__dirname, '../../..');
  * detect a change to that constant). `pins the reserved ranges` below asserts these exact
  * values, so widening or narrowing this table is a two-place diff — a decision, not drift.
  *
- * MEASURED on prod with `ss -lntp` (2026-07-27), not assumed. The fleet's docker-proxy
+ * MEASURED on the prod host with `ss -lntp` (2026-07-27), not assumed. The fleet's docker-proxy
  * processes hold four blocks; the two enforced here are the redis block and the mcp-http
  * block. reserved-port-ok: the table below states them as data, and binds nothing.
  */
@@ -71,9 +71,9 @@ const RESERVED_PORT_RANGES: ReadonlyArray<{
 }> = [
   // PROD'S OWN BINDS, pinned as singletons (2026-08-04): a test binding one
   // of these reproduces this guard's motivating failure VERBATIM — green on the dev box,
-  // EADDRINUSE against the prod listener on the prod box. 8080 = mcp-server (host net), // reserved-port-ok: comment naming the pin
+  // EADDRINUSE against the prod listener on the prod host box. 8080 = mcp-server (host net), // reserved-port-ok: comment naming the pin
   // 5000 = command-backend (host net), 12000 = command-frontend's loopback publish in // reserved-port-ok: comment naming the pins
-  // docker-compose.prod file (127.0.0.1:12000:3000). // reserved-port-ok: comment naming the pin
+  // the prod compose (127.0.0.1:12000:3000). // reserved-port-ok: comment naming the pin
   { from: 5000, to: 5000, why: 'prod command-backend bind (network_mode: host)' }, // reserved-port-ok: singleton pin, not a bind
   { from: 8080, to: 8080, why: 'prod mcp-server bind (network_mode: host)' }, // reserved-port-ok: singleton pin, not a bind
   { from: 12000, to: 12000, why: 'prod command-frontend host publish' }, // reserved-port-ok: singleton pin, not a bind
@@ -169,7 +169,7 @@ describe('reserved test ports — the fleet-bound ranges are a guard, not a comm
     // (measured) but are NOT enforced here, because their only occurrences in the tree today
     // are vitest timeouts and doc comments naming a DATABASE_PORT — none of which bind a
     // listener. Enforcing them now would buy ~8 annotations on non-ports and no safety.
-    // Raised with Coordinator as a scope decision instead of being silently widened or dropped.
+    // Raised with the coordinator as a scope decision instead of being silently widened or dropped.
     // NARROWED 2026-08-04: prod's own binds — 8080, 5000, and the new // reserved-port-ok: comment naming the pins
     // 12000 frontend publish — ARE now enforced as singletons. They cost 27 annotations // reserved-port-ok: comment naming the pin
     // (all on ms-timeouts, char budgets, doc comments and URL fixtures — audited one by

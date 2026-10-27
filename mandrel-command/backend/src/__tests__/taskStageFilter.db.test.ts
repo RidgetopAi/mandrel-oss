@@ -4,10 +4,10 @@
  *
  * RUN (throwaway DB — provision FIRST; --runInBand, the backend suites cross-contaminate
  * under parallel run):
- *   bash scripts/provision-test-db.sh ci_stagefilter_1e53f00d
- *   eval "$(bash scripts/provision-test-db.sh ci_stagefilter_1e53f00d --print-env)"
+ *   bash scripts/provision-test-db.sh ci_stagefilter_1e53165a
+ *   eval "$(bash scripts/provision-test-db.sh ci_stagefilter_1e53165a --print-env)"
  *   npx jest taskStageFilter --runInBand --forceExit
- *   bash scripts/provision-test-db.sh ci_stagefilter_1e53f00d --drop
+ *   bash scripts/provision-test-db.sh ci_stagefilter_1e53165a --drop
  */
 
 import { v4 as uuidv4 } from 'uuid';

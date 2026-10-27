@@ -1,5 +1,5 @@
 /**
- * THE EMPTY STATE (SEARCH P2b — BUILDS 3 and 4).
+ * THE EMPTY STATE (SEARCH P2b — BUILDS 3 and 4, tolerance an earlier task).
  *
  * ═══ WHAT THIS EXISTS TO FIX ═══
  * A vector search cannot return nothing, because something is always nearest. P1 measured
@@ -50,6 +50,12 @@ export interface AbsentTermReport {
   readonly english: boolean;
   /** The corpus word this term is a near-miss spelling of, when it is one (never vetoes). */
   readonly nearMissOf?: string;
+  /**
+   * Why this absent term cannot veto although it is not English, or null when it can:
+   * 'ordinal' ('7th') or 'near-miss' (a misspelling of a corpus word — `nearMissOf` names it).
+   * Always null for an English word (English never vetoes, so there is nothing to exempt).
+   */
+  readonly exempt: 'ordinal' | 'near-miss' | null;
 }
 
 export interface EmptyStateVerdict {
@@ -111,14 +117,25 @@ export function vocabularyOf(texts: Iterable<string>): Set<string> {
   return out;
 }
 
+/** The largest edit distance at which a term of this length is still a near-miss. */
+export function nearMissMaxDistance(term: string): number {
+  const C = HYBRID_SEARCH_CONFIG;
+  return term.length >= C.absentTermNearMissLongLength
+    ? C.absentTermNearMissLongDistance
+    : C.absentTermNearMissShortDistance;
+}
+
+/** Can this term be near-missed at all? Long enough, and purely alphabetic. */
+export function nearMissEligible(term: string): boolean {
+  const t = term.toLowerCase();
+  return t.length >= HYBRID_SEARCH_CONFIG.absentTermNearMissMinLength && /^[a-z]+$/.test(t);
+}
+
 /** The vocabulary word `term` is a near-miss of, or undefined. Identifiers never near-miss. */
 function findNearMiss(term: string, vocabulary: ReadonlySet<string>): string | undefined {
   const t = term.toLowerCase();
-  const C = HYBRID_SEARCH_CONFIG;
-  if (t.length < C.absentTermNearMissMinLength || !/^[a-z]+$/.test(t)) return undefined;
-  const max = t.length >= C.absentTermNearMissLongLength
-    ? C.absentTermNearMissLongDistance
-    : C.absentTermNearMissShortDistance;
+  if (vocabulary.size === 0 || !nearMissEligible(t)) return undefined;
+  const max = nearMissMaxDistance(t);
   let best: string | undefined;
   let bestD = max + 1;
   for (const w of vocabulary) {
@@ -135,8 +152,7 @@ const partsOf = (t: string): string[] => t.toLowerCase().split(/[^a-z0-9]+/).fil
 /** Which absent terms veto, after the ordinary-word, near-miss and multi-word exemptions. */
 function vetoersOf(absentTerms: readonly AbsentTermReport[], matchedTermCount: number): string[] {
   const C = HYBRID_SEARCH_CONFIG;
-  const vetoers = absentTerms.filter((a) => !a.english && a.nearMissOf === undefined
-    && !(C.absentTermOrdinalsOrdinary && isOrdinal(a.term)));
+  const vetoers = absentTerms.filter((a) => !a.english && a.exempt === null);
   // One unfamiliar token is ONE unfamiliar token: the prose parts of an absent identifier
   // ("SIAC" of SIAC_GEE) are the same word counted again, not a further absent subject.
   const identifierParts = new Set(
@@ -177,14 +193,23 @@ function displaySurface(t: QueryTerm): string {
 export function decideEmptyState(
   probe: AbsentTermsResult,
   vocabulary: ReadonlySet<string> = new Set(),
+  projectLexemes: ReadonlySet<string> = new Set(),
 ): EmptyStateVerdict {
   const absentTerms: AbsentTermReport[] = probe.absent.map((t) => {
     const term = displaySurface(t);
     const english = t.surfaces.some((s) => isEnglishWord(s));
-    const nearMissOf = english || t.kind !== 'prose' ? undefined : findNearMiss(term, vocabulary);
+    if (english) return { term, kind: t.kind, english, exempt: null };
+    if (HYBRID_SEARCH_CONFIG.absentTermOrdinalsOrdinary && isOrdinal(term)) {
+      return { term, kind: t.kind, english, exempt: 'ordinal' };
+    }
+    // Retrieved-row words first (surface vs surface). The whole-project LEXEME vocabulary is
+    // the fallback (stem vs stem), consulted only for a term the rows could not explain.
+    const nearMissOf = t.kind !== 'prose'
+      ? undefined
+      : findNearMiss(term, vocabulary) ?? findNearMiss(t.lexeme, projectLexemes);
     return nearMissOf === undefined
-      ? { term, kind: t.kind, english }
-      : { term, kind: t.kind, english, nearMissOf };
+      ? { term, kind: t.kind, english, exempt: null }
+      : { term, kind: t.kind, english, nearMissOf, exempt: 'near-miss' };
   });
   const matchedTermCount = Math.max(0, probe.terms.length - probe.absent.length);
 
@@ -193,6 +218,26 @@ export function decideEmptyState(
   }
   const vetoedBy = vetoersOf(absentTerms, matchedTermCount);
   return { absentTerms, vetoedBy, veto: vetoedBy.length > 0, matchedTermCount };
+}
+
+/**
+ * THE WHOLE-PROJECT NEAR-MISS FALLBACK — which lexemes it should look up, if any.
+ *
+ * The retrieved rows are the near-miss vocabulary by default because they are free: the
+ * search already fetched them. They can miss a typo whose correct spelling sits in a record
+ * that did not rank (a one-word typo query zeroes the lexical AND-match, and the semantic
+ * pool is nearest-neighbour noise). The private design read the WHOLE project's lexemes on
+ * every query with an absent prose term; measured ~110 ms per lexical table (3 tables), too
+ * costly as the default (the auditor verdict). So it survives only here, on the
+ * would-empty path: a lexeme is returned for a vetoing prose term the rows could not explain.
+ * An empty list means "do not query" — the veto is not firing, or nothing is eligible.
+ */
+export function nearMissFallbackLexemes(probe: AbsentTermsResult, verdict: EmptyStateVerdict): string[] {
+  if (!verdict.veto || !HYBRID_SEARCH_CONFIG.absentTermNearMissProjectFallback) return [];
+  const vetoing = new Set(verdict.vetoedBy);
+  return [...new Set(probe.absent
+    .filter((t) => t.kind === 'prose' && vetoing.has(displaySurface(t)) && nearMissEligible(t.lexeme))
+    .map((t) => t.lexeme.toLowerCase()))];
 }
 
 /**

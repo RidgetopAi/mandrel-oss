@@ -1,8 +1,8 @@
 -- Migration: Exclude deploy-smoke sessions from session analytics
 -- Date: 2026-06-20
--- Task: deploy-smoke leaves litter sessions
+-- Task: an earlier change (deploy-smoke leaves litter sessions)
 -- Purpose:
---   The fleet deploy smoke (fleet-deploy script) POSTs /api/v2/sessions/start
+--   A deploy smoke check POSTs /api/v2/sessions/start
 --   to every instance on every deploy to prove the session write-path is alive.
 --   That created a real, untitled, never-ended `sessions` row PER INSTANCE PER
 --   DEPLOY — litter that polluted the sessions list and the session stats fleet-wide.

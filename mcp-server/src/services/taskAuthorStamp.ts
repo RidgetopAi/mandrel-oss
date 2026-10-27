@@ -18,7 +18,7 @@
  *
  * ═══ AND THE COLLISION ═══
  * The values that WERE populated carried two spellings of one actor: `coordinator` (24 rows) and
- * `the coordinator` (7). `GROUP BY created_by` reported one agent as two; `WHERE created_by='coordinator'`
+ * `Coordinator` (7). `GROUP BY created_by` reported one agent as two; `WHERE created_by='coordinator'`
  * silently dropped 7 rows. Same class as `needs-operator`/`needs:operator` and as commit 55411b9 —
  * a vocabulary collision needs the spellings COLLAPSED at the write boundary, not merely
  * documented.
@@ -31,7 +31,7 @@
  *      actorRegistry choke point, so this invents no second derivation (the same discipline
  *      config/assigneeStamp.ts follows — each surface passes the actor it already has).
  *   3. NORMALIZED, ALWAYS, THROUGH `normalizeActor`. Both branches, not just branch 2 — a
- *      caller typing `createdBy: 'the coordinator'` introduces the collision exactly as readily as a
+ *      caller typing `createdBy: 'Coordinator'` introduces the collision exactly as readily as a
  *      header does, and normalizing only the path that was REPORTED would fix one half and
  *      leave the other open (CLASSES.md C5).
  *   4. NOTHING RESOLVABLE ⇒ NOTHING WRITTEN. Not `unknown`, not `system`, and specifically

@@ -19,6 +19,7 @@ import resolveRoutes from './routes/resolve';
 import resolveJsonRoutes from './routes/resolveJson';
 import { ensureFeatureFlags } from './utils/featureFlags';
 import { declareIntentionallyUnauthenticated } from './middleware/authz';
+import { bodyParsingAfterAuth } from './middleware/bodyParsing';
 import { portManager } from './utils/portManager';
 
 /**
@@ -40,15 +41,15 @@ const featureFlagsPromise = ensureFeatureFlags();
 /**
  * PUBLIC BY NECESSITY (an earlier task census, 2026-08-25). Two measured reasons, not a
  * judgement call:
- *   • an external uptime probe checks exactly this path (`EDGE_PROBE_PATH` default) on
- *     every tenant and expects 200 with no credential.
- *   • the SPA reads it BEFORE login — a past outage showed
- *     where `/api/feature-flags -> 502` meant the operator could not log in at all.
+ *   • an edge probe calls exactly this path on every instance and expects 200 with no
+ *     credential.
+ *   • the SPA reads it BEFORE login: when `/api/feature-flags` returned 502, nobody could
+ *     log in at all.
  * It serves flag names and a version string, no infrastructure detail. Declared, not
  * assumed: the classification is what keeps it out of the coverage guard's failure list.
  */
 app.get('/api/feature-flags', declareIntentionallyUnauthenticated(
-  'an external uptime probe checks this on every tenant with no credential, and the SPA reads it pre-login; serves flag names + version only'
+  'an edge probe calls this on every instance with no credential, and the SPA reads it pre-login; serves flag names + version only'
 ), async (_req, res) => {
   const featureFlags = await featureFlagsPromise;
   const metadata = featureFlags.getMetadata();
@@ -66,9 +67,11 @@ app.use(helmet());
 // CORS middleware
 app.use(cors(config.cors));
 
-// Body parsing middleware
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({ extended: true }));
+// Body parsing — AFTER authentication, never before. An app-wide
+// express.json here buffered and parsed up to 10mb from ANY caller before any route's auth
+// guard ran, so an anonymous request got 400/413 instead of 401 and could make the server
+// do the work. See middleware/bodyParsing.ts.
+app.use(bodyParsingAfterAuth);
 
 // Correlation ID middleware (must be first)
 app.use(correlationMiddleware);

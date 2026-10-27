@@ -4,14 +4,14 @@
 # -----------------------------------------------------------------------------
 # NOT A TEST. Sourced by suites under scripts/test/. One function.
 #
-# THE CLASS IT CLOSES (an earlier defect record)
+# THE CLASS IT CLOSES (defect record)
 #   A fixture that must clear a PRODUCT RESOLVER to reach the behaviour it tests
 #   is encoding an IMPLICIT ANSWER to that resolver. When the resolver's subject
 #   moves — which is exactly what a CORRECTNESS FIX to a resolver looks like —
 #   the fixture stops satisfying it, the run aborts upstream of the assertions,
 #   and the suite measures nothing.
 #
-#   deploy-failure-announce.test script was vacuumed this way TWICE IN
+#   A deploy-failure suite was vacuumed this way TWICE IN
 #   THREE DAYS. 2026-08-27: a release-tag pre-flight landed, the fixture's HEAD
 #   carried no vX.Y.Z tag, the deploy aborted before FLEET SYNC. 2026-08-29: an earlier task
 #   moved that gate's SUBJECT from the control tree's HEAD to the ref the
@@ -26,7 +26,7 @@
 #   including one from a gate nobody has written yet. And it is the one thing an
 #   exit-code comparison cannot see: a suite that aborts early and still exits 0
 #   is GREEN at every layer above it, and only the amount of work it did betrays
-#   it (measured 2026-08-31: only-prod-lane.test script under a broken
+#   it (measured 2026-08-31: a lane suite under a broken
 #   ref fixture goes 42 assertions -> 13, with ZERO failures).
 #
 # THE FLOOR IS A PINNED LITERAL, NOT A TUNABLE, and it is deliberately set just
@@ -47,7 +47,7 @@
 #       the RIGHT ones, and it cannot: a suite that reaches its subject and asserts
 #       the wrong thing is a different defect with a different fix.
 #   (2) A CALL AT THE SUMMARY ONLY FIRES IF THE SUITE REACHES ITS SUMMARY. Measured
-#       2026-08-31: only-prod-lane.test script, under the same perturbation,
+#       2026-08-31: the same suite, under the same perturbation,
 #       aborts before printing any summary at all and exits 2 — so a floor placed
 #       there could never run, and it deliberately does not carry one. That suite is
 #       covered by its EXIT CODE instead, which is the correct instrument for a run
@@ -64,8 +64,8 @@
 #          summary block is the only thing that owns its exit code.
 #
 # <observed> is the suite's OWN counter variable, never a count of its output.
-# Text counting was measured wrong on 2026-08-31: scripts/test/release-tag-gate.
-# test.sh's captured SUBJECT output contains the product gate's own `[FAIL]`
+# Text counting was measured wrong on 2026-08-31: a release-tag suite's captured
+# SUBJECT output contains the product gate's own `[FAIL]`
 # lines, so a grep over the log reports failures in a run whose FAIL counter is 0.
 av_floor() {
   local observed="${1:-}" floor="${2:-}" what="${3:-}"

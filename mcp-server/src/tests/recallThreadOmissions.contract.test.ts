@@ -1,5 +1,5 @@
 /**
- * recall_thread — THE HONEST PARTIAL (spec an earlier note section (c)).
+ * recall_thread — THE HONEST PARTIAL (spec an earlier context section (c)).
  *
  * THE DEFECT THIS SUITE EXISTS TO END. A walk subtracts nodes THREE separate ways — the
  * `maxNodes` cap, the `minTrust` floor, and dangling referents — and only the cap was ever

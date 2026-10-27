@@ -1,6 +1,6 @@
 /**
- * DB-integration test for BROWSE mode archived-row exclusion (search consolidation,
- * an earlier task). The old literal path had NO archived_at filter, so soft-deleted
+ * DB-integration test for BROWSE mode archived-row exclusion (search consolidation).
+ * The old literal path had NO archived_at filter, so soft-deleted
  * contexts leaked into the list. Browse now defaults to `archived_at IS NULL`.
  *
  * Also proves the honest COUNT(*) OVER() total counts only the returned (live) set.

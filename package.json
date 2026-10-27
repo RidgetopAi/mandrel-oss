@@ -1,8 +1,8 @@
 {
   "name": "mandrel",
-  "version": "0.66.0",
-  "description": "AI Development Intelligence System - Persistent context management",
+  "version": "0.70.1",
   "license": "MIT",
+  "description": "AI Development Intelligence System - Persistent context management",
   "private": true,
   "scripts": {
     "prepare": "git config core.hooksPath hooks || true",

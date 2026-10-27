@@ -1,6 +1,5 @@
 /**
- * SESSION IDENTITY read model — THE ONE builder + THE ONE renderer (Amp-orb eval finding W3,
- * an earlier task).
+ * SESSION IDENTITY read model — THE ONE builder + THE ONE renderer (Amp-orb eval finding W3).
  *
  * THE GAP THIS CLOSES (eval report lines 413-456, Priority 1): the session tools exposed a
  * truncated session id, a project, and active/inactive. They did not expose the resolved

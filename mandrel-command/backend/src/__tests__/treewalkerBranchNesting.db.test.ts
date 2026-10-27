@@ -1,6 +1,6 @@
 /**
- * CONTRACT: the branches endpoint tells the truth about drawers vs sections (P1
- * , an earlier task — TreeWalker "a decision is the drawer"; SELECTION fixed in P2,
+ * CONTRACT: the branches endpoint tells the truth about drawers vs sections (P1,
+ * an earlier task — TreeWalker "a decision is the drawer"; SELECTION fixed in P2,
  * an earlier task — "select drawers before the cap").
  *
  * GET /api/treewalker/branches used to answer "which spines have members" and nothing
@@ -38,7 +38,7 @@
  * sectionCount field, and getBranches returned a bare BranchSummary[] with no total/cap —
  * so `{ branches, total, cap } = await getBranches(...)` destructures `branches` itself as
  * undefined and every field access throws or reads undefined. The nested-spine test also
- * fails against the earlier, P1-only code: there, childA/childB were PRESENT in
+ * fails against the P1-only code (earlier): there, childA/childB were PRESENT in
  * `branches` with `isTopLevel: false` rather than absent, and `total` counted all 4
  * spines rather than the 2 true drawers.
  */

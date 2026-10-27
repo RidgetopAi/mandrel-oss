@@ -8,7 +8,7 @@
  * The coordinator, on its own prod session 2026-09-03:
  *
  *   graph({action:'branch_current'})   -> position cited an earlier task
- *   task({action:'details', 2b3c4d5e}) -> {"ok":true,"found":false}
+ *   task({action:'details', an earlier change}) -> {"ok":true,"found":false}
  *   context({action:'search', id:...}) -> "❌ Context not found"
  *
  * The API asserted `spineType: "task"` for an id that is not a task and is not anything.

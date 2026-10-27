@@ -27,7 +27,7 @@ vi.mock('../api', () => ({
 }));
 
 /**
- * PAGE PROJECT (page-scope epic). The ledger owns its project now — there is no global
+ * PAGE PROJECT. The ledger owns its project now — there is no global
  * selector to follow, and no "All Projects" option (the outcome drawer's write has to name
  * a real project). `projectState.projects` is mutable so the genuine no-project state can
  * be exercised; the default is one concrete project, which every render test needs because
@@ -318,7 +318,7 @@ describe('Decisions — search', () => {
       typeInto(input, 'live stream');
     });
     await settle();
-    // The search carries the page's own request scope (page-scope epic). GET /api/decisions
+    // The search carries the page's own request scope. GET /api/decisions
     // takes no project query param of its own — the backend resolves it from the request —
     // so the header IS the scope, and dropping it would search the ambient project's ledger
     // while the page's heading names another.

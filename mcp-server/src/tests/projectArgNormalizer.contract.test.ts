@@ -1,7 +1,7 @@
 /**
  * rung-1 PROJECT ARGUMENT NORMALIZER — regression contract for an earlier task.
  *
- * THE BUG (reproduced before it was fixed; evidence an earlier note)
+ * THE BUG (reproduced before it was fixed; evidence an earlier context)
  * ------------------------------------------------------------------------------
  *   context_store({ projectId: '<project NAME>', tags: ['task:<id8>'] })
  *       → tagEdgesMinted: 0, tagEdgeSkips: [{ reason: 'task "<id8>" could not be resolved' }]
@@ -155,7 +155,7 @@ afterAll(async () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('a project NAME in an explicit scope arg still mints the edge', () => {
+describe('an earlier change — a project NAME in an explicit scope arg still mints the edge', () => {
   /**
    * THE EXACT FILED REPRODUCER. Pre-fix this produced ZERO rows in `links` and a skip
    * blaming the task; the task existed the whole time.
@@ -207,10 +207,10 @@ describe('a project NAME in an explicit scope arg still mints the edge', () => {
    * project-scoped predicate without name-aware resolution of its own, with the raw Postgres
    * cast error `invalid input syntax for type uuid`.
    *
-   * AT LEAST twelve such tools were reproduced on f9de00d (2026-07-25) — task_create,
+   * AT LEAST twelve such tools were reproduced on f9d9f00 (2026-07-25) — task_create,
    * task_list, task_details, task_progress_summary, context_search, context_update,
-   * decision_record, decision_search, decision_stats, recall_thread, thread_set,
-   * and one stored-scan reader — sampled from 43 scoped project params. That enumeration is a FLOOR
+   * decision_record, decision_search, decision_stats, recall_thread, thread_set
+   * — sampled from 43 scoped project params. That enumeration is a FLOOR
    * and deliberately not a definition: the first count taken (seven) was later found short by
    * five, which is exactly why a list like this must never be read as complete. The property
    * is what is guarded, and the schema-derived sweep at the bottom of this file is what
@@ -237,7 +237,7 @@ describe('a project NAME in an explicit scope arg still mints the edge', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('an unresolvable project scope fails LOUD, never silently', () => {
+describe('an earlier change — an unresolvable project scope fails LOUD, never silently', () => {
   /**
    * The other half of the fix. Pre-fix an unresolvable value produced FOUR different
    * outcomes depending on which handler received it (a clean not-found, a raw Postgres cast
@@ -317,7 +317,7 @@ describe('an unresolvable project scope fails LOUD, never silently', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('the BOUND path was already safe and must stay that way', () => {
+describe('an earlier change — the BOUND path was already safe and must stay that way', () => {
   /**
    * Claim verified before the fix was written: a client bound BY NAME already got a canonical
    * UUID materialised into its scope argument, so its edges always minted. These two cases
@@ -345,7 +345,7 @@ describe('the BOUND path was already safe and must stay that way', () => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-describe('the normalizer is anchored on the schema, not on a tool list', () => {
+describe('an earlier change — the normalizer is anchored on the schema, not on a tool list', () => {
   /**
    * FAIL-CLOSED COVERAGE. The fix must not be "the tools we thought of". The
    * normalizer keys off each tool's OWN declared scope parameter, so this walks EVERY tool in

@@ -81,7 +81,7 @@ export const FLAT_LAZY_DESCRIPTIONS: Record<string, string> = {
 };
 
 /* ═══════════════════════════════════════════════════════════════════════════════════════
- * LAZY+CORE classification (MCP-2026 rebuild Phase 3, the auditor recommendation).
+ * LAZY+CORE classification (MCP-2026 rebuild Phase 3, the auditor rec).
  *
  * The plain lazy envelope advertises ONLY `{action:{enum}}`, which HIDES which params a WRITE
  * action requires + which closed enums are valid — so a model guessing the first call fails
@@ -155,7 +155,8 @@ export const IDENTIFIER_PARAMS: ReadonlySet<string> = new Set([
 
 /**
  * READ action discriminators that carry an UN-GUESSABLE required param and are DELIBERATELY
- * not lifted into lazy+core — the acknowledged complement of WRITE_ACTIONS ( * A past incident). lazy+core lifts only WRITE contracts (the eval showed reads don't need it:
+ * not lifted into lazy+core — the acknowledged complement of WRITE_ACTIONS.
+ * lazy+core lifts only WRITE contracts (the eval showed reads don't need it:
  * their un-guessable params are one discover.explain away, and a miss self-heals via the
  * strict-key error that names every required param — Change B). Same O(vocabulary) design as
  * WRITE_ACTIONS: classify the VERB, not per-op flags.

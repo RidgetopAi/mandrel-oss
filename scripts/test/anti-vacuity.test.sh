@@ -13,7 +13,7 @@
 # CREATE tags and refuses to ADD an origin remote, and execs the real git for
 # everything else — which is precisely what the fixture experiences when a
 # product resolver's SUBJECT moves out from under it (2026-08-27 and 2026-08-29,
-# an earlier defect record).
+# defect record).
 #
 # NO NETWORK, NO DB, NO DOCKER, NO PROD.
 #
@@ -24,6 +24,7 @@ set -uo pipefail
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 LIB="$REPO_DIR/scripts/test/lib/anti-vacuity.sh"
 # The suite the end-to-end section drives. Named once (configs-not-hardcoded).
+# It must ship wherever this probe ships, so it is a release-tooling suite, not a fleet one.
 AV_PROBE_SUITE="${AV_PROBE_SUITE:-pre-push-release-tag.test.sh}"
 
 if [[ -t 1 ]]; then RED=$'\033[31m'; GRN=$'\033[32m'; BLD=$'\033[1m'; RST=$'\033[0m'

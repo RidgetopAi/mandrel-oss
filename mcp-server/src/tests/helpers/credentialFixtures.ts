@@ -1,6 +1,6 @@
 /**
  * CREDENTIAL FIXTURES — shared by credentialHygiene.unit.test.ts (the JS detector) and
- * credentialSweep.contract.test.ts (its SQL twins in a scheduled SQL sweep).
+ * the SQL twin of that detector.
  *
  * ONE population, two consumers, so the two vocabularies are measured against the SAME
  * strings: a shape the JS detector refuses that the SQL sweep would not count (or the other
@@ -21,8 +21,8 @@ export const body = (n: number, ch = 'A') => ch.repeat(n);
  * `NAME=value`, assembled so the SOURCE never contains a credential name adjacent to `=`.
  * The repo's own gitleaks rule (mandrel-credential-env-assignment) reads this file too, and a
  * literal `SURVEYOR_LLM_API_KEY=DUMMY_…` in a fixture is exactly what it exists to block —
- * measured 2026-09-08: 7 findings blocked the commit of the first draft. Same move as the
- * {EQ} token in scripts/test/gitleaks-credential-shapes.test.sh.
+ * measured 2026-09-08: 7 findings blocked the commit of the first draft. Same move as an
+ * {EQ} token.
  */
 export const assign = (name: string, value: string, quote = '') => `${name}${'='}${quote}${value}${quote}`;
 
@@ -55,20 +55,20 @@ export const SYNTHETIC: Readonly<Record<string, string>> = {
   'sql-password-literal': `ALTER USER postgres ${'PASSWORD'} 'DUMMY_${body(12, 'y')}';`,
 };
 
-// ── THE HISTORICAL BODIES, BY SHAPE (an earlier task / audit finding E5) ──────────────────
+// ── THE HISTORICAL BODIES, BY SHAPE (an earlier task / the auditor E5) ──────────────────
 // The two values scrubbed from prod on 2026-09-08, the 2026-09-01 transcript
-// leak, the untriaged task row and the leaked-password commit carrier — each recreated as
+// leak, the untriaged task row and the mandrel an earlier commit carrier — each recreated as
 // its SHAPE with a DUMMY body, never the value. Every one of these must now be REFUSED.
 export const HISTORICAL_SHAPES: ReadonlyArray<readonly [string, string, string]> = [
-  ['completion body (SURVEYOR_LLM_API_KEY=…, 2026-01-26)',
+  ['an earlier change completion body (SURVEYOR_LLM_API_KEY=…, 2026-01-26)',
     `deployed with ${assign('SURVEYOR_LLM_API_KEY', `DUMMY_${body(20, 'a')}1`)} in /etc/surveyor.env`, 'env-assignment-literal'],
-  ['error body (JWT_SECRET=…, 2025-09-18)',
+  ['an earlier change error body (JWT_SECRET=…, 2025-09-18)',
     `env dump:\n${assign('JWT_SECRET', `DUMMY_${body(28, 'b')}`)}\nPORT=8080`, 'env-assignment-literal'],
-  ['transcript leak (MANDREL_BELIEF_GROQ_API_KEY=gsk_…, 2026-09-01)',
+  ['an earlier change transcript leak (MANDREL_BELIEF_GROQ_API_KEY=gsk_…, 2026-09-01)',
     assign('MANDREL_BELIEF_GROQ_API_KEY', `gsk_${body(40, 'c')}`), 'groq-api-key'],
-  ['task body (PASSWORD= + 20 chars, 2026-07-22)',
+  ['an earlier change task body (PASSWORD= + 20 chars, 2026-07-22)',
     `compose env had ${assign('POSTGRES_PASSWORD', `DUMMY_${body(14, 'd')}`)} set`, 'env-assignment-literal'],
-  ['leaked-password commit carrier (ALTER USER postgres PASSWORD \'<12 chars>\')',
+  ['an earlier change commit carrier (ALTER USER postgres PASSWORD \'<12 chars>\')',
     `sudo -u postgres psql -c "ALTER USER postgres ${'PASSWORD'} 'DUMMY_${body(12, 'e')}';"`, 'sql-password-literal'],
   ['compose mapping written as an assignment in evidence',
     `docker-compose.yml: ${assign('MINIO_ROOT_PASSWORD', `DUMMY_${body(16, 'f')}`, '"')}`, 'env-assignment-literal'],
@@ -83,7 +83,7 @@ export const CONTROLS: ReadonlyArray<readonly [string, string]> = [
   ['vitest output', '$ npx vitest run\n Test Files  270 passed (270)\n      Tests  3532 passed (3532)\n  exit 0'],
   ['a git sha (40 hex)', 'merged at 00b940bdc1e2f3a4b5c6d7e8f90112233445566a on main'],
   ['a short sha + git log line', 'ffe8f00d Merge fix-0a21d: attribute the write, do not infer it'],
-  ['a uuid', 'record 1c0af00d-8885-421a-b580-5e09381369a9 was dispatched'],
+  ['a uuid', 'an earlier task-8885-421a-b580-5e09381369a9 was dispatched'],
   ['several uuids in a row', '6a1cf00d-0278-4c44-9e01-9e56a374c48c e59ff00d-0e7a-4714-98f7-5999a7d09e34'],
   ['a docker image digest', 'sha256:9f86d081884c7d659a2feaa0c55ad015a3bf4f1b2b0b822cd15d6c15b0f00a08'],
   ['a base64 payload', 'echo -n hello | base64 -> aGVsbG8= ; longer: ' + 'QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVphYmNkZWZnaGlqa2xtbm9wcXJzdHV2d3h5ejAxMjM0NTY3ODk='],
@@ -92,7 +92,7 @@ export const CONTROLS: ReadonlyArray<readonly [string, string]> = [
   ['an npm/pnpm lock integrity line', 'integrity sha512-' + 'Xy9'.repeat(20) + '=='],
   ['a PUBLIC key block', '-----BEGIN PUBLIC KEY-----\n' + body(64, 'w') + '\n-----END PUBLIC KEY-----'],
   ['a TLS certificate block', '-----BEGIN CERTIFICATE-----\n' + body(64, 'v') + '\n-----END CERTIFICATE-----'],
-  ['an ssh public key line', 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI' + body(30, 'T') + ' coordinator@dev-host'],
+  ['an ssh public key line', 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAI' + body(30, 'T') + ' coordinator@control-host'],
   ['a bearer header with a shell variable', 'curl -H "Authorization: Bearer $MCP_AUTH_TOKEN" https://mandrel.example.com/mcp/tools/mandrel_ping'],
   ['a bearer header with a braced shell variable', 'curl -H "Authorization: Bearer ${MCP_AUTH_TOKEN}" ...'],
   ['a bearer header with an angle-bracket placeholder', 'send `Authorization: Bearer <token>` or the call is rejected 401'],
@@ -127,6 +127,6 @@ export const CONTROLS: ReadonlyArray<readonly [string, string]> = [
   ['a SQL PASSWORD with a <placeholder>', "CREATE ROLE app LOGIN PASSWORD '<strong-password>'; -- from the README"],
   ['a SQL PASSWORD with the redaction marker', "ALTER ROLE mandrel PASSWORD '***REDACTED***'; (from the rotation log)"],
   ['prose naming the env-assignment rule with no literal', 'the detector now catches NAME=value where NAME ends in PASSWORD, SECRET, TOKEN or API_KEY'],
-  ['a Groq prefix with no body', 'Groq keys start with gsk_ and are 56 chars; ours lives in /etc/app/belief.env'],
+  ['a Groq prefix with no body', 'Groq keys start with gsk_ and are 56 chars; ours lives in /etc/riverbend/belief.env'],
 ];
 

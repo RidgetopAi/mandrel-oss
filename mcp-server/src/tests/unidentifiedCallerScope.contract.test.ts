@@ -9,7 +9,7 @@
  * `projectHandler.switchProject(id, 'connA')` DIRECTLY — supplying two distinct connection
  * ids ITSELF. It therefore asserts a property of the handler that was never in question, and
  * can NEVER observe the thing that was actually broken: the TRANSPORT collapsing two
- * different callers onto ONE key. That is the a past incident shape exactly — a test written
+ * different callers onto ONE key. That is the past incident shape exactly — a test written
  * against the shape the author had in mind (the handler) rather than the choke point (the
  * transport's `|| 'http-default'`).
  *

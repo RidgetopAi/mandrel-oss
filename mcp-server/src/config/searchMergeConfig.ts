@@ -1,5 +1,5 @@
 /**
- * Mandrel Core — SMART_SEARCH MERGE CONFIG.
+ * Mandrel Core — SMART_SEARCH MERGE CONFIG (parent 7b8af00d).
  *
  * smart_search used to allocate a per-source QUOTA of the result set (contexts
  * ⌈limit/2⌉, decisions ⌈limit/4⌉, components ⌈limit/4⌉), score each source on its own

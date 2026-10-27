@@ -317,7 +317,7 @@ router.post(
 // so it can no longer reach a row in a project the caller holds no grant on — it had NO
 // project predicate at all, while the MCP archive path on the same table always had one.
 // STILL UNBOUNDED IN COUNT, deliberately: a count gate is a product decision for
-// The coordinator/the operator, and it is no longer the dangerous half now that the writes are reversible.
+// Coordinator/Operator, and it is no longer the dangerous half now that the writes are reversible.
 router.delete(
   '/bulk/delete',
   declareAnyAuthenticatedMayWrite('bulk SOFT-delete, project-scoped — reversible; count still unbounded pending a product decision'),

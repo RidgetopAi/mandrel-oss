@@ -82,7 +82,7 @@ interface ResolveErrorBody {
  */
 export async function resolveNavRecord(id: string): Promise<ResolveResult> {
   try {
-    // A GLOBAL READ (the reviewer B4, spec §A4). The backend resolves a short id inside a
+    // A GLOBAL READ (Reviewer B4, spec §A4). The backend resolves a short id inside a
     // `resolveListScope`, so with the ambient header pinned to the user's default this
     // search narrows to that ONE project and a short link to a record ANYWHERE ELSE 404s
     // — with the global switcher deleted, the user has no control left to unwedge it.

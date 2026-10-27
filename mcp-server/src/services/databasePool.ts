@@ -350,7 +350,7 @@ class DatabasePoolManager {
       // downstream symptom is a readiness TIMEOUT in a setup hook, i.e. a vitest FAILURE
       // reported as a code RED, with no trace of the infrastructure fault anywhere in the
       // gate's app logs. Log the SQLSTATE explicitly: the gate's connection-exhaustion
-      // invalidator (scripts/lib/gate-db-capacity.sh) reads it, and a human reading the
+      // invalidator reads it, and a human reading the
       // log needs it more.
       const err = error as Error & { code?: string };
       logger.warn('⚠️  Database pool health check FAILED', {

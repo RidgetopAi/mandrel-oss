@@ -5,7 +5,7 @@
  * contexts + technical_decisions through the CURRENTLY-SELECTED embedder
  * (embeddingConfig.activeEmbedder()) into that embedder's column (activeEmbeddingColumn()). Lives
  * in src/ (not scripts/) so the CI gate's vitest suite can exercise the REAL logic — the
- * --force --project scope guard in particular (the reviewer finding 2).
+ * --force --project scope guard in particular (Reviewer finding 2).
  *
  * DESIGN: config-driven (no hardcoded model/dim/column); embed text mirrors the store path
  * EXACTLY (buildContextEmbeddingText / buildDecisionEmbeddingText); idempotent + resumable
@@ -55,7 +55,7 @@ const COL = activeEmbeddingColumn(); // trusted identifier from config (never us
 function needsReembedSql(): string {
   return `(${COL} IS NULL OR ${degenerateEmbeddingSql(COL)})`;
 }
-// COST NOTE (the reviewer N2): the degeneracy half of this predicate is NON-SARGABLE — it computes
+// COST NOTE (Reviewer N2): the degeneracy half of this predicate is NON-SARGABLE — it computes
 // a per-row inner product over the full vector, so this WHERE is a sequential scan plus one
 // N-dimensional dot product per row on every sweep. At the current corpus (~8k contexts, 768-d)
 // that is negligible next to the re-embedding itself, which is why it is not indexed. It is

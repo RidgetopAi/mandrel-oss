@@ -1,6 +1,6 @@
 /**
  * TASK EMBEDDINGS — DB CONTRACT (tranche B of the smart_search
- * complete fix; the smart_search fix). Migration 088 + the task write path + the backfill registry.
+ * complete fix; parent 7b8af00d). Migration 088 + the task write path + the backfill registry.
  *
  * Runs against the disposable migrated CI DB, because every claim below is a claim about what
  * the real schema and the real handler do.
@@ -140,7 +140,7 @@ describe('G11: `tasks` carries a column for EVERY registered embedder', () => {
         col.rowCount,
         `tasks.${spec.column} MISSING — embedder "${key}" cannot read or write task embeddings. ` +
           `Migration 088 must add a column for EVERY embedder, not just the one prod runs: ` +
-          `the CI gate STAGE 1 pins minilm and STAGE 1b re-runs under gemma.`,
+          `the CI gate's STAGE 1 pins minilm and STAGE 1b re-runs under gemma.`,
       ).toBe(1);
       expect(
         col.rows[0].declared_type,

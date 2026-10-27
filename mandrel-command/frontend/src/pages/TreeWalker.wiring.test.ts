@@ -91,7 +91,7 @@ describe('TreeWalker rebuild — the NEW trust vocabulary lives in config', () =
   });
 });
 
-describe('TreeWalker rebuild — live backend + the data-gap policy (no fabricated thread)', () => {
+describe('TreeWalker rebuild — live backend + honest empty policy (no fabricated thread)', () => {
   it('the backend-ready flag is now TRUE (endpoint shipped)', () => {
     const config = readFileSync(resolve(modDir, 'config.ts'), 'utf8');
     expect(config).toMatch(/backendReady:\s*true/);

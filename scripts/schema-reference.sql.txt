@@ -31,6 +31,7 @@ COLUMN active_thread_anchors.updated_at | timestamp with time zone | null=NO | d
 COLUMN actor_project_defaults.actor | text | null=NO | default=
 COLUMN actor_project_defaults.project_id | uuid | null=NO | default=
 COLUMN actor_project_defaults.updated_at | timestamp with time zone | null=NO | default=now()
+COLUMN admin_users.auth_user_id | text | null=YES | default=
 COLUMN admin_users.created_at | timestamp without time zone | null=YES | default=CURRENT_TIMESTAMP
 COLUMN admin_users.default_project_id | uuid | null=YES | default=
 COLUMN admin_users.email | character varying(100) | null=NO | default=
@@ -38,7 +39,7 @@ COLUMN admin_users.id | uuid | null=NO | default=gen_random_uuid()
 COLUMN admin_users.is_active | boolean | null=YES | default=true
 COLUMN admin_users.last_login | timestamp without time zone | null=YES | default=
 COLUMN admin_users.must_change_password | boolean | null=NO | default=false
-COLUMN admin_users.password_hash | character varying(255) | null=NO | default=
+COLUMN admin_users.password_hash | character varying(255) | null=YES | default=
 COLUMN admin_users.role | character varying(20) | null=YES | default='admin'
 COLUMN admin_users.theme | character varying(20) | null=YES | default='light'
 COLUMN admin_users.updated_at | timestamp without time zone | null=YES | default=CURRENT_TIMESTAMP
@@ -101,6 +102,16 @@ COLUMN analyzer_versions.created_at | timestamp with time zone | null=YES | defa
 COLUMN analyzer_versions.params | jsonb | null=YES | default=
 COLUMN analyzer_versions.updated_at | timestamp with time zone | null=YES | default=now()
 COLUMN analyzer_versions.version | text | null=NO | default=
+COLUMN api_tokens.created_at | timestamp with time zone | null=NO | default=now()
+COLUMN api_tokens.display_prefix | character varying(16) | null=NO | default=
+COLUMN api_tokens.expires_at | timestamp with time zone | null=YES | default=
+COLUMN api_tokens.id | uuid | null=NO | default=gen_random_uuid()
+COLUMN api_tokens.last_used_at | timestamp with time zone | null=YES | default=
+COLUMN api_tokens.name | character varying(100) | null=NO | default=
+COLUMN api_tokens.revoked_at | timestamp with time zone | null=YES | default=
+COLUMN api_tokens.token_hash | character(64) | null=NO | default=
+COLUMN api_tokens.user_id | uuid | null=NO | default=
+COLUMN auth_tokens.auth_session_id | text | null=YES | default=
 COLUMN auth_tokens.created_at | timestamp with time zone | null=YES | default=CURRENT_TIMESTAMP
 COLUMN auth_tokens.expires_at | timestamp with time zone | null=NO | default=
 COLUMN auth_tokens.id | uuid | null=NO | default=gen_random_uuid()
@@ -1010,7 +1021,9 @@ CONSTRAINT active_thread_anchors FOREIGN_KEY active_thread_anchors_project_id_fk
 CONSTRAINT active_thread_anchors PRIMARY_KEY active_thread_anchors_pkey :: PRIMARYKEYproject_id,session_key
 CONSTRAINT actor_project_defaults FOREIGN_KEY actor_project_defaults_project_id_fkey :: FOREIGNKEYproject_idREFERENCESprojectsidONDELETECASCADE
 CONSTRAINT actor_project_defaults PRIMARY_KEY actor_project_defaults_pkey :: PRIMARYKEYactor
+CONSTRAINT admin_users CHECK admin_users_has_credential_check :: CHECKpassword_hashISNOTNULLORauth_user_idISNOTNULL
 CONSTRAINT admin_users CHECK admin_users_theme_check :: CHECKtheme=ANYARRAY'light','dark'
+CONSTRAINT admin_users FOREIGN_KEY admin_users_auth_user_id_fkey :: FOREIGNKEYauth_user_idREFERENCES"user"idONDELETESETNULL
 CONSTRAINT admin_users FOREIGN_KEY admin_users_default_project_id_fkey :: FOREIGNKEYdefault_project_idREFERENCESprojectsidONDELETESETNULL
 CONSTRAINT admin_users PRIMARY_KEY admin_users_pkey :: PRIMARYKEYid
 CONSTRAINT admin_users UNIQUE admin_users_email_key :: UNIQUEemail
@@ -1041,6 +1054,11 @@ CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_tags_check :: C
 CONSTRAINT analytics_events_shadow CHECK analytics_events_shadow_token_consistency :: CHECKprompt_tokensISNULLANDcompletion_tokensISNULLORprompt_tokensISNOTNULLANDcompletion_tokensISNOTNULL
 CONSTRAINT analytics_events_shadow PRIMARY_KEY analytics_events_shadow_pkey :: PRIMARYKEYevent_id
 CONSTRAINT analyzer_versions PRIMARY_KEY analyzer_versions_pkey :: PRIMARYKEYanalyzer_name
+CONSTRAINT api_tokens CHECK api_tokens_name_nonblank_check :: CHECKlengthbtrimname>0
+CONSTRAINT api_tokens CHECK api_tokens_token_hash_hex_check :: CHECKtoken_hash~'^0-9a-f{64}$'
+CONSTRAINT api_tokens FOREIGN_KEY api_tokens_user_id_fkey :: FOREIGNKEYuser_idREFERENCESadmin_usersidONDELETECASCADE
+CONSTRAINT api_tokens PRIMARY_KEY api_tokens_pkey :: PRIMARYKEYid
+CONSTRAINT auth_tokens FOREIGN_KEY auth_tokens_auth_session_id_fkey :: FOREIGNKEYauth_session_idREFERENCESsessionidONDELETECASCADE
 CONSTRAINT auth_tokens FOREIGN_KEY auth_tokens_user_id_fkey :: FOREIGNKEYuser_idREFERENCESadmin_usersid
 CONSTRAINT auth_tokens PRIMARY_KEY auth_tokens_pkey :: PRIMARYKEYid
 CONSTRAINT auth_tokens UNIQUE auth_tokens_token_id_key :: UNIQUEtoken_id
@@ -1351,6 +1369,7 @@ INDEX actor_project_defaults.idx_actor_project_defaults_project :: CREATE INDEX 
 INDEX admin_users.admin_users_email_key :: CREATE UNIQUE INDEX admin_users_email_key ON admin_users USING btree (email)
 INDEX admin_users.admin_users_pkey :: CREATE UNIQUE INDEX admin_users_pkey ON admin_users USING btree (id)
 INDEX admin_users.admin_users_username_key :: CREATE UNIQUE INDEX admin_users_username_key ON admin_users USING btree (username)
+INDEX admin_users.idx_admin_users_auth_user_id :: CREATE UNIQUE INDEX idx_admin_users_auth_user_id ON admin_users USING btree (auth_user_id) WHERE (auth_user_id IS NOT NULL)
 INDEX admin_users.idx_admin_users_default_project :: CREATE INDEX idx_admin_users_default_project ON admin_users USING btree (default_project_id)
 INDEX admin_users.idx_admin_users_email :: CREATE INDEX idx_admin_users_email ON admin_users USING btree (email)
 INDEX admin_users.idx_admin_users_username :: CREATE INDEX idx_admin_users_username ON admin_users USING btree (username)
@@ -1380,8 +1399,12 @@ INDEX analytics_events_shadow.idx_analytics_events_shadow_sync_status :: CREATE 
 INDEX analytics_events_shadow.idx_analytics_events_shadow_tags_gin :: CREATE INDEX idx_analytics_events_shadow_tags_gin ON analytics_events_shadow USING gin (tags)
 INDEX analytics_events_shadow.idx_analytics_events_shadow_timestamp :: CREATE INDEX idx_analytics_events_shadow_timestamp ON analytics_events_shadow USING btree ("timestamp")
 INDEX analyzer_versions.analyzer_versions_pkey :: CREATE UNIQUE INDEX analyzer_versions_pkey ON analyzer_versions USING btree (analyzer_name)
+INDEX api_tokens.api_tokens_pkey :: CREATE UNIQUE INDEX api_tokens_pkey ON api_tokens USING btree (id)
+INDEX api_tokens.idx_api_tokens_token_hash :: CREATE UNIQUE INDEX idx_api_tokens_token_hash ON api_tokens USING btree (token_hash)
+INDEX api_tokens.idx_api_tokens_user_created :: CREATE INDEX idx_api_tokens_user_created ON api_tokens USING btree (user_id, created_at DESC)
 INDEX auth_tokens.auth_tokens_pkey :: CREATE UNIQUE INDEX auth_tokens_pkey ON auth_tokens USING btree (id)
 INDEX auth_tokens.auth_tokens_token_id_key :: CREATE UNIQUE INDEX auth_tokens_token_id_key ON auth_tokens USING btree (token_id)
+INDEX auth_tokens.idx_auth_tokens_auth_session_id :: CREATE INDEX idx_auth_tokens_auth_session_id ON auth_tokens USING btree (auth_session_id) WHERE (auth_session_id IS NOT NULL)
 INDEX auth_tokens.idx_auth_tokens_expires :: CREATE INDEX idx_auth_tokens_expires ON auth_tokens USING btree (expires_at)
 INDEX auth_tokens.idx_auth_tokens_token_id :: CREATE INDEX idx_auth_tokens_token_id ON auth_tokens USING btree (token_id)
 INDEX auth_tokens.idx_auth_tokens_user_id :: CREATE INDEX idx_auth_tokens_user_id ON auth_tokens USING btree (user_id)

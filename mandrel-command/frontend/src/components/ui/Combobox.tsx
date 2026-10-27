@@ -13,8 +13,8 @@ import styles from './Combobox.module.css';
  * The control is an `<input>`, and `value`/`onChange` are the input's own. Anything the
  * user types is the value, whether or not it appears in `options` — the list only makes
  * the canonical spelling the path of least resistance. That is the whole design: on the
- * Tasks board `builder` / `the builder` / `builder (P3 Insight)` are one actor in three
- * buckets, but `'the operator + the coordinator'` is a legitimate value that no roster will ever contain,
+ * Tasks board `builder` / `Builder` / `builder (P3 Insight)` are one actor in three
+ * buckets, but `'Operator + Coordinator'` is a legitimate value that no roster will ever contain,
  * so a Select would be wrong and free text alone leaves the drift. This is the middle.
  *
  * Consequently there is NO "commit" concept for typing and no validation against the

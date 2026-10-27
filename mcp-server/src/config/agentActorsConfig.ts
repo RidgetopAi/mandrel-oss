@@ -1,9 +1,9 @@
 /**
  * agentActorsConfig — WHO COUNTS AS AN AGENT for the task_create fold-in gate.
- * (REALIGN step 5.)
+ * (REALIGN step 5, an earlier decision.)
  *
  * ═══ THE DEFECT THIS ENCODES AGAINST ═══
- * MEASURED 2026-09-08: 39% of the 145 open tasks named a reviewer / the builder / probe as
+ * MEASURED 2026-09-08: 39% of the 145 open tasks named an Reviewer / Builder / probe as
  * their origin, and every batch since 08-28 filed ~5 new tasks. The prose rule ("stay in
  * lane, file it") produced that backlog. The rule this config serves is the opposite one:
  * an agent that finds something FIXES IT IN ITS LANE or REPORTS IT TO COORDINATOR in its return.
@@ -18,7 +18,7 @@
  * that never sets the var is byte-for-byte unaffected. This is a house rule about how OUR
  * swarm files work, not a product default; prod's env names the roster
  * (`builder,reviewer,auditor,ops-bot,researcher`). Entries go through the ONE actor
- * normalizer so `the builder` and `builder` are the same member (the `coordinator`/`the coordinator` collision
+ * normalizer so `Builder` and `builder` are the same member (the `coordinator`/`Coordinator` collision
  * taskAuthorStamp.ts documents is exactly what a raw string compare would reintroduce).
  *
  * READ PER CALL, NOT AT MODULE LOAD. The parse is a split of a short string; nothing in a
@@ -29,16 +29,17 @@
  */
 
 import { normalizeActor } from './actorRegistry.js';
+import { DEPLOYMENT_VOCABULARY } from './deploymentVocabularyConfig.js';
 
 /** The env name. Exported so tests and any declaration contract reference ONE string. */
 export const AGENT_ACTORS_ENV = 'MANDREL_AGENT_ACTORS';
 
 /**
- * The tag that marks a task as needing the operator's decision — the ONE reason an agent may file
+ * The tag that marks a task as needing the human's decision (deployment-configured: config/deploymentVocabularyConfig.ts) — the ONE reason an agent may file
  * a task rather than fold the finding in or report it. Compared through `tagSpellingKey`
  * by the guard, so the known `needs:operator` spelling also satisfies it.
  */
-export const AGENT_FOLD_IN_EXEMPT_TAG = 'needs-operator';
+export const AGENT_FOLD_IN_EXEMPT_TAG = DEPLOYMENT_VOCABULARY.needsHumanTag;
 
 /**
  * Parse the roster. Missing / empty / whitespace-only → the empty set (the tenant-neutral

@@ -156,6 +156,15 @@ export const config = {
     pushToken: process.env.MANDREL_AGENT_TOKEN || '',
   },
 
+  // Request-body size limits (body-parse-after-auth). `authenticated` is the
+  // cap for bodies parsed AFTER a credential is verified (the former app-wide 10mb);
+  // `public` is the much smaller cap for the few routes that must parse a body with NO
+  // credential (login), so an anonymous caller can never make the server buffer megabytes.
+  bodyLimits: {
+    authenticated: process.env.BODY_LIMIT_AUTHENTICATED || '10mb',
+    public: process.env.BODY_LIMIT_PUBLIC || '16kb',
+  },
+
   // CORS configuration
   cors: {
     origin: (process.env.CORS_ORIGIN || 'http://localhost:3000,http://localhost:3001').split(','),

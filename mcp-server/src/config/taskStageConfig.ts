@@ -2,7 +2,8 @@
  * taskStageConfig — the SEVEN-STAGE PUNCH LIST LANE (migration 101).
  *
  * ONE declaration of the stage vocabulary so the validator's enum, the DB CHECK, the
- * status-derivation rules and the completeness rule all read the same list ( * one centralized definition, not N copies). The DB CHECK in migration 101 is the
+ * status-derivation rules and the completeness rule all read the same list (
+ * one centralized definition, not N copies). The DB CHECK in migration 101 is the
  * authoritative mirror at the lowest layer; this is the application-layer copy pinned to
  * it by an executed test (taskStageStatusSync.contract.test.ts).
  */
@@ -39,8 +40,8 @@ export const PUNCH_SOURCES = ['form', 'chat', 'machine'] as const;
 export type PunchSource = (typeof PUNCH_SOURCES)[number];
 
 /**
- * `metadata.punch.doneWhen[].owner` legal values (an earlier decision /
- * the Punch List loop decision). `lane` = a confined lane can produce the proof itself, and REQUIRES `proof`
+ * `metadata.punch.doneWhen[].owner` legal values.
+ * `lane` = a confined lane can produce the proof itself, and REQUIRES `proof`
  * (a repo-relative path or a test id — the artifact the critic opens); `human` = the clause
  * needs a person and carries no proof.
  */

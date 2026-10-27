@@ -1,5 +1,5 @@
 /**
- * DB-integration guard for the PER-USER default project (page-scope epic §A,
+ * DB-integration guard for the PER-USER default project (an earlier epic §A,
  * migration 076 `admin_users.default_project_id`).
  *
  * ── WHAT THIS GUARD IS ANCHORED ON, AND WHY ──────────────────────────────────────────
@@ -76,17 +76,17 @@ describeDb('per-user default project — admin_users.default_project_id (DB inte
         `INSERT INTO admin_users (id, username, email, password_hash, role, is_active)
          VALUES ($1, $2, $3, 'x', 'user', true), ($4, $5, $6, 'x', 'admin', true)`,
         [
-          userId, `fm-pagescope-u-${userId.slice(0, 8)}`, `fm-pagescope-u-${userId.slice(0, 8)}@test.invalid`,
-          adminId, `fm-pagescope-a-${adminId.slice(0, 8)}`, `fm-pagescope-a-${adminId.slice(0, 8)}@test.invalid`,
+          userId, `fm-41293984-u-${userId.slice(0, 8)}`, `fm-41293984-u-${userId.slice(0, 8)}@test.invalid`,
+          adminId, `fm-41293984-a-${adminId.slice(0, 8)}`, `fm-41293984-a-${adminId.slice(0, 8)}@test.invalid`,
         ]
       );
       await client.query(
         `INSERT INTO projects (id, name, description, status, created_at)
-         VALUES ($1, $2, 'page-scope granted project', 'active', NOW()),
-                ($3, $4, 'page-scope PLANTED denied project', 'active', NOW())`,
+         VALUES ($1, $2, '41293984 granted project', 'active', NOW()),
+                ($3, $4, '41293984 PLANTED denied project', 'active', NOW())`,
         [
-          grantedProjectId, `fm-pagescope-granted-${grantedProjectId.slice(0, 8)}`,
-          deniedProjectId, `fm-pagescope-denied-${deniedProjectId.slice(0, 8)}`,
+          grantedProjectId, `fm-41293984-granted-${grantedProjectId.slice(0, 8)}`,
+          deniedProjectId, `fm-41293984-denied-${deniedProjectId.slice(0, 8)}`,
         ]
       );
       // ONE grant, deliberately. Migration 075 seeds every ACTIVE NON-ADMIN user against
@@ -271,8 +271,8 @@ describeDb('per-user default project — admin_users.default_project_id (DB inte
     const doomedId = uuidv4();
     await pool.query(
       `INSERT INTO projects (id, name, description, status, created_at)
-       VALUES ($1, $2, 'page-scope doomed project', 'active', NOW())`,
-      [doomedId, `fm-pagescope-doomed-${doomedId.slice(0, 8)}`]
+       VALUES ($1, $2, '41293984 doomed project', 'active', NOW())`,
+      [doomedId, `fm-41293984-doomed-${doomedId.slice(0, 8)}`]
     );
     await pool.query(
       'INSERT INTO user_project_access (user_id, project_id) VALUES ($1, $2) ON CONFLICT DO NOTHING',

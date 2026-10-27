@@ -347,7 +347,7 @@ describe('graph-aware insights — coverage, not counts', () => {
     ];
 
     /**
-     * FAIL-CLOSED BY CONSTRUCTION. The earlier version of this pin
+     * FAIL-CLOSED BY CONSTRUCTION (a past incident + a past incident). The earlier version of this pin
      * lived only in the contract test and scanned the rendered text of two example projects —
      * so it could only see the render branches those two projects happened to reach. MEASURED:
      * planting `'Low decision count - consider documenting more technical choices'` in the

@@ -15,7 +15,7 @@
  * WHEN THIS FILE COVERED ONLY #1, #2 SHIPPED THE DEFECT. The 2026-08-02 fix fenced the inference
  * query and this guard's population was "both shapes inferenceCandidateSql can emit" — correct
  * about its own module and silent about the identical statement belief pairing added later. It
- * cost a non-deterministic clean gate (the same ref, one FAILURE and one
+ * cost a non-deterministic clean gate (same ref, one FAILURE and one
  * SUCCESS) and, on any instance whose contexts table is big enough for autoanalyze to tilt the
  * planner, silently dropped real candidate pairs in production. If you add a third such
  * statement, it belongs in the `shapes` array below.
@@ -90,7 +90,7 @@ async function vectorIndexNames(): Promise<string[]> {
   return r.rows.map((row: { name: string }) => row.name);
 }
 
-describe('candidate scans are EXACT (an earlier task and its follow-up — an ANN index cannot answer an existence question)', () => {
+describe('candidate scans are EXACT (an earlier task + an earlier change — an ANN index cannot answer an existence question)', () => {
   let indexes: string[] = [];
 
   beforeAll(async () => {

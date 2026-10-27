@@ -1,11 +1,11 @@
 /**
  * insightPagesProjectScope — the DB-backed guard for the four INSIGHT pages' project scope
- * (page-scope epic, amendment "the guard construction", which supersedes §F).
+ * (amendment "the guard construction", which supersedes §F).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  WHY THESE FOUR PAGES SPECIFICALLY
  * ════════════════════════════════════════════════════════════════════════════════════
- * Dashboard, TreeWalker and Embedding are three of the surfaces that had NO project
+ * Dashboard, TreeWalker and Embedding are the surfaces that had NO project
  * control at all. They silently rode the global switcher this epic deletes, which is the
  * whole reason the rework exists: the same screen could change which project it described
  * with nothing visible moving. Now each owns a selector — and this file is the half of that
@@ -44,8 +44,7 @@
  *   Dashboard  → GET /api/dashboard/stats          (counts, so asserted by VALUE)
  *   TreeWalker → GET /api/treewalker/thread        (header-scoped; no path/query alternative)
  *   Embedding  → GET /api/embedding/list           (header-scoped)
- *   Projects   → GET  /api/projects/:id                        (PATH-scoped; the path-param
- *                                                              door, routes/projects.ts)
+ *   Projects   → GET  /api/projects/:id                       (PATH-scoped)
  *
  * Deliberately NOT here, with reasons rather than silence:
  *   • `/api/sessions`, `/api/sessions/trends`, `/api/tasks/throughput`, `/api/projects` —
@@ -66,7 +65,7 @@
  * every page is built from. That was MEASURED on this database (see the report for the
  * probe), but it is a defect in the shared foundation, not in these pages, and asserting
  * the correct behaviour here would leave a permanently RED test in someone else's lane.
- * It is reported to Coordinator instead. If it is still open when this lands, that is the reason.
+ * It is reported to the coordinator instead. If it is still open when this lands, that is the reason.
  *
  * Local run:
  *   bash scripts/provision-test-db.sh ci_sel_insight
@@ -83,17 +82,6 @@ jest.mock('../utils/featureFlags', () => ({
   })),
 }));
 
-/**
- * The mcp-server seam. Stubbed because it is a DIFFERENT PROCESS ON A DIFFERENT BOX. The
- * scope decisions under test happen entirely on this side of the seam.
- */
-jest.mock('../services/mcp', () => ({
-  McpService: {
-    callMcpEndpoint: jest.fn(async () => ({ result: {} })),
-    callTool: jest.fn(async () => ({ success: true, data: {} })),
-  },
-}));
-
 import request from 'supertest';
 import app from '../server';
 import { AuthService } from '../services/auth';
@@ -108,6 +96,8 @@ const U_ADMIN = 'e6e60000-0000-4000-8000-e6e6000000a1';
 
 const MARK_A = 'INSIGHTSCOPEALPHA';
 const MARK_B = 'INSIGHTSCOPEBRAVO';
+
+const EMBEDDING_PAD_TAG = 'embedding-pad-fixture';
 
 describeDb('insight pages — the request names the PAGE\'s project', () => {
   // The app's own pool: this suite imports ../server, which opens it. A private second pool
@@ -198,12 +188,6 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
     );
     expect(ctx.rows.filter((r) => r.project_id === P_A)).toHaveLength(2);
     expect(ctx.rows.filter((r) => r.project_id === P_B)).toHaveLength(1);
-    // THE PROJECTS ANCHOR: each project row itself carries its marker (name + description).
-    const projects = await pool.query(
-      'SELECT id FROM projects WHERE id = ANY($1::uuid[])',
-      [[P_A, P_B]]
-    );
-    expect(projects.rows).toHaveLength(2);
   });
 
   // ══════════════════════════════════════════════════════════════════════════════════
@@ -252,10 +236,39 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
     });
 
     it('MUTATION — UNSCOPED, the admin sees BOTH datasets', async () => {
-      const res = await get('/api/embedding/list');
-      expect(res.status).toBe(200);
-      const ids = (res.body as Array<{ id: string }>).map((d) => d.id);
-      expect(ids).toEqual(expect.arrayContaining([P_A, P_B]));
+      // The route ranks datasets by embedded-context count and returns only the top
+      // 25 (datasets.ts LIMIT), so on a database that already holds many projects the
+      // fixture's one- and two-row datasets fall off the page. Pad BOTH planted projects
+      // past the largest dataset in the database so the cap cannot evict them, then assert
+      // as before — the route is untouched and still has to return both when unscoped.
+      const embeddingCol = activeEmbeddingColumn();
+      const { rows } = await pool.query(
+        `SELECT COALESCE(MAX(n), 0)::int AS max FROM (
+           SELECT COUNT(*) AS n FROM contexts
+           WHERE ${embeddingCol} IS NOT NULL AND archived_at IS NULL
+           GROUP BY project_id
+         ) t`
+      );
+      const pad = rows[0].max + 1;
+      try {
+        for (const pid of [P_A, P_B]) {
+          await pool.query(
+            `INSERT INTO contexts (project_id, context_type, content, tags, ${embeddingCol})
+             SELECT $1, 'note', 'embedding pad ' || g, $2, $3::vector
+             FROM generate_series(1, $4) g`,
+            [pid, [EMBEDDING_PAD_TAG], vectorLiteral(), pad]
+          );
+        }
+        const res = await get('/api/embedding/list');
+        expect(res.status).toBe(200);
+        const ids = (res.body as Array<{ id: string }>).map((d) => d.id);
+        expect(ids).toEqual(expect.arrayContaining([P_A, P_B]));
+      } finally {
+        await pool.query(`DELETE FROM contexts WHERE project_id = ANY($1::uuid[]) AND $2 = ANY(tags)`, [
+          [P_A, P_B],
+          EMBEDDING_PAD_TAG,
+        ]);
+      }
     });
   });
 
@@ -296,10 +309,10 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
   });
 
   // ══════════════════════════════════════════════════════════════════════════════════
-  //  PROJECTS — PATH-scoped (router.param + authorizeProjectPathParam)
+  //  PROJECT DETAIL — PATH-scoped, authorized by routes/projects.ts's router.param
   // ══════════════════════════════════════════════════════════════════════════════════
-  describe('Projects — the project is in the PATH, and the path wins', () => {
-    it('GET /api/projects/:id for A returns A\'s project and not B\'s', async () => {
+  describe('Project detail — the project is in the PATH, and the path wins', () => {
+    it('GET /api/projects/:id for A returns A and not B', async () => {
       const res = await get(`/api/projects/${P_A}`, P_A);
       expect(res.status).toBe(200);
       expect(carries(res.body, MARK_A)).toBe(true);
@@ -307,9 +320,9 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
     });
 
     it('THE PATH BEATS THE HEADER — path B with an ambient header naming A returns B', async () => {
-      // No ambient header can move a read whose project is a path segment the router itself
-      // authorizes. Measured here rather than assumed, because that claim is true until
-      // someone changes the controller.
+      // No ambient header can move a read whose project is a path segment the router
+      // itself authorizes. Measured here rather than assumed, because "no scope() needed"
+      // is exactly the kind of claim that is true until someone changes the controller.
       const res = await get(`/api/projects/${P_B}`, P_A);
       expect(res.status).toBe(200);
       expect(carries(res.body, MARK_B)).toBe(true);

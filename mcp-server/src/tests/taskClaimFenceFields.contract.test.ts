@@ -18,7 +18,7 @@
  *   • the fence is CONDITIONAL MUTATION — the claim predicates live in the UPDATE's WHERE,
  *     never a check-then-update;
  *   • BEARER POLICY (pinned, do not relitigate): the token is a bearer secret; a VALID
- *     token presented by a DIFFERENT resolved actor IS authorized (the bearer-policy decision accepted
+ *     token presented by a DIFFERENT resolved actor IS authorized (an earlier change accepted
  *     residual — actor-string binding was rejected as a decorative lock);
  *   • all under TASK_CLAIM_CONFIG.enabled — flag off keeps today's inert-echo contract.
  *
@@ -251,7 +251,7 @@ describe('3. authorization — valid token accepted; bearer policy pinned; force
   });
 
   /**
-   * BEARER POLICY — DECIDED (an earlier task pin; the bearer-policy decision accepted residual). The token is a
+   * BEARER POLICY — DECIDED (an earlier task pin; an earlier change accepted residual). The token is a
    * bearer secret: a VALID token presented by a DIFFERENT resolved actor IS authorized.
    * Binding the fence to the actor string was rejected as a decorative lock (free-form
    * varchar, no registry — two workers sharing a name would both "hold" it). Secrecy is
@@ -382,7 +382,7 @@ describe('5. TASK_CLAIM_CONFIG.enabled=false keeps today\'s behaviour', () => {
 // ═══════════════════════════════════════════════════════════════════════════════════════
 // P. MUTATION PROBES — the two broken shapes, live, proving the suite can go RED
 //    (in-suite replicas per the house style; the real-code mutations were ALSO run during
-//    the build — see the an earlier task report — with the same outcomes.)
+//    the build — see the earlier task report — with the same outcomes.)
 // ═══════════════════════════════════════════════════════════════════════════════════════
 describe('P. mutation probes', () => {
   /**

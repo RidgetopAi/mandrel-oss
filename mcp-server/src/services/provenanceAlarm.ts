@@ -66,7 +66,7 @@ export interface ProvenanceAlertOutcome {
 
 /** One run's outcome — the three states kept distinct (C1). A measured run additionally
  *  reports the delivery outcome of every alert it raised: could-not-DELIVER is its own
- *  visible state (the reviewer ruling 3), never folded into silence. */
+ *  visible state (Reviewer ruling 3), never folded into silence. */
 export type ProvenanceAlarmRunResult =
   | { skipped: true }
   | {
@@ -118,7 +118,7 @@ export function resetProvenanceAlarmDedupe(): void {
 
 /**
  * Send at most one alert per kind per dedupe window. THE SLOT IS CONSUMED ONLY BY A
- * SUCCESSFUL DISPATCH (the reviewer ruling 4): recording the timestamp before the send meant
+ * SUCCESSFUL DISPATCH (Reviewer ruling 4): recording the timestamp before the send meant
  * an undelivered page ate the once-per-window slot and suppressed the next REAL page —
  * with an hourly check interval that failure mode is a silent day. A failed dispatch
  * leaves the slot free, so the next runOnce retries (bounded by checkIntervalMinutes),
@@ -174,7 +174,7 @@ export class ProvenanceAlarmWorker {
       return;
     }
 
-    // FAIL LOUD AT STARTUP (the reviewer rulings 3 + round-3): an enabled alarm whose
+    // FAIL LOUD AT STARTUP (Reviewer rulings 3 + round-3): an enabled alarm whose
     // delivery CHAIN is broken is a dead alarm wearing a green light. Two measured
     // breaks, one class: the fleet image does not contain repo-root scripts/ (resolver
     // returns null without the compose bind-mount + MANDREL_EMBED_ALERT_NOTIFY_SCRIPT),
@@ -276,7 +276,7 @@ export class ProvenanceAlarmWorker {
       // settles LATE (after the takeover), its finally clears the latch the takeover
       // now owns, permitting one overlapping check on the next tick — bounded harm:
       // both runs are read-only and alerts dedupe. A generation counter closes that
-      // window if it ever matters (the reviewer r1, ruled not worth the lines).
+      // window if it ever matters (Reviewer r1, ruled not worth the lines).
     }
     this.isChecking = true;
     this.checkingSince = Date.now();

@@ -1,5 +1,5 @@
 /**
- * watchableRequiresAuthHttp.test.ts — the RUNTIME half.
+ * watchableRequiresAuthHttp.test.ts — an earlier task, the RUNTIME half.
  *
  * `watchableRequiresAuth.test.ts` asserts the SHAPE of the router (that
  * `authenticateToken` sits in the handler chain for `GET /api/projects/watchable`).
@@ -130,8 +130,8 @@ describe(`${ROUTE} authz behaviour`, () => {
     expect(Array.isArray(projects)).toBe(true);
     expect(projects.length).toBeGreaterThan(0);
     // The shape the live mandrel-watcher consumes. Read from ConfigManager.fetchProjects
-    // at /home/user/projects/mandrel-watcher/src/core/ConfigManager.ts ON THE PROD HOST
-    // BOX (that repo is not checked out on the control host), which maps each project to
+    // at /home/user/projects/mandrel-watcher/src/core/ConfigManager.ts ON THE PROD-HOST
+    // BOX (that repo is not checked out on the control host control box), which maps each project to
     // { path: p.root_directory, mandrel_project: p.name, project_id: p.id }.
     expect(projects[0]).toEqual(
       expect.objectContaining({ id: expect.any(String), name: expect.any(String), root_directory: expect.any(String) })

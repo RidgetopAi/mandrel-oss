@@ -127,13 +127,11 @@ describe('attributionNoticeConfig — the shipped defaults', () => {
 });
 
 /**
- * THE "" == UNSET CONTRACT — this is what docker-compose.prod file's declaration RIDES ON.
+ * THE "" == UNSET CONTRACT — this is what a compose declaration with EMPTY values RIDES ON.
  *
- * Prod declares all six knobs inline with EMPTY values (an inline `environment:` entry is
- * what makes the key reach prod at all — a key declared only in the tenant compose never
- * does, which is the 2026-08-26 outage shape and is guarded by
- * prod-compose-render-equivalence.test script). Those empty strings are only safe
- * if the reader treats "" exactly as ABSENT. If it ever interpolated "" instead, prod would
+ * A compose file that declares all six knobs inline with EMPTY values (an inline
+ * `environment:` entry is what makes the key reach the container at all) is only safe if the
+ * reader treats "" exactly as ABSENT. If it ever interpolated "" instead, an instance would
  * ship a notice telling customers to set `X-Actor-ID: ` with no name, or a zero-ms TTL that
  * fires on every single write.
  *

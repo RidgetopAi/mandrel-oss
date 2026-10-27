@@ -15,7 +15,7 @@
  *   direct-SQL Command search services (contexts, tasks, …) call, and we MIRROR
  *   the idResolver pattern deliberately. If the resolver's prefix-match contract
  *   changes, update this file to match (single shared helper on this side of the
- *   boundary; fix the class, don't drift N copies).
+ *   boundary; see a past incident — fix the class, don't drift N copies).
  *
  * WHAT IT ADDS to a search query, all OR'd together (additive — never replaces
  * the caller's existing content/title match):

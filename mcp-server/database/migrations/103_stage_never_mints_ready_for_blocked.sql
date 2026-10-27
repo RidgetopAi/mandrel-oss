@@ -1,7 +1,7 @@
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 -- 103 — fix migration 101's two mint-to-`ready` sites for `blocked`, and make cancelling a
---        task actually clear its pick-lane stage. (Punch List
---        .)
+--        task actually clear its pick-lane stage. (Punch List, an earlier task.
+--        )
 -- ═════════════════════════════════════════════════════════════════════════════════════════
 --
 -- ═══ THE DEFECT THIS CLOSES ═══

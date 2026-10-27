@@ -1,0 +1,296 @@
+# A REAL `docker compose config` render of this repo's docker-compose.yml (compose v5.1.4),
+# with each service's environment values cut to one line and the
+# published host ports replaced by @MCP@/@BACKEND@/@FRONTEND@/@PG@ (redis renders with no
+# published value: Docker's random port). scripts/test/install.test.sh's fake runtime prints it
+# for `compose config`, so install.sh's port reader is tested against the real output shape.
+name: mandrel-oss
+services:
+  mandrel-command-backend:
+    build:
+      context: /home/user/mandrel-oss/mandrel-command
+      dockerfile: backend/Dockerfile
+    container_name: mandrel-command-backend
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+        required: true
+      postgres:
+        condition: service_healthy
+        required: true
+    environment:
+      NODE_ENV: production
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:5000/api/health
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    image: mandrel/command-backend:local
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: 50m
+    mem_limit: "402653184"
+    networks:
+      mandrel-network: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5000
+        published: "@BACKEND@"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: command_logs
+        target: /app/logs
+        volume: {}
+      - type: volume
+        source: command_uploads
+        target: /app/uploads
+        volume: {}
+  mandrel-command-frontend:
+    build:
+      context: /home/user/mandrel-oss/mandrel-command
+      dockerfile: frontend/Dockerfile
+    container_name: mandrel-command-frontend
+    depends_on:
+      mandrel-command-backend:
+        condition: service_healthy
+        required: true
+    environment:
+      NODE_ENV: production
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:3000
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    image: mandrel/command-frontend:local
+    labels:
+      traefik.docker.network: mandrel-dev_mandrel-network
+      traefik.enable: "true"
+      traefik.http.routers.dev-frontend.entrypoints: web
+      traefik.http.routers.dev-frontend.priority: "1"
+      traefik.http.routers.dev-frontend.rule: Host(`localhost`)
+      traefik.http.routers.dev-frontend.service: dev-frontend-svc
+      traefik.http.services.dev-frontend-svc.loadbalancer.server.port: "3000"
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: 50m
+    mem_limit: "67108864"
+    networks:
+      mandrel-network: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 3000
+        published: "@FRONTEND@"
+        protocol: tcp
+    restart: unless-stopped
+  mcp-server:
+    build:
+      context: /home/user/mandrel-oss/mcp-server
+      dockerfile: Dockerfile
+      args:
+        MANDREL_IMAGE_REVISION: ""
+    container_name: mandrel-mcp-server
+    depends_on:
+      postgres:
+        condition: service_healthy
+        required: true
+      redis:
+        condition: service_healthy
+        required: true
+    environment:
+      NODE_ENV: production
+    extra_hosts:
+      - host.docker.internal=host-gateway
+    healthcheck:
+      test:
+        - CMD
+        - wget
+        - --no-verbose
+        - --tries=1
+        - --spider
+        - http://localhost:8080/health
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    image: mandrel/mcp-server:local
+    labels:
+      traefik.docker.network: mandrel-dev_mandrel-network
+      traefik.enable: "true"
+      traefik.http.routers.dev-healthz.entrypoints: web
+      traefik.http.routers.dev-healthz.priority: "100"
+      traefik.http.routers.dev-healthz.rule: Host(`localhost`) && PathPrefix(`/healthz`)
+      traefik.http.routers.dev-healthz.service: dev-mcp-svc
+      traefik.http.routers.dev-mcp.entrypoints: web
+      traefik.http.routers.dev-mcp.priority: "100"
+      traefik.http.routers.dev-mcp.rule: Host(`localhost`) && Path(`/mcp`)
+      traefik.http.routers.dev-mcp.service: dev-mcp-svc
+      traefik.http.routers.dev-oauth.entrypoints: web
+      traefik.http.routers.dev-oauth.priority: "100"
+      traefik.http.routers.dev-oauth.rule: Host(`oauth-router-disabled.invalid`) && (PathPrefix(`/.well-known/oauth`) || PathPrefix(`/.well-known/openid`) || PathPrefix(`/api/oauth`) || PathPrefix(`/sign-in`) || PathPrefix(`/consent`))
+      traefik.http.routers.dev-oauth.service: dev-mcp-svc
+      traefik.http.services.dev-mcp-svc.loadbalancer.server.port: "8080"
+    logging:
+      driver: json-file
+      options:
+        max-file: "5"
+        max-size: 100m
+    mem_limit: "805306368"
+    networks:
+      mandrel-network: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 8080
+        published: "@MCP@"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: mcp_data
+        target: /app/data
+        volume: {}
+      - type: volume
+        source: mcp_logs
+        target: /app/logs
+        volume: {}
+  postgres:
+    container_name: mandrel-postgres
+    environment:
+      NODE_ENV: production
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - pg_isready -U mandrel
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    image: ankane/pgvector:v0.5.1
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: 50m
+    mem_limit: "1073741824"
+    networks:
+      mandrel-network: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 5432
+        published: "@PG@"
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: postgres_data
+        target: /var/lib/postgresql/data
+        volume: {}
+      - type: bind
+        source: /home/user/mandrel-oss/mcp-server/database/init/00-extensions.sql
+        target: /docker-entrypoint-initdb.d/00-extensions.sql
+        read_only: true
+        bind: {}
+      - type: bind
+        source: /home/user/mandrel-oss/mcp-server/database/init/01-harden-pg-hba.sh
+        target: /docker-entrypoint-initdb.d/01-harden-pg-hba.sh
+        read_only: true
+        bind: {}
+  redis:
+    command:
+      - redis-server
+      - --appendonly
+      - "yes"
+      - --maxmemory
+      - 256mb
+      - --maxmemory-policy
+      - allkeys-lru
+    container_name: mandrel-redis
+    healthcheck:
+      test:
+        - CMD
+        - redis-cli
+        - ping
+      timeout: 10s
+      interval: 30s
+      retries: 3
+      start_period: 15s
+    image: redis:7-alpine
+    logging:
+      driver: json-file
+      options:
+        max-file: "3"
+        max-size: 50m
+    mem_limit: "335544320"
+    networks:
+      mandrel-network: null
+    ports:
+      - mode: ingress
+        host_ip: 127.0.0.1
+        target: 6379
+        protocol: tcp
+    restart: unless-stopped
+    volumes:
+      - type: volume
+        source: redis_data
+        target: /data
+        volume: {}
+networks:
+  mandrel-network:
+    name: mandrel-oss_mandrel-network
+    driver: bridge
+volumes:
+  command_logs:
+    name: mandrel-oss_command_logs
+    driver: local
+  command_uploads:
+    name: mandrel-oss_command_uploads
+    driver: local
+  mcp_data:
+    name: mandrel-oss_mcp_data
+    driver: local
+  mcp_logs:
+    name: mandrel-oss_mcp_logs
+    driver: local
+  postgres_data:
+    name: mandrel-oss_postgres_data
+    driver: local
+  redis_data:
+    name: mandrel-oss_redis_data
+    driver: local
+x-healthcheck-defaults:
+  interval: 30s
+  retries: 3
+  start_period: 15s
+  timeout: 10s
+x-logging-mcp:
+  driver: json-file
+  options:
+    max-file: "5"
+    max-size: 100m
+x-logging-svc:
+  driver: json-file
+  options:
+    max-file: "3"
+    max-size: 50m

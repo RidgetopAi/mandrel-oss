@@ -37,8 +37,8 @@
  * ═══ THE PROSE FALLBACK IS NOT A COMPATIBILITY SHIM, IT IS THE COMMON CASE ══════════════
  * Our own entire corpus — every handoff we have ever written — is prose-only, and so is
  * every handoff any existing customer has stored. This is not a flag day and there is no
- * backfill: a handoff with no field reads exactly as it read before P5.4. The regex ported
- * below is a faithful port of riverbend/runtime/lib/handoff-fields.sh, including the two
+ * backfill: a handoff with no field reads exactly as it read before P5.4. The regex
+ * below is a faithful port of the shell parser it replaces, including the two
  * defects that shell learned the hard way (the markdown-heading form, and backticks around
  * the spine id), so the fallback is at least as good as the shell it replaces.
  *
@@ -273,8 +273,8 @@ export const NO_CARRIED_FIELDS: CarriedFields = Object.freeze({
 /**
  * Pull a carried field out of a handoff's PROSE — the fallback path.
  *
- * A FAITHFUL PORT of extract_field() in riverbend/runtime/lib/handoff-fields.sh, whose
- * header records why each form is accepted. The forms are the ones OBSERVED live in the
+ * A FAITHFUL PORT of the shell parser's extract_field(), whose header recorded why each form
+ * is accepted. The forms are the ones OBSERVED live in the
  * handoff corpus, not the ones someone imagined:
  *     heading : `## MODE: build`      (any 1-6 leading `#`)
  *     bare    : `MODE: build`
@@ -300,7 +300,7 @@ export function extractProseField(field: string, text: string): string | null {
 /**
  * Pull the SPINE out of a prose PATH line's `(spine [<type>] <id8>)` clause.
  *
- * Ported from extract_path_spine() in handoff-fields.sh, including both defects that shell
+ * Ported from the shell parser's extract_path_spine(), including both defects that shell
  * paid for in production:
  *   - THE TYPE WORD IS OPTIONAL. The live corpus writes it both ways, and refusing the
  *     typeless form made a boot report "the PATH line named no spine id" — a sentence that
@@ -312,7 +312,7 @@ export function extractProseField(field: string, text: string): string | null {
  *     cannot manufacture a match that was not textually there.
  *
  * WHAT IT STILL REFUSES, deliberately: an UNRECOGNISED word where the type belongs
- * (`(spine session 1a2b3c4d)` does not match — the id8 window must start immediately after
+ * (`(spine session e617f00d)` does not match — the id8 window must start immediately after
  * `(spine ` or after a recognised type word). And it NEVER guesses a spine from a
  * `branch:<slug>` name: a slug is a name, not an id, and an auto-open onto a guessed spine
  * is exactly the confidently-wrong declared edge this work exists to prevent.

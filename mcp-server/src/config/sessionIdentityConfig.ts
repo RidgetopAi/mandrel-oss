@@ -1,6 +1,5 @@
 /**
- * SESSION IDENTITY read model — the config + the vocabulary (Amp-orb eval finding W3,
- * an earlier task).
+ * SESSION IDENTITY read model — the config + the vocabulary (Amp-orb eval finding W3).
  *
  * WHAT THIS IS FOR: the eval could not VERIFY attribution. The session tools exposed a
  * truncated id, a project, and active/inactive — not the full session id, not the resolved

@@ -23,7 +23,7 @@ export async function getKnowledgeGapMetrics(
   scope: EmbeddingScope
 ): Promise<KnowledgeGapMetrics> {
   try {
-    // Name lookup DELETED with EmbeddingScope.projectName (the reviewer D1):
+    // Name lookup DELETED with EmbeddingScope.projectName (Reviewer D1):
     // the unauthorized legacy `project` header was its only source.
     const projectId = scope.projectId;
 

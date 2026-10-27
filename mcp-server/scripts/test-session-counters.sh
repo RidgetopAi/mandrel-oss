@@ -38,8 +38,8 @@ trap cleanup EXIT
 
 echo "🧱 Creating disposable DB: $DBNAME (role: $DBUSER)"
 $PGSUPER psql -q -c "DROP ROLE IF EXISTS \"$DBUSER\";" >/dev/null 2>&1
-# The throwaway password rides psql's STDIN, not its argv (class secret-on-child-argv,
-# an earlier task): argv is world-readable in /proc for the life of the child. A stdin
+# The throwaway password rides psql's STDIN, not its argv (class secret-on-child-argv):
+# argv is world-readable in /proc for the life of the child. A stdin
 # psql exits 0 on a SQL error unless told otherwise, hence -v ON_ERROR_STOP=1.
 $PGSUPER psql -q -v ON_ERROR_STOP=1 <<<"CREATE ROLE \"$DBUSER\" LOGIN PASSWORD '$DBPASS';" >/dev/null
 $PGSUPER createdb -O "$DBUSER" "$DBNAME" >/dev/null

@@ -30,7 +30,7 @@ export class ContextController {
    *     archived_at IS NULL default) via ContextService.searchContexts.
    */
   static async searchContexts(req: AuthenticatedRequest, res: Response): Promise<void> {
-    // D3 (the reviewer): getRequestProjectId() THROWS when projectContextMiddleware never ran,
+    // D3 (Reviewer): getRequestProjectId() THROWS when projectContextMiddleware never ran,
     // and this was the ONE call site of 25 sitting OUTSIDE a try. routes/contexts.ts:77
     // registers this handler raw on Express ^4.18, which does not catch a rejected promise
     // from an async handler — so the throw would not become a 500, it would HANG the

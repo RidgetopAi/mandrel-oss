@@ -32,7 +32,7 @@ import {
 } from '../services/trustModel.js';
 import type { TrustConfig } from '../config/trustConfig.js';
 
-/** The §8.1 Operator-approved defaults, pinned here so the assertions are explicit. */
+/** The §8.1 the operator-approved defaults, pinned here so the assertions are explicit. */
 const CFG: TrustConfig = {
   weightOutcome: 0.6,
   weightFreshness: 0.4,

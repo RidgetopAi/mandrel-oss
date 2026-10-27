@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * belief-eval — the Phase-4 belief-layer DYNO (the belief-layer design §5).
+ * belief-eval — the Phase-4 belief-layer DYNO (design §5, scorecard).
  *
  * The metric-first, LLM-scored run (embedder-bake-off pattern). Seeds the six labeled
  * cases (real Mandrel record content) into a DISPOSABLE, already-migrated DB, embeds them

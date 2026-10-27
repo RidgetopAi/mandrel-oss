@@ -7,7 +7,7 @@ export type { SessionStats, SessionActivity, SessionFile, ProductivityConfig } f
 
 /**
  * Marker agent_type for sessions created by the fleet deploy SMOKE
- * (fleet-deploy script — the /api/v2/sessions/start liveness probe).
+ * (the /api/v2/sessions/start liveness probe).
  *
  * The smoke MARKS its session with this agent_type and ends it immediately as
  * best-effort cleanup. Analytics read paths EXCLUDE sessions carrying this marker
@@ -16,7 +16,7 @@ export type { SessionStats, SessionActivity, SessionFile, ProductivityConfig } f
  *   - migration 048 (v_session_summaries view → list/detail/compare), and
  *   - SessionStatsService.getSessionStatsEnhanced / getSessionStats (read FROM sessions directly).
  * Keep this string in lockstep with the predicate in migration 048 and the
- * SESSION_TYPE value in the deploy script.
+ * smoke check's SESSION_TYPE value.
  */
 export const DEPLOY_SMOKE_AGENT_TYPE = 'deploy-smoke';
 

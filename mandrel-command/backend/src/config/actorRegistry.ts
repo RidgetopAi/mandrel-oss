@@ -33,7 +33,7 @@ export type ActorKind = 'human' | 'agent' | 'automation';
  * Keys are already normalized (lowercase slugs). Pinned by actorRegistryDrift.test.ts.
  *
  * ⚠️ WHAT THIS MIRROR DOES NOT COVER — read before assuming the list is the whole roster
- * (the reviewer N2 on documented rather than closed, and here is why).
+ * (Reviewer N2 on an earlier task; documented rather than closed, and here is why).
  *
  * The mcp-server's EFFECTIVE registry is `BUILTIN_ACTOR_KINDS` overlaid with the env var
  * `MANDREL_ACTOR_REGISTRY_EXTRA` ("name:kind,…"), applied by its `resolveRegistry()`. This
@@ -86,14 +86,14 @@ export const ACTOR_PREFIX_RULES: ReadonlyArray<{ prefix: string; kind: ActorKind
  * The dedup key for two spellings of the same assignee: trim + lowercase, and NOTHING
  * else. This is the rule the operator approved ("matched case-insensitively"), and the narrowness
  * is deliberate:
- *   - `builder` / `the builder` and `coordinator` / `the coordinator` collapse — the measured drift;
- *   - `the operator + the coordinator` and `the coordinator + the operator` do NOT collapse, and `builder (P3 Insight)`
+ *   - `builder` / `Builder` and `coordinator` / `Coordinator` collapse — the measured drift;
+ *   - `Operator + Coordinator` and `Coordinator + Operator` do NOT collapse, and `builder (P3 Insight)`
  *     does not collapse into `builder`. They are different strings and we have no
  *     evidence they mean the same principal; inventing that equivalence would silently
  *     rewrite a human's label.
  * Deliberately NOT `sessionActor.normalizeActor` (which slugifies whitespace and hyphens):
  * that is the WRITE-time stamping rule for session actors, and applying it to a free-form
- * assignee would render `the operator + the coordinator` as `operator-+-coordinator` in the UI.
+ * assignee would render `Operator + Coordinator` as `operator-+-coordinator` in the UI.
  */
 export function actorMatchKey(raw: string): string {
   return raw.trim().toLowerCase();
@@ -113,7 +113,7 @@ export function knownActorKind(raw: string): ActorKind | null {
   if (key === '') return null;
   // OWN KEY ONLY. A bare index read walks Object.prototype, and `actorMatchKey` is just
   // trim+lowercase, so every all-lowercase prototype key reaches this line as a candidate
-  // actor. Measured before this guard existed (the reviewer):
+  // actor. Measured before this guard existed (Reviewer):
   //   knownActorKind('constructor') -> typeof 'function'  (the Object constructor)
   //   knownActorKind('__proto__')   -> typeof 'object'
   // Both are outside the declared `ActorKind | null` return type, and neither survives

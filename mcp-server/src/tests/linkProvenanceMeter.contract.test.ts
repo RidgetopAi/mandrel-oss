@@ -5,7 +5,7 @@
  *   1. THE CLASSIFICATION TABLE IS EXECUTABLE: every provenance stamp the codebase can mint
  *      classifies in the `link_provenance` view exactly as the migration documents — and an
  *      unknown or NULL stamp lands in 'unclassified' (fail-closed), never in a trusted
- *      bucket. This is the load-bearing table Coordinator reviews, as assertions rather than prose.
+ *      bucket. This is the load-bearing table the coordinator reviews, as assertions rather than prose.
  *   2. BUCKET ISOLATION (acceptance 2): a DECLARED edge minted through the PRODUCTION tag
  *      path (autoMintFromTags — the exact call context.routes.ts:224 makes) increments ONLY
  *      the declared bucket; a GUESSED edge minted through the PRODUCTION inference path

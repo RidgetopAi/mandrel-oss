@@ -9,6 +9,7 @@ export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { ApiErrorResponse } from './models/ApiErrorResponse';
 export type { ApiSuccessResponse } from './models/ApiSuccessResponse';
+export type { ApiToken } from './models/ApiToken';
 export type { BaseEntity } from './models/BaseEntity';
 export type { ContextBulkDelete } from './models/ContextBulkDelete';
 export type { ContextBulkUpdate } from './models/ContextBulkUpdate';
@@ -91,6 +92,7 @@ export type { UpdateSession } from './models/UpdateSession';
 export type { UpdateTaskRequest } from './models/UpdateTaskRequest';
 export type { User } from './models/User';
 
+export { ApiTokensService } from './services/ApiTokensService';
 export { AuthenticationService } from './services/AuthenticationService';
 export { ContextsService } from './services/ContextsService';
 export { DashboardService } from './services/DashboardService';

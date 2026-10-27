@@ -194,8 +194,8 @@
 .actorRow:last-child {
   border-bottom: none;
 }
-/* The row is a <button> when it links to the actor's most recent session. Reset the UA
-   button chrome so it renders identically to the inert <div>
+/* The row is a <button> when it links to the actor's most recent session.
+   Reset the UA button chrome so it renders identically to the inert <div>
    form, then add the affordances a control owes the user: a pointer, a hover tint, and
    a REAL focus ring. (.prow above suppresses its outline and leans on the background
    tint alone; a keyboard user gets a much weaker signal that way, so this one keeps

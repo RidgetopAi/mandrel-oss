@@ -1,5 +1,5 @@
 /**
- * projectScope — THE way a page scopes a request to ITS OWN project (page-scope epic §A1).
+ * projectScope — THE way a page scopes a request to ITS OWN project (an earlier epic §A1).
  *
  * ════════════════════════════════════════════════════════════════════════════════════
  *  THE BUG THIS EXISTS TO CLOSE — READ THIS BEFORE WRITING A PAGE
@@ -86,7 +86,7 @@ export function scopedRequestConfig(
       'Refusing to send an unscoped request: this page has no project selected yet. ' +
         'Guard the call on `project.projectId` (e.g. react-query `enabled: !!project.projectId`). ' +
         'Falling back to the ambient project here would file writes in the wrong project ' +
-        'and silently widen reads to every project (page-scope epic §A1).'
+        'and silently widen reads to every project (an earlier epic §A1).'
     );
   }
 
@@ -100,7 +100,7 @@ export function scopedRequestConfig(
  * THE GLOBAL READ. A request that must see EVERY project the caller may see, regardless
  * of which project the page (or the pinned ambient header) is on.
  *
- * ── THE DEFECT THIS CLOSES (the reviewer B4, reject round 1) ────────────────────────────
+ * ── THE DEFECT THIS CLOSES (Reviewer B4, reject round 1) ────────────────────────────
  * `GET /api/projects` is ITSELF project-scoped: `resolveListScope` reads the request's
  * project and, when one is named, narrows the list to exactly that project. Pinning the
  * ambient header to the user's default therefore made `allProjects` a ONE-ELEMENT list —

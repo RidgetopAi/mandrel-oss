@@ -1,6 +1,5 @@
 /**
- * DB-integration tests for the WHOLE-CLASS timezone day-bucketing fix (an earlier task
- * / a past incident).
+ * DB-integration tests for the WHOLE-CLASS timezone day-bucketing fix.
  *
  * THE BUG: Postgres runs Etc/UTC, so a server-side per-day aggregation that groups by a
  * raw DATE(x)/date_trunc('day', x) buckets by the UTC calendar day — while the UI shows

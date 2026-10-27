@@ -371,7 +371,7 @@ function getProductivityEmoji(score: number | null | undefined): string {
 }
 
 /**
- * NORMALIZE AT THE BOUNDARY (the reviewer B2).
+ * NORMALIZE AT THE BOUNDARY (Reviewer B2).
  *
  * Every function below is fed rows that came straight off `SELECT * FROM v_session_summaries`
  * via node-pg, which has NO int8/numeric parser in this repo (verified: setTypeParser appears

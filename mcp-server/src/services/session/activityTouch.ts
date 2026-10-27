@@ -6,7 +6,7 @@
  * =============================================================================
  * ONE COLUMN, ONE THROTTLE
  * =============================================================================
- * The read-path liveness change threw the read path through this throttle and left the write path calling
+ * an earlier change threw the read path through this throttle and left the write path calling
  * `SessionRepo.touchActivity` directly, so the column had two independent writers with
  * two policies — "volume is a function of wall clock" on one side and "volume is a
  * function of traffic" on the other. Both now enter here: reads via `noteToolActivity`,
@@ -179,7 +179,7 @@ function sweepIfLarge(now: number, intervalMs: number): void {
  * Throttle + issue, keyed on SESSION id. Both public entry points below funnel here, so
  * there is exactly ONE throttle window per session no matter which path reached it: a
  * read that has just claimed the window suppresses the write that follows it, and vice
- * versa. Before the single-writer change the write path called `SessionRepo.touchActivity` directly and
+ * versa. Before an earlier change the write path called `SessionRepo.touchActivity` directly and
  * this window did not apply to it at all — one column, two policies. MEASURED pre-fix:
  * 20 `context_store` calls in one window issued 21 UPDATE statements at the `db.query`
  * seam; post-fix, 1.

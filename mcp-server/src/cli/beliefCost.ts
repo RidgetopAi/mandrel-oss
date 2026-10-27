@@ -6,7 +6,7 @@
  * Reads the APPEND-ONLY cost ledger (belief_adjudication_costs, migration 060): $/day, calls/day,
  * tokens/day by provider and project/tenant, plus today's spend, the hard daily cap and whether the
  * cap is reached. READ-ONLY. The --json output carries todayUsd / alertThresholdUsd / alert /
- * dailySpendCapUsd / capReached (the daily notifier, a host-side daily notifier, consumes it).
+ * dailySpendCapUsd / capReached (a daily notifier consumes it).
  */
 
 import type { Pool } from 'pg';

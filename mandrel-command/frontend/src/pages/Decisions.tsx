@@ -42,7 +42,7 @@ const Decisions: React.FC = () => {
   const navigate = useNavigate();
   const { id: routeId } = useParams<{ id: string }>();
 
-  // THE PAGE OWNS ITS PROJECT (page-scope epic). There is no global selector any more; the
+  // THE PAGE OWNS ITS PROJECT. There is no global selector any more; the
   // selection lives in `?project=`, opens at the user's default, and every read below
   // carries `project.scope()` so the request names THIS page's project rather than the
   // ambient default. No `allowAll`: this screen's write surface (the outcome drawer) has

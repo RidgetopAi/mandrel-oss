@@ -1,5 +1,6 @@
 /**
- * JSON-RPC error-code preservation on the streamable /mcp surface ( * sibling sweep of the HTTP-500 defect).
+ * JSON-RPC error-code preservation on the streamable /mcp surface
+ * (sibling sweep of the HTTP-500 defect).
  *
  * THE SIBLING DEFECT — same disease, one layer over, found by MEASURING the other surface
  * rather than assuming the HTTP fix covered it:

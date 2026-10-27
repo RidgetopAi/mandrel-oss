@@ -154,7 +154,7 @@ export interface BranchSummary {
 }
 
 /** The branch list plus the honest totals a caller needs to never mistake a capped page
- *  for the whole set (P1, P2). */
+ *  for the whole set (P1, an earlier decision / an earlier task; P2). */
 export interface BranchListResult {
   branches: BranchSummary[];
   /** TRUE count of top-level DRAWERS (sections excluded) in scope, computed over the
@@ -213,7 +213,7 @@ export const treewalkerApi = {
   /**
    * GET /api/treewalker/branches — the resume surface (top-level drawers only, newest-
    * active first; item c). Returns the full envelope, not just the array: `total`/`cap`
-   * (P1, drawer-only semantics from P2)
+   * (P1, an earlier decision / an earlier task; drawer-only semantics from P2)
    * are how a caller (the BranchRail) tells a capped page from the whole set instead of
    * inferring it from `branches.length`.
    */

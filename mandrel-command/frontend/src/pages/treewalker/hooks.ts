@@ -35,8 +35,8 @@ export interface TreeWalkerThreadState {
  * than during render (where it would take the screen down).
  */
 /** The branch list read state: the page (possibly capped) plus the honest totals P1 added
- *  (`total`/`cap`) — the rail needs both to state what it is NOT showing (P2
- *  / an earlier task), never just the array. */
+ *  (`total`/`cap`) — the rail needs both to state what it is NOT showing (P2),
+ *  never just the array. */
 export interface TreeWalkerBranchesState {
   branches: BranchSummary[] | undefined;
   /** The true DRAWER count for the scope (sections excluded, P2 an earlier task), pre-cap.

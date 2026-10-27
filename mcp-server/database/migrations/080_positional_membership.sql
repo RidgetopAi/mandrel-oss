@@ -1,6 +1,6 @@
 -- Migration 080: POSITIONAL MEMBERSHIP — session branch positions, the `subtask_of`
 -- structural edge, and D1 (demote the retired anchor's strong `informs` mints).
--- (PHASE 1 of the positional-membership plan.)
+-- (PHASE 1 of the positional-membership plan, an earlier task.)
 --
 -- WHY: branch membership was GUESSED (embedding
 -- similarity, TTL windows) or depended on a human remembering thread_set — a habit measured
@@ -19,7 +19,7 @@
 --
 --   2. `subtask_of` edge type — the structural parent edge (task → task), minted at
 --      task_create while POSITIONED ON A TASK SPINE. Closes the epic→subtask hole from
---      an earlier decision follow-up 3 (`2b3c4d5e` was lost because nothing structural links
+--      an earlier decision follow-up 3 (an earlier change was lost because nothing structural links
 --      epics to subtasks). Migration 066 deliberately declined `subtask_of` because a
 --      `task:` TAG is an ambiguous signal; POSITION is not — you are standing on the parent
 --      when you create the child. A strong edge earns its strength from a strong signal, and
@@ -40,8 +40,8 @@
 --      SCOPE (the coordinator ruling 2026-08-13, widening the task text's informs-only wording):
 --      the task's D1 line said `informs` because the audit counted informs, but a
 --      trust-bearing `decided_by` minted by the same similarity guess is the same defect
---      in a different edge type — "the anchor mints nothing strong" (an earlier decision /
---      the position design) covers both. Measured on prod 2026-08-13 before this migration:
+--      in a different edge type — "the anchor mints nothing strong"
+--      covers both. Measured on prod 2026-08-13 before this migration:
 --      SELECT edge_type, count(*) FROM links WHERE created_by='auto:active_thread' GROUP BY 1
 --      → informs 157, decided_by 111.
 --      DEDUP COLLISION: links dedups on UNIQUE(from_id, to_id, edge_type); where a

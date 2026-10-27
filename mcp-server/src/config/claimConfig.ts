@@ -1,5 +1,6 @@
 /**
- * claimConfig — every tunable of the ATOMIC TASK CLAIM ( * SPEC v1 §6.3/§6.4/§6.6/§10).
+ * claimConfig — every tunable of the ATOMIC TASK CLAIM
+ * (SPEC v1 §6.3/§6.4/§6.6/§10).
  *
  * STANDING PRINCIPLE (the operator, binds this + all future builds): NO HARDCODED VARIABLES.
  * The lease bounds, the kill switch, the allowed-status sets, and the audit retention window
@@ -68,7 +69,7 @@ export interface TaskClaimConfig {
    * Default lease length when a caller does not specify one.
    *
    * WHY 2700s (45 min), not the textbook 900s: OUR workers are long-lived agents across an
-   * HTTP/MCP boundary — a builder build runs 30–60+ minutes and will NOT call back mid-build
+   * HTTP/MCP boundary — a Builder build runs 30–60+ minutes and will NOT call back mid-build
    * to heartbeat. A lease shorter than a real unit of work makes expiry the common case
    * instead of the failure case (SPEC §6.6).
    *
@@ -114,8 +115,8 @@ export interface TaskClaimConfig {
    * WHY THIS EXISTS: before it did, `defaultAllowedStatuses` (['todo']) was safe only because
    * nobody widened it past a terminal status, but `allowedStatuses` was passed to CLAIM_SQL
    * completely unchecked — a caller could simply NAME 'completed' or 'cancelled' and the D1
-   * guard passed on a finished task, silently resurrecting it (measured on prod 2026-09-19,
-   * an earlier task). The refusal hint at routes/tasks.routes.ts:165 ("a completed/cancelled
+   * guard passed on a finished task, silently resurrecting it (measured on prod 2026-09-19).
+   * The refusal hint at routes/tasks.routes.ts:165 ("a completed/cancelled
    * task is NOT re-opened by a claim") was FALSE for any caller who named the terminal status.
    *
    * BOTH the default path and the allowedStatuses path filter through THIS ONE constant

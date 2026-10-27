@@ -4,11 +4,9 @@
  * WHY THIS EXISTS
  * -------------------------------
  * package.json declares `"start": "node dist/server.js"`. dist/ is gitignored, so it
- * is untracked BOX STATE that no deploy path ever refreshes: the deploy script
- * ships prebuilt images and never runs `npm run build` on a host. On one production host
- * the checkout's mandrel-command/backend/dist was last written 2026-07-05 against src/
- * last written 2026-08-27 — a `npm start` there would have booted two-month-old code
- * that looks like it works. Nothing warned.
+ * is untracked BOX STATE that no deploy path refreshes: an image-based deploy never runs
+ * `npm run build` on a host, so a host's dist/ can be months older than its src/, and a
+ * `npm start` there boots old code that looks like it works. Nothing warned.
  *
  * A mtime comparison was the obvious instrument and is the wrong one: `git checkout`
  * rewrites src mtimes without changing content, so mtime produces false alarms, and a

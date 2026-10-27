@@ -8,7 +8,7 @@
  * and recharts decides both tick-thinning and label overflow from MEASURED text. That
  * guard was written first, mutation-probed by deleting `interval={0}`, and stayed GREEN.
  * So the rendered outcome is proved in a real browser (screenshots under
- * reports/tasks-analytics/) and the CONFIGURATION is proved here.
+ * riverbend-reports/tasks-analytics/) and the CONFIGURATION is proved here.
  */
 import { describe, it, expect } from 'vitest';
 import { CATEGORY_TICK, categoryAxisConfig, tickCharBudget, truncateTick } from './parts';

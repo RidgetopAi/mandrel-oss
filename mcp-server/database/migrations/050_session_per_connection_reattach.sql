@@ -1,6 +1,6 @@
 -- Migration 050: SESSION-PER-CONNECTION + RE-ATTACH-ON-RESTART (Session-Rework SR-1).
 --
--- WHY (root cause, and the operator's session model):
+-- WHY (root cause ctx, the operator's model):
 -- A session was a TECHNICAL connection with NO persisted identity. The active-session map
 -- is RAM-only, so a SERVER RESTART wiped it → the SAME live bridge connection got a NEW
 -- session row minted for it ("random session spawning"). And graceful shutdown / the idle

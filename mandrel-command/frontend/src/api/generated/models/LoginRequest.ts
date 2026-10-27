@@ -4,7 +4,7 @@
 /* eslint-disable */
 export type LoginRequest = {
     /**
-     * Username
+     * Dashboard username, or the email address of this instance's sign-in
      */
     username: string;
     /**
