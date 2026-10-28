@@ -160,6 +160,22 @@ export const CURRENT_COMPLETED_TASK_STATUSES: readonly string[] = ['completed'];
 export const CURRENT_ABANDONED_TASK_STATUSES: readonly string[] = ['cancelled'];
 
 /**
+ * STRUCTURAL edge types: the only edges through which an active task can hold a
+ * FINISHED (completed/cancelled) task anchor's in-progress gate open. These say "this work is a
+ * part of / blocks / feeds / came out of that work". `related_to` (and named-ref edges) are
+ * deliberately absent — a weak association says nothing about whether a finished thread still has
+ * work in it. Reachability is by a path made ONLY of these edge types, in either direction.
+ */
+export const CURRENT_STRUCTURAL_EDGE_TYPES: readonly string[] = [
+  'subtask_of',
+  'depends_on',
+  'informs',
+  'caused',
+  'built_by',
+  'produced_outcome',
+];
+
+/**
  * DECISION implementation_status values that mean the decided thing WAS built.
  * A POLICY subset of IMPLEMENTATION_STATUSES (decisionVocab.ts), asserted by contract test.
  * `deprecated` is deliberately absent: it says the decision was retired, not whether it was
@@ -317,6 +333,8 @@ export interface CurrentStateConfig {
   completedTaskStatuses: readonly string[];
   /** Task statuses meaning the work STOPPED without being carried out. */
   abandonedTaskStatuses: readonly string[];
+  /** Edge types that may hold a finished task anchor's in-progress gate open. */
+  structuralEdgeTypes: readonly string[];
   /** implementation_status values meaning the decided thing WAS built. */
   builtImplementationStatuses: readonly string[];
   /** implementation_status values meaning the build STARTED and then stopped (default excluded). */
@@ -356,6 +374,7 @@ export const CURRENT_STATE_CONFIG: CurrentStateConfig = {
   unbuiltImplementationStatuses: CURRENT_UNBUILT_IMPLEMENTATION_STATUSES,
   completedTaskStatuses: CURRENT_COMPLETED_TASK_STATUSES,
   abandonedTaskStatuses: CURRENT_ABANDONED_TASK_STATUSES,
+  structuralEdgeTypes: CURRENT_STRUCTURAL_EDGE_TYPES,
   builtImplementationStatuses: CURRENT_BUILT_IMPLEMENTATION_STATUSES,
   abandonedImplementationStatuses: CURRENT_ABANDONED_IMPLEMENTATION_STATUSES,
   findingContextTypes: CURRENT_FINDING_CONTEXT_TYPES,

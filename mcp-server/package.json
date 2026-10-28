@@ -1,6 +1,6 @@
 {
   "name": "mandrel-mcp-server",
-  "version": "0.70.1",
+  "version": "0.71.0",
   "description": "Mandrel Development Intelligence System - MCP Server for persistent context management",
   "main": "dist/main.js",
   "type": "module",

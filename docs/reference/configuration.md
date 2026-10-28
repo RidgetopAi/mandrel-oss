@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE — do not edit. Regenerate with `npm run docs:config` (in mcp-server/). -->
 
-This page lists all 327 `MANDREL_*` settings the Mandrel server reads.
+This page lists all 329 `MANDREL_*` settings the Mandrel server reads.
 
 ## How to set a setting
 
@@ -397,6 +397,8 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_THREAD_SUMMARY_SNIPPET_MAXLEN` | integer | `280` | Characters of each node's content returned at summary detail. |
 | `MANDREL_THREAD_TERMINALITY_NOT_DERIVED_TERMINAL` | boolean | `false` | Whether a record whose limbs were never derived counts as the end of a thread walk. Off means the walk keeps going through such records. |
 | `MANDREL_THREAD_TERMINALITY_UNASSIGNABLE_TERMINAL` | boolean | `true` | Whether a record that was analysed and names nothing ends a thread walk. On by default. |
+| `MANDREL_THREAD_WEAK_EDGE_TYPES` | list | `related_to` | Edge types the An explicit edge types argument bypasses this. |
+| `MANDREL_THREAD_WEAK_HOP_LIMIT` | integer | `1` | How many hops from the anchor a weak edge may be followed in the 1 = weak edges are followed out of the anchor only; a node reached through a weak edge is never expanded, and no weak edge is followed out of any non-anchor node. |
 
 ### Tasks
 

@@ -1,6 +1,6 @@
 {
   "name": "mandrel-command",
-  "version": "0.70.1",
+  "version": "0.71.0",
   "description": "Mandrel Command - Database viewer and admin tool",
   "private": true,
   "scripts": {

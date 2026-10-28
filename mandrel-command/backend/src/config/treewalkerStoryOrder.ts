@@ -39,6 +39,12 @@ export function causalDirectionOf(edgeType: string): 'forward' | 'reverse' | und
   return CAUSAL_DIRECTION[edgeType];
 }
 
+/**
+ * Weak edge types: a node joined ONLY by these sorts after causal/membership-joined nodes.
+ * Mirrors the canonical THREAD_WEAK_EDGE_TYPES default (mcp-server config/threadConfig.ts).
+ */
+export const WEAK_EDGE_TYPES: readonly string[] = ['related_to'];
+
 /** One edge in the walked subgraph (from → to, by type) — the canonical shape. */
 export interface OrderEdge {
   from: string;
@@ -82,20 +88,33 @@ export function computeCausalRanks(nodeIds: string[], edges: OrderEdge[]): Map<s
 }
 
 /**
- * The canonical thread order: 1. anchor pinned first · 2. higher causal rank first ·
- * 3. older created_at first · 4. id (stable). Mirrors the canonical orderThread exactly
+ * The canonical thread order: 1. anchor pinned first · 2. nodes joined by a non-weak
+ * (causal/membership) edge before weak-only (related_to) nodes · 3. higher causal rank first ·
+ * 4. older created_at first · 5. id (stable). Mirrors the canonical orderThread exactly
  * (incl. missing createdAt sorting LAST via +Infinity).
  */
 export function orderThread<T extends { id: string; createdAt: Date | null }>(
   nodes: T[],
   edges: OrderEdge[],
   anchorId: string,
+  weakEdgeTypes: readonly string[] = WEAK_EDGE_TYPES,
 ): T[] {
   const ranks = computeCausalRanks(nodes.map((n) => n.id), edges);
+  const weak = new Set(weakEdgeTypes);
+  const idset = new Set(nodes.map((n) => n.id));
+  const strong = new Set<string>(); // nodes with >=1 non-weak edge to another node in the set
+  for (const e of edges) {
+    if (weak.has(e.type) || !idset.has(e.from) || !idset.has(e.to)) continue;
+    strong.add(e.from);
+    strong.add(e.to);
+  }
   const time = (n: T): number => (n.createdAt ? n.createdAt.getTime() : Number.POSITIVE_INFINITY);
   return [...nodes].sort((a, b) => {
     if (a.id === anchorId) return -1;
     if (b.id === anchorId) return 1;
+    const wa = strong.has(a.id) ? 0 : 1;
+    const wb = strong.has(b.id) ? 0 : 1;
+    if (wa !== wb) return wa - wb; // weak-only joined nodes after causal/membership ones
     const ra = ranks.get(a.id) ?? 0;
     const rb = ranks.get(b.id) ?? 0;
     if (ra !== rb) return rb - ra; // higher rank first

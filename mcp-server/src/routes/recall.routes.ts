@@ -9,6 +9,7 @@ import {
   type ThreadResult,
   type ThreadNode,
 } from '../services/recallThread.js';
+import { recordTimeStamp } from '../services/recallThreadCore.js';
 import {
   THREAD_DEFAULT_ALTITUDE,
   isProjectionAltitude,
@@ -394,7 +395,7 @@ function nodeHeadline(n: ThreadNode): string {
   // gate result stated in the prose is a gate result the clip eats — MEASURED 2026-09-03,
   // records differing only in rc=1 (a MEASURED failure) and rc=2 (COULD NOT MEASURE) rendered
   // byte-identical lines here, and the ref the run executed on appeared on neither.
-  return `[${n.type}${reviewOutcomeStamp(n)}${gateOutcomeStamp(n)}] ${title} — ${trustHint}  (${n.id})`;
+  return `[${n.type}${reviewOutcomeStamp(n)}${gateOutcomeStamp(n)}] ${recordTimeStamp(n.createdAt)} ${title} — ${trustHint}  (${n.id})`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -443,7 +444,7 @@ function currentStateLine(n: CurrentStateNode): string {
   const gate = gateOutcomeStamp(n);
   const title = n.title ?? '(untitled)';
   // WS1 (D2): terse trust signal; permalink rides the structured node's url.
-  return `[${n.type}:${stamp}${outcome}${impl}${review}${gate}] ${title} — ${explainTrust(n.trust).signal}`;
+  return `[${n.type}:${stamp}${outcome}${impl}${review}${gate}] ${recordTimeStamp(n.createdAt)} ${title} — ${explainTrust(n.trust).signal}`;
 }
 
 /** Render one capped section, stating exactly what the cap dropped (never a silent short list). */

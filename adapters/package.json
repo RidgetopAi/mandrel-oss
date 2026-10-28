@@ -1,6 +1,6 @@
 {
   "name": "@mandrel/mcp-adapter-http",
-  "version": "0.70.1",
+  "version": "0.71.0",
   "description": "HTTP protocol adapter for Mandrel Core Service - bridges Claude Code MCP to Mandrel HTTP API",
   "main": "mcp-http-adapter.js",
   "bin": {

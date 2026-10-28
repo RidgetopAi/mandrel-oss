@@ -93,7 +93,8 @@ export async function buildCurrentState(
     gathered.anchorId,
     stateConfig,
     threadConfig,
-    artifactConfig
+    artifactConfig,
+    gathered.edges
   );
   return {
     ...state,

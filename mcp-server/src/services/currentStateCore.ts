@@ -113,6 +113,8 @@ export interface CurrentStateNode {
    * field nobody can see in the type is a field nobody renders.
    */
   gateOutcome?: string;
+  /** The record time, ISO-8601 UTC — inherited from shapeNode. */
+  createdAt?: string;
   /** Present only when the configured node altitude carries content (default: absent). */
   content?: string;
   /** The trust verdict, passed through verbatim for the RENDERER to explain (part A). */
@@ -594,6 +596,43 @@ function label(n: CurrentStateInputNode): string {
 }
 
 /**
+ * The active tasks the in-progress rung may consider.
+ *
+ * A non-terminal anchor (or a non-task anchor) sees every active task, exactly as before. A TASK
+ * anchor whose own status is completed/cancelled sees only active tasks connected to it by a path
+ * of STRUCTURAL edges (cfg.structuralEdgeTypes, either direction); a task reached only through
+ * `related_to` never holds a finished thread open. No edges supplied → nothing is provably
+ * structural, so none qualify (fail-closed toward `complete`, never toward naming a stranger).
+ */
+function gateActiveTasks(
+  active: CurrentStateInputNode[],
+  root: CurrentStateInputNode | null,
+  edges: ReadonlyArray<{ from: string; to: string; type: string }>,
+  cfg: CurrentStateConfig
+): CurrentStateInputNode[] {
+  if (root === null || root.type !== 'task' || root.status === null) return active;
+  const terminal = [...cfg.completedTaskStatuses, ...cfg.abandonedTaskStatuses];
+  if (!terminal.includes(root.status)) return active;
+  const adj = new Map<string, string[]>();
+  for (const e of edges) {
+    if (!cfg.structuralEdgeTypes.includes(e.type)) continue;
+    (adj.get(e.from) ?? adj.set(e.from, []).get(e.from)!).push(e.to);
+    (adj.get(e.to) ?? adj.set(e.to, []).get(e.to)!).push(e.from);
+  }
+  const seen = new Set<string>([root.id]);
+  const queue = [root.id];
+  while (queue.length > 0) {
+    for (const next of adj.get(queue.shift()!) ?? []) {
+      if (!seen.has(next)) {
+        seen.add(next);
+        queue.push(next);
+      }
+    }
+  }
+  return active.filter((t) => seen.has(t.id));
+}
+
+/**
  * THE RUNG IMPLEMENTATIONS, keyed by gate id. Each returns a verdict when it fires, or null.
  *
  * This map is the reason the ladder can be config-ORDERED without being config-INVENTED: the
@@ -712,7 +751,7 @@ function toSectionNode(
   const shaped = shapeNode(
     // `metadata` too: the stored review call is derived in shapeNode, so
     // this projection inherits it by delegating rather than by re-reading the key here.
-    { id: n.id, type: n.type, title: n.title, content: n.content, metadata: n.metadata },
+    { id: n.id, type: n.type, title: n.title, content: n.content, metadata: n.metadata, createdAt: n.createdAt },
     n.trust,
     cfg.nodeAltitude,
     threadCfg
@@ -779,7 +818,8 @@ export function projectCurrentState(
   anchorId: string,
   cfg: CurrentStateConfig = CURRENT_STATE_CONFIG,
   threadCfg: ThreadConfig = THREAD_CONFIG,
-  artifactCfg: ArtifactRefConfig = ARTIFACT_REF_CONFIG
+  artifactCfg: ArtifactRefConfig = ARTIFACT_REF_CONFIG,
+  edges: ReadonlyArray<{ from: string; to: string; type: string }> = []
 ): CurrentState {
   // ── CLASSIFY every node exactly once ────────────────────────────────────────
   const byDisposition = new Map<CurrentStateDisposition, CurrentStateInputNode[]>();
@@ -831,7 +871,7 @@ export function projectCurrentState(
   // ── THE GATE + NEXT ACTION ──────────────────────────────────────────────────
   const nextAction = evaluateGate({
     root: rootInput,
-    activeTasks: activeTaskNodes,
+    activeTasks: gateActiveTasks(activeTaskNodes, rootInput, edges, cfg),
     blockers: blockerNodes,
     standingDecisions: decisionNodes,
     artifactHead,

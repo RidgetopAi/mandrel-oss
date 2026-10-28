@@ -1,6 +1,6 @@
 {
   "name": "mandrel-command-frontend",
-  "version": "0.70.1",
+  "version": "0.71.0",
   "license": "MIT",
   "private": true,
   "type": "module",

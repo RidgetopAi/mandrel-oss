@@ -29,12 +29,14 @@ import {
     TASK_TYPE_WEIGHT,
     taskImportance,
 } from '../config/searchMergeConfig.js';
-import { SEARCH_ID_MATCH_SCORE_BOOST } from '../config/searchConfig.js';
+import { SEARCH_ID_MATCH_SCORE_BOOST, SEARCH_WINDOW_OVERFETCH_FACTOR } from '../config/searchConfig.js';
+import { parseSearchTimeWindow, windowContains, type SearchTimeWindow } from '../services/searchTimeWindow.js';
 import {
   deriveRecordHeadline,
   deriveTypedRecordHeadline,
 } from '../config/recordHeadlineConfig.js';
 import { tasksHandler } from './tasks.js';
+import { TASK_NOTE_LOG_KEY } from '../config/taskNotes.js';
 import { LEXICAL_SEARCH_CONFIG } from '../config/lexicalSearchConfig.js';
 import { HYBRID_SEARCH_CONFIG, maxFusedScore } from '../config/hybridSearchConfig.js';
 import { runLexicalSearch, type LexicalRow, type LexicalSearchResult } from '../services/lexicalSearch.js';
@@ -132,6 +134,32 @@ function compareCandidates(a: MergeCandidate, b: MergeCandidate): number {
 }
 
 /**
+ * WINDOWED SEARCH ONLY: re-order the TASK slots of an already-sorted list so the task with the
+ * most in-window activity (contexts informing it + noteLog entries, both inside the window)
+ * comes first. Only the positions tasks already occupy are permuted — contexts and decisions
+ * keep their places — and ties keep their incoming (relevance) order, so relevance remains
+ * the secondary key.
+ */
+export function reorderTasksByActivity<T>(
+    sorted: readonly T[],
+    taskIdOf: (item: T) => string | null,
+    activity: ReadonlyMap<string, number>,
+): T[] {
+    const slots: number[] = [];
+    const tasks: { item: T; at: number; rank: number }[] = [];
+    sorted.forEach((item, i) => {
+        const id = taskIdOf(item);
+        if (id === null) return;
+        slots.push(i);
+        tasks.push({ item, at: activity.get(id) ?? 0, rank: tasks.length });
+    });
+    tasks.sort((a, b) => (b.at - a.at) || (a.rank - b.rank));
+    const out = [...sorted];
+    slots.forEach((slot, k) => { out[slot] = tasks[k].item; });
+    return out;
+}
+
+/**
  * Pool → sorted → top `limit`, with the OPT-IN floor pass.
  *
  * The floor is OFF by default (SEARCH_MERGE_MIN_PER_SOURCE = 0) and the whole block below
@@ -139,7 +167,8 @@ function compareCandidates(a: MergeCandidate, b: MergeCandidate): number {
  * why a guaranteed row per source is the constant-bonus bug wearing a structural hat.
  */
 export function mergeCandidates(pool: MergeCandidate[], limit: number,
-                                minPerSource: number = SEARCH_MERGE_MIN_PER_SOURCE): SmartSearchResult[] {
+                                minPerSource: number = SEARCH_MERGE_MIN_PER_SOURCE,
+                                taskActivity?: ReadonlyMap<string, number>): SmartSearchResult[] {
     const sorted = [...pool].sort(compareCandidates);
     const selected = sorted.slice(0, limit);
 
@@ -176,7 +205,10 @@ export function mergeCandidates(pool: MergeCandidate[], limit: number,
         }
     }
 
-    return selected.sort(compareCandidates).map(c => c.result);
+    const ordered = selected.sort(compareCandidates);
+    return (taskActivity
+        ? reorderTasksByActivity(ordered, c => c.result.type === 'task' ? c.result.id : null, taskActivity)
+        : ordered).map(c => c.result);
 }
 
 /**
@@ -265,7 +297,16 @@ export class SmartSearchHandler {
 
         // OVER-FETCH: ask each source for more than the caller wants, so the global sort
         // has something to choose between. Never below `limit` itself.
-        const overfetch = Math.max(limit, limit * SEARCH_MERGE_OVERFETCH_FACTOR);
+        // A TIME WINDOW named in the query text ("overnight on 2026-03-10") is applied AFTER
+        // retrieval, which discards rows, so a windowed search over-fetches further. With no
+        // date in the query `window` is null and every line below is the pre-window behaviour.
+        const parsedQuery = parseSearchTimeWindow(query);
+        const window = parsedQuery.window;
+        // The date token and night words are not search terms: they are removed from what the
+        // sources search and from what the absent-term probe reads (a date never "has no
+        // record"), and a bare 8-digit date can no longer be mistaken for an id prefix.
+        const searchText = window ? (parsedQuery.query || query) : query;
+        const overfetch = Math.max(limit, limit * SEARCH_MERGE_OVERFETCH_FACTOR * (window ? SEARCH_WINDOW_OVERFETCH_FACTOR : 1));
         const nowMs = Date.now();
 
         // AN UNKNOWN SOURCE KEY IS AN ERROR, NOT AN EMPTY RESULT.
@@ -297,7 +338,7 @@ export class SmartSearchHandler {
         // PER-SOURCE try/catch, CONCURRENTLY. One source failing must not zero the others.
         const fetched = await Promise.all(enabled.map(async adapter => {
             try {
-                return { key: adapter.key, candidates: await adapter.fetch(projectId, query, overfetch, nowMs), ok: true };
+                return { key: adapter.key, candidates: await adapter.fetch(projectId, searchText, overfetch, nowMs), ok: true };
             } catch (error) {
                 logger.error(`❌ smart_search source '${adapter.key}' failed`, error as Error);
                 return { key: adapter.key, candidates: [] as MergeCandidate[], ok: false };
@@ -305,7 +346,7 @@ export class SmartSearchHandler {
         }));
 
         const degradedSources = fetched.filter(f => !f.ok).map(f => f.key);
-        const pool = fetched.flatMap(f => f.candidates);
+        let pool = fetched.flatMap(f => f.candidates);
 
         logger.info(`📊 Pooled ${pool.length} candidates; degraded: [${degradedSources.join(', ') || 'none'}]`);
 
@@ -319,26 +360,63 @@ export class SmartSearchHandler {
         let empty: EmptyStateVerdict | null = null;
         let absentProbe: Awaited<ReturnType<typeof findAbsentTerms>> | null = null;
         let rowVocabulary: ReadonlySet<string> = new Set();
+        let absentResult: Awaited<ReturnType<typeof findAbsentTerms>> | null = null;
         if (LEXICAL_SEARCH_CONFIG.enabled) {
             // FAIL-PARTIAL, exactly as the semantic sources do. A lexical failure names
             // itself in degradedSources and the semantic answer still ships; it must never
             // zero the result set, and it must never be silent either.
             const [lx, ab] = await Promise.all([
                 (async () => {
-                    try { return await runLexicalSearch(projectId, query, overfetch * SEARCH_MERGE_OVERFETCH_FACTOR); }
+                    try { return await runLexicalSearch(projectId, searchText, overfetch * SEARCH_MERGE_OVERFETCH_FACTOR); }
                     catch (e) { logger.error('❌ smart_search lexical channel failed', e as Error); degradedSources.push('lexical'); return null; }
                 })(),
                 (async () => {
-                    try { return await findAbsentTerms(query, projectId); }
+                    try { return parsedQuery.query === '' && window ? null : await findAbsentTerms(window ? parsedQuery.query : query, projectId); }
                     catch (e) { logger.error('❌ smart_search absent-term probe failed', e as Error); degradedSources.push('absent-terms'); return null; }
                 })(),
             ]);
             lexical = lx;
+            absentResult = ab;
+        }
+
+        // ═══ THE TIME WINDOW ═══ Contexts and decisions survive only if created inside it; a
+        // task survives if it was created inside it, has a noteLog entry inside it, or has a
+        // context informing it created inside it. `taskActivity` (informing contexts + in-window
+        // notes) then orders the TASK results.
+        let taskActivity: Map<string, number> | undefined;
+        if (window) {
+            try {
+                const taskIds = [...new Set([
+                    ...pool.filter(c => c.result.type === 'task').map(c => c.result.id),
+                    ...(lexical ? [...lexical.identRanked, ...lexical.proseRanked].filter(r => r.kind === 'task').map(r => r.id) : []),
+                ])];
+                const win = await this.windowTaskActivity(projectId, taskIds, window);
+                taskActivity = new Map([...win].map(([id, w]) => [id, w.activity]));
+                const keep = (kind: string, id: string, createdAt: Date | string | null): boolean =>
+                    kind === 'task' ? win.get(id)?.inWindow === true : windowContains(window, createdAt);
+                pool = pool.filter(c => keep(c.result.type, c.result.id, c.createdAt));
+                if (lexical) {
+                    lexical = {
+                        ...lexical,
+                        identRanked: lexical.identRanked.filter(r => keep(r.kind, r.id, r.createdAt)),
+                        proseRanked: lexical.proseRanked.filter(r => keep(r.kind, r.id, r.createdAt)),
+                    };
+                }
+            } catch (e) {
+                // FAIL LOUD, not unwindowed: returning out-of-window rows to a caller who asked
+                // for a window would be a confident wrong answer.
+                logger.error('❌ smart_search time-window filter failed', e as Error);
+                throw e;
+            }
+        }
+
+        if (LEXICAL_SEARCH_CONFIG.enabled) {
+            const ab = absentResult;
             if (ab) {
                 // Near-miss vocabulary = the words of the records the search retrieved, from
                 // BOTH channels: a typo shares its other terms with the record it misspells, so
                 // that record is in the lexical rows even when the semantic pool is empty.
-                const rows = lx ? [...lx.identRanked, ...lx.proseRanked] : [];
+                const rows = lexical ? [...lexical.identRanked, ...lexical.proseRanked] : [];
                 const vocab = vocabularyOf([
                     ...pool.map(c => `${c.result.title ?? ''} ${c.result.summary ?? ''}`),
                     ...rows.map(r => `${r.title} ${r.summary}`),
@@ -395,8 +473,8 @@ export class SmartSearchHandler {
         }
 
         const merged = lexical
-            ? this.fuseWithLexical(pool, lexical, limit)
-            : mergeCandidates(pool, limit);
+            ? this.fuseWithLexical(pool, lexical, limit, taskActivity)
+            : mergeCandidates(pool, limit, undefined, taskActivity);
         logger.info(`✅ Smart search returning ${merged.length} results`);
         merged.forEach((r, i) => logger.info(`   ${i + 1}. [${r.type}] score=${r.relevanceScore.toFixed(4)} ${r.title.substring(0, DEBUG_LOG_TITLE_CHARS)}`)); // headline-clip-exempt: a debug LOG LINE width, not a record headline — this clips a title that recordHeadlineConfig has ALREADY derived, so routing it through the same budget would be a no-op at best and would widen a log line at worst.
 
@@ -446,7 +524,8 @@ export class SmartSearchHandler {
      * same rank by the same channels has the same fused score). Without the id term the same
      * query returns a different top-k on different runs.
      */
-    private fuseWithLexical(pool: MergeCandidate[], lexical: LexicalSearchResult, limit: number): SmartSearchResult[] {
+    private fuseWithLexical(pool: MergeCandidate[], lexical: LexicalSearchResult, limit: number,
+                            taskActivity?: ReadonlyMap<string, number>): SmartSearchResult[] {
         const k = HYBRID_SEARCH_CONFIG.rrfK;
 
         // The semantic channel's ranking IS the pre-P2b merge order.
@@ -502,7 +581,11 @@ export class SmartSearchHandler {
             (b.e.fused - a.e.fused) ||
             compareCandidates(a.cand, b.cand));
 
-        return tiered.slice(0, limit).map(({ e, cand, identHits }) => ({
+        const ordered = taskActivity
+            ? reorderTasksByActivity(tiered, t => t.cand.result.type === 'task' ? t.cand.result.id : null, taskActivity)
+            : tiered;
+
+        return ordered.slice(0, limit).map(({ e, cand, identHits }) => ({
             ...cand.result,
             // DISPLAY-CONSISTENCY: the number shown IS the sort key. The order
             // is the fused rank, so the reported relevance must be the fused score — rescaled
@@ -528,6 +611,43 @@ export class SmartSearchHandler {
                 semanticScore: e.ranks.semantic !== undefined ? cand.score : undefined,
             },
         }));
+    }
+
+    /**
+     * For each task id: is it INSIDE the window (created in it, a noteLog entry in it, or a
+     * context informing it created in it), and how much in-window ACTIVITY it has (informing
+     * contexts + noteLog entries, both in the window). One statement for the whole id list.
+     * Archived informing contexts do not count — a search never returns them.
+     */
+    private async windowTaskActivity(
+        projectId: string,
+        taskIds: readonly string[],
+        window: SearchTimeWindow,
+    ): Promise<Map<string, { inWindow: boolean; activity: number }>> {
+        const out = new Map<string, { inWindow: boolean; activity: number }>();
+        if (taskIds.length === 0) return out;
+        const r = await this.pool.query(
+            `SELECT t.id,
+                    (t.created_at >= $3 AND t.created_at < $4) AS created_in,
+                    (SELECT count(*)::int
+                       FROM jsonb_array_elements(
+                              CASE WHEN jsonb_typeof(t.metadata->$5::text) = 'array' THEN t.metadata->$5::text ELSE '[]'::jsonb END) n
+                      WHERE (n->>'at') ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}'
+                        AND (n->>'at')::timestamptz >= $3 AND (n->>'at')::timestamptz < $4) AS notes_in,
+                    (SELECT count(DISTINCT c.id)::int
+                       FROM links l JOIN contexts c ON c.id = l.from_id
+                      WHERE l.to_id = t.id AND l.to_type = 'task' AND l.from_type = 'context'
+                        AND l.edge_type = 'informs' AND c.archived_at IS NULL
+                        AND c.created_at >= $3 AND c.created_at < $4) AS contexts_in
+               FROM tasks t
+              WHERE t.project_id = $1 AND t.id = ANY($2::uuid[])`,
+            [projectId, taskIds, window.start, window.end, TASK_NOTE_LOG_KEY],
+        );
+        for (const row of r.rows) {
+            const activity = Number(row.notes_in) + Number(row.contexts_in);
+            out.set(row.id, { inWindow: row.created_in === true || activity > 0, activity });
+        }
+        return out;
     }
 
     /** Back-compatible shape: the merged rows alone. */

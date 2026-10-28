@@ -1,6 +1,6 @@
 {
   "name": "mandrel-command-backend",
-  "version": "0.70.1",
+  "version": "0.71.0",
   "description": "Mandrel Command Backend - REST API server",
   "scripts": {
     "start": "node scripts/preflight-dist.cjs && node dist/server.js",

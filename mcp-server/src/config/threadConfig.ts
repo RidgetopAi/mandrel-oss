@@ -30,6 +30,14 @@ function envStr(name: string, fallback: string): string {
   return raw;
 }
 
+/** Read a comma-separated list env var, falling back on missing/empty. */
+function envList(name: string, fallback: readonly string[]): readonly string[] {
+  const raw = process.env[name]; // env-read: via-callers
+  if (raw === undefined || raw.trim() === '') return fallback;
+  const items = raw.split(',').map((x) => x.trim()).filter(Boolean);
+  return items.length > 0 ? items : fallback;
+}
+
 /**
  * The DEFAULT clipped-snippet affordance. `{omitted}` = characters dropped. Names the
  * `altitude` ARGUMENT (see ThreadConfig.summaryClipAffordance for why it must not name an
@@ -90,6 +98,15 @@ export const FRONTIER_EDGE_TYPE_PRIORITY: Readonly<Record<string, number>> = {
   // WEAK inferred association ("NOT evidence") — the first to be dropped under the cap.
   related_to: 10,
 };
+
+/**
+ * WEAK EDGE TYPES — the inferred-association tier the DEFAULT walk (no
+ * `edgeTypes` argument) keeps on a short leash. related_to is "a low-confidence, inferred
+ * association; NOT evidence" (config/edgeTypes.ts) and at depth 2 it welded unrelated
+ * branches onto a thread (an earlier change: 107 nodes, ~60% unrelated). Env override:
+ * MANDREL_THREAD_WEAK_EDGE_TYPES (comma-separated).
+ */
+export const THREAD_WEAK_EDGE_TYPES: readonly string[] = ['related_to'];
 
 /**
  * The edge-metadata keys that hold a numeric SAME-CLASS tie-break weight, checked in order
@@ -269,6 +286,19 @@ export interface ThreadConfig {
    * edge-type tier; never overrides the tier. Named-config default = FRONTIER_WEIGHT_METADATA_KEYS.
    */
   frontierWeightMetadataKeys: readonly string[];
+  /**
+   * weak_edge_types — edge types the default walk (no explicit `edgeTypes`) follows only
+   * `weakHopLimit` hops from the anchor. An explicit `edgeTypes` argument bypasses this.
+   * Env: MANDREL_THREAD_WEAK_EDGE_TYPES (comma-separated). Default ['related_to'].
+   */
+  weakEdgeTypes: readonly string[];
+  /**
+   * weak_hop_limit — how many hops from the anchor a weak edge may be followed in the default
+   * walk. 1 = weak edges are followed out of the anchor only; a node reached through a weak
+   * edge is never expanded, and no weak edge is followed out of any non-anchor node.
+   * Env: MANDREL_THREAD_WEAK_HOP_LIMIT. Default 1.
+   */
+  weakHopLimit: number;
 }
 
 /**
@@ -288,4 +318,6 @@ export const THREAD_CONFIG: ThreadConfig = {
   frontierEdgeTypePriority: FRONTIER_EDGE_TYPE_PRIORITY,
   frontierDefaultEdgePriority: envInt('MANDREL_THREAD_FRONTIER_DEFAULT_PRIORITY', 50),
   frontierWeightMetadataKeys: FRONTIER_WEIGHT_METADATA_KEYS,
+  weakEdgeTypes: envList('MANDREL_THREAD_WEAK_EDGE_TYPES', THREAD_WEAK_EDGE_TYPES),
+  weakHopLimit: envInt('MANDREL_THREAD_WEAK_HOP_LIMIT', 1),
 };

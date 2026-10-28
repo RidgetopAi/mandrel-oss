@@ -18,6 +18,7 @@
 import type { Trust, TrustReason } from './trustModel.js';
 import { TRUST_BANDS, type TrustBand } from '../config/trustConfig.js';
 import {
+  THREAD_CONFIG,
   type ThreadConfig,
   type ThreadAltitude,
 } from '../config/threadConfig.js';
@@ -110,6 +111,12 @@ export interface ThreadNode {
   type: EdgeNodeType;
   title: string | null;
   trust: Trust;
+  /**
+   * THE RECORD TIME, ISO-8601 UTC: contexts and tasks from created_at,
+   * decisions from decision_date. Present at EVERY altitude; omitted only when the record
+   * has no stored time (never invented), so a timeline can be built from the output alone.
+   */
+  createdAt?: string;
   /** Present at `summary` (snippet) / `full` (whole body); omitted at `headline`. */
   content?: string;
   /**
@@ -383,20 +390,34 @@ export function computeCausalRanks(nodeIds: string[], edges: ThreadEdge[]): Map<
 /**
  * Order the nodes into the readable thread (PURE). Sort key, in order:
  *   1. ANCHOR pinned FIRST (you asked to be read in ON it).
- *   2. CAUSAL: higher causal rank first (more flows FROM it → earlier in the story).
- *   3. TEMPORAL: older created_at first (tiebreaker — earlier in time reads first).
- *   4. STABLE: id (deterministic for identical-rank, identical-time nodes).
+ *   2. MEMBERSHIP: nodes joined by at least one non-weak (causal/membership) edge before nodes
+ *      joined ONLY by weak edges (config weakEdgeTypes, default related_to).
+ *   3. CAUSAL: higher causal rank first (more flows FROM it → earlier in the story).
+ *   4. TEMPORAL: older created_at first (tiebreaker — earlier in time reads first).
+ *   5. STABLE: id (deterministic for identical-rank, identical-time nodes).
  */
 export function orderThread<T extends { id: string; createdAt: Date | null }>(
   nodes: T[],
   edges: ThreadEdge[],
-  anchorId: string
+  anchorId: string,
+  weakEdgeTypes: readonly string[] = THREAD_CONFIG.weakEdgeTypes
 ): T[] {
   const ranks = computeCausalRanks(nodes.map((n) => n.id), edges);
+  const weak = new Set(weakEdgeTypes);
+  const idset = new Set(nodes.map((n) => n.id));
+  const strong = new Set<string>(); // nodes with ≥1 non-weak edge to another node in the set
+  for (const e of edges) {
+    if (weak.has(e.type) || !idset.has(e.from) || !idset.has(e.to)) continue;
+    strong.add(e.from);
+    strong.add(e.to);
+  }
   const time = (n: T): number => (n.createdAt ? n.createdAt.getTime() : Number.POSITIVE_INFINITY);
   return [...nodes].sort((a, b) => {
     if (a.id === anchorId) return -1;
     if (b.id === anchorId) return 1;
+    const wa = strong.has(a.id) ? 0 : 1;
+    const wb = strong.has(b.id) ? 0 : 1;
+    if (wa !== wb) return wa - wb; // weak-only joined nodes after causal/membership ones
     const ra = ranks.get(a.id) ?? 0;
     const rb = ranks.get(b.id) ?? 0;
     if (ra !== rb) return rb - ra; // higher rank first
@@ -441,12 +462,16 @@ export function shapeNode(
     /** The record's jsonb metadata, where a stored review call lives. Optional: a caller
      *  that has none passes none, and the node simply carries no `reviewOutcome`. */
     metadata?: unknown;
+    /** The record's stored time (see ThreadNode.createdAt). */
+    createdAt?: Date | string | null;
   },
   trust: Trust,
   altitude: ThreadAltitude,
   config: ThreadConfig
 ): ThreadNode {
   const node: ThreadNode = { id: raw.id, type: raw.type, title: raw.title, trust };
+  const at = recordTimeIso(raw.createdAt);
+  if (at !== null) node.createdAt = at;
   const projected = projectBody(raw.content, altitude as Altitude, threadSnippetBudget(config));
   if (projected.present) node.content = projected.text;
   // THE REVIEW CALL, AT EVERY ALTITUDE — including `headline`, which carries no body at all.
@@ -460,6 +485,23 @@ export function shapeNode(
   const gate = gateOutcomeOf(raw.metadata);
   if (gate !== null) node.gateOutcome = gate;
   return node;
+}
+
+/** ISO-8601 UTC for a stored record time; null when absent or unparseable (never invented). */
+export function recordTimeIso(t: Date | string | null | undefined): string | null {
+  if (t === null || t === undefined) return null;
+  const d = t instanceof Date ? t : new Date(t);
+  return Number.isNaN(d.getTime()) ? null : d.toISOString();
+}
+
+/**
+ * The text-channel spelling of a node's record time: UTC to the minute, e.g.
+ * `2026-10-22T04:31Z`. ONE definition, called by both line renderers. A node with no stored
+ * time renders the explicit `time:unrecorded`, never a blank.
+ */
+export const RECORD_TIME_UNRECORDED = 'time:unrecorded';
+export function recordTimeStamp(iso: string | undefined): string {
+  return iso ? `${iso.slice(0, 16)}Z` : RECORD_TIME_UNRECORDED;
 }
 
 /**

@@ -464,6 +464,25 @@ interface Traversal {
  * insertion order survives instead of being dropped arbitrarily. Level-by-level order is kept,
  * so a closer node always still beats a farther one; ranking only ever decides WITHIN a depth.
  */
+/**
+ * DEFAULT-WALK WEAK-EDGE LEASH. When the caller passed no `edgeTypes`, drop the
+ * weak edges (config.weakEdgeTypes) out of a node's links unless the node is within
+ * config.weakHopLimit hops of the anchor AND was not itself reached through a weak edge. An
+ * explicit `edgeTypes` is the caller's exact request and is returned untouched.
+ */
+function leashWeakEdges<T extends { edgeType: string }>(
+  links: T[],
+  node: { id: string; depth: number },
+  explicitEdgeTypes: boolean,
+  weakReached: Set<string>,
+  config: ThreadConfig
+): T[] {
+  if (explicitEdgeTypes) return links;
+  if (node.depth < config.weakHopLimit && !weakReached.has(node.id)) return links;
+  const weak = new Set(config.weakEdgeTypes);
+  return links.filter((l) => !weak.has(l.edgeType));
+}
+
 async function traverse(
   anchor: ResolvedAnchor,
   opts: {
@@ -477,6 +496,10 @@ async function traverse(
   pool: Pool
 ): Promise<Traversal> {
   const { depth, edgeTypes, config } = opts;
+  const explicitEdgeTypes = edgeTypes !== undefined;
+  const weakSet = new Set(config.weakEdgeTypes);
+  // Nodes first reached through a weak edge: admitted, but never expanded in the default walk.
+  const weakReached = new Set<string>();
   const nodes = new Map<string, RawNode>();
   const edges: ThreadEdge[] = [];
   const edgeKeys = new Set<string>(); // dedupe edges (from|to|type)
@@ -556,6 +579,9 @@ async function traverse(
         countReadFailed = true;
         continue;
       }
+      // A node reached through a weak edge is a destination, not a corridor.
+      if (!explicitEdgeTypes && weakReached.has(node.id)) continue;
+      connected = leashWeakEdges(connected, node, explicitEdgeTypes, weakReached, config);
 
       for (const ce of connected) {
         if (!EDGE_NODE_TYPES.includes(ce.connectedType)) continue; // unknown endpoint kind → skip
@@ -624,10 +650,13 @@ async function traverse(
         countReadFailed = true;
         continue;
       }
+      if (!explicitEdgeTypes && weakReached.has(node.id)) continue;
+      connected = leashWeakEdges(connected, node, explicitEdgeTypes, weakReached, config);
       for (const ce of connected) {
         if (!EDGE_NODE_TYPES.includes(ce.connectedType)) continue;
         if (nodes.has(ce.connectedId) || overflow.has(ce.connectedId)) continue;
         overflow.add(ce.connectedId);
+        if (weakSet.has(ce.edgeType)) weakReached.add(ce.connectedId);
         countNext.push({ id: ce.connectedId, type: ce.connectedType, depth: d + 1 });
       }
     }
@@ -661,6 +690,7 @@ async function traverse(
         depth: d + 1,
         ...EMPTY_STATE_FIELDS,
       });
+      if (weakSet.has(c.edgeType)) weakReached.add(c.id);
       next.push({ id: c.payload.id, type: c.payload.type, depth: d + 1 });
     }
     frontier = next;
@@ -949,7 +979,7 @@ export async function buildThread(
       // `metadata` rides along so the ONE derivation in shapeNode can read a stored review
       // call off it. It is already hydrated for every node by hydrateNodes;
       // nothing new is queried.
-      { id: n.id, type: n.type, title: n.title, content: n.content, metadata: n.metadata },
+      { id: n.id, type: n.type, title: n.title, content: n.content, metadata: n.metadata, createdAt: n.createdAt },
       n.trust,
       altitude,
       config

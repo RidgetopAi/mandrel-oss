@@ -36,6 +36,7 @@ import {
   FRONTIER_EDGE_TYPE_PRIORITY,
   FRONTIER_WEIGHT_METADATA_KEYS,
   THREAD_SUMMARY_CLIP_AFFORDANCE,
+  THREAD_WEAK_EDGE_TYPES,
   formatClipAffordance,
 } from '../config/threadConfig.js';
 import type { EdgeNodeType, EdgeType } from '../config/edgeTypes.js';
@@ -71,6 +72,8 @@ const CFG: ThreadConfig = {
   frontierEdgeTypePriority: FRONTIER_EDGE_TYPE_PRIORITY,
   frontierDefaultEdgePriority: 50,
   frontierWeightMetadataKeys: FRONTIER_WEIGHT_METADATA_KEYS,
+  weakEdgeTypes: THREAD_WEAK_EDGE_TYPES,
+  weakHopLimit: 1,
 };
 
 const d = (iso: string) => new Date(iso);
@@ -337,5 +340,23 @@ describe('recall_thread — frontier priority (pure): which nodes survive the ma
   test('config default: shipped priorities match FRONTIER_EDGE_TYPE_PRIORITY (no drift)', () => {
     expect(CFG.frontierEdgeTypePriority).toBe(FRONTIER_EDGE_TYPE_PRIORITY);
     expect(CFG.frontierWeightMetadataKeys).toBe(FRONTIER_WEIGHT_METADATA_KEYS);
+  });
+});
+
+describe('recall_thread — orderThread weak-edge rule', () => {
+  test('a node joined only by related_to sorts after causal/membership nodes even when it outranks them', () => {
+    // W (oldest) is joined only by related_to; S is also joined by a membership edge. Ranks tie
+    // and time favours W, so only the weak-only rule puts S first.
+    const nodes = [
+      { id: 'anchor', createdAt: new Date('2026-01-03T00:00:00Z') },
+      { id: 'W', createdAt: new Date('2026-01-01T00:00:00Z') },
+      { id: 'S', createdAt: new Date('2026-01-02T00:00:00Z') },
+    ];
+    const edges: ThreadEdge[] = [
+      { from: 'W', to: 'anchor', type: 'related_to' },
+      { from: 'S', to: 'anchor', type: 'related_to' },
+      { from: 'S', to: 'anchor', type: 'subtask_of' },
+    ];
+    expect(orderThread(nodes, edges, 'anchor').map((n) => n.id)).toEqual(['anchor', 'S', 'W']);
   });
 });

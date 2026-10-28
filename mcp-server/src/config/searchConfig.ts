@@ -341,3 +341,80 @@ export const RESERVED_QUERY_PREFIXES_EFFECTIVE: Readonly<
 /** Exposed for the contract test that proves the protection above is real, not decorative. */
 export const SEARCH_PROTECTED_TAG_GRAMMAR_PREFIXES: readonly string[] =
   Object.freeze(PROTECTED_TAG_GRAMMAR_PREFIXES);
+
+// ─────────────────────────────────────────────────────────────────────────────────────────
+// TIME WINDOW READ FROM THE QUERY TEXT.
+// ─────────────────────────────────────────────────────────────────────────────────────────
+//
+// "What happened overnight on 2026-10-22 with the flake punch?" names a WINDOW, and the
+// date used to be ignored — the other night's identically-titled records outranked the one
+// asked about. smart_search now reads an ISO date (and optional night word) out of the query
+// and constrains results to it. See services/searchTimeWindow.ts for the pure parser.
+
+/** Read a string env var, falling back to `fallback` on missing/blank. */
+function envString(name: string, fallback: string): string {
+  const raw = process.env[name]; // env-read: via-callers
+  return raw === undefined || raw.trim() === '' ? fallback : raw.trim();
+}
+
+/** Read an hour-of-day env var (integer 0..23), falling back on missing/garbage. */
+function envHour(name: string, fallback: number): number {
+  const raw = process.env[name]; // env-read: via-callers
+  if (raw === undefined || raw === '') return fallback;
+  const v = Number(raw);
+  return Number.isInteger(v) && v >= 0 && v <= 23 ? v : fallback;
+}
+
+/** True when `tz` is an IANA zone this runtime's Intl can resolve. */
+function isValidTimeZone(tz: string): boolean {
+  try {
+    new Intl.DateTimeFormat('en-US', { timeZone: tz });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * The timezone a date in a query is read in ("the night of 2026-10-22" means THAT zone's
+ * night). An unresolvable name FALLS BACK to UTC rather than throwing at module load — the
+ * search must keep working — and the fallback is visible in SEARCH_TIME_ZONE_SOURCE.
+ * env: SEARCH_TIME_ZONE   (IANA name, e.g. America/New_York)
+ */
+const SEARCH_TIME_ZONE_RAW = envString('SEARCH_TIME_ZONE', 'UTC');
+export const SEARCH_TIME_ZONE: string = isValidTimeZone(SEARCH_TIME_ZONE_RAW) ? SEARCH_TIME_ZONE_RAW : 'UTC';
+export const SEARCH_TIME_ZONE_SOURCE: string = isValidTimeZone(SEARCH_TIME_ZONE_RAW)
+  ? (process.env.SEARCH_TIME_ZONE ? 'env SEARCH_TIME_ZONE' : 'default')
+  : `default (SEARCH_TIME_ZONE=${JSON.stringify(SEARCH_TIME_ZONE_RAW)} is not a valid IANA zone)`;
+
+/**
+ * Words that turn a bare date D into a NIGHT window. Matched case-insensitively on word
+ * boundaries, longest phrase first, and removed from the query along with the date.
+ * env: SEARCH_NIGHT_WORDS (comma-separated; REPLACES this list)
+ */
+const NIGHT_WORDS_DEFAULT = ['last night', 'night of', 'overnight', 'night'];
+export const SEARCH_NIGHT_WORDS: readonly string[] = Object.freeze(
+  (() => {
+    const raw = process.env.SEARCH_NIGHT_WORDS; // env-read: via-callers
+    if (raw === undefined || raw.trim() === '') return NIGHT_WORDS_DEFAULT;
+    const words = raw.split(',').map((w) => w.trim().toLowerCase()).filter((w) => w !== '');
+    return words.length > 0 ? words : NIGHT_WORDS_DEFAULT;
+  })(),
+);
+
+/**
+ * A night window runs from (D-1) at this local hour … env: SEARCH_NIGHT_START_HOUR (0-23, default 18)
+ * so "the evening of D" falls inside, and to (D+1) at SEARCH_NIGHT_END_HOUR (default 12) so
+ * "the early hours of D" and a late finish on D both fall inside.
+ */
+export const SEARCH_NIGHT_START_HOUR = envHour('SEARCH_NIGHT_START_HOUR', 18);
+/** See SEARCH_NIGHT_START_HOUR. env: SEARCH_NIGHT_END_HOUR */
+export const SEARCH_NIGHT_END_HOUR = envHour('SEARCH_NIGHT_END_HOUR', 12);
+
+/**
+ * When a window is active, each source is over-fetched by this extra factor because the
+ * window is applied AFTER retrieval and discards rows; without headroom a window with a
+ * crowded neighbourhood could be emptied by out-of-window rows filling the pool.
+ * env: SEARCH_WINDOW_OVERFETCH_FACTOR
+ */
+export const SEARCH_WINDOW_OVERFETCH_FACTOR = envInt('SEARCH_WINDOW_OVERFETCH_FACTOR', 5);
