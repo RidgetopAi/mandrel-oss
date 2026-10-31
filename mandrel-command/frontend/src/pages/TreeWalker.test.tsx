@@ -17,6 +17,8 @@
  * — for an admin it walks every project's threads. "It named A" is therefore the assertion,
  * never "it did not name B".
  */
+import fs from 'node:fs';
+import path from 'node:path';
 import React, { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import { describe, it, expect, vi, afterEach, beforeEach } from 'vitest';
@@ -31,6 +33,7 @@ vi.mock('../api', () => ({
       getThread: vi.fn(),
       getResumeThread: vi.fn(),
       getBranches: vi.fn(async () => ({ branches: [], total: 0, cap: 30 })),
+      getWhy: vi.fn(),
     },
   },
 }));
@@ -62,9 +65,10 @@ const PROJECT_B = 'bbbbbbbb-2222-4222-8222-222222222222';
 
 import TreeWalker from './TreeWalker';
 import { api } from '../api';
+import { VIEW_REGISTRY } from './treewalker/config';
 
 const mockApi = api as unknown as {
-  treewalker: { getThread: ReturnType<typeof vi.fn>; getResumeThread: ReturnType<typeof vi.fn> };
+  treewalker: { getThread: ReturnType<typeof vi.fn>; getResumeThread: ReturnType<typeof vi.fn>; getWhy: ReturnType<typeof vi.fn> };
 };
 
 /** The trunk head the backend serves (the project's newest handoff) — the jump target. */
@@ -81,14 +85,14 @@ const SAMPLE: ThreadGraph = {
     { tier: 'branch', label: 'command-redesign', id: 'b0000000-0000-4000-8000-000000000002' },
   ],
   trunkAnchorId: TRUNK_HEAD,
+  memberTotal: 2,
+  truncated: false,
   nodes: [
-    { id: 'b0000000-0000-4000-8000-000000000002', kind: 'task', title: 'command-redesign', trust: 'ok', isSpine: true },
-    { id: 'a0000000-0000-4000-8000-000000000001', kind: 'handoff', title: '★ Handoff resume', trust: 'unproven', isCurrent: true },
+    { id: 'b0000000-0000-4000-8000-000000000002', kind: 'task', title: 'command-redesign', trust: 'ok', isSpine: true, createdAt: '2026-10-24T15:00:00.000Z', inBranch: true, status: 'in_progress' },
+    { id: 'a0000000-0000-4000-8000-000000000001', kind: 'handoff', title: '★ Handoff resume', trust: 'unproven', isCurrent: true, createdAt: '2026-10-25T15:00:00.000Z', inBranch: true },
   ],
   edges: [],
-  story: [
-    { id: 'a0000000-0000-4000-8000-000000000001', kind: 'handoff', title: '★ Handoff resume', trust: 'unproven', relation: 'you are here · ', relationTerm: 'resume point', marker: 'now' },
-  ],
+  story: [],
 };
 
 const EMPTY: ThreadGraph = {
@@ -98,6 +102,8 @@ const EMPTY: ThreadGraph = {
   edges: [],
   story: [],
   trunkAnchorId: null,
+  memberTotal: 0,
+  truncated: false,
 };
 
 let container: HTMLDivElement;
@@ -209,11 +215,12 @@ describe('TreeWalker — project scope', () => {
 });
 
 describe('TreeWalker — live resume-anchor read', () => {
-  it('renders the page heading + subtitle', () => {
+  it('renders the page heading and no descriptive subtitle', () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
     mount(<TreeWalker />);
     expect(container.textContent).toMatch(/TreeWalker/);
-    expect(container.textContent).toMatch(/how much to trust it/i);
+    expect(container.textContent).not.toMatch(/how much to trust it/i);
+    expect(container.textContent).not.toMatch(/How this thread linked itself/i);
   });
 
   it('reads the no-arg RESUME endpoint (not the explicit-anchor one) when no anchor is selected', async () => {
@@ -224,15 +231,30 @@ describe('TreeWalker — live resume-anchor read', () => {
     expect(mockApi.treewalker.getThread).not.toHaveBeenCalled();
   });
 
-  it('renders the resolved thread: anchor readout, spine lineage, and nodes', async () => {
+  it('renders the resolved thread without the spine breadcrumb or the walking/anchored readout', async () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
     mount(<TreeWalker />);
     await flush();
-    expect(container.querySelector('[data-testid="tw-anchor"]')?.textContent).toMatch(/Walking/);
-    expect(container.querySelector('[data-testid="tw-anchor"]')?.textContent).toMatch(/command-redesign/);
-    // PHASE 2 item f: the branch tier is named by the spine itself — no `branch:` prefix.
-    expect(container.querySelector('[data-testid="tw-spine"]')?.textContent).toMatch(/command-redesign/);
-    expect(container.querySelector('[data-testid="tw-spine"]')?.textContent).not.toMatch(/branch:command-redesign/);
+    expect(container.querySelector('[data-testid="tw-spine"]')).toBeNull();
+    expect(container.querySelector('[data-testid="tw-anchor"]')).toBeNull();
+    expect(container.textContent).not.toMatch(/Walking/);
+    expect(container.textContent).not.toMatch(/anchored on/);
+    // The Story header still names the branch.
+    expect(container.querySelector('[data-testid="tw-story"]')?.textContent).toMatch(/command-redesign/);
+  });
+
+  it('the old header parts are gone from the source tree and nothing imports them', () => {
+    const dir = path.resolve(__dirname, '..');
+    const walk = (d: string): string[] =>
+      fs.readdirSync(d, { withFileTypes: true }).flatMap((e) => (e.isDirectory() ? walk(path.join(d, e.name)) : [path.join(d, e.name)]));
+    const files = walk(dir);
+    for (const gone of ['SpineRibbon', 'BranchRail']) {
+      expect(files.filter((f) => path.basename(f).startsWith(gone))).toEqual([]);
+      const importers = files.filter(
+        (f) => /\.tsx?$/.test(f) && !f.endsWith('TreeWalker.test.tsx') && new RegExp(`from ['"][^'"]*/${gone}['"]`).test(fs.readFileSync(f, 'utf8')),
+      );
+      expect(importers).toEqual([]);
+    }
   });
 });
 
@@ -269,107 +291,211 @@ describe('TreeWalker — Jump to trunk NAVIGATES (PHASE 2 item d)', () => {
   });
 });
 
-describe('TreeWalker — BranchRail resume surface (PHASE 2 item c)', () => {
-  it('lists branches newest-first as served, and clicking one re-anchors on its spine', async () => {
-    const SPINE_ID = 'b0000000-0000-4000-8000-000000000002';
+describe('TreeWalker — branch selector in the compact header', () => {
+  const SPINE_ID = 'b0000000-0000-4000-8000-000000000002';
+  const branch = (spineId: string, name: string, members: number, named = true) => ({
+    spineId, spineType: 'task', name, named, members, lastActiveAt: '2026-08-13T00:00:00Z', open: false, isTopLevel: true, sectionCount: 0,
+  });
+  const select = () => container.querySelector<HTMLSelectElement>('[data-testid="tw-branch-select"]')!;
+  const choose = (value: string) => {
+    const el = select();
+    act(() => {
+      Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, 'value')!.set!.call(el, value);
+      el.dispatchEvent(new Event('change', { bubbles: true }));
+    });
+  };
+
+  it('lists every served branch with its member count, in served order; choosing one re-anchors', async () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
     mockApi.treewalker.getThread.mockResolvedValue(SAMPLE);
     mockApi.treewalker.getBranches.mockResolvedValue({
-      branches: [
-        { spineId: SPINE_ID, spineType: 'task', name: 'phase2-derived-tiers', named: true, members: 7, lastActiveAt: '2026-08-13T00:00:00Z', open: true, isTopLevel: true, sectionCount: 0 },
-        { spineId: 'c0000000-0000-4000-8000-000000000003', spineType: 'decision', name: 'older-branch', named: false, members: 2, lastActiveAt: '2026-08-10T00:00:00Z', open: false, isTopLevel: true, sectionCount: 0 },
-      ],
+      branches: [branch(SPINE_ID, 'phase2-derived-tiers', 7), branch('c0000000-0000-4000-8000-000000000003', 'older-branch', 2, false)],
       total: 2,
       cap: 30,
     });
     mount(<TreeWalker />);
     await flush();
+    const opts = Array.from(select().querySelectorAll('option')).filter((o) => o.value);
+    expect(opts.map((o) => o.textContent)).toEqual(['phase2-derived-tiers · 7', 'older-branch · 2']);
+    // Not capped → no N of M notice.
+    expect(container.querySelector('[data-testid="tw-branches-count"]')).toBeNull();
 
-    const rail = container.querySelector('[data-testid="tw-branches"]');
-    expect(rail?.textContent).toMatch(/phase2-derived-tiers/);
-    // Order preserved as served (newest-active first).
-    expect(rail?.textContent?.indexOf('phase2-derived-tiers')).toBeLessThan(
-      rail?.textContent?.indexOf('older-branch') ?? -1,
-    );
-
-    const branchBtn = Array.from(rail?.querySelectorAll('button') ?? []).find((b) =>
-      /phase2-derived-tiers/.test(b.textContent ?? ''),
-    );
-    act(() => branchBtn!.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+    choose(SPINE_ID);
     await flush();
     expect(mockApi.treewalker.getThread).toHaveBeenCalledTimes(1);
     expect(mockApi.treewalker.getThread.mock.calls[0][0]).toBe(SPINE_ID);
   });
 
-  it('honest empty state when a project has no branches', async () => {
+  it('states N of M when the served list is capped', async () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
-    mockApi.treewalker.getBranches.mockResolvedValue({ branches: [], total: 0, cap: 30 });
+    mockApi.treewalker.getBranches.mockResolvedValue({ branches: [branch(SPINE_ID, 'only-one', 1)], total: 41, cap: 1 });
     mount(<TreeWalker />);
     await flush();
-    expect(container.querySelector('[data-testid="tw-branches"]')?.textContent).toMatch(
-      /no branches yet/i,
-    );
+    expect(container.querySelector('[data-testid="tw-branches-count"]')?.textContent).toBe('1 of 41 branches');
+  });
+
+  it('with no branches the selector is inert and says so', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mockApi.treewalker.getBranches.mockResolvedValue({ branches: [], total: 0, cap: 30, sinceDays: 45, unbranched: { unbranched: 0, total: 0, windowDays: 60 } });
+    mount(<TreeWalker />);
+    await flush();
+    expect(select().disabled).toBe(true);
+    expect(select().textContent).toMatch(/no branches yet/i);
+  });
+});
+
+describe('TreeWalker — Only trusted still narrows the walk', () => {
+  it('toggling it filters the Story to trusted records', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mount(<TreeWalker />);
+    await flush();
+    const btn = Array.from(container.querySelectorAll('button')).find((b) => /Only trusted/.test(b.textContent ?? ''))!;
+    expect(btn.getAttribute('aria-pressed')).toBe('false');
+    const before = container.querySelector('[data-testid="tw-story"]')!.querySelectorAll('a[href*="record="]').length;
+    expect(before).toBeGreaterThan(0);
+    act(() => btn.dispatchEvent(new MouseEvent('click', { bubbles: true })));
+    await flush();
+    expect(btn.getAttribute('aria-pressed')).toBe('true');
+    // SAMPLE has no `trusted` record, so the narrowed walk shows none of them.
+    expect(container.querySelector('[data-testid="tw-story"]')!.querySelectorAll('a[href*="record="]').length).toBeLessThan(before);
   });
 });
 
 describe('TreeWalker — honest empty thread (no fabricated data)', () => {
-  it('renders the honest empty canvas + story state for a genuinely-empty thread', async () => {
+  it('renders the honest empty story state for a genuinely-empty thread', async () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(EMPTY);
     mount(<TreeWalker />);
     await flush();
-    expect(container.querySelector('[data-testid="tw-canvas"]')?.textContent).toMatch(
-      /No records on this thread yet/i,
-    );
     expect(container.querySelector('[data-testid="tw-story"]')?.textContent).toMatch(
-      /No story steps yet/i,
-    );
-    // The empty spine falls back to the honest placeholder, not a fabricated lineage.
-    expect(container.querySelector('[data-testid="tw-spine"]')?.textContent).toMatch(
-      /thread lineage appears here/i,
+      /No records on this thread yet/i,
     );
   });
 });
 
-describe('TreeWalker — Graph/Story view toggle', () => {
-  it('hides the canvas when Story view is selected, restores it on Graph', async () => {
+describe('TreeWalker — Story is the one registered view, linkable through the URL', () => {
+  it('opens on the Story tab and the tab bar renders exactly the registry', async () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
     mount(<TreeWalker />);
     await flush();
-    // Default = Graph: the canvas is present.
-    expect(container.querySelector('[data-testid="tw-canvas"]')).not.toBeNull();
+    const tabs = Array.from(container.querySelectorAll('[role="tab"]'));
+    expect(tabs.map((t) => t.textContent)).toEqual(VIEW_REGISTRY.map((v) => v.label));
+    expect(tabs[0].getAttribute('aria-selected')).toBe('true');
+    expect(container.querySelector('[data-testid="tw-story"]')).not.toBeNull();
+  });
 
-    const storyBtn = Array.from(container.querySelectorAll('button')).find((b) =>
-      /^\s*Story\s*$/i.test(b.textContent ?? ''),
-    );
-    expect(storyBtn).toBeTruthy();
-    act(() => storyBtn!.dispatchEvent(new MouseEvent('click', { bubbles: true })));
-    expect(container.querySelector('[data-testid="tw-canvas"]')).toBeNull();
+  it('an unknown ?view= falls back to the default view', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mount(<TreeWalker />, '/treewalker?view=nonsense');
+    await flush();
+    expect(container.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toBe('Story');
+  });
 
-    const graphBtn = Array.from(container.querySelectorAll('button')).find((b) =>
-      /^\s*Graph\s*$/i.test(b.textContent ?? ''),
-    );
-    act(() => graphBtn!.dispatchEvent(new MouseEvent('click', { bubbles: true })));
-    expect(container.querySelector('[data-testid="tw-canvas"]')).not.toBeNull();
+  it('?anchor= reads that anchor explicitly, and there is no Graph toggle', async () => {
+    mockApi.treewalker.getThread.mockResolvedValue(SAMPLE);
+    mount(<TreeWalker />, `/treewalker?anchor=${TRUNK_HEAD}`);
+    await flush();
+    expect(mockApi.treewalker.getThread.mock.calls[0][0]).toBe(TRUNK_HEAD);
+    expect(mockApi.treewalker.getResumeThread).not.toHaveBeenCalled();
+    expect(
+      Array.from(container.querySelectorAll('button')).some((b) => /^\s*Graph\s*$/.test(b.textContent ?? '')),
+    ).toBe(false);
+  });
+
+  it('the Story renders the branch: header title, chapter, a beat id8 that opens Why', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mount(<TreeWalker />);
+    await flush();
+    const story = container.querySelector('[data-testid="tw-story"]')!;
+    expect(story.querySelectorAll('section[aria-label]').length).toBe(2);
+    const link = story.querySelector('a[href*="record=a0000000-0000-4000-8000-000000000001"]');
+    expect(link).not.toBeNull();
+    expect(link!.getAttribute('href')).toContain('view=why');
+    expect(story.querySelector('a[href^="/r/"]')).toBeNull();
   });
 });
 
 describe('TreeWalker — head note derives from the active project', () => {
-  it('shows "<project name> · work map" when a project resolves — never a hardcoded company name', async () => {
+  it('shows the project name in the header row when a project resolves — never a hardcoded company name', async () => {
     mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
     mount(<TreeWalker />);
     await flush();
-    expect(container.textContent).toContain('acme-widgets · work map');
+    expect(container.querySelector('[data-testid="tw-header"]')?.textContent).toContain('acme-widgets');
     // The class this test pins: company branding baked into the shipped page.
     expect(container.textContent).not.toMatch(/riverbend/i);
   });
 
-  it('falls back to the neutral "work map" (no company fallback) when no project resolves', async () => {
+  it('shows no project (no company fallback) when none resolves', async () => {
     mockAllProjects = [];
     mockDefaultProjectId = undefined;
     mockApi.treewalker.getResumeThread.mockResolvedValue(EMPTY);
     mount(<TreeWalker />);
     await flush();
-    expect(container.textContent).toContain('work map');
     expect(container.textContent).not.toMatch(/riverbend/i);
+  });
+});
+
+describe('TreeWalker — the Why tab', () => {
+  const WHY = {
+    record: { id: 'a0000000-0000-4000-8000-000000000001', kind: 'context', title: 'The milestone', createdAt: '2026-10-25T15:00:00.000Z', trust: 'ok', contextType: 'milestone' },
+    causes: [{ edgeType: 'decided_by', targets: [{ id: 'd1000000-0000-4000-8000-000000000000', kind: 'decision', title: 'The decision', createdAt: '2026-10-20T10:00:00.000Z', trust: 'trusted', outcomeStatus: null }] }],
+    spawned: [{ decisionId: 'd1000000-0000-4000-8000-000000000000', total: 3, records: [{ id: 'e1000000-0000-4000-8000-000000000000', kind: 'task', title: 'Spawned task', createdAt: '2026-10-22T10:00:00.000Z', trust: 'unproven', status: 'done' }] }],
+    branch: { id: 'b0000000-0000-4000-8000-000000000002', title: 'command-redesign' },
+    series: [
+      { id: 'c1000000-0000-4000-8000-000000000000', kind: 'context', title: 'Earlier milestone', createdAt: '2026-10-10T10:00:00.000Z', trust: 'ok', contextType: 'milestone', guessed: true, isCurrent: false },
+      { id: 'a0000000-0000-4000-8000-000000000001', kind: 'context', title: 'The milestone', createdAt: '2026-10-25T15:00:00.000Z', trust: 'ok', contextType: 'milestone', guessed: true, isCurrent: true },
+    ],
+    before: [{ id: 'f1000000-0000-4000-8000-000000000000', kind: 'context', title: 'Just before', createdAt: '2026-10-24T10:00:00.000Z', trust: 'unproven', contextType: 'note', byTime: true }],
+    counts: { declared: 2, guessed: 4 },
+  };
+  const url = `/treewalker?view=why&record=${WHY.record.id}`;
+
+  it('opens Why for the record in the URL, scoped to the page project', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mockApi.treewalker.getWhy.mockResolvedValue(WHY);
+    mount(<TreeWalker />, url);
+    await flush();
+    expect(mockApi.treewalker.getWhy.mock.calls[0][0]).toBe(WHY.record.id);
+    expect(container.querySelector('[role="tab"][aria-selected="true"]')?.textContent).toBe('Why');
+  });
+
+  it('shows the decision under Because of with spawned records dimmed, the counts, and the series', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mockApi.treewalker.getWhy.mockResolvedValue(WHY);
+    mount(<TreeWalker />, url);
+    await flush();
+    const because = container.querySelector('[data-testid="tw-why-because"]')!;
+    expect(because.textContent).toContain('Because of');
+    expect(because.textContent).toContain('decided by');
+    expect(because.querySelector('a[href*="record=d1000000"]')).not.toBeNull();
+    const spawned = because.querySelector('[data-testid="tw-why-spawned"]')!;
+    expect(spawned.textContent).toContain('3 other records');
+    expect(spawned.textContent).toContain('one hop further');
+    expect(spawned.querySelector('a[href*="record=e1000000"]')).not.toBeNull();
+    expect(container.querySelector('[data-testid="tw-why-counts"]')!.textContent).toBe('2 declared4 guessed');
+    const series = container.querySelector('[data-testid="tw-why-series"]')!;
+    expect(series.textContent).toContain('never causal');
+    expect(series.querySelectorAll('li[aria-current="true"]').length).toBe(1);
+    expect(container.querySelector('[data-testid="tw-why-before"]')!.textContent).toContain('Just before');
+    expect(container.textContent).toContain('not by an edge');
+  });
+
+  it('the branch link returns to Story on that branch', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mockApi.treewalker.getWhy.mockResolvedValue(WHY);
+    mount(<TreeWalker />, url);
+    await flush();
+    const href = container.querySelector('[data-testid="tw-why-branch"]')!.getAttribute('href')!;
+    expect(href).toContain('view=story');
+    expect(href).toContain(`anchor=${WHY.branch.id}`);
+    expect(href).not.toContain('record=');
+  });
+
+  it('with no record picked it says how to pick one, and does not read', async () => {
+    mockApi.treewalker.getResumeThread.mockResolvedValue(SAMPLE);
+    mockApi.treewalker.getWhy.mockClear();
+    mount(<TreeWalker />, '/treewalker?view=why');
+    await flush();
+    expect(container.querySelector('[data-testid="tw-why"]')!.textContent).toContain('Pick a record in Story');
+    expect(mockApi.treewalker.getWhy).not.toHaveBeenCalled();
   });
 });

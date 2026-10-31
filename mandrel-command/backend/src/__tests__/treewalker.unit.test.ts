@@ -3,24 +3,25 @@
  *
  * Two layers, both proven WITHOUT a live Postgres (a past incident — one definition, unit-testable
  * in isolation):
- *   1. PURE builders (deriveTrust / kindOf / pickSpineNodeId / buildSpine / buildStory /
- *      buildThreadGraph) — hammered directly with in-memory rows. This is where trust mapping,
- *      story ORDER, both-direction edges, spine/current flags, and dangling-edge drop are
- *      proven deterministically.
- *   2. I/O (traverse / resolveAnchorId / getThread) — driven through an INJECTED fake pool
- *      (the same harness style as resolveNavId.unit.test.ts) so BFS depth-limiting, the
- *      maxNodes cap, empty-anchor resolution, and the explicit-anchor-not-found contract are
- *      proven without a DB. The SQL itself is proven against a real DB in treewalker.db.test.ts.
+ *   1. PURE builders (deriveTrust / kindOf / buildSpine / buildStory / buildThreadGraph /
+ *      selectMembers / isExcludedFromBranch) — hammered directly with in-memory rows: trust
+ *      mapping, the createdAt story ORDER, node fields, edge provenance, member + ghost caps.
+ *   2. I/O (getThread) — driven through an INJECTED fake pool so the member cap, the ghost
+ *      cap and the explicit-anchor-not-found contract are proven without a DB. The SQL itself
+ *      is proven against a real DB in treewalker.db.test.ts.
  *
  * No lying stubs: the fake pool only stands in for the pg row payload; every branch under test
  * is the service's own code.
  */
+import * as fs from 'fs';
+import * as path from 'path';
 import type { Pool } from 'pg';
 import {
   deriveTrust,
   kindOf,
   contextTitle,
-  pickSpineNodeId,
+  selectMembers,
+  isExcludedFromBranch,
   buildSpine,
   buildStory,
   buildThreadGraph,
@@ -158,11 +159,11 @@ function sampleRecords(): Map<string, RawRecord> {
 
 function sampleEdges(): RawEdge[] {
   return [
-    { id: 'edge-1', fromId: ANCHOR, fromType: 'context', toId: SPINE, toType: 'task', edgeType: 'informs' },
-    { id: 'edge-2', fromId: SPINE, fromType: 'task', toId: DEC, toType: 'decision', edgeType: 'decided_by' },
-    { id: 'edge-3', fromId: CTXA, fromType: 'context', toId: SPINE, toType: 'task', edgeType: 'informs' },
-    { id: 'edge-4', fromId: CTXB, fromType: 'context', toId: SPINE, toType: 'task', edgeType: 'informs' },
-    { id: 'edge-5', fromId: SPINE, fromType: 'task', toId: NEXT, toType: 'task', edgeType: 'informs' },
+    { id: 'edge-1', fromId: ANCHOR, fromType: 'context', toId: SPINE, toType: 'task', edgeType: 'informs', mintVia: 'tag', provenance: 'declared' },
+    { id: 'edge-2', fromId: SPINE, fromType: 'task', toId: DEC, toType: 'decision', edgeType: 'decided_by', mintVia: 'tag', provenance: 'declared' },
+    { id: 'edge-3', fromId: CTXA, fromType: 'context', toId: SPINE, toType: 'task', edgeType: 'informs', mintVia: 'tag', provenance: 'declared' },
+    { id: 'edge-4', fromId: CTXB, fromType: 'context', toId: SPINE, toType: 'task', edgeType: 'informs', mintVia: 'tag', provenance: 'declared' },
+    { id: 'edge-5', fromId: SPINE, fromType: 'task', toId: NEXT, toType: 'task', edgeType: 'informs', mintVia: 'tag', provenance: 'declared' },
   ];
 }
 
@@ -174,16 +175,6 @@ const TRUST_ALL: Map<string, TrustLevel> = new Map([
   [CTXB, 'trusted'],
   [NEXT, 'unproven'],
 ]);
-
-describe('pickSpineNodeId', () => {
-  it('picks the task the anchor `informs`', () => {
-    expect(pickSpineNodeId(ANCHOR, sampleEdges(), sampleRecords())).toBe(SPINE);
-  });
-  it('returns undefined when the thread has no task', () => {
-    const recs = new Map<string, RawRecord>([[ANCHOR, { id: ANCHOR, type: 'context', title: 'x' }]]);
-    expect(pickSpineNodeId(ANCHOR, [], recs)).toBeUndefined();
-  });
-});
 
 /** Data-resolved tier fixture (PHASE 2): a root doc + a 3-handoff trunk headed by ANCHOR. */
 const TIERS = {
@@ -217,40 +208,44 @@ describe('buildSpine — every tier resolved from DATA (PHASE 2 items a/b/f)', (
   });
 });
 
-describe('buildStory — CANONICAL recall_thread ordering (parity-pinned in treewalkerStoryOrderParity.test.ts)', () => {
-  const nodes: ThreadNode[] = [...sampleRecords().values()].map((r) => ({
+describe('buildStory — createdAt ascending, id tiebreak (thread v2)', () => {
+  const nodeOf = (r: RawRecord): ThreadNode => ({
     id: r.id,
     kind: kindOf(r),
     title: r.title,
     trust: TRUST_ALL.get(r.id) as TrustLevel,
-  }));
-  const story = buildStory(ANCHOR, SPINE, nodes, sampleEdges(), sampleRecords());
+    createdAt: new Date(r.createdAt as string).toISOString(),
+    inBranch: true,
+  });
+  const nodes: ThreadNode[] = [...sampleRecords().values()].map(nodeOf);
+  const story = buildStory(SPINE, SPINE, nodes, sampleEdges(), sampleRecords());
 
-  it('orders canonically: anchor pinned FIRST, then causal rank desc, then older-first', () => {
-    // Ranks over the causal DAG: feeders (CTXA/CTXB, rank 2) precede the spine (rank 1),
-    // which precedes its downstream decision + next task (rank 0). Ties break older-first
-    // (CTXA is older than CTXB; DEC is older than NEXT).
-    expect(story.map((s) => s.id)).toEqual([ANCHOR, CTXA, CTXB, SPINE, DEC, NEXT]);
-    expect(story.map((s) => s.marker)).toEqual(['now', 'default', 'default', 'informs', 'decided', 'next']);
+  it('orders strictly by createdAt ascending', () => {
+    // DEC 25d, SPINE 14d, CTXA 10d, CTXB 7d, NEXT 5d, ANCHOR 1d ago.
+    expect(story.map((s) => s.id)).toEqual([DEC, SPINE, CTXA, CTXB, NEXT, ANCHOR]);
   });
 
-  it('the first step is the ANCHOR — canonical order pins it first', () => {
-    expect(story[0]).toMatchObject({ id: ANCHOR, marker: 'now', relation: 'you are here · ', relationTerm: 'resume point', kind: 'handoff' });
+  it('a decision created BEFORE the member that is decided_by it comes FIRST (causal rank would not)', () => {
+    expect(story.findIndex((s) => s.id === DEC)).toBeLessThan(story.findIndex((s) => s.id === SPINE));
   });
 
-  it('the WHY (decided_by decision) carries the decided caption', () => {
-    expect(story.find((s) => s.id === DEC)).toMatchObject({ marker: 'decided', relation: 'the why · ', relationTerm: 'decided_by', kind: 'decision' });
+  it('ties on createdAt break by id', () => {
+    const same = '2026-07-01T00:00:00.000Z';
+    const recs = new Map<string, RawRecord>([
+      ['b-id', { id: 'b-id', type: 'task', title: 'b', createdAt: same }],
+      ['a-id', { id: 'a-id', type: 'task', title: 'a', createdAt: same }],
+    ]);
+    const ns = [...recs.values()].map(nodeOf);
+    const out = buildStory('a-id', 'a-id', ns, [], recs);
+    expect(out.map((x) => x.id)).toEqual(['a-id', 'b-id']);
   });
 
-  it('the "now" step is the anchor (resume point) carrying its real trust', () => {
-    const now = story.find((s) => s.marker === 'now');
-    expect(now).toMatchObject({ id: ANCHOR, relation: 'you are here · ', relationTerm: 'resume point', trust: 'unproven', kind: 'handoff' });
-  });
-
-  it('the "next" step is the open todo task (not the spine), emitted once', () => {
-    const next = story.filter((s) => s.marker === 'next');
-    expect(next).toHaveLength(1);
-    expect(next[0].id).toBe(NEXT);
+  it('keeps the markers: now (anchor), decided (the why), next (open task)', () => {
+    const m = (id: string) => story.find((x) => x.id === id)?.marker;
+    expect(m(SPINE)).toBe('now');
+    expect(m(DEC)).toBe('decided');
+    expect(m(NEXT)).toBe('next');
+    expect(story.filter((x) => x.marker === 'next')).toHaveLength(1);
   });
 
   it('no node appears twice', () => {
@@ -260,34 +255,110 @@ describe('buildStory — CANONICAL recall_thread ordering (parity-pinned in tree
 });
 
 describe('buildThreadGraph', () => {
-  const graph = buildThreadGraph(ANCHOR, sampleRecords(), sampleEdges(), TRUST_ALL, 'tree:mandrel-product', TIERS);
-
-  it('flags the spine + current nodes', () => {
-    expect(graph.nodes.find((n) => n.id === SPINE)?.isSpine).toBe(true);
-    expect(graph.nodes.find((n) => n.id === ANCHOR)?.isCurrent).toBe(true);
+  const GHOST = new Set([DEC]);
+  const graph = buildThreadGraph(SPINE, sampleRecords(), sampleEdges(), TRUST_ALL, 'tree:mandrel-product', TIERS, TREEWALKER_CONFIG, {
+    ghostIds: GHOST,
+    memberTotal: 5,
+    truncated: false,
   });
 
-  it('carries every real edge (both directions) with source/target/edgeType', () => {
+  it('flags the spine as spine + current', () => {
+    const n = graph.nodes.find((x) => x.id === SPINE);
+    expect(n?.isSpine).toBe(true);
+    expect(n?.isCurrent).toBe(true);
+  });
+
+  it('every node carries createdAt (ISO) and inBranch; ghosts are inBranch:false', () => {
+    for (const n of graph.nodes) {
+      expect(new Date(n.createdAt).toISOString()).toBe(n.createdAt);
+      expect(typeof n.inBranch).toBe('boolean');
+    }
+    expect(graph.nodes.find((n) => n.id === DEC)?.inBranch).toBe(false);
+    expect(graph.nodes.filter((n) => !n.inBranch)).toHaveLength(1);
+  });
+
+  it('kind-specific fields: contextType (contexts), status (tasks), outcomeStatus (decisions, null when unset)', () => {
+    const by = (id: string) => graph.nodes.find((n) => n.id === id) as ThreadNode;
+    expect(by(CTXA).contextType).toBe('milestone');
+    expect(by(ANCHOR).contextType).toBe('handoff');
+    expect(by(SPINE).status).toBe('in_progress');
+    expect(by(NEXT).status).toBe('todo');
+    expect(by(DEC).outcomeStatus).toBe('successful');
+    expect(by(CTXA).status).toBeUndefined();
+    const unset = new Map(sampleRecords());
+    unset.set(DEC, { id: DEC, type: 'decision', title: 'd', createdAt: daysAgo(25) });
+    const g = buildThreadGraph(SPINE, unset, [], TRUST_ALL, 'tree:x', TIERS);
+    expect(g.nodes.find((n) => n.id === DEC)?.outcomeStatus).toBeNull();
+  });
+
+  it('carries every edge with source/target/edgeType + mintVia + provenance', () => {
     expect(graph.edges).toHaveLength(5);
-    const e = graph.edges.find((x) => x.id === 'edge-2');
-    expect(e).toMatchObject({ source: SPINE, target: DEC, edgeType: 'decided_by' });
+    expect(graph.edges.find((x) => x.id === 'edge-2')).toMatchObject({
+      source: SPINE, target: DEC, edgeType: 'decided_by', mintVia: 'tag', provenance: 'declared',
+    });
   });
 
   it('drops a DANGLING edge whose endpoint did not resolve', () => {
-    const edges = [...sampleEdges(), { id: 'dangle', fromId: SPINE, fromType: 'task' as const, toId: 'zzzzzzzz-0000-4000-8000-00000000ffff', toType: 'decision' as const, edgeType: 'caused' }];
-    const g = buildThreadGraph(ANCHOR, sampleRecords(), edges, TRUST_ALL, 'tree:x', TIERS);
+    const edges = [...sampleEdges(), { id: 'dangle', fromId: SPINE, fromType: 'task' as const, toId: 'zzzzzzzz-0000-4000-8000-00000000ffff', toType: 'decision' as const, edgeType: 'caused', mintVia: 'tag', provenance: 'declared' }];
+    const g = buildThreadGraph(SPINE, sampleRecords(), edges, TRUST_ALL, 'tree:x', TIERS);
     expect(g.edges.find((x) => x.id === 'dangle')).toBeUndefined();
     expect(g.edges).toHaveLength(5);
   });
 
-  it('anchor readout: branch = spine title, anchorId, recordCount = node count', () => {
-    expect(graph.anchor).toEqual({ branchLabel: 'command-redesign', anchorId: ANCHOR, recordCount: 6 });
+  it('anchor readout + cap report', () => {
+    expect(graph.anchor).toEqual({ branchLabel: 'command-redesign', anchorId: SPINE, recordCount: 6 });
+    expect(graph.memberTotal).toBe(5);
+    expect(graph.truncated).toBe(false);
   });
 
-  it('maps node trust from the trust map (trusted decision, ok spine, unproven handoff)', () => {
+  it('maps node trust from the trust map', () => {
     expect(graph.nodes.find((n) => n.id === DEC)?.trust).toBe('trusted');
     expect(graph.nodes.find((n) => n.id === SPINE)?.trust).toBe('ok');
-    expect(graph.nodes.find((n) => n.id === ANCHOR)?.trust).toBe('unproven');
+  });
+
+  it('the frontend ThreadNode / ThreadEdge / ThreadGraph declare the same new fields', () => {
+    const fe = fs.readFileSync(
+      path.resolve(__dirname, '../../../frontend/src/api/domains/treewalker.ts'),
+      'utf8',
+    );
+    const body = (name: string) => fe.slice(fe.indexOf(`export interface ${name}`), fe.indexOf('\n}\n', fe.indexOf(`export interface ${name}`)));
+    for (const f of ['createdAt: string', 'inBranch: boolean', 'contextType?:', 'status?:', 'outcomeStatus?:']) {
+      expect(body('ThreadNode')).toContain(f);
+    }
+    for (const f of ['mintVia: string', 'provenance: string']) expect(body('ThreadEdge')).toContain(f);
+    for (const f of ['memberTotal: number', 'truncated: boolean']) expect(body('ThreadGraph')).toContain(f);
+  });
+});
+
+describe('isExcludedFromBranch / selectMembers', () => {
+  const ctx = (id: string, contextType: string, tags: string[], age: number): RawRecord => ({
+    id, type: 'context', title: id, contextType, tags, createdAt: daysAgo(age),
+  });
+
+  it('excludes handoff contexts and any alert* tag; keeps tasks/decisions and ordinary contexts', () => {
+    expect(isExcludedFromBranch(ctx('h', 'handoff', [], 1))).toBe(true);
+    expect(isExcludedFromBranch(ctx('e', 'error', ['alert:test'], 1))).toBe(true);
+    expect(isExcludedFromBranch(ctx('e2', 'error', ['alerting'], 1))).toBe(true);
+    expect(isExcludedFromBranch(ctx('c', 'milestone', ['x'], 1))).toBe(false);
+    expect(isExcludedFromBranch({ type: 'task', tags: ['alert:x'] })).toBe(false);
+  });
+
+  it('over the cap keeps the NEWEST maxMembers (spine pinned), memberTotal = true count, truncated', () => {
+    const cfg = { ...TREEWALKER_CONFIG, maxMembers: 3 };
+    const spine: RawRecord = { id: 'spine', type: 'task', title: 's', createdAt: daysAgo(100) };
+    const rest = [1, 2, 3, 4, 5].map((n) => ctx(`m${n}`, 'note', [], n)); // m1 newest
+    const r = selectMembers('spine', [spine, ...rest], cfg);
+    expect(r.total).toBe(6);
+    expect(r.truncated).toBe(true);
+    expect(r.kept.map((k) => k.id).sort()).toEqual(['m1', 'm2', 'spine']);
+  });
+
+  it('at or under the cap nothing is dropped and truncated is false', () => {
+    const cfg = { ...TREEWALKER_CONFIG, maxMembers: 3 };
+    const spine: RawRecord = { id: 'spine', type: 'task', title: 's', createdAt: daysAgo(100) };
+    const r = selectMembers('spine', [spine, ctx('m1', 'note', [], 1), ctx('m2', 'note', [], 2)], cfg);
+    expect(r).toMatchObject({ total: 3, truncated: false });
+    expect(r.kept).toHaveLength(3);
   });
 });
 
@@ -298,185 +369,142 @@ describe('emptyThreadGraph', () => {
     expect(g.edges).toEqual([]);
     expect(g.story).toEqual([]);
     expect(g.anchor.recordCount).toBe(0);
+    expect(g.memberTotal).toBe(0);
+    expect(g.truncated).toBe(false);
   });
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
-// I/O — injected fake pool (BFS, anchor resolution, not-found contract).
+// I/O — injected fake pool (member cap, ghost cap, not-found contract).
 // ─────────────────────────────────────────────────────────────────────────────
 
-/**
- * A dataset-backed fake pool: answers each query shape (links traversal / contexts /
- * technical_decisions / tasks / supersession / inheritance / resume-anchor) from in-memory
- * rows. Only the pg row payload is faked; the service's traversal + shaping code runs for real.
- */
-function datasetPool(data: {
+interface FakeData {
+  spineId: string;
+  /** branch_membership member ids of the spine */
+  members: string[];
+  /** declared outbound ghost-edge targets (member → target) */
+  ghostEdges: Array<{ from: string; to: string }>;
   links: RawEdge[];
   contexts: Array<{ id: string; content: string; context_type: string; tags: string[]; created_at: string }>;
-  decisions: Array<{ id: string; title: string; outcome_status: string; status: string; superseded_by: string | null; decision_date: string }>;
-  tasks: Array<{ id: string; title: string; status: string; created_at: string }>;
-  resumeAnchorId?: string | null;
-}): Pool {
-  const inArr = (params: unknown[]): string[] => (params[0] as string[]) ?? [];
+  decisions: Array<{ id: string; title: string; outcome_status: string | null; status: string; superseded_by: string | null; decision_date: string; tags: string[] }>;
+  tasks: Array<{ id: string; title: string; status: string; created_at: string; tags: string[] }>;
+}
+
+/** Answers each query shape the v2 service issues from in-memory rows. */
+function branchPool(d: FakeData): Pool {
+  const ids = (params: unknown[]): Set<string> => new Set((params[0] as string[]) ?? []);
   return {
     query: async (sql: string, params: unknown[] = []) => {
-      if (sql.includes('FROM links') && sql.includes('from_id = ANY') && sql.includes('to_id = ANY') && !sql.includes('edge_type IN')) {
-        const ids = new Set(inArr(params));
-        const rows = data.links
-          .filter((e) => ids.has(e.fromId) || ids.has(e.toId))
-          .map((e) => ({ id: e.id, from_id: e.fromId, from_type: e.fromType, to_id: e.toId, to_type: e.toType, edge_type: e.edgeType }));
-        return { rows };
+      if (sql.includes("context_type = 'handoff'") && sql.includes('count(*)')) return { rows: [{ n: 0 }] };
+      if (sql.includes("context_type = 'handoff'")) return { rows: [] };
+      if (sql.includes('tags && $3::text[]')) return { rows: [] };
+      if (sql.includes('UNION ALL') && sql.includes('project_id = ANY')) {
+        const id = params[0] as string;
+        const known = [...d.contexts, ...d.decisions, ...d.tasks].some((r) => r.id === id);
+        return { rows: known ? [{ id, project_id: 'p1' }] : [] };
       }
-      if (sql.includes('FROM contexts') && sql.includes('$2 = ANY(tags)')) {
-        // resolveAnchorId
-        return { rows: data.resumeAnchorId ? [{ id: data.resumeAnchorId }] : [] };
+      if (sql.includes('FROM branch_membership WHERE spine_id = $1 LIMIT 1')) {
+        return { rows: params[0] === d.spineId ? [{ '?column?': 1 }] : [] };
       }
-      // PHASE 2 tier reads (getSpineTierData): trunk count / trunk head / root doc.
-      if (sql.includes("context_type = 'handoff'") && sql.includes('count(*)')) {
-        return { rows: [{ n: data.contexts.filter((c) => c.context_type === 'handoff').length }] };
+      if (sql.includes('FROM branch_membership WHERE member_id')) return { rows: [] };
+      if (sql.includes('FROM branch_membership WHERE spine_id = $1') && sql.includes('UNION')) {
+        return { rows: d.members.map((id) => ({ id })) };
       }
-      if (sql.includes("context_type = 'handoff'")) {
-        const handoffs = data.contexts.filter((c) => c.context_type === 'handoff');
-        handoffs.sort((a, b) => (a.created_at < b.created_at ? 1 : -1)); // newest first
-        return { rows: handoffs.slice(0, 1).map((c) => ({ id: c.id })) };
+      if (sql.includes('SELECT DISTINCT to_id FROM links')) {
+        const from = ids(params);
+        return { rows: d.ghostEdges.filter((e) => from.has(e.from)).map((e) => ({ to_id: e.to })) };
       }
-      if (sql.includes('tags && $3::text[]')) {
-        return { rows: [] }; // no root-tagged doc in the fixture (honest fallback path)
+      if (sql.includes('SELECT id, from_id, from_type')) {
+        const set = ids(params);
+        return {
+          rows: d.links
+            .filter((e) => set.has(e.fromId) && set.has(e.toId))
+            .map((e) => ({ id: e.id, from_id: e.fromId, from_type: e.fromType, to_id: e.toId, to_type: e.toType, edge_type: e.edgeType, mint_via: e.mintVia, provenance_class: e.provenance })),
+        };
       }
-      if (sql.includes('FROM contexts') && sql.includes('context_type')) {
-        const ids = new Set(inArr(params));
-        return { rows: data.contexts.filter((c) => ids.has(c.id)) };
-      }
-      if (sql.includes('FROM technical_decisions') && sql.includes('outcome_status') && sql.includes('superseded_by')) {
-        const ids = new Set(inArr(params));
-        return { rows: data.decisions.filter((d) => ids.has(d.id)) };
-      }
-      if (sql.includes('FROM tasks')) {
-        const ids = new Set(inArr(params));
-        return { rows: data.tasks.filter((t) => ids.has(t.id)) };
-      }
-      if (sql.includes('edge_type IN') && sql.includes('supersedes')) {
-        return { rows: [] }; // no supersession in the fixture
-      }
-      if (sql.includes('JOIN tasks') && sql.includes('l.from_id')) {
-        // task-outcome inheritance: join links → tasks (secondary ground-truth)
-        const ids = new Set(inArr(params));
-        const rows: Array<{ from_id: string; status: string }> = [];
-        for (const e of data.links) {
-          if (!ids.has(e.fromId)) continue;
-          if (e.toType !== 'task') continue;
-          if (!['informs', 'decided_by', 'learned_from'].includes(e.edgeType)) continue;
-          const t = data.tasks.find((x) => x.id === e.toId);
-          if (t) rows.push({ from_id: e.fromId, status: t.status });
-        }
-        return { rows };
-      }
-      if (sql.includes('JOIN technical_decisions') && sql.includes('l.from_id')) {
-        // outcome inheritance: join links → decisions
-        const ids = new Set(inArr(params));
-        const rows: Array<{ from_id: string; outcome_status: string }> = [];
-        for (const e of data.links) {
-          if (!ids.has(e.fromId)) continue;
-          if (e.toType !== 'decision') continue;
-          if (!['informs', 'decided_by', 'learned_from'].includes(e.edgeType)) continue;
-          const d = data.decisions.find((x) => x.id === e.toId);
-          if (d) rows.push({ from_id: e.fromId, outcome_status: d.outcome_status });
-        }
-        return { rows };
-      }
+      if (sql.includes('FROM contexts')) return { rows: d.contexts.filter((c) => ids(params).has(c.id)) };
+      if (sql.includes('FROM technical_decisions') && sql.includes('superseded_by')) return { rows: d.decisions.filter((x) => ids(params).has(x.id)) };
+      if (sql.includes('FROM tasks')) return { rows: d.tasks.filter((t) => ids(params).has(t.id)) };
       return { rows: [] };
     },
   } as unknown as Pool;
 }
 
-/** ISO date N days before the REAL clock — getThread derives ages from `new Date()`,
- *  so the I/O fixture must be relative to it or the expected bands would rot with time. */
 const realDaysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000).toISOString();
+const uid = (n: number) => `00000000-0000-4000-8000-${String(n).padStart(12, '0')}`;
+const SP = uid(1);
 
-function fixture() {
+function bigBranch(memberCount: number, ghostCount: number): FakeData {
+  const members = Array.from({ length: memberCount }, (_, i) => uid(100 + i));
+  const decisions = Array.from({ length: ghostCount }, (_, i) => ({
+    id: uid(500 + i), title: `ghost ${i}`, outcome_status: null, status: 'active', superseded_by: null,
+    decision_date: realDaysAgo(200 - i), tags: [] as string[],
+  }));
   return {
-    links: sampleEdges(),
-    contexts: [
-      { id: ANCHOR, content: '★ Handoff resume', context_type: 'handoff', tags: ['ref:resume', 'tree:mandrel-product'], created_at: realDaysAgo(1) },
-      { id: CTXA, content: 'Sessions locked', context_type: 'milestone', tags: [], created_at: realDaysAgo(10) },
-      { id: CTXB, content: 'Decisions locked', context_type: 'milestone', tags: [], created_at: realDaysAgo(7) },
-    ],
-    decisions: [
-      { id: DEC, title: 'design-language LOCKED', outcome_status: 'successful', status: 'active', superseded_by: null, decision_date: realDaysAgo(25) },
-    ],
-    tasks: [
-      { id: SPINE, title: 'command-redesign', status: 'in_progress', created_at: realDaysAgo(14) },
-      { id: NEXT, title: 'Design the TreeWalker page', status: 'todo', created_at: realDaysAgo(5) },
-    ],
+    spineId: SP,
+    members,
+    ghostEdges: decisions.map((dec, i) => ({ from: members[i % members.length], to: dec.id })),
+    links: [],
+    // member i is i+1 days old → members[0] is the newest
+    contexts: members.map((id, i) => ({ id, content: `member ${i}`, context_type: 'note', tags: [], created_at: realDaysAgo(i + 1) })),
+    decisions,
+    tasks: [{ id: SP, title: 'spine', status: 'in_progress', created_at: realDaysAgo(300), tags: [] }],
   };
 }
 
-describe('TreeWalkerService.traverse — BFS depth + cap', () => {
-  it('walks both directions and collects every edge within maxDepth (2)', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: ANCHOR });
-    const { nodeIds, edges } = await TreeWalkerService.traverse(ANCHOR, TREEWALKER_CONFIG, pool);
-    // depth1 from anchor: SPINE. depth2 from SPINE: DEC, CTXA (incoming), CTXB, NEXT.
-    expect(new Set(nodeIds)).toEqual(new Set([ANCHOR, SPINE, DEC, CTXA, CTXB, NEXT]));
-    expect(edges).toHaveLength(5);
+describe('TreeWalkerService.getThread — branch walk over the fake pool', () => {
+  it('over maxMembers: keeps the newest, memberTotal is the TRUE count, truncated:true', async () => {
+    const cfg = { ...TREEWALKER_CONFIG, maxMembers: 4, maxGhosts: 100 };
+    const g = await TreeWalkerService.getThread({ anchorId: SP, scope: projectsScope(['p1']) }, cfg, branchPool(bigBranch(10, 0)));
+    expect(g.memberTotal).toBe(11); // spine + 10
+    expect(g.truncated).toBe(true);
+    expect(g.nodes.map((n) => n.id).sort()).toEqual([SP, uid(100), uid(101), uid(102)].sort());
   });
 
-  it('honours a maxDepth of 1 (only the anchor + its direct neighbours)', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: ANCHOR });
-    const cfg = { ...TREEWALKER_CONFIG, maxDepth: 1 };
-    const { nodeIds } = await TreeWalkerService.traverse(ANCHOR, cfg, pool);
-    expect(new Set(nodeIds)).toEqual(new Set([ANCHOR, SPINE]));
+  it('at or under maxMembers: truncated is false and everything is returned', async () => {
+    const cfg = { ...TREEWALKER_CONFIG, maxMembers: 11, maxGhosts: 100 };
+    const g = await TreeWalkerService.getThread({ anchorId: SP, scope: projectsScope(['p1']) }, cfg, branchPool(bigBranch(10, 0)));
+    expect(g.memberTotal).toBe(11);
+    expect(g.truncated).toBe(false);
+    expect(g.nodes).toHaveLength(11);
   });
 
-  it('respects the maxNodes cap', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: ANCHOR });
-    const cfg = { ...TREEWALKER_CONFIG, maxNodes: 3 };
-    const { nodeIds } = await TreeWalkerService.traverse(ANCHOR, cfg, pool);
-    expect(nodeIds.length).toBeLessThanOrEqual(3);
-  });
-});
-
-describe('TreeWalkerService.resolveAnchorId', () => {
-  it('returns the newest resume anchor id', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: ANCHOR });
-    await expect(TreeWalkerService.resolveAnchorId(projectsScope(['proj']), TREEWALKER_CONFIG, pool)).resolves.toBe(ANCHOR);
-  });
-  it('returns null when no resume anchor exists', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: null });
-    await expect(TreeWalkerService.resolveAnchorId(projectsScope(['proj']), TREEWALKER_CONFIG, pool)).resolves.toBeNull();
-  });
-});
-
-describe('TreeWalkerService.getThread — end to end over the fake pool', () => {
-  it('resolves the resume anchor and returns the full grounded ThreadGraph', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: ANCHOR });
-    const graph = await TreeWalkerService.getThread({ scope: projectsScope(['proj']), projectName: 'riverbend' }, TREEWALKER_CONFIG, pool);
-    expect(graph.anchor.anchorId).toBe(ANCHOR);
-    expect(graph.nodes).toHaveLength(6);
-    // CANONICAL trust: the fresh decision's own successful outcome → trusted; the spine
-    // task INHERITS that outcome over its decided_by edge (the moat path) → trusted too.
-    expect(graph.nodes.find((n) => n.id === DEC)?.trust).toBe('trusted');
-    expect(graph.nodes.find((n) => n.id === SPINE)?.trust).toBe('trusted');
-    // The fresh anchor handoff has no outcome evidence → cold-start unproven, honest.
-    expect(graph.nodes.find((n) => n.id === ANCHOR)?.trust).toBe('unproven');
-    // PHASE 2 item d: the trunk head (newest handoff — here the anchor itself) rides on
-    // the graph as the real jump-to-trunk target, and the trunk tier carries its id.
-    expect(graph.trunkAnchorId).toBe(ANCHOR);
-    expect(graph.spine.find((s) => s.tier === 'trunk')?.id).toBe(ANCHOR);
-    expect(graph.story[0].id).toBe(ANCHOR); // canonical order pins the anchor first
-    expect(graph.story.map((s) => s.marker)).toEqual(['now', 'default', 'default', 'informs', 'decided', 'next']);
+  it('ghost causes never exceed maxGhosts, and are inBranch:false (newest ghosts first)', async () => {
+    const cfg = { ...TREEWALKER_CONFIG, maxGhosts: 3 };
+    const g = await TreeWalkerService.getThread({ anchorId: SP, scope: projectsScope(['p1']) }, cfg, branchPool(bigBranch(5, 9)));
+    const ghosts = g.nodes.filter((n) => !n.inBranch);
+    expect(ghosts).toHaveLength(3);
+    expect(ghosts.map((n) => n.id).sort()).toEqual([uid(506), uid(507), uid(508)]);
+    expect(g.nodes.filter((n) => n.inBranch)).toHaveLength(6);
+    expect(g.memberTotal).toBe(6);
   });
 
-  it('returns an honest empty graph when there is no resume anchor', async () => {
-    const pool = datasetPool({ ...fixture(), resumeAnchorId: null });
-    const graph = await TreeWalkerService.getThread({ scope: projectsScope(['proj'])}, TREEWALKER_CONFIG, pool);
-    expect(graph.nodes).toEqual([]);
-    expect(graph.anchor.anchorId).toBe('');
+  it('a decision created BEFORE the member decided_by it comes first in the story', async () => {
+    const d = bigBranch(1, 1);
+    d.links = [{ id: 'l1', fromId: uid(100), fromType: 'context', toId: uid(500), toType: 'decision', edgeType: 'decided_by', mintVia: 'tag', provenance: 'declared' }];
+    const g = await TreeWalkerService.getThread({ anchorId: SP, scope: projectsScope(['p1']) }, TREEWALKER_CONFIG, branchPool(d));
+    const order = g.story.map((s) => s.id);
+    expect(order.indexOf(uid(500))).toBeLessThan(order.indexOf(uid(100)));
+    expect(order).toEqual([SP, uid(500), uid(100)]); // 300d, 200d, 1d old
   });
 
   it('throws AnchorNotFoundError for an EXPLICIT anchor that resolves to no record', async () => {
-    const pool = datasetPool({ links: [], contexts: [], decisions: [], tasks: [] });
+    const pool = branchPool({ spineId: SP, members: [], ghostEdges: [], links: [], contexts: [], decisions: [], tasks: [] });
     await expect(
       TreeWalkerService.getThread({ scope: allProjects, anchorId: 'deadbeef-0000-4000-8000-000000000000' }, TREEWALKER_CONFIG, pool),
     ).rejects.toBeInstanceOf(AnchorNotFoundError);
+    await expect(
+      TreeWalkerService.getThread({ scope: allProjects, anchorId: 'not-a-uuid' }, TREEWALKER_CONFIG, pool),
+    ).rejects.toBeInstanceOf(AnchorNotFoundError);
+  });
+});
+
+describe('treewalkerConfig — caps live in config', () => {
+  it('maxMembers / maxGhosts exist with the documented defaults; the v1 walk knobs are gone', () => {
+    expect(TREEWALKER_CONFIG.maxMembers).toBe(500);
+    expect(TREEWALKER_CONFIG.maxGhosts).toBe(25);
+    expect('maxDepth' in TREEWALKER_CONFIG).toBe(false);
+    expect('maxNodes' in TREEWALKER_CONFIG).toBe(false);
+    expect(typeof (TreeWalkerService as unknown as Record<string, unknown>).traverse).toBe('undefined');
   });
 });

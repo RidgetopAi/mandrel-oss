@@ -16,9 +16,13 @@
  */
 
 import type { Trust, TrustReason } from './trustModel.js';
+/** The metadata key a record's kind lives under. */
+const RECORD_KIND_METADATA_KEY = 'kind';
+import { TASK_NOTE_LOG_KEY } from '../config/taskNotes.js';
 import { TRUST_BANDS, type TrustBand } from '../config/trustConfig.js';
 import {
   THREAD_CONFIG,
+  RECORD_KIND_SLUG,
   type ThreadConfig,
   type ThreadAltitude,
 } from '../config/threadConfig.js';
@@ -151,6 +155,29 @@ export interface ThreadNode {
    * MEASURED before the fix: rc=1 and rc=2 rendered byte-identical lines.
    */
   gateOutcome?: string;
+  /**
+   * WHAT KIND OF RECORD THIS IS — the record's own `metadata.kind`, e.g.
+   * `punch-merge`, `punch-revert`, `walkthrough-verdict`. PRESENT IF AND ONLY IF it is a
+   * well-formed slug within the configured length cap; a missing or malformed kind is absent,
+   * never defaulted to the record type or repaired.
+   */
+  kind?: string;
+  /**
+   * THE ANCHOR TASK'S EVENT LOG as timed steps, oldest first — the entries of
+   * `tasks.metadata.noteLog` ({at, actor, note}). Set on the TASK ANCHOR only, at `summary`
+   * and `full`; absent at `headline` (which shows no steps) and when the log is empty.
+   * `summary` clips each note to the configured width and caps the count.
+   */
+  events?: ThreadEvent[];
+  /** The real number of log entries (greater than events.length when the step cap bit). */
+  eventsTotal?: number;
+}
+
+/** One step of a task's event log. */
+export interface ThreadEvent {
+  at: string;
+  actor: string | null;
+  note: string;
 }
 
 /**
@@ -484,7 +511,89 @@ export function shapeNode(
   // rather than by re-reading the key twice.
   const gate = gateOutcomeOf(raw.metadata);
   if (gate !== null) node.gateOutcome = gate;
+  const kind = recordKindOf(raw.metadata, config);
+  if (kind !== null) node.kind = kind;
   return node;
+}
+
+/**
+ * READ A RECORD'S KIND off its metadata — the ONE definition. PURE and
+ * NULL-BIASED: a non-string, a string that is not a lowercase slug, or one over the configured
+ * cap returns null. It does not normalise ("Bad Kind!" is dropped, not lowercased).
+ */
+export function recordKindOf(metadata: unknown, config: ThreadConfig): string | null {
+  if (typeof metadata !== 'object' || metadata === null || Array.isArray(metadata)) return null;
+  const raw = (metadata as Record<string, unknown>)[RECORD_KIND_METADATA_KEY];
+  if (typeof raw !== 'string') return null;
+  if (raw.length === 0 || raw.length > config.recordKindMaxChars) return null;
+  return RECORD_KIND_SLUG.test(raw) ? raw : null;
+}
+
+/** One superseded record the thread abstains on, listed as history. */
+export interface SupersededEntry {
+  id: string;
+  createdAt?: string;
+  kind?: string;
+  title: string | null;
+  /** The superseding record's full id, when known. */
+  supersededBy?: string;
+}
+
+/**
+ * The records the walk abstains on BECAUSE a declared supersession replaced them. PURE: reads
+ * the trust verdicts already computed (abstain + superseded), decides nothing about trust.
+ */
+export function supersededHistoryOf(nodes: readonly ThreadNode[]): SupersededEntry[] {
+  const out: SupersededEntry[] = [];
+  for (const n of nodes) {
+    if (!n.trust.abstain || !n.trust.superseded) continue; // trust-render-exempt: READS computed flags to select the history list; renders no marker
+    const e: SupersededEntry = { id: n.id, title: n.title };
+    if (n.createdAt !== undefined) e.createdAt = n.createdAt;
+    if (n.kind !== undefined) e.kind = n.kind;
+    const by = n.trust.supersession?.supersededBy ?? n.dropped?.supersededBy ?? null;
+    if (by) e.supersededBy = by;
+    out.push(e);
+  }
+  return out;
+}
+
+/**
+ * READ A TASK'S EVENT LOG off its metadata — the ONE definition. PURE and
+ * TOTAL: anything that is not a well-formed entry (object with a non-empty string `note` and
+ * a parseable `at`) is skipped, never rendered as a blank step. Oldest first. `headline`
+ * returns null (no steps). At `summary` each note is whitespace-collapsed and clipped to
+ * eventLogSummaryNoteWidth; at `full` the whole note rides. When the altitude's step cap
+ * bites the MOST RECENT steps are kept (a status log's value is recency) and `total`
+ * reports the real count.
+ */
+export function eventLogOf(
+  metadata: unknown,
+  altitude: ThreadAltitude,
+  config: ThreadConfig
+): { events: ThreadEvent[]; total: number } | null {
+  if (altitude === 'headline') return null;
+  const log = (metadata as Record<string, unknown> | null | undefined)?.[TASK_NOTE_LOG_KEY];
+  if (!Array.isArray(log)) return null;
+  const steps: ThreadEvent[] = [];
+  for (const raw of log) {
+    if (raw === null || typeof raw !== 'object') continue;
+    const e = raw as Record<string, unknown>;
+    const at = typeof e.at === 'string' ? recordTimeIso(e.at) : null;
+    if (at === null || typeof e.note !== 'string' || e.note.trim() === '') continue;
+    const note = e.note.replace(/\s+/g, ' ').trim();
+    steps.push({ at, actor: typeof e.actor === 'string' && e.actor !== '' ? e.actor : null, note });
+  }
+  if (steps.length === 0) return null;
+  // Array.prototype.sort is stable: equal timestamps keep log (append) order.
+  steps.sort((a, b) => Date.parse(a.at) - Date.parse(b.at));
+  const cap = altitude === 'summary' ? config.eventLogSummaryMaxSteps : config.eventLogFullMaxSteps;
+  const kept = steps.slice(Math.max(0, steps.length - cap));
+  const width = config.eventLogSummaryNoteWidth;
+  const events =
+    altitude === 'summary'
+      ? kept.map((s) => (s.note.length > width ? { ...s, note: `${s.note.slice(0, width)}…` } : s))
+      : kept;
+  return { events, total: steps.length };
 }
 
 /** ISO-8601 UTC for a stored record time; null when absent or unparseable (never invented). */

@@ -1,0 +1,219 @@
+/* Why view. Colour only through CSS tokens; a kind's token arrives as --role, a trust band's as --band. */
+
+.why {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+.status {
+  padding: var(--sp-6) var(--sp-4);
+  color: var(--tx-3);
+  font-size: 0.82rem;
+}
+.col {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.colHead {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--tx-3);
+}
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.edge {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--teal);
+}
+.note,
+.empty {
+  font-size: 0.78rem;
+  color: var(--tx-3);
+  line-height: 1.5;
+}
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+/* ---- a record row (always a real link) ---- */
+.node {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-2);
+  padding: var(--sp-2) var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-2, 6px);
+  background: var(--s1, transparent);
+  color: var(--tx-2);
+  text-decoration: none;
+  font-size: 0.8rem;
+}
+.node:hover,
+.node:focus-visible {
+  border-color: var(--role, var(--teal));
+  color: var(--tx);
+}
+.dot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--role, var(--tx-3));
+  align-self: center;
+}
+.nodeId {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--teal);
+}
+.nodeKind {
+  font-size: 0.7rem;
+  color: var(--tx-3);
+}
+.nodeTitle {
+  flex: 1 1 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.nodeTime {
+  flex: 1 1 100%;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--tx-4);
+}
+
+/* ---- records a decision spawned: dimmed, one hop further ---- */
+.spawned {
+  margin: var(--sp-2) 0 0 var(--sp-3);
+  padding-left: var(--sp-3);
+  border-left: 1px dashed var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  color: var(--tx-3);
+}
+.spawned .node {
+  color: var(--tx-3);
+  background: transparent;
+  border-style: dashed;
+}
+.spawned .nodeTitle {
+  color: var(--tx-3);
+}
+.spawnedNote,
+.more {
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  color: var(--tx-4);
+}
+
+.branchLink {
+  color: var(--teal);
+  font-size: 0.82rem;
+  overflow-wrap: anywhere;
+}
+
+/* ---- the record card ---- */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  padding: var(--sp-4);
+  border: 1px solid var(--role, var(--line));
+  border-radius: var(--r-2, 6px);
+  background: var(--s1, transparent);
+}
+.cardMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+}
+.cardTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--tx);
+  overflow-wrap: anywhere;
+}
+.cardTime {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--tx-3);
+}
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--tx-3);
+}
+.trust {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--tx-2);
+}
+.trustDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--band, var(--tx-4));
+}
+
+/* ---- the series: a vertical sequence with the record highlighted ---- */
+.series {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 var(--sp-3);
+  border-left: 2px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.seriesItem {
+  position: relative;
+}
+.seriesItem::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--sp-3) - 5px);
+  top: 14px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--line);
+}
+.seriesCurrent::before {
+  background: var(--teal);
+}
+.seriesCurrent .node {
+  border-color: var(--teal);
+  background: var(--teal-glow);
+  color: var(--tx);
+}
+
+/* ---- phone: the columns stack, nothing scrolls sideways ---- */
+@media (max-width: 760px) {
+  .why {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -299,7 +299,66 @@ export interface ThreadConfig {
    * Env: MANDREL_THREAD_WEAK_HOP_LIMIT. Default 1.
    */
   weakHopLimit: number;
+  /**
+   * mentioned_by_snippet_width — characters of a "Mentioned by other threads" entry's content
+   * shown around the anchor's id8. Env: MANDREL_THREAD_MENTIONED_BY_SNIPPET_WIDTH.
+   * Default 240.
+   */
+  mentionedBySnippetWidth: number;
+  /**
+   * mentioned_by_max_entries — the cap on the `mentionedBy` list. Its OWN cap, independent of
+   * maxNodes: the list is not part of the walk. When it bites, `mentionedByTotal` reports the
+   * real count (oldest entries are kept). Env: MANDREL_THREAD_MENTIONED_BY_MAX_ENTRIES. Default 50.
+   */
+  mentionedByMaxEntries: number;
+  /**
+   * mention_created_by — the links.created_by stamp of the name-scan's inbound `related_to`.
+   * In the DEFAULT walk such an edge from a record that is a member of a different task spine
+   * is a MENTION (listed in mentionedBy), not a node.
+   * Env: MANDREL_THREAD_MENTION_CREATED_BY. Default 'auto:positional'.
+   */
+  mentionCreatedBy: string;
+  /**
+   * event_log_summary_max_steps — how many of a task anchor's event-log steps (the notes
+   * appended to the task) the summary altitude shows; when the cap bites the most recent steps
+   * are kept and the thread reports the real total. Env: MANDREL_THREAD_EVENT_LOG_SUMMARY_MAX_STEPS.
+   * Default 50 (the log itself is bounded at 100 entries).
+   */
+  eventLogSummaryMaxSteps: number;
+  /**
+   * event_log_full_max_steps — the same cap at the `full` altitude.
+   * Env: MANDREL_THREAD_EVENT_LOG_FULL_MAX_STEPS. Default 100.
+   */
+  eventLogFullMaxSteps: number;
+  /**
+   * event_log_summary_note_width — characters of one step's note shown at the summary
+   * altitude; a longer note is cut and ends in an ellipsis, and full carries the whole note. Env: MANDREL_THREAD_EVENT_LOG_SUMMARY_NOTE_WIDTH. Default 400.
+   */
+  eventLogSummaryNoteWidth: number;
+  /**
+   * record_kind_max_chars — the length cap on a record's `metadata.kind` for it to be shown as
+   * the node's `kind`. A kind is a well-formed slug (lowercase letters, digits
+   * and '-', see RECORD_KIND_SLUG) no longer than this; anything else is omitted, never
+   * repaired. Env: MANDREL_THREAD_RECORD_KIND_MAX_CHARS. Default 40.
+   */
+  recordKindMaxChars: number;
+  /**
+   * trust_legend_line — the ONE header line saying what the trust band means: whether to rely
+   * on a record now, not whether it was right. Printed once per text response.
+   * Env: MANDREL_THREAD_TRUST_LEGEND_LINE.
+   */
+  trustLegendLine: string;
 }
+
+/** The shape a record `metadata.kind` must have to be shown: lowercase letters, digits, '-'. */
+export const RECORD_KIND_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+
+/** The default trust-legend header line. */
+export const THREAD_TRUST_LEGEND_LINE =
+  'Trust band = whether to rely on a record NOW, not whether it was right (a reverted or superseded record can have been correct when written).'; // trust-render-exempt: static legend prose explaining what the band means; renders no per-record band
+
+/** The text-channel heading of the superseded-history section. */
+export const THREAD_SUPERSEDED_SECTION_TITLE = 'Superseded — history, not guidance';
 
 /**
  * THE LIVE CONFIG — read once at module load. Defaults are the operator-aligned §4 values;
@@ -320,4 +379,12 @@ export const THREAD_CONFIG: ThreadConfig = {
   frontierWeightMetadataKeys: FRONTIER_WEIGHT_METADATA_KEYS,
   weakEdgeTypes: envList('MANDREL_THREAD_WEAK_EDGE_TYPES', THREAD_WEAK_EDGE_TYPES),
   weakHopLimit: envInt('MANDREL_THREAD_WEAK_HOP_LIMIT', 1),
+  mentionedBySnippetWidth: envInt('MANDREL_THREAD_MENTIONED_BY_SNIPPET_WIDTH', 240),
+  mentionedByMaxEntries: envInt('MANDREL_THREAD_MENTIONED_BY_MAX_ENTRIES', 50),
+  mentionCreatedBy: envStr('MANDREL_THREAD_MENTION_CREATED_BY', 'auto:positional'),
+  eventLogSummaryMaxSteps: envInt('MANDREL_THREAD_EVENT_LOG_SUMMARY_MAX_STEPS', 50),
+  eventLogFullMaxSteps: envInt('MANDREL_THREAD_EVENT_LOG_FULL_MAX_STEPS', 100),
+  eventLogSummaryNoteWidth: envInt('MANDREL_THREAD_EVENT_LOG_SUMMARY_NOTE_WIDTH', 400),
+  recordKindMaxChars: envInt('MANDREL_THREAD_RECORD_KIND_MAX_CHARS', 40),
+  trustLegendLine: envStr('MANDREL_THREAD_TRUST_LEGEND_LINE', THREAD_TRUST_LEGEND_LINE),
 };

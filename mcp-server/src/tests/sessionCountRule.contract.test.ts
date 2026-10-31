@@ -1,7 +1,7 @@
 /**
  * SESSION COUNT RULE — THE mcp-server HALF (Reviewer F1).
  *
- * Companion to mandrel-command/backend/src/__tests__/sessionCountRule.contract.test.ts.
+ * Companion to mandrel-command/backend/src/__tests__/sessionCountRule.contract.db.test.ts.
  * Read that file's header for the full rationale; the short version:
  *
  *   "How many contexts / tasks / decisions does this session have" exists in THREE copies

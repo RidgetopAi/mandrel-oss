@@ -40,7 +40,7 @@
  * This is COPY 3 of a rule with three copies (COPY 1 = the `v_session_summaries` view,
  * migration 070; COPY 2 = mcp-server SessionRepo.IDENTITY_SELECT / getFinalCounts). They
  * cannot be merged into one accessor across a SQL view and two packages, so the guard is
- * `src/__tests__/sessionCountRule.contract.test.ts` (+ its mcp-server twin
+ * `src/__tests__/sessionCountRule.contract.db.test.ts` (+ its mcp-server twin
  * `mcp-server/src/tests/sessionCountRule.contract.test.ts`): both EXECUTE their copies
  * against one cross-project fixture and compare the numbers to the same literals. Re-add
  * the project guard to the builder below and those suites go RED — measured, not assumed.

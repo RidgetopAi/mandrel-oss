@@ -1,6 +1,6 @@
 # Contributing
 
-Contributions are welcome. Full contributing guidelines are coming; until then, open an issue to discuss a change before sending a pull request, and run `bash scripts/oss-gate.sh` before you submit.
+Contributions are welcome. Full contributing guidelines are coming; until then, open an issue to discuss a change before sending a pull request, and run `bash scripts/oss-gate.sh` before you submit (or, where the network is off, `bash scripts/oss-gate.sh --deps-only` with the network on, then `bash scripts/oss-gate.sh --installed` without it).
 
 ## Developing Mandrel
 

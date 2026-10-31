@@ -200,6 +200,13 @@ async function embedTaskInline(
     }
 }
 
+/**
+ * A task's searchable document, in SQL: title + description + every metadata.noteLog note
+ * (migration 110). The SAME function backs the lexical columns, so the semantic adapter's
+ * text gate and the lexical channel agree on what text a task "contains".
+ */
+const TASK_SEARCH_DOCUMENT_SQL = 'mandrel_task_search_text(title, description, metadata)';
+
 export interface Task {
     id: string;
     projectId: string;
@@ -862,7 +869,7 @@ class TasksHandler {
             scoreSelect = `CASE WHEN ${activeEmbeddingColumn()} IS NULL THEN 0
                                 ELSE 1 - (${activeEmbeddingColumn()} <=> $${embParamIdx}::vector) END`;
         } else {
-            scoreSelect = `word_similarity($2, coalesce(title,'') || ' ' || coalesce(description,''))`;
+            scoreSelect = `word_similarity($2, ${TASK_SEARCH_DOCUMENT_SQL})`;
         }
 
         // ID-PREFIX + PARTIAL-TAG MATCH via the SHARED predicate builder —
@@ -915,9 +922,8 @@ class TasksHandler {
              WHERE project_id = $1${archivedFilter}
                AND (
                  ${activeEmbeddingColumn()} IS NOT NULL
-              OR title ILIKE $${ilikeIdx}
-              OR description ILIKE $${ilikeIdx}
-              OR word_similarity($2, coalesce(title,'') || ' ' || coalesce(description,''))
+              OR ${TASK_SEARCH_DOCUMENT_SQL} ILIKE $${ilikeIdx}
+              OR word_similarity($2, ${TASK_SEARCH_DOCUMENT_SQL})
                    > ${TASK_SEARCH_TRGM_ADMIT_FLOOR}${idTagAdmit}
                )
              ORDER BY (${scoreSelect}

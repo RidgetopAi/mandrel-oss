@@ -1,0 +1,342 @@
+/* Story view. Colour only through CSS tokens; a role's token arrives as --role. */
+
+.story {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: var(--sp-4);
+  align-items: start;
+}
+.main {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+.empty {
+  padding: var(--sp-6) var(--sp-4);
+  color: var(--tx-3);
+  font-size: 0.82rem;
+}
+
+/* ---- header ---- */
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+.headTitle {
+  font-size: 1.05rem;
+  font-weight: 620;
+  color: var(--tx);
+  overflow-wrap: anywhere;
+}
+.counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--tx-3);
+}
+.summary {
+  color: var(--tx-2);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.truncated {
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--amber);
+}
+
+/* ---- chapters ---- */
+.chapter {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+.chapHead {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--sp-1) var(--sp-3);
+  padding-bottom: var(--sp-2);
+  border-bottom: 1px solid var(--line);
+}
+.chapDate {
+  font-family: var(--mono);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--teal);
+}
+.chapTitle {
+  flex: 1 1 12rem;
+  min-width: 0;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--tx);
+  overflow-wrap: anywhere;
+}
+.chapCount {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--tx-4);
+}
+
+/* ---- beats on the rail ---- */
+.beats,
+.nested {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.beat {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3rem 1.25rem minmax(0, 1fr);
+  column-gap: var(--sp-2);
+  padding-bottom: var(--sp-3);
+}
+.beat::before {
+  content: '';
+  position: absolute;
+  left: calc(3rem + var(--sp-2) + 0.625rem);
+  top: 1rem;
+  bottom: -0.25rem;
+  width: 1px;
+  background: var(--line-2);
+}
+.beat:last-child::before {
+  display: none;
+}
+.time {
+  font-family: var(--mono);
+  font-size: 0.7rem;
+  color: var(--tx-4);
+  padding-top: 3px;
+}
+.body {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.card {
+  padding: var(--sp-3);
+  border: 1px solid var(--role);
+  border-radius: var(--r-sm);
+  background: var(--s1);
+}
+.meta {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--mono);
+  font-size: 0.68rem;
+}
+.roleLabel {
+  color: var(--role);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.id {
+  color: var(--tx-4);
+  text-decoration: none;
+}
+.id:hover {
+  color: var(--teal);
+  text-decoration: underline;
+}
+.title {
+  color: var(--tx);
+  font-size: 0.84rem;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+/* ---- markers: shape differs by role, not hue alone ---- */
+.marker {
+  position: relative;
+  z-index: 1;
+  justify-self: center;
+  margin-top: 4px;
+  box-sizing: border-box;
+  width: 0.75rem;
+  height: 0.75rem;
+  background: var(--role);
+  border: 2px solid var(--role);
+}
+.m-square {
+  border-radius: 2px;
+}
+.m-circle {
+  border-radius: 50%;
+}
+.m-dot {
+  width: 0.45rem;
+  height: 0.45rem;
+  margin-top: 6px;
+  border-radius: 50%;
+}
+.m-ring {
+  border-radius: 50%;
+  background: var(--bg);
+}
+.m-diamond {
+  transform: rotate(45deg) scale(0.85);
+  border-radius: 1px;
+}
+
+/* ---- spawned-task chips ---- */
+.chips {
+  list-style: none;
+  margin: var(--sp-1) 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-1);
+}
+.chip {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--sp-1);
+  max-width: 100%;
+  padding: 2px 8px;
+  border: 1px solid var(--line-2);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  color: var(--tx-2);
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+.chip:hover {
+  border-color: var(--teal);
+}
+.chipState {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  text-transform: uppercase;
+}
+.chip-done .chipState {
+  color: var(--green);
+}
+.chip-open .chipState {
+  color: var(--amber);
+}
+.chip-cancelled {
+  text-decoration: line-through;
+}
+.chip-cancelled .chipState {
+  color: var(--tx-4);
+}
+
+/* ---- ghost-cause link ---- */
+.leans {
+  font-size: 0.72rem;
+  color: var(--tx-4);
+  opacity: 0.75;
+  overflow-wrap: anywhere;
+}
+.leansLink {
+  color: inherit;
+  text-decoration: underline dotted;
+}
+
+/* ---- collapsed run ---- */
+.groupHead {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  font-family: var(--mono);
+  font-size: 0.72rem;
+}
+.groupSpan {
+  color: var(--tx-4);
+}
+.toggle {
+  padding: 2px 10px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r-xs);
+  background: var(--s2);
+  color: var(--tx-2);
+  font: inherit;
+  cursor: pointer;
+}
+.toggle:hover {
+  color: var(--tx);
+  border-color: var(--tx-4);
+}
+.nested {
+  margin-top: var(--sp-2);
+}
+
+/* ---- sidebar ---- */
+.side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  min-width: 0;
+}
+.sideCard {
+  padding: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: var(--r-sm);
+  background: var(--s1);
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.sideHead {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--tx);
+  margin-bottom: var(--sp-1);
+}
+.sideLabel {
+  font-family: var(--mono);
+  font-size: 0.64rem;
+  color: var(--tx-4);
+  text-transform: uppercase;
+}
+.sideLine {
+  font-size: 0.78rem;
+  color: var(--tx-2);
+  overflow-wrap: anywhere;
+}
+.sideEmpty {
+  font-size: 0.76rem;
+  color: var(--tx-4);
+}
+.sideList {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-1);
+}
+.keyRow {
+  display: grid;
+  grid-template-columns: 1.25rem 1fr;
+  align-items: center;
+  font-size: 0.78rem;
+  color: var(--tx-2);
+}
+.keyRow .marker {
+  margin-top: 0;
+}
+
+@media (max-width: 940px) {
+  .story {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* the beat a Timeline click landed on */
+.beat[data-current='true'] .body {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}

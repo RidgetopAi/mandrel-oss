@@ -82,7 +82,16 @@ router.get('/trunk', TreeWalkerController.getTrunk);
  *       (how many of its own members are themselves branch spines); the envelope
  *       carries the honest `total` DRAWER count (post-filter, pre-cap) and the `cap`
  *       applied, so a caller can never mistake a truncated list for the whole set.
+ *       Each branch carries firstActiveAt and its milestone stations; the envelope
+ *       carries `sinceDays` (the window applied; default from config, overridable by the
+ *       query parameter) and `unbranched` ({unbranched, total, windowDays}).
  *     tags: [TreeWalker]
+ *     parameters:
+ *       - in: query
+ *         name: sinceDays
+ *         required: false
+ *         schema: { type: integer, minimum: 1 }
+ *         description: Only branches active inside this many days are listed.
  *     responses:
  *       200:
  *         description: Branch list retrieved
@@ -109,5 +118,33 @@ router.get('/branches', TreeWalkerController.getBranches);
  *         description: Anchor not found
  */
 router.get('/:anchorId/thread', validateUUIDParam('anchorId'), TreeWalkerController.getThread);
+
+/**
+ * @swagger
+ * /treewalker/record/{id}/why:
+ *   get:
+ *     summary: Why does this record exist, and what did it lead to
+ *     description: >
+ *       One record's DECLARED causes (decided_by / learned_from / depends_on / built_by /
+ *       caused) grouped by edge type, the records each decision cause spawned, the branch it
+ *       belongs to, its SERIES (possibly_supersedes — guessed, never a cause), the branch
+ *       members just before it (by time, not an edge) and its declared/guessed edge totals.
+ *       Project-scoped by X-Project-ID: a record in another project is a 404, never a leak.
+ *       Deliberately NOT `:anchorId` — that param answers 403 for a foreign record.
+ *     tags: [TreeWalker]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uuid
+ *     responses:
+ *       200:
+ *         description: Why retrieved
+ *       404:
+ *         description: Record not found in the caller's project scope
+ */
+router.get('/record/:id/why', validateUUIDParam('id'), TreeWalkerController.getWhy);
 
 export default router;

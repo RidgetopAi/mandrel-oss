@@ -264,6 +264,13 @@ const threadNode = z
     title: z.string().nullable().optional(),
     trust: trustObject,
     content: z.string().optional(),
+    /** The task anchor's event log, oldest first; absent at headline. */
+    events: z
+      .array(z.object({ at: z.string(), actor: z.string().nullable(), note: z.string() }))
+      .optional(),
+    eventsTotal: z.number().optional(),
+    /** The record's metadata.kind when a well-formed slug; absent otherwise. */
+    kind: z.string().optional(),
   })
   .passthrough();
 
@@ -402,6 +409,18 @@ const recallThreadShape = z
     nodes: z.array(threadNode).optional(),
     edges: z.array(threadEdge).optional(),
     abstain: z.array(z.string()).optional(), // trust-render-exempt: SCHEMA KEY — the thread-level abstain LIST of ids, not a per-record marker
+    /** Superseded records listed as history, summary/full only. */
+    superseded: z
+      .array(
+        z.object({
+          id: z.string(),
+          createdAt: z.string().optional(),
+          kind: z.string().optional(),
+          title: z.string().nullable(),
+          supersededBy: z.string().optional(),
+        })
+      )
+      .optional(),
     currentState: currentStatePayload.optional(),
     truncated: z.boolean().optional(),
     truncatedCount: z.number().optional(),
@@ -423,6 +442,19 @@ const recallThreadShape = z
       })
       .passthrough()
       .optional(),
+    mentionedBy: z
+      .array(
+        z
+          .object({
+            id: z.string(),
+            type: z.string(),
+            taskId: z.string(),
+            snippet: z.string(),
+          })
+          .passthrough()
+      )
+      .optional(),
+    mentionedByTotal: z.number().optional(),
     total: z.number().optional(),
   })
   .passthrough();

@@ -203,6 +203,7 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
     await pool.query('DELETE FROM auth_tokens WHERE user_id = ANY($1::uuid[])', [
       [U_ADMIN, U_GRANT, U_ZERO],
     ]);
+    await pool.query('DELETE FROM branch_memberships WHERE project_id = ANY($1::uuid[])', [[P_VICTIM, P_GRANTED]]);
     for (const t of ['tasks', 'contexts', 'technical_decisions', 'sessions']) {
       await pool.query(`DELETE FROM ${t} WHERE project_id = ANY($1::uuid[])`, [[P_VICTIM, P_GRANTED]]);
     }
@@ -225,9 +226,20 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
          VALUES ($1,$2,'general','completed','medium', NOW() - interval '1 day', NOW() - interval '3 day')`,
         [pid, `done ${mark}`]
       );
-      await pool.query(
-        `INSERT INTO contexts (project_id, context_type, content, tags) VALUES ($1,'completion',$2,$3)`,
+      const seeded = await pool.query(
+        `INSERT INTO contexts (project_id, context_type, content, tags) VALUES ($1,'completion',$2,$3) RETURNING id`,
         [pid, `ctx ${mark}`, ['ref:resume', mark]]
+      );
+      // A branch per project (thread v2 walks the newest-active BRANCH, not the resume tag).
+      const seededSpine = await pool.query(
+        `SELECT id FROM tasks WHERE project_id = $1 AND title = $2`,
+        [pid, `task ${mark}`]
+      );
+      await pool.query(
+        `INSERT INTO branch_memberships
+           (record_id, record_type, spine_id, spine_type, attached_to_id, attached_to_type, source, project_id, created_at)
+         VALUES ($1,'context',$2,'task',$2,'task','recorded',$3, NOW() - interval '1 day')`,
+        [seeded.rows[0].id, seededSpine.rows[0].id, pid]
       );
       await pool.query(
         `INSERT INTO technical_decisions (project_id, decision_type, title, description, rationale)
@@ -294,6 +306,7 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
     // short-prefix ambiguity fixture counted the candidates it found. Seeded ids use a
     // dedicated `f0..f4` prefix AND are removed here — both, because either alone is one
     // rename away from colliding again.
+    await pool.query('DELETE FROM branch_memberships WHERE project_id = ANY($1::uuid[])', [[P_VICTIM, P_GRANTED]]);
     for (const t of ['tasks', 'contexts', 'technical_decisions', 'sessions']) {
       await pool.query(`DELETE FROM ${t} WHERE project_id = ANY($1::uuid[])`, [[P_VICTIM, P_GRANTED]]);
     }
@@ -610,15 +623,28 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
       // Dated NOW so per-day aggregates (day-summary, momentum-series, throughput,
       // trends, weekly-velocity) move, not just row listings.
       await pool.query(
-        // TAGGED `ref:resume` ON PURPOSE. TreeWalker's anchor is "the newest ref:resume
-        // context in scope", so an untagged row does not move it and the first version of
-        // this perturbation left /api/treewalker/thread unexercised on this axis. Tagged,
-        // this row becomes the newest resume anchor ON THE BOX — which is exactly the
-        // pre-fix leak that endpoint had.
+        // A RECORDED BRANCH MEMBER ON PURPOSE. TreeWalker's thread is "the newest-active
+        // branch in scope" (the first GET /branches drawer), so a plain row does not move
+        // it and the perturbation would leave /api/treewalker/thread unexercised on this
+        // axis. Made the newest member of a victim spine, this row makes the victim's
+        // branch the newest-active ON THE BOX — which is exactly the pre-fix leak that
+        // endpoint had.
         `INSERT INTO contexts (project_id, context_type, content, tags, created_at)
-         VALUES ($1,'code',$2,$3, NOW())`,
+         VALUES ($1,'code',$2,$3, NOW()) RETURNING id`,
         [P_VICTIM, `PERTURB ${VICTIM_MARK}`, ['ref:resume']]
-      );
+      ).then(async (r) => {
+        const spine = await pool.query(
+          `INSERT INTO tasks (project_id, title, type, status, priority)
+           VALUES ($1,$2,'general','todo','medium') RETURNING id`,
+          [P_VICTIM, `victim spine ${VICTIM_MARK}`]
+        );
+        await pool.query(
+          `INSERT INTO branch_memberships
+             (record_id, record_type, spine_id, spine_type, attached_to_id, attached_to_type, source, project_id, created_at)
+           VALUES ($1,'context',$2,'task',$2,'task','recorded',$3, NOW())`,
+          [r.rows[0].id, spine.rows[0].id, P_VICTIM]
+        );
+      });
       await pool.query(
         `INSERT INTO tasks (project_id, title, type, status, priority, created_at, completed_at)
          VALUES ($1,$2,'general','completed','high', NOW() - interval '2 day', NOW())`,
@@ -780,6 +806,11 @@ describeDb('unscoped list reads are confined to the caller\'s projects', () => {
       // enumerates WHO has worked in a project — session actors and task assignees.
       '/api/tasks/actor-options',
       '/api/dashboard/stats',
+      // The branch list reads the project's branch_membership rows. It was always
+      // project-scoped, but this suite's fixture carried no branch data until thread v2
+      // made the thread walk the newest-active branch and the perturbation
+      // had to plant one — so it only now shows up as measurably project-sensitive.
+      '/api/treewalker/branches',
       '/api/treewalker/thread',
       '/api/v2/sessions/current',
       // The embedding analytics REFUSE to run unscoped (400) and so never appear on the

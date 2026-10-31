@@ -225,6 +225,9 @@ npm run db:migrate             # Apply database/migrations against DATABASE_*
 ### The gate
 
 `bash scripts/oss-gate.sh` is the single gate, locally and in `.github/workflows/ci.yml`.
+GitHub CI (and the Secret Scan workflow) runs on pushes to `main` and `export/**` and on pull requests to `main`.
+Where the network is off, run it in two modes: `--deps-only` (network on) installs the dependencies,
+then `--installed` (network off) runs every other stage and never installs.
 Its exit code is the verdict (0 GREEN, 1 RED, 2 COULD-NOT-MEASURE). Every stage runs with
 an empty inherited environment, and every `scripts/test/*.test.sh` must pass with a
 throwaway `HOME` — a test may not depend on the invoking user's environment.

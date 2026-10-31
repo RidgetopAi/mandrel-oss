@@ -36,6 +36,7 @@ import {
   FRONTIER_EDGE_TYPE_PRIORITY,
   FRONTIER_WEIGHT_METADATA_KEYS,
   THREAD_SUMMARY_CLIP_AFFORDANCE,
+  THREAD_TRUST_LEGEND_LINE,
   THREAD_WEAK_EDGE_TYPES,
   formatClipAffordance,
 } from '../config/threadConfig.js';
@@ -74,6 +75,14 @@ const CFG: ThreadConfig = {
   frontierWeightMetadataKeys: FRONTIER_WEIGHT_METADATA_KEYS,
   weakEdgeTypes: THREAD_WEAK_EDGE_TYPES,
   weakHopLimit: 1,
+  mentionedBySnippetWidth: 240,
+  mentionedByMaxEntries: 50,
+  mentionCreatedBy: 'auto:positional',
+  eventLogSummaryMaxSteps: 50,
+  eventLogFullMaxSteps: 100,
+  eventLogSummaryNoteWidth: 400,
+  recordKindMaxChars: 40,
+  trustLegendLine: THREAD_TRUST_LEGEND_LINE,
 };
 
 const d = (iso: string) => new Date(iso);

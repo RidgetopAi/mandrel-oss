@@ -14,6 +14,7 @@ import { Response } from 'express';
 import { AuthenticatedRequest } from '../types/auth';
 import { getRequestProjectId } from '../services/projectScopeResolver';
 import { TreeWalkerService, AnchorNotFoundError } from '../services/treewalker';
+import { TreeWalkerWhyService, WhyRecordNotFoundError } from '../services/treewalkerWhy';
 import { TreeWalkerTiersService } from '../services/treewalkerTiers';
 import { sendSuccess, sendError } from '../utils/apiResponse';
 import { db } from '../database/connection';
@@ -70,7 +71,9 @@ export class TreeWalkerController {
   static async getBranches(req: AuthenticatedRequest, res: Response): Promise<void> {
     try {
       const scope = await resolveListScope(req);
-      sendSuccess(res, await TreeWalkerTiersService.getBranches(scope));
+      const raw = Number(req.query.sinceDays);
+      const sinceDays = req.query.sinceDays === undefined ? undefined : raw;
+      sendSuccess(res, await TreeWalkerTiersService.getBranches(scope, undefined, undefined, sinceDays));
     } catch (error) {
       logger.error('TreeWalker getBranches error', { error });
       sendError(res, error, 500, 'Failed to read the branch list');
@@ -94,6 +97,24 @@ export class TreeWalkerController {
       }
       logger.error('TreeWalker getThread error', { error, anchorId });
       sendError(res, error, 500, 'Failed to build thread graph');
+    }
+  }
+
+  /** GET /api/treewalker/record/:id/why — one record's declared causes, the work they
+   *  spawned, its (guessed) series and what came just before it on its branch. A record
+   *  outside the caller's project scope is a 404 carrying no record fields. */
+  static async getWhy(req: AuthenticatedRequest, res: Response): Promise<void> {
+    const id = req.params.id;
+    try {
+      const scope = await resolveListScope(req);
+      sendSuccess(res, await TreeWalkerWhyService.getWhy(id, scope));
+    } catch (error) {
+      if (error instanceof WhyRecordNotFoundError) {
+        sendError(res, error, 404, 'Record not found');
+        return;
+      }
+      logger.error('TreeWalker getWhy error', { error, id });
+      sendError(res, error, 500, 'Failed to build the why view');
     }
   }
 }

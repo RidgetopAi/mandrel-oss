@@ -360,7 +360,7 @@ export class SessionAnalyticsService {
       // was FALSE. Other read paths still hand-write a per-session child count and bypass
       // the builder, so this change makes THIS endpoint disagree with them about archived
       // rows. WHICH paths, and what each one currently answers, is asserted by
-      // __tests__/sessionCountRule.contract.test.ts — not listed here. Tracked: an earlier change.
+      // __tests__/sessionCountRule.contract.db.test.ts — not listed here. Tracked: an earlier change.
       //
       // There is no prose enumeration at this line ON PURPOSE. One lived here and was
       // rewritten three times; every rewrite fixed its predecessor's false statement and
@@ -594,7 +594,7 @@ export class SessionAnalyticsService {
    * semantics as every other reader: RULE 1 when unfiltered, RULE 2 (the CHILD's own
    * project) when the caller filters by project. The aggregate is gone with the join — the
    * correlated subquery needs no GROUP BY, so `HAVING` becomes a plain outer WHERE.
-   * Guarded by __tests__/sessionCountRule.contract.test.ts.
+   * Guarded by __tests__/sessionCountRule.contract.db.test.ts.
    */
   static async getProductiveSessions(
     scope: ProjectListScope,

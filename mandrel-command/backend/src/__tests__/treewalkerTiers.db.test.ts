@@ -344,3 +344,135 @@ describeDb('TreeWalker derived tiers (PHASE 2, DB integration)', () => {
     expect(result.cap).toBe(30);
   });
 });
+
+/**
+ * The Map view's backend: firstActiveAt + milestone stations per branch,
+ * the `sinceDays` window (applied + echoed) and the `unbranched` share. Own fixture project
+ * so it cannot disturb the counts the suite above pins.
+ */
+describeDb('TreeWalker Map payload (branches: firstActiveAt, milestones, window, unbranched)', () => {
+  let pool: Pool;
+  let projectId: string;
+  let spine: string, oldSpine: string;
+  let m1: string, m2: string, m3: string, oldMember: string;
+  let loose1: string, loose2: string, punchCompletion: string, ancient: string, archivedLoose: string;
+  const daysAgo = (n: number) => new Date(Date.now() - n * 24 * 60 * 60 * 1000);
+  const t1 = daysAgo(10), t2 = daysAgo(6), t3 = daysAgo(2);
+
+  beforeAll(async () => {
+    pool = new Pool({
+      user: process.env.DATABASE_USER || 'mandrel',
+      host: process.env.DATABASE_HOST || 'localhost',
+      database: process.env.DATABASE_NAME || 'mandrel',
+      password: process.env.DATABASE_PASSWORD || '',
+      port: parseInt(process.env.DATABASE_PORT || '5432'),
+    });
+    projectId = uuidv4();
+    [spine, oldSpine, m1, m2, m3, oldMember] = [uuidv4(), uuidv4(), uuidv4(), uuidv4(), uuidv4(), uuidv4()];
+    [loose1, loose2, punchCompletion, ancient, archivedLoose] = [uuidv4(), uuidv4(), uuidv4(), uuidv4(), uuidv4()];
+    await pool.query(
+      `INSERT INTO projects (id, name, description, status, created_at)
+       VALUES ($1, $2, 'map payload fixture', 'active', NOW())`,
+      [projectId, `twmap-${Date.now()}`],
+    );
+    const ctx = (id: string, type: string, content: string, created: Date, archived = false) =>
+      pool.query(
+        `INSERT INTO contexts (id, project_id, context_type, content, tags, created_at, archived_at)
+         VALUES ($1, $2, $3, $4, '{}', $5, $6)`,
+        [id, projectId, type, content, created, archived ? new Date() : null],
+      );
+    const task = (id: string, title: string) =>
+      pool.query(
+        `INSERT INTO tasks (id, project_id, title, status, type, tags, created_at)
+         VALUES ($1, $2, $3, 'in_progress', 'feature', '{}', NOW())`,
+        [id, projectId, title],
+      );
+    const member = (recordId: string, spineId: string, created: Date) =>
+      pool.query(
+        `INSERT INTO branch_memberships
+           (record_id, record_type, spine_id, spine_type, attached_to_id, attached_to_type,
+            source, project_id, created_at)
+         VALUES ($1, 'context', $2, 'task', $2, 'task', 'recorded', $3, $4)`,
+        [recordId, spineId, projectId, created],
+      );
+    await task(spine, 'map-branch-spine');
+    await task(oldSpine, 'map-old-spine');
+    await ctx(m1, 'discussion', 'first member', t1);
+    await ctx(m2, 'milestone', 'Milestone alpha shipped\nwith detail', t2);
+    await ctx(m3, 'discussion', 'third member', t3);
+    await ctx(oldMember, 'milestone', 'a long-gone milestone', daysAgo(100));
+    await member(m1, spine, t1);
+    await member(m2, spine, t2);
+    await member(m3, spine, t3);
+    await member(oldMember, oldSpine, daysAgo(100));
+    await ctx(loose1, 'discussion', 'on no branch one', daysAgo(5));
+    await ctx(loose2, 'note', 'on no branch two', daysAgo(1));
+    // A punch completion linked to the spine only by a declared tag-minted `informs` edge:
+    // no membership row, but a declared strong link to a spine -> NOT unbranched.
+    await ctx(punchCompletion, 'completion', 'punch done, tagged onto the branch', daysAgo(3));
+    await pool.query(
+      `INSERT INTO links (from_id, from_type, to_id, to_type, edge_type, project_id, created_by, mint_via, created_at)
+       VALUES ($1, 'context', $2, 'task', 'informs', $3, 'auto:context_store', 'tag', NOW())`,
+      [punchCompletion, spine, projectId],
+    );
+    await ctx(ancient, 'discussion', 'older than the window', daysAgo(400));
+    await ctx(archivedLoose, 'discussion', 'archived, on no branch', daysAgo(1), true);
+  });
+
+  afterAll(async () => {
+    await pool.query(`DELETE FROM links WHERE project_id = $1`, [projectId]);
+    await pool.query(`DELETE FROM branch_memberships WHERE project_id = $1`, [projectId]);
+    await pool.query(`DELETE FROM tasks WHERE project_id = $1`, [projectId]);
+    await pool.query(`DELETE FROM contexts WHERE project_id = $1`, [projectId]);
+    await pool.query(`DELETE FROM projects WHERE id = $1`, [projectId]);
+    await pool.end();
+  });
+
+  it('firstActiveAt is the oldest member createdAt and exactly one milestone carries its title', async () => {
+    const r = await TreeWalkerTiersService.getBranches(projectsScope([projectId]), undefined, pool);
+    const b = r.branches.find((x) => x.spineId === spine);
+    expect(b).toBeDefined();
+    expect(b!.members).toBe(3);
+    expect(b!.firstActiveAt).toBe(t1.toISOString());
+    expect(b!.lastActiveAt).toBe(t3.toISOString());
+    expect(b!.milestones).toEqual([
+      { id: m2, createdAt: t2.toISOString(), title: 'Milestone alpha shipped' },
+    ]);
+  });
+
+  it('a branch active only before the sinceDays window is not listed, and the window applied is stated', async () => {
+    const def = await TreeWalkerTiersService.getBranches(projectsScope([projectId]), undefined, pool);
+    expect(def.sinceDays).toBe(45);
+    expect(def.branches.map((b) => b.spineId)).toEqual([spine]);
+    expect(def.total).toBe(1);
+
+    const wide = await TreeWalkerTiersService.getBranches(projectsScope([projectId]), undefined, pool, 200);
+    expect(wide.sinceDays).toBe(200);
+    expect(wide.branches.map((b) => b.spineId).sort()).toEqual([spine, oldSpine].sort());
+
+    const narrow = await TreeWalkerTiersService.getBranches(projectsScope([projectId]), undefined, pool, 1);
+    expect(narrow.sinceDays).toBe(1);
+    expect(narrow.branches).toEqual([]);
+  });
+
+  it('unbranched counts contexts on no branch and no declared strong spine link; total is the windowed non-archived count', async () => {
+    const { unbranched } = await TreeWalkerTiersService.getBranches(projectsScope([projectId]), undefined, pool);
+    expect(unbranched.windowDays).toBe(60);
+    // loose1 + loose2 only: m1..m3 are branch members, punchCompletion is tag-linked to the
+    // spine, oldMember/ancient are outside the 60d window, archivedLoose is archived.
+    expect(unbranched.unbranched).toBe(2);
+    const { rows } = await pool.query(
+      `SELECT count(*)::int AS n FROM contexts
+        WHERE project_id = $1 AND archived_at IS NULL AND created_at >= now() - interval '60 days'`,
+      [projectId],
+    );
+    expect(unbranched.total).toBe(rows[0].n);
+    expect(unbranched.total).toBe(6);
+  });
+
+  it('the unbranched share is stated even when the branch list is empty', async () => {
+    const r = await TreeWalkerTiersService.getBranches(projectsScope([projectId]), undefined, pool, 1);
+    expect(r.branches).toEqual([]);
+    expect(r.unbranched).toEqual({ unbranched: 2, total: 6, windowDays: 60 });
+  });
+});

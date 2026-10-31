@@ -48,6 +48,16 @@ export interface ThreadNode {
   kind: RecordKind;
   title: string;
   trust: TrustLevel;
+  /** ISO creation time (decisions: decision_date) — what a client lays the node out by. */
+  createdAt: string;
+  /** True for the spine + members; false for a GHOST cause (context the branch leans on). */
+  inBranch: boolean;
+  /** Contexts only — the context_type. */
+  contextType?: string | null;
+  /** Tasks only — the task status. */
+  status?: string | null;
+  /** Decisions only — outcome_status, null when unset. */
+  outcomeStatus?: string | null;
   /** The highlighted spine node this thread is anchored on. */
   isSpine?: boolean;
   /** The "you are here" resume node. */
@@ -64,6 +74,10 @@ export interface ThreadEdge {
   source: string;
   target: string;
   edgeType: string;
+  /** links.mint_via — the derivation path that minted the edge. */
+  mintVia: string;
+  /** links.provenance_class — always 'declared' on the thread endpoint. */
+  provenance: string;
 }
 
 /**
@@ -112,6 +126,10 @@ export interface ThreadGraph {
   story: StoryStep[];
   /** The trunk HEAD (newest handoff) — the real jump-to-trunk target; null = no handoffs. */
   trunkAnchorId: string | null;
+  /** TRUE number of eligible branch members (spine included) before the server's maxMembers cap. */
+  memberTotal: number;
+  /** True when memberTotal exceeded the cap and only the newest members were returned. */
+  truncated: boolean;
 }
 
 /** One entry of the trunk timeline (newest first) — GET /api/treewalker/trunk. */
@@ -130,6 +148,20 @@ export interface TrunkTimeline {
   entries: TrunkEntry[];
 }
 
+/** One milestone member of a branch. */
+export interface BranchMilestone {
+  id: string;
+  createdAt: string;
+  title: string;
+}
+
+/** The share of recent records on no branch — served, never recomputed client-side. */
+export interface UnbranchedShare {
+  unbranched: number;
+  total: number;
+  windowDays: number;
+}
+
 /** One branch on the resume surface — GET /api/treewalker/branches. */
 export interface BranchSummary {
   spineId: string;
@@ -138,7 +170,11 @@ export interface BranchSummary {
   name: string;
   named: boolean;
   members: number;
+  /** The oldest member's createdAt — where the branch's line starts on the Map. */
+  firstActiveAt: string;
   lastActiveAt: string;
+  /** Member contexts typed 'milestone', oldest first (capped server-side) — the Map's stations. */
+  milestones: BranchMilestone[];
   /** A session is currently standing on this branch. */
   open: boolean;
   /**
@@ -163,9 +199,53 @@ export interface BranchListResult {
   total: number;
   /** The branch-list cap actually applied to `branches.length` this call. */
   cap: number;
+  /** The `sinceDays` window the list was limited to (echoed by the server). */
+  sinceDays: number;
+  /** Non-archived records in the last `unbranched.windowDays` that sit on no branch. */
+  unbranched: UnbranchedShare;
+}
+
+/** A record as the Why view shows it (thread-v2 node fields, no branch membership). */
+export interface WhyNode {
+  id: string;
+  kind: RecordKind;
+  title: string;
+  createdAt: string;
+  trust: TrustLevel;
+  contextType?: string | null;
+  status?: string | null;
+  outcomeStatus?: string | null;
+}
+
+/** GET /api/treewalker/record/:id/why — one record's declared causes, spawned work, series, before. */
+export interface WhyResult {
+  record: WhyNode;
+  /** DECLARED causes only, grouped by edge type. A guessed link is never in here. */
+  causes: Array<{ edgeType: string; targets: WhyNode[] }>;
+  /** Per decision cause: the TRUE count of other records decided_by it, plus the newest few. */
+  spawned: Array<{ decisionId: string; total: number; records: WhyNode[] }>;
+  branch: { id: string; title: string } | null;
+  /** Suggested (possibly_supersedes) series, createdAt order, the record included. Empty when none. */
+  series: Array<WhyNode & { guessed: true; isCurrent: boolean }>;
+  /** Branch members just before the record, placed by TIME — not an edge. */
+  before: Array<WhyNode & { byTime: true }>;
+  counts: { declared: number; guessed: number };
 }
 
 export const treewalkerApi = {
+  /** GET /api/treewalker/record/:id/why — header-scoped like every TreeWalker read; foreign record → 404. */
+  async getWhy(recordId: string, config?: AxiosRequestConfig): Promise<WhyResult> {
+    const body = await http.get<ApiEnvelope<WhyResult>>(
+      `/treewalker/record/${encodeURIComponent(recordId)}/why`,
+      config,
+    );
+    const why = unwrapData(body, 'Failed to load the why view');
+    if (!why) {
+      throw new Error('Why payload missing in response');
+    }
+    return why;
+  },
+
   /**
    * GET /api/treewalker/:anchorId/thread — the whole-thread graph + recall_thread story +
    * trust reads for one EXPLICIT anchor.
@@ -217,8 +297,13 @@ export const treewalkerApi = {
    * are how a caller (the BranchRail) tells a capped page from the whole set instead of
    * inferring it from `branches.length`.
    */
-  async getBranches(config?: AxiosRequestConfig): Promise<BranchListResult> {
-    const body = await http.get<ApiEnvelope<BranchListResult>>(`/treewalker/branches`, config);
+  async getBranches(
+    config?: AxiosRequestConfig,
+    query: { sinceDays?: number } = {},
+  ): Promise<BranchListResult> {
+    const withQuery: AxiosRequestConfig | undefined =
+      query.sinceDays === undefined ? config : { ...config, params: { ...config?.params, sinceDays: query.sinceDays } };
+    const body = await http.get<ApiEnvelope<BranchListResult>>(`/treewalker/branches`, withQuery);
     const data = unwrapData(body, 'Failed to load the branch list');
     if (!data) {
       throw new Error('Branch list payload missing in response');

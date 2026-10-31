@@ -58,22 +58,16 @@ describe('TreeWalker rebuild — reuse the shared moat primitives (no re-copy)',
     expect(config).toMatch(/from\s+['"]\.\.\/\.\.\/config\/graphEdges['"]/);
     expect(config).not.toMatch(/const\s+EDGE_LABELS\s*[:=]/);
   });
-
-  it('the canvas reuses the themed GraphView baseline (not a raw ReactFlow re-theme)', () => {
-    const canvas = readFileSync(resolve(modDir, 'GraphCanvas.tsx'), 'utf8');
-    expect(canvas).toMatch(/GraphView/);
-    expect(canvas).toMatch(/from\s+['"]\.\.\/\.\.\/components\/charts['"]/);
-  });
 });
 
 describe('TreeWalker rebuild — token-driven', () => {
-  it('the layout stylesheet carries no hardcoded hex colours', () => {
-    const css = readFileSync(resolve(modDir, 'TreeWalker.module.css'), 'utf8').replace(
-      /\/\*[\s\S]*?\*\//g,
-      '',
-    );
-    expect(css.match(HEX) ?? []).toEqual([]);
-  });
+  it.each(readdirSync(modDir).filter((f) => f.endsWith('.css')))(
+    '%s carries no hardcoded hex colours',
+    (f) => {
+      const css = readFileSync(resolve(modDir, f), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+      expect(css.match(HEX) ?? []).toEqual([]);
+    },
+  );
 
   it.each(allTsSrcs)('$f carries no hardcoded hex colour literal', ({ src }) => {
     const stripped = src.replace(/\/\*[\s\S]*?\*\//g, '').replace(/\/\/[^\n]*/g, '');
@@ -107,9 +101,16 @@ describe('TreeWalker rebuild — live backend + honest empty policy (no fabricat
   });
 
   it('the honest empty/loading fallbacks are still present (a genuinely-empty thread never fabricates)', () => {
-    const canvas = readFileSync(resolve(modDir, 'GraphCanvas.tsx'), 'utf8');
-    const rail = readFileSync(resolve(modDir, 'StoryRail.tsx'), 'utf8');
-    expect(canvas).toMatch(/No records on this thread yet/);
-    expect(rail).toMatch(/No story steps yet/);
+    const view = readFileSync(resolve(modDir, 'StoryView.tsx'), 'utf8');
+    expect(view).toMatch(/No records on this thread yet/);
+  });
+
+  it('the deleted grid-graph modules stay deleted and nothing imports them', () => {
+    for (const gone of ['GraphCanvas', 'TreeWalkerNode', 'TreeWalkerEdge', 'StoryRail', 'graph']) {
+      expect(partFiles.map((f) => f.replace(/\.tsx?$/, ''))).not.toContain(gone);
+      for (const { src } of allTsSrcs) {
+        expect(src).not.toMatch(new RegExp(`from\\s+['"]\\./(treewalker/)?${gone}['"]`));
+      }
+    }
   });
 });

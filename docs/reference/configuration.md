@@ -2,7 +2,7 @@
 
 <!-- GENERATED FILE — do not edit. Regenerate with `npm run docs:config` (in mcp-server/). -->
 
-This page lists all 329 `MANDREL_*` settings the Mandrel server reads.
+This page lists all 337 `MANDREL_*` settings the Mandrel server reads.
 
 ## How to set a setting
 
@@ -389,14 +389,22 @@ Booleans take `true` or `false` (most also accept `1`/`0`, `yes`/`no`, `on`/`off
 | `MANDREL_RELIABLE_THREADING_ENABLED` | boolean | `true` | Master switch for the layer that checks anchor similarity and links unanchored writes by similarity. Off reverts writes to explicit links and a set anchor only. |
 | `MANDREL_TASK_EDGE_MINT_ENABLED` | boolean | `true` | Create links from tasks to the records named by their tags and dependencies. |
 | `MANDREL_THREAD_DEFAULT_DEPTH` | integer | `2` | Hops from the anchor walked when the caller gives no depth. |
+| `MANDREL_THREAD_EVENT_LOG_FULL_MAX_STEPS` | integer | `100` | The same cap at the full altitude. |
+| `MANDREL_THREAD_EVENT_LOG_SUMMARY_MAX_STEPS` | integer | `50` | How many of a task anchor's event-log steps (the notes appended to the task) the summary altitude shows; when the cap bites the most recent steps are kept and the thread reports the real total. |
+| `MANDREL_THREAD_EVENT_LOG_SUMMARY_NOTE_WIDTH` | integer | `400` | Characters of one step's note shown at the summary altitude; a longer note is cut and ends in an ellipsis, and full carries the whole note. |
 | `MANDREL_THREAD_FRONTIER_DEFAULT_PRIORITY` | integer | `50` | Priority given to link types missing from the priority map. Neutral: above weak links, below structural ones. |
 | `MANDREL_THREAD_MAX_DEPTH` | integer | `6` | Largest depth a thread walk honours. Deeper requests are clamped down. |
 | `MANDREL_THREAD_MAX_NODES` | integer | `150` | Most records collected in one thread. When more are reachable the response says it was truncated. |
 | `MANDREL_THREAD_MAX_NODES_CEILING` | integer | `500` | Largest per-call node limit honoured. Larger requests are clamped down. |
+| `MANDREL_THREAD_MENTION_CREATED_BY` | string | `auto:positional` | The links.created by stamp of the name-scan's inbound related to. |
+| `MANDREL_THREAD_MENTIONED_BY_MAX_ENTRIES` | integer | `50` | The cap on the mentioned by list. |
+| `MANDREL_THREAD_MENTIONED_BY_SNIPPET_WIDTH` | integer | `240` | Characters of a "Mentioned by other threads" entry's content shown around the anchor's id8. |
+| `MANDREL_THREAD_RECORD_KIND_MAX_CHARS` | integer | `40` | The length cap on a record's metadata.kind for it to be shown as the node's kind. |
 | `MANDREL_THREAD_SUMMARY_CLIP_AFFORDANCE` | string | (built-in text) | Suffix appended to a snippet clipped at summary detail. {omitted} is replaced by the number of characters dropped. |
 | `MANDREL_THREAD_SUMMARY_SNIPPET_MAXLEN` | integer | `280` | Characters of each node's content returned at summary detail. |
 | `MANDREL_THREAD_TERMINALITY_NOT_DERIVED_TERMINAL` | boolean | `false` | Whether a record whose limbs were never derived counts as the end of a thread walk. Off means the walk keeps going through such records. |
 | `MANDREL_THREAD_TERMINALITY_UNASSIGNABLE_TERMINAL` | boolean | `true` | Whether a record that was analysed and names nothing ends a thread walk. On by default. |
+| `MANDREL_THREAD_TRUST_LEGEND_LINE` | string | (built-in list of 2) | The ONE header line saying what the trust band means: whether to rely on a record now, not whether it was right. |
 | `MANDREL_THREAD_WEAK_EDGE_TYPES` | list | `related_to` | Edge types the An explicit edge types argument bypasses this. |
 | `MANDREL_THREAD_WEAK_HOP_LIMIT` | integer | `1` | How many hops from the anchor a weak edge may be followed in the 1 = weak edges are followed out of the anchor only; a node reached through a weak edge is never expanded, and no weak edge is followed out of any non-anchor node. |
 

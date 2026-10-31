@@ -1,35 +1,37 @@
 /**
- * TreeWalkerService — the whole-thread typed-edge GRAPH + recall_thread-ordered STORY +
- * per-record TRUST read behind `GET /api/treewalker/thread` (resume anchor) and
- * `GET /api/treewalker/:anchorId/thread` (explicit anchor). This is the moat's flagship
- * visualizer's data source: it walks ONE branch of the `links` graph (migration 049) ~2 hops
- * from the anchor and shapes it into the FE `ThreadGraph` contract (api/domains/treewalker.ts).
+ * TreeWalkerService — the BRANCH thread behind `GET /api/treewalker/thread` (newest-active
+ * branch) and `GET /api/treewalker/:anchorId/thread` (explicit anchor): a typed-edge GRAPH of
+ * ONE declared branch, a createdAt-ordered STORY, and a per-record TRUST read.
  *
- * Design mirrors the mcp-server trust model's TWO-LAYER split (a past incident — one definition,
- * unit-testable in isolation):
- *   1. PURE builders (buildThreadGraph / deriveTrust / buildStory / buildSpine) — no DB, no
- *      clock; take gathered rows + injected config, return the shaped graph. This is what the
- *      unit tests hammer (traversal flags, both-direction edges, trust mapping, story order).
- *   2. I/O gather (resolveAnchorId / fetchThreadRaw / getThread) — BFS over `links` (both
- *      directions) + resolve each node's title/kind + gather trust signals, then call the pure
- *      builders. Cheap: bounded by maxNodes, a handful of set-keyed queries.
+ * THREAD v2 (design). v1 ran an undirected 2-hop BFS over every
+ * edge type and sampled 1544 reachable records down to 60 (hub decisions fan out 1438 via
+ * decided_by). v2 walks a declared BRANCH instead:
+ *   - SPINE: the anchor if it is a branch spine, else the spine of the branch it is a member
+ *     of (branch_membership view), else the anchor itself. No anchor → the first branch
+ *     getBranches returns (same ordering + drawer filter as GET /branches).
+ *   - MEMBERS: the spine + its branch_membership rows + every same-project record with a
+ *     DECLARED strong-type edge TO the spine. Handoffs, `alert*` contexts and archived
+ *     records are never members. Capped by config.maxMembers (newest kept).
+ *   - GHOST CAUSES: non-members a member points at through a declared decided_by /
+ *     learned_from / depends_on edge — returned with inBranch:false, capped by config.maxGhosts.
+ *   - EDGES: declared edges whose both ends are returned, each carrying mintVia + provenance.
+ *
+ * Design mirrors the mcp-server trust model's TWO-LAYER split:
+ *   1. PURE builders (buildThreadGraph / deriveTrust / buildStory / buildSpine / selectBranch)
+ *      — no DB, no clock; gathered rows + injected config in, shaped graph out.
+ *   2. I/O gather (resolveSpine / gatherBranch / getThread) — a handful of set-keyed queries.
  *
  * GROUNDING (data policy — never fabricate trust or edges):
- *   - EDGES are real `links` rows; a genuinely-empty thread returns an empty graph (honest).
+ *   - EDGES are real declared `links` rows; a genuinely-empty thread returns an empty graph.
  *   - TRUST is the CANONICAL model (PHASE 2 item e): the same bands, math
  *     and config as mcp-server's trustModel.ts, via the mirrored
- *     config/treewalkerTrustModel.ts (parity pinned by treewalkerTrustParity.test.ts —
- *     see that module's header for why a mirror and not an import). Signals are gathered
- *     from the same real columns/edges the canonical gather reads: downstream outcomes
- *     over the outcome edge types, freshness from created_at, and provenance-split
- *     supersession (declared hard-caps; a belief-adjudicator/possibly edge only demotes).
+ *     config/treewalkerTrustModel.ts (parity pinned by treewalkerTrustParity.test.ts).
  */
 import type { Pool } from 'pg';
 import { db } from '../database/connection';
 import { ALL_PROJECTS, type ProjectListScope } from './projectListScope';
 import { logger } from '../config/logger';
 import { TREEWALKER_CONFIG, type TreewalkerConfig, type StoryCaption } from '../config/treewalkerConfig';
-import { orderThread, type OrderEdge } from '../config/treewalkerStoryOrder';
 import { contextTitle } from './recordTitle';
 import { TreeWalkerTiersService, type RootDoc } from './treewalkerTiers';
 
@@ -57,6 +59,16 @@ export interface ThreadNode {
   kind: RecordKind;
   title: string;
   trust: TrustLevel;
+  /** ISO creation time (decisions: decision_date) — what a client lays the node out by. */
+  createdAt: string;
+  /** True for the spine + members; false for a GHOST cause (context the branch leans on). */
+  inBranch: boolean;
+  /** Contexts only — the context_type. */
+  contextType?: string | null;
+  /** Tasks only — the task status. */
+  status?: string | null;
+  /** Decisions only — outcome_status, null when unset. */
+  outcomeStatus?: string | null;
   isSpine?: boolean;
   isCurrent?: boolean;
 }
@@ -65,6 +77,10 @@ export interface ThreadEdge {
   source: string;
   target: string;
   edgeType: string;
+  /** links.mint_via — the derivation path that minted the edge. */
+  mintVia: string;
+  /** links.provenance_class — always 'declared' on this endpoint. */
+  provenance: string;
 }
 export interface SpineNode {
   label: string;
@@ -97,6 +113,17 @@ export interface ThreadGraph {
    * the FE jump control disables rather than pointing nowhere).
    */
   trunkAnchorId: string | null;
+  /** TRUE number of eligible branch members (spine included) before the maxMembers cap. */
+  memberTotal: number;
+  /** True when memberTotal exceeded maxMembers and only the newest were returned. */
+  truncated: boolean;
+}
+
+/** What buildThreadGraph needs beyond the rows: which nodes are ghosts + the cap report. */
+export interface ThreadShape {
+  ghostIds?: ReadonlySet<string>;
+  memberTotal?: number;
+  truncated?: boolean;
 }
 
 /** The data-resolved tier inputs buildSpine renders (PHASE 2 items a/b — no literals). */
@@ -111,6 +138,8 @@ export interface SpineTierData {
 
 // ── Internal raw types (what the I/O layer gathers, before shaping). ─────────────────────
 type RecordType = 'context' | 'decision' | 'task';
+
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 /** A resolved record on the thread (title + kind columns + trust-relevant real columns). */
 export interface RawRecord {
@@ -133,6 +162,8 @@ export interface RawEdge {
   toId: string;
   toType: RecordType;
   edgeType: string;
+  mintVia: string;
+  provenance: string;
 }
 
 /**
@@ -207,31 +238,47 @@ function tms(v: Date | string | null | undefined): number {
   return Number.isFinite(n) ? n : 0;
 }
 
+/** ISO string for a raw createdAt (missing → epoch, matching the ordering's fallback). */
+export function isoOf(v: Date | string | null | undefined): string {
+  return new Date(tms(v)).toISOString();
+}
+
+/** createdAt ASC, id as the tiebreak — the ONE ordering of a branch story. */
+function byTimeThenId(a: { id: string; createdAt?: Date | string | null }, b: { id: string; createdAt?: Date | string | null }): number {
+  return tms(a.createdAt) - tms(b.createdAt) || a.id.localeCompare(b.id);
+}
+
 /**
- * The spine (task) node the thread is anchored on: the task the ANCHOR `informs` (outgoing
- * informs → task). Falls back to any task the anchor points at, then any task on the thread.
- * Returns undefined when the thread carries no task (→ no spine emphasis, honest).
+ * Handoffs are the trunk and `alert*`-tagged contexts are vitals noise — neither is a story
+ * member (or a ghost cause). Only contexts are judged: tasks/decisions carry neither marker.
  */
-export function pickSpineNodeId(
-  anchorId: string,
-  edges: RawEdge[],
-  records: Map<string, RawRecord>,
-): string | undefined {
-  const isTask = (id: string) => records.get(id)?.type === 'task';
-  const byCreated = (a: string, b: string) =>
-    tms(records.get(a)?.createdAt) - tms(records.get(b)?.createdAt) || a.localeCompare(b);
+export function isExcludedFromBranch(
+  rec: Pick<RawRecord, 'type' | 'contextType' | 'tags'>,
+  config: TreewalkerConfig = TREEWALKER_CONFIG,
+): boolean {
+  if (rec.type !== 'context') return false;
+  if (rec.contextType != null && config.branch.excludedContextTypes.includes(rec.contextType)) return true;
+  return (rec.tags ?? []).some((t) => t.startsWith(config.branch.excludedTagPrefix));
+}
 
-  const informsTask = edges
-    .filter((e) => e.fromId === anchorId && e.edgeType === 'informs' && isTask(e.toId))
-    .map((e) => e.toId);
-  if (informsTask.length) return informsTask.sort(byCreated)[0];
-
-  const anyOut = edges.filter((e) => e.fromId === anchorId && isTask(e.toId)).map((e) => e.toId);
-  if (anyOut.length) return anyOut.sort(byCreated)[0];
-
-  const anyTask = [...records.values()].filter((r) => r.type === 'task').map((r) => r.id);
-  if (anyTask.length) return anyTask.sort(byCreated)[0];
-  return undefined;
+/**
+ * Apply the member cap. Keeps the spine plus the NEWEST (maxMembers − 1) others — i.e. the
+ * newest `maxMembers` with the spine pinned in, so the thread is never detached from the
+ * record it is the thread OF. `total` is the true eligible count; `truncated` iff over cap.
+ */
+export function selectMembers(
+  spineId: string,
+  eligible: RawRecord[],
+  config: TreewalkerConfig = TREEWALKER_CONFIG,
+): { kept: RawRecord[]; total: number; truncated: boolean } {
+  const total = eligible.length;
+  if (total <= config.maxMembers) return { kept: [...eligible], total, truncated: false };
+  const spine = eligible.filter((r) => r.id === spineId);
+  const newest = eligible
+    .filter((r) => r.id !== spineId)
+    .sort((a, b) => byTimeThenId(b, a))
+    .slice(0, Math.max(0, config.maxMembers - spine.length));
+  return { kept: [...spine, ...newest], total, truncated: true };
 }
 
 /**
@@ -283,19 +330,15 @@ export function buildSpine(
 }
 
 /**
- * Build the STORY in the CANONICAL recall_thread order (PHASE 2 item e, story half).
- * The old bespoke 5-slot narrative (an earlier audit PROSE finding) is
- * deleted: the walk now runs through the mirrored canonical ordering
- * (config/treewalkerStoryOrder.ts — anchor pinned first, causal rank, temporal, id;
- * parity-pinned against the real recallThreadCore by treewalkerStoryOrderParity.test.ts).
- *
- * Every walked node appears exactly once, in canonical order. MARKERS + captions are
- * presentation, derived from real roles:
- *   now     — the anchor (always first, canonically).
- *   decided — a decision the spine/anchor is `decided_by` (the why).
- *   informs — the spine node itself (the branch).
- *   next    — ONE open (todo/in_progress) task, preferring one the anchor/spine points at.
- *   default — any other walked node (generic caption).
+ * Build the STORY: every returned node once, ordered by createdAt ASCENDING with id as the
+ * tiebreak. Narration runs in time — the causal-rank order recall_thread uses puts a member
+ * BEFORE the decision it was decided_by, which is wrong for a story (thread v2).
+ * MARKERS + captions are presentation, derived from real roles:
+ *   now     — the anchor (the spine the thread was resolved to).
+ *   decided — a decision some returned node is `decided_by` (the why).
+ *   informs — the spine node when it is not the anchor.
+ *   next    — ONE open (todo/in_progress) task, preferring one the spine points at.
+ *   default — any other node (generic caption).
  */
 export function buildStory(
   anchorId: string,
@@ -306,24 +349,10 @@ export function buildStory(
   config: TreewalkerConfig = TREEWALKER_CONFIG,
 ): StoryStep[] {
   const c = config.captions;
+  const ordered = [...nodes].sort((a, b) => byTimeThenId(a, b));
 
-  // 1. CANONICAL ORDER over every walked node (the ordering is the canon; no hand slots).
-  const orderable = nodes.map((n) => {
-    const created = records.get(n.id)?.createdAt;
-    const t = tms(created);
-    return { id: n.id, createdAt: t === 0 ? null : new Date(t) };
-  });
-  const orderEdges: OrderEdge[] = edges.map((e) => ({ from: e.fromId, to: e.toId, type: e.edgeType }));
-  const ordered = orderThread(orderable, orderEdges, anchorId);
-
-  // 2. ROLES (presentation): the why / the spine / the single "next" open task.
-  const byCreated = (a: string, b: string) =>
-    tms(records.get(a)?.createdAt) - tms(records.get(b)?.createdAt) || a.localeCompare(b);
-  const decidedFrom = spineNodeId ?? anchorId;
   const decidedIds = new Set(
-    edges
-      .filter((e) => e.fromId === decidedFrom && e.edgeType === 'decided_by' && e.toType === 'decision')
-      .map((e) => e.toId),
+    edges.filter((e) => e.edgeType === 'decided_by' && e.toType === 'decision').map((e) => e.toId),
   );
   const openTaskIds = nodes
     .filter((n) => n.kind === 'task' && n.id !== spineNodeId && n.id !== anchorId)
@@ -334,6 +363,8 @@ export function buildStory(
     });
   let nextId: string | undefined;
   if (openTaskIds.length) {
+    const byCreated = (x: string, y: string) =>
+      byTimeThenId({ id: x, createdAt: records.get(x)?.createdAt }, { id: y, createdAt: records.get(y)?.createdAt });
     const pointedAt = new Set(
       edges
         .filter((e) => (e.fromId === anchorId || e.fromId === spineNodeId) && e.toType === 'task')
@@ -344,36 +375,33 @@ export function buildStory(
       openTaskIds.sort(byCreated)[0];
   }
 
-  const nodeById = new Map(nodes.map((n) => [n.id, n]));
-  return ordered
-    .map((o) => nodeById.get(o.id))
-    .filter((n): n is ThreadNode => n !== undefined)
-    .map((n) => {
-      const [marker, cap]: [StoryMarker, StoryCaption] =
-        n.id === anchorId
-          ? ['now', c.now]
-          : n.id === spineNodeId
-          ? ['informs', c.spine]
-          : decidedIds.has(n.id)
-          ? ['decided', c.decided]
-          : n.id === nextId
-          ? ['next', c.next]
-          : ['default', c.walk];
-      return {
-        id: n.id,
-        kind: n.kind,
-        title: n.title,
-        trust: n.trust,
-        relation: cap.relation,
-        relationTerm: cap.relationTerm,
-        marker,
-      };
-    });
+  return ordered.map((n) => {
+    const [marker, cap]: [StoryMarker, StoryCaption] =
+      n.id === anchorId
+        ? ['now', c.now]
+        : n.id === spineNodeId
+        ? ['informs', c.spine]
+        : decidedIds.has(n.id)
+        ? ['decided', c.decided]
+        : n.id === nextId
+        ? ['next', c.next]
+        : ['default', c.walk];
+    return {
+      id: n.id,
+      kind: n.kind,
+      title: n.title,
+      trust: n.trust,
+      relation: cap.relation,
+      relationTerm: cap.relationTerm,
+      marker,
+    };
+  });
 }
 
 /**
- * Shape gathered rows into the FE ThreadGraph — the pure core. `trustBy:` id → TrustLevel,
- * `treeLabel:` the resolved tree tier (real tag / project). Deterministic given its inputs.
+ * Shape gathered rows into the FE ThreadGraph — the pure core. `anchorId` is the resolved
+ * SPINE. `trustBy:` id → TrustLevel, `treeLabel:` the resolved tree tier (real tag /
+ * project), `shape:` the ghost set + member-cap report. Deterministic given its inputs.
  */
 export function buildThreadGraph(
   anchorId: string,
@@ -383,8 +411,9 @@ export function buildThreadGraph(
   treeLabel: string,
   tiers: SpineTierData,
   config: TreewalkerConfig = TREEWALKER_CONFIG,
+  shape: ThreadShape = {},
 ): ThreadGraph {
-  const spineNodeId = pickSpineNodeId(anchorId, edges, records);
+  const ghostIds = shape.ghostIds ?? new Set<string>();
 
   // Nodes — only records that actually resolved (edges to unresolved endpoints are dropped).
   const nodes: ThreadNode[] = [...records.values()].map((rec) => ({
@@ -392,30 +421,50 @@ export function buildThreadGraph(
     kind: kindOf(rec),
     title: rec.title,
     trust: trustBy.get(rec.id) ?? 'unproven',
-    ...(rec.id === spineNodeId ? { isSpine: true } : {}),
-    ...(rec.id === anchorId ? { isCurrent: true } : {}),
+    createdAt: isoOf(rec.createdAt),
+    inBranch: !ghostIds.has(rec.id),
+    ...(rec.type === 'context' ? { contextType: rec.contextType ?? null } : {}),
+    ...(rec.type === 'task' ? { status: rec.status ?? null } : {}),
+    ...(rec.type === 'decision' ? { outcomeStatus: rec.outcomeStatus ?? null } : {}),
+    ...(rec.id === anchorId ? { isSpine: true, isCurrent: true } : {}),
   }));
 
   // Edges — keep only those whose BOTH endpoints resolved to a node (no dangling edges).
   const threadEdges: ThreadEdge[] = edges
     .filter((e) => records.has(e.fromId) && records.has(e.toId))
-    .map((e) => ({ id: e.id, source: e.fromId, target: e.toId, edgeType: e.edgeType }));
+    .map((e) => ({
+      id: e.id,
+      source: e.fromId,
+      target: e.toId,
+      edgeType: e.edgeType,
+      mintVia: e.mintVia,
+      provenance: e.provenance,
+    }));
 
-  const spineTask = spineNodeId ? records.get(spineNodeId) : undefined;
-  const spine = buildSpine(spineTask, treeLabel, tiers, config);
-  const story = buildStory(anchorId, spineNodeId, nodes, edges, records, config);
+  const spineRec = records.get(anchorId);
+  const spine = buildSpine(spineRec, treeLabel, tiers, config);
+  const story = buildStory(anchorId, anchorId, nodes, edges, records, config);
 
   const anchor: ThreadAnchor = {
-    branchLabel: branchNameOf(spineTask, config).name,
+    branchLabel: branchNameOf(spineRec, config).name,
     anchorId,
     recordCount: nodes.length,
   };
 
-  return { anchor, spine, nodes, edges: threadEdges, story, trunkAnchorId: tiers.trunkHeadId };
+  return {
+    anchor,
+    spine,
+    nodes,
+    edges: threadEdges,
+    story,
+    trunkAnchorId: tiers.trunkHeadId,
+    memberTotal: shape.memberTotal ?? nodes.length - ghostIds.size,
+    truncated: shape.truncated ?? false,
+  };
 }
 
-/** The honest empty graph — a genuinely-empty (no resume anchor) thread. The trunk head
- *  is still surfaced when it exists, so "jump to trunk" works even from an empty walk. */
+/** The honest empty graph — a project with no branch. The trunk head is still surfaced
+ *  when it exists, so "jump to trunk" works even from an empty walk. */
 export function emptyThreadGraph(
   config: TreewalkerConfig = TREEWALKER_CONFIG,
   trunkAnchorId: string | null = null,
@@ -427,109 +476,186 @@ export function emptyThreadGraph(
     edges: [],
     story: [],
     trunkAnchorId,
+    memberTotal: 0,
+    truncated: false,
   };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// I/O LAYER — BFS over `links` + resolve rows + gather trust signals.
+// I/O LAYER — resolve the spine, gather the branch + trust signals.
 // ─────────────────────────────────────────────────────────────────────────────
 
 export class TreeWalkerService {
   /**
-   * Resolve the live resume anchor: the NEWEST context tagged with the resume tag in the
-   * active project (project-scoped when `projectId` is provided). Returns null when none
-   * exists (→ honest empty thread).
+   * Resolve a record id to its live row + project, across the three record tables.
+   * Archived → null. `scope` bounds visibility (an out-of-scope id reads as not found).
    */
-  static async resolveAnchorId(
+  static async liveRecord(
+    id: string,
     scope: ProjectListScope,
-    config: TreewalkerConfig = TREEWALKER_CONFIG,
     pool: Pool = db,
-  ): Promise<string | null> {
-    // `($1::uuid IS NULL OR …)` meant an unscoped caller anchored on the NEWEST resume
-    // context ON THE BOX — someone else's thread (an earlier task item 7). $3 is the
-    // explicit ALL_PROJECTS flag; an EMPTY allowed set resolves to no anchor at all.
+  ): Promise<{ id: string; projectId: string } | null> {
+    if (!UUID_RE.test(id)) return null;
     const unrestricted = scope.mode === ALL_PROJECTS;
     const res = await pool.query(
-      `SELECT id
-         FROM contexts
-        WHERE ($3::boolean OR project_id = ANY($1::uuid[]))
-          AND $2 = ANY(tags)
-          AND archived_at IS NULL
-        ORDER BY created_at DESC
-        LIMIT 1`,
-      [unrestricted ? [] : [...scope.projectIds], config.resumeTag, unrestricted],
+      `SELECT id, project_id FROM (
+         SELECT id, project_id FROM contexts WHERE id = $1 AND archived_at IS NULL
+         UNION ALL
+         SELECT id, project_id FROM technical_decisions WHERE id = $1 AND archived_at IS NULL
+         UNION ALL
+         SELECT id, project_id FROM tasks WHERE id = $1 AND archived_at IS NULL
+       ) r
+       WHERE $3::boolean OR project_id = ANY($2::uuid[])
+       LIMIT 1`,
+      [id, unrestricted ? [] : [...scope.projectIds], unrestricted],
     );
-    return res.rows.length ? (res.rows[0].id as string) : null;
+    return res.rows.length ? { id: res.rows[0].id, projectId: res.rows[0].project_id } : null;
   }
 
   /**
-   * BFS from `anchorId` over `links` (both directions) to config.maxDepth, bounded by
-   * config.maxNodes. Returns the visited node-id set + every edge among them.
+   * SPINE RESOLUTION (thread v2): the anchor if it is a branch spine; else the spine of the
+   * branch it is a member of (branch_membership view); else the anchor itself. A member whose
+   * spine is archived/out of scope falls back to the anchor. Null → the anchor is not a live
+   * record in scope.
    */
-  static async traverse(
+  static async resolveSpine(
     anchorId: string,
+    scope: ProjectListScope,
+    pool: Pool = db,
+  ): Promise<{ spineId: string; projectId: string } | null> {
+    const anchor = await TreeWalkerService.liveRecord(anchorId, scope, pool);
+    if (!anchor) return null;
+    const spineId = await TreeWalkerService.membershipSpine(anchor, scope, pool);
+    if (spineId) return { spineId, projectId: anchor.projectId };
+    return { spineId: anchorId, projectId: anchor.projectId };
+  }
+
+  /**
+   * The spine a live record belongs to by recorded branch membership: itself when it IS a
+   * spine, else the live spine it is a member of, else null (on no branch).
+   */
+  static async membershipSpine(
+    anchor: { id: string; projectId: string },
+    scope: ProjectListScope,
+    pool: Pool = db,
+  ): Promise<string | null> {
+    const asSpine = await pool.query(`SELECT 1 FROM branch_membership WHERE spine_id = $1 LIMIT 1`, [anchor.id]);
+    if (asSpine.rows.length) return anchor.id;
+    const asMember = await pool.query(
+      `SELECT spine_id FROM branch_membership WHERE member_id = $1 AND project_id = $2 LIMIT 1`,
+      [anchor.id, anchor.projectId],
+    );
+    if (asMember.rows.length) {
+      const spine = await TreeWalkerService.liveRecord(asMember.rows[0].spine_id, scope, pool);
+      if (spine) return spine.id;
+    }
+    return null;
+  }
+
+  /**
+   * Gather ONE branch: eligible members (capped), ghost causes (capped) and the declared
+   * edges among the returned records. Every query is a flat set-keyed read — no recursion.
+   */
+  static async gatherBranch(
+    spineId: string,
+    projectId: string,
     config: TreewalkerConfig = TREEWALKER_CONFIG,
     pool: Pool = db,
-  ): Promise<{ nodeIds: string[]; edges: RawEdge[] }> {
-    const visited = new Set<string>([anchorId]);
-    const edgeById = new Map<string, RawEdge>();
-    let frontier: string[] = [anchorId];
+  ): Promise<{
+    records: Map<string, RawRecord>;
+    ghostIds: Set<string>;
+    edges: RawEdge[];
+    memberTotal: number;
+    truncated: boolean;
+  }> {
+    const b = config.branch;
+    // MEMBERS: the spine + branch_membership rows + declared strong edges TO the spine.
+    const cand = await pool.query(
+      `SELECT member_id AS id FROM branch_membership WHERE spine_id = $1
+       UNION
+       SELECT from_id AS id FROM links
+        WHERE to_id = $1
+          AND provenance_class = $2
+          AND edge_type = ANY($3::text[])
+          AND mint_via <> ALL($4::text[])`,
+      [spineId, b.declaredProvenance, [...b.strongEdgeTypes], [...b.excludedMintVia]],
+    );
+    const candIds = new Set<string>([spineId, ...cand.rows.map((r) => r.id as string)]);
+    const fetched = await TreeWalkerService.fetchRecords([...candIds], pool, projectId);
+    const eligible = [...fetched.values()].filter(
+      (r) => r.id === spineId || !isExcludedFromBranch(r, config),
+    );
+    const { kept, total, truncated } = selectMembers(spineId, eligible, config);
+    const records = new Map(kept.map((r) => [r.id, r]));
+    const eligibleIds = new Set(eligible.map((r) => r.id));
 
-    for (let depth = 0; depth < config.maxDepth && frontier.length > 0; depth++) {
-      const rows = (
-        await pool.query(
-          `SELECT id, from_id, from_type, to_id, to_type, edge_type
-             FROM links
-            WHERE from_id = ANY($1::uuid[]) OR to_id = ANY($1::uuid[])`,
-          [frontier],
-        )
-      ).rows;
+    // GHOST CAUSES: non-members a kept member points at via a declared why/learned/depends edge.
+    const ghostRows = await pool.query(
+      `SELECT DISTINCT to_id FROM links
+        WHERE from_id = ANY($1::uuid[])
+          AND provenance_class = $2
+          AND edge_type = ANY($3::text[])`,
+      [[...records.keys()], b.declaredProvenance, [...b.ghostEdgeTypes]],
+    );
+    const ghostCandIds = ghostRows.rows.map((r) => r.to_id as string).filter((id) => !eligibleIds.has(id));
+    const ghostFetched = await TreeWalkerService.fetchRecords(ghostCandIds, pool, projectId);
+    const ghosts = [...ghostFetched.values()]
+      .filter((r) => !isExcludedFromBranch(r, config))
+      .sort((x, y) => byTimeThenId(y, x))
+      .slice(0, config.maxGhosts);
+    const ghostIds = new Set(ghosts.map((g) => g.id));
+    for (const g of ghosts) records.set(g.id, g);
 
-      const next = new Set<string>();
-      for (const r of rows) {
-        const edge: RawEdge = {
-          id: r.id,
-          fromId: r.from_id,
-          fromType: r.from_type,
-          toId: r.to_id,
-          toType: r.to_type,
-          edgeType: r.edge_type,
-        };
-        edgeById.set(edge.id, edge);
-        for (const endpoint of [edge.fromId, edge.toId]) {
-          if (!visited.has(endpoint)) {
-            if (visited.size >= config.maxNodes) continue; // cap the walk
-            visited.add(endpoint);
-            next.add(endpoint);
-          }
-        }
-      }
-      frontier = [...next];
-    }
-
-    return { nodeIds: [...visited], edges: [...edgeById.values()] };
+    // EDGES: declared, both ends returned.
+    const ids = [...records.keys()];
+    const edgeRows = await pool.query(
+      `SELECT id, from_id, from_type, to_id, to_type, edge_type, mint_via, provenance_class
+         FROM links
+        WHERE from_id = ANY($1::uuid[]) AND to_id = ANY($1::uuid[])
+          AND provenance_class = $2
+        ORDER BY created_at, id`,
+      [ids, b.declaredProvenance],
+    );
+    const edges: RawEdge[] = edgeRows.rows.map((r) => ({
+      id: r.id,
+      fromId: r.from_id,
+      fromType: r.from_type,
+      toId: r.to_id,
+      toType: r.to_type,
+      edgeType: r.edge_type,
+      mintVia: r.mint_via,
+      provenance: r.provenance_class,
+    }));
+    return { records, ghostIds, edges, memberTotal: total, truncated };
   }
 
   /** Resolve id → RawRecord across contexts / technical_decisions / tasks (live rows only). */
-  static async fetchRecords(nodeIds: string[], pool: Pool = db): Promise<Map<string, RawRecord>> {
+  static async fetchRecords(
+    nodeIds: string[],
+    pool: Pool = db,
+    projectId?: string,
+  ): Promise<Map<string, RawRecord>> {
     const out = new Map<string, RawRecord>();
     if (nodeIds.length === 0) return out;
 
     const [ctx, dec, task] = await Promise.all([
       pool.query(
         `SELECT id, content, context_type, tags, created_at
-           FROM contexts WHERE id = ANY($1::uuid[]) AND archived_at IS NULL`,
-        [nodeIds],
+           FROM contexts WHERE id = ANY($1::uuid[]) AND archived_at IS NULL
+            AND ($2::uuid IS NULL OR project_id = $2)`,
+        [nodeIds, projectId ?? null],
       ),
       pool.query(
         `SELECT id, title, outcome_status, status, superseded_by, decision_date, tags
-           FROM technical_decisions WHERE id = ANY($1::uuid[]) AND archived_at IS NULL`,
-        [nodeIds],
+           FROM technical_decisions WHERE id = ANY($1::uuid[]) AND archived_at IS NULL
+            AND ($2::uuid IS NULL OR project_id = $2)`,
+        [nodeIds, projectId ?? null],
       ),
       pool.query(
         `SELECT id, title, status, created_at, tags
-           FROM tasks WHERE id = ANY($1::uuid[]) AND archived_at IS NULL`,
-        [nodeIds],
+           FROM tasks WHERE id = ANY($1::uuid[]) AND archived_at IS NULL
+            AND ($2::uuid IS NULL OR project_id = $2)`,
+        [nodeIds, projectId ?? null],
       ),
     ]);
 
@@ -671,20 +797,25 @@ export class TreeWalkerService {
       // every response, including the honest-empty ones (jump-to-trunk must work from
       // an empty walk too).
       const tiers = await TreeWalkerTiersService.getSpineTierData(opts.scope, config, pool);
-      const anchorId = explicit
+      // No anchor → the FIRST branch GET /branches returns (same ordering + drawer filter).
+      const anchorInput = explicit
         ? (opts.anchorId as string)
-        : await TreeWalkerService.resolveAnchorId(opts.scope, config, pool);
+        : (await TreeWalkerTiersService.getBranches(opts.scope, config, pool)).branches[0]?.spineId;
 
-      if (!anchorId) return emptyThreadGraph(config, tiers.trunkHeadId);
+      if (!anchorInput) return emptyThreadGraph(config, tiers.trunkHeadId);
 
-      const { nodeIds, edges } = await TreeWalkerService.traverse(anchorId, config, pool);
-      const records = await TreeWalkerService.fetchRecords(nodeIds, pool);
-
-      if (!records.has(anchorId)) {
-        // The anchor id resolved to no live record.
-        if (explicit) throw new AnchorNotFoundError(anchorId);
+      const resolved = await TreeWalkerService.resolveSpine(anchorInput, opts.scope, pool);
+      if (!resolved) {
+        if (explicit) throw new AnchorNotFoundError(anchorInput);
         return emptyThreadGraph(config, tiers.trunkHeadId);
       }
+      const anchorId = resolved.spineId;
+      const { records, ghostIds, edges, memberTotal, truncated } = await TreeWalkerService.gatherBranch(
+        anchorId,
+        resolved.projectId,
+        config,
+        pool,
+      );
 
       const signals = await TreeWalkerService.fetchTrustSignals([...records.keys()], pool);
       const now = new Date();
@@ -705,7 +836,11 @@ export class TreeWalkerService {
       }
 
       const treeLabel = TreeWalkerService.treeLabelFor(records.get(anchorId), opts.projectName, config);
-      return buildThreadGraph(anchorId, records, edges, trustBy, treeLabel, tiers, config);
+      return buildThreadGraph(anchorId, records, edges, trustBy, treeLabel, tiers, config, {
+        ghostIds,
+        memberTotal,
+        truncated,
+      });
     } catch (error) {
       if (error instanceof AnchorNotFoundError) throw error;
       logger.error('TreeWalker getThread error', { error, opts });

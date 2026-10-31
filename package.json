@@ -1,6 +1,6 @@
 {
   "name": "mandrel",
-  "version": "0.71.0",
+  "version": "0.74.0",
   "license": "MIT",
   "description": "AI Development Intelligence System - Persistent context management",
   "private": true,

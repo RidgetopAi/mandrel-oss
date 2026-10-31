@@ -14,6 +14,11 @@
 #   bash scripts/oss-gate.sh --refs-only       # STAGE R alone (used by scripts/test/internal-refs-ban.test.sh)
 #   bash scripts/oss-gate.sh --secrets-only      # STAGE S alone (used by scripts/test/gate-secret-stage.test.sh)
 #   bash scripts/oss-gate.sh --shell-tests-only  # STAGE H alone (a SUBSET: used by scripts/test/ci-workflow.test.sh)
+#   bash scripts/oss-gate.sh --deps-only         # STAGE D alone (network on): install the dependencies, nothing else
+#   bash scripts/oss-gate.sh --installed         # STAGES T L U H S R on an already-installed tree (network off):
+#                                                # never installs, never reaches the registry; a root with no
+#                                                # node_modules is COULD-NOT-MEASURE. --deps-only then --installed
+#                                                # is the whole gate split at the network boundary.
 #
 # Stages:
 #   D  deps          npm ci in each npm root
@@ -55,7 +60,9 @@ case "${1:-}" in
   --shell-tests-only) MODE=shell ;;
   --secrets-only) MODE=secrets ;;
   --list-scanned) MODE=list ;;
-  *) echo "usage: bash scripts/oss-gate.sh [--refs-only|--shell-tests-only|--secrets-only|--list-scanned]" >&2; exit 2 ;;
+  --deps-only) MODE=deps ;;
+  --installed) MODE=installed ;;
+  *) echo "usage: bash scripts/oss-gate.sh [--refs-only|--shell-tests-only|--secrets-only|--list-scanned|--deps-only|--installed]" >&2; exit 2 ;;
 esac
 
 WORK="$(mktemp -d "${TMPDIR:-/tmp}/oss-gate.XXXXXX")" || { echo "OSS-GATE COULD-NOT-MEASURE — mktemp failed"; exit 2; }
@@ -422,7 +429,18 @@ fi
 
 # --- D: deps --------------------------------------------------------------------------------------
 DEPS_OK=0
-if ! have npm || ! have node; then
+if [[ "$MODE" == "installed" ]]; then
+  # --installed: the install already ran (--deps-only, network on). It never runs here and nothing
+  # below reaches the registry; a root without node_modules cannot be measured.
+  DEPS_OK=1
+  for d in "${OSS_GATE_NPM_ROOTS[@]}"; do
+    if [[ ! -d "$d/node_modules" ]]; then
+      record D UNMEASURED "$d/node_modules missing — run bash scripts/oss-gate.sh --deps-only first"
+      DEPS_OK=0
+      break
+    fi
+  done
+elif ! have npm || ! have node; then
   record D UNMEASURED "node/npm not on PATH"
 elif ! clean npm ping >"$WORK/npm-ping.log" 2>&1; then
   tail_log "$WORK/npm-ping.log"
@@ -440,6 +458,8 @@ else
   done
   [[ "$DEPS_OK" -eq 1 ]] && record D ok "npm ci: ${OSS_GATE_NPM_ROOTS[*]}"
 fi
+
+[[ "$MODE" == "deps" ]] && print_verdict  # --deps-only: stage D alone
 
 if [[ "$DEPS_OK" -eq 1 ]]; then
   # --- T: type-check ------------------------------------------------------------------------------

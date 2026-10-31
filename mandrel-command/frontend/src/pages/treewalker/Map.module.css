@@ -1,0 +1,148 @@
+/* Map view. Colour only through CSS tokens; a branch's token arrives as --branch. */
+.map {
+  margin-top: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  min-width: 0;
+  max-width: 100%;
+}
+.empty {
+  padding: var(--sp-4);
+  color: var(--tx-3);
+  font-size: 0.85rem;
+}
+.scroller {
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+}
+.plot {
+  display: block;
+  max-width: none;
+}
+
+/* ---- day ticks ---- */
+.tickLine {
+  stroke: var(--line);
+  stroke-width: 1;
+}
+.tickText {
+  fill: var(--tx-3);
+  font-family: var(--mono);
+  font-size: 10.5px;
+}
+
+/* ---- trunk ---- */
+.trunkLine {
+  stroke: var(--tx-2);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.trunkTick {
+  stroke: var(--tx-3);
+  stroke-width: 1.5;
+}
+.trunkCount {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  fill: var(--tx-2);
+  font-family: var(--mono);
+  font-size: 11px;
+}
+.here {
+  fill: var(--teal);
+  stroke: var(--bg);
+  stroke-width: 2;
+}
+.hereText {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  fill: var(--teal);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* ---- branches ---- */
+.connectors line {
+  stroke: var(--branch);
+  stroke-width: 1.25;
+  stroke-dasharray: 3 3;
+  opacity: 0.7;
+}
+.branch {
+  cursor: pointer;
+  outline: none;
+}
+.hit {
+  stroke: transparent;
+  stroke-width: 22;
+}
+.line {
+  stroke: var(--branch);
+  stroke-width: 3;
+  stroke-linecap: round;
+}
+.end {
+  fill: var(--bg);
+  stroke: var(--branch);
+  stroke-width: 2;
+}
+.open .end {
+  fill: var(--branch);
+}
+.label {
+  paint-order: stroke;
+  stroke: var(--bg);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  fill: var(--tx-2);
+  font-size: 11.5px;
+}
+.station {
+  fill: var(--branch);
+  stroke: var(--bg);
+  stroke-width: 1.5;
+}
+.branch:hover .label {
+  fill: var(--tx);
+}
+.branch:hover .line {
+  stroke-width: 4.5;
+}
+a:focus-visible .line {
+  stroke-width: 5;
+}
+a:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+
+/* ---- the unbranched strip ---- */
+.strip {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-2) var(--sp-3);
+  border-top: 1px solid var(--line);
+  font-size: 0.8rem;
+  color: var(--tx-2);
+  flex-wrap: wrap;
+}
+.stripBar {
+  flex: 1 1 120px;
+  max-width: 280px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+  overflow: hidden;
+}
+.stripFill {
+  display: block;
+  height: 100%;
+  background: var(--amber);
+}

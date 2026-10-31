@@ -11,6 +11,8 @@ import {
 } from '../services/recallThread.js';
 import { recordTimeStamp } from '../services/recallThreadCore.js';
 import {
+  THREAD_CONFIG,
+  THREAD_SUPERSEDED_SECTION_TITLE,
   THREAD_DEFAULT_ALTITUDE,
   isProjectionAltitude,
   type ThreadAltitude,
@@ -178,6 +180,7 @@ class RecallRoutes {
           // all, so this array is the ONLY place the graph exists — trimming it would not be
           // a trim, it would be a silent amputation of the thing the tool is for.
           edges: result.edges,
+          superseded: result.superseded,
           abstain: result.abstain, // trust-render-exempt: passes the thread-level abstain LIST of ids through to structuredContent
           truncated: result.truncated,
           truncatedCount: result.truncatedCount,
@@ -190,6 +193,9 @@ class RecallRoutes {
           // WHAT THIS WALK DROPPED, machine-readable: the same three subtractions the prose
           // `Omitted:` line states, plus the presentation-level clip count.
           omissions: { ...result.omissions, clippedNodes: result.clippedNodes },
+          // Records of OTHER threads that name this task — not walk nodes.
+          mentionedBy: result.mentionedBy,
+          mentionedByTotal: result.mentionedByTotal,
           total: result.nodes.length,
         },
       };
@@ -252,6 +258,8 @@ export function renderThreadText(r: ThreadResult): string {
       // such value it says that plainly instead of naming a number that reads as sufficient.
       truncationNotice(r)
   );
+  // ONE legend line per response: what the band means, stated once.
+  lines.push(THREAD_CONFIG.trustLegendLine);
   if (r.abstain.length > 0) { // trust-render-exempt: the thread-level abstain LIST count, not a per-record trust marker
     lines.push(`Do NOT rely on ${r.abstain.length} node(s): ${r.abstain.join(', ')}`); // trust-render-exempt: the thread-level 'do not rely on these N nodes' list, not a per-record marker
   }
@@ -265,6 +273,16 @@ export function renderThreadText(r: ThreadResult): string {
     );
   }
   lines.push(threadOmittedLine(r));
+  lines.push(...mentionedByLines(r));
+  // SUPERSEDED RECORDS AS HISTORY: listed, with their time/kind/title, not
+  // just named by id in the abstain line. Summary/full only (the list is empty at headline).
+  if ((r.superseded ?? []).length > 0) {
+    lines.push(`${THREAD_SUPERSEDED_SECTION_TITLE} (${r.superseded.length}):`);
+    for (const s of r.superseded) {
+      const by = s.supersededBy ? ` — superseded by ${s.supersededBy.slice(0, 8)}` : '';
+      lines.push(`  - ${recordTimeStamp(s.createdAt)}${s.kind ? ` ${s.kind}` : ''} ${s.title ?? '(untitled)'}  (${s.id})${by}`);
+    }
+  }
   lines.push('');
 
   r.nodes.forEach((n, i) => {
@@ -273,9 +291,39 @@ export function renderThreadText(r: ThreadResult): string {
       // Indent the body so the story reads as a list with sub-content.
       for (const bodyLine of n.content.split('\n')) lines.push(`${STORY_BODY_INDENT}${bodyLine}`);
     }
+    // THE ANCHOR'S EVENT LOG: one timed step per line, oldest first. `events`
+    // is absent at headline, so a headline thread prints none.
+    if (n.events && n.events.length > 0) {
+      const total = n.eventsTotal ?? n.events.length;
+      lines.push(`${STORY_BODY_INDENT}Event log (${total}):`);
+      if (total > n.events.length) {
+        lines.push(`${STORY_BODY_INDENT}  … ${total - n.events.length} earlier step(s) not shown (event log cap)`);
+      }
+      for (const e of n.events) {
+        lines.push(`${STORY_BODY_INDENT}  - ${recordTimeStamp(e.at)} ${e.actor ?? 'unattributed'}: ${e.note}`);
+      }
+    }
   });
 
   return lines.join('\n');
+}
+
+/** "Mentioned by other threads": empty when nothing names the anchor. */
+function mentionedByLines(r: ThreadResult): string[] {
+  const mentionedBy = r.mentionedBy ?? [];
+  if (mentionedBy.length === 0) return [];
+  const total = r.mentionedByTotal ?? mentionedBy.length;
+  const lines = [`Mentioned by other threads (${total}):`];
+  for (const m of mentionedBy) {
+    const head =
+      `   - [${m.type}] ${recordTimeStamp(m.createdAt ?? undefined)} (${m.id}) in task ${m.taskId}` +
+      (m.taskTitle ? ` "${m.taskTitle}"` : '');
+    lines.push(r.altitude === 'headline' ? head : `${head}: ${m.snippet}`);
+  }
+  if (total > mentionedBy.length) {
+    lines.push(`   … ${total - mentionedBy.length} more not shown (mentionedBy cap)`);
+  }
+  return lines;
 }
 
 /**
@@ -395,7 +443,7 @@ function nodeHeadline(n: ThreadNode): string {
   // gate result stated in the prose is a gate result the clip eats — MEASURED 2026-09-03,
   // records differing only in rc=1 (a MEASURED failure) and rc=2 (COULD NOT MEASURE) rendered
   // byte-identical lines here, and the ref the run executed on appeared on neither.
-  return `[${n.type}${reviewOutcomeStamp(n)}${gateOutcomeStamp(n)}] ${recordTimeStamp(n.createdAt)} ${title} — ${trustHint}  (${n.id})`;
+  return `[${n.type}${n.kind ? ` ${n.kind}` : ''}${reviewOutcomeStamp(n)}${gateOutcomeStamp(n)}] ${recordTimeStamp(n.createdAt)} ${title} — ${trustHint}  (${n.id})`;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -24,4 +24,12 @@ if [[ -z "${_MANDREL_SCHEMA_CONTRACT_STATIC_CONFIG_SOURCED:-}" ]]; then
   # prefix match (gate_diff_touches_prefix) cannot false-positive on a sibling
   # like mcp-server/database/migrations-archive/.
   SCHEMA_CONTRACT_STATIC_TRIGGER_PREFIX="${SCHEMA_CONTRACT_STATIC_TRIGGER_PREFIX:-mcp-server/database/migrations/}"
+
+  # the install STAGE 0c's static branch runs when mcp-server's
+  # dependencies do not resolve in the (clean, node_modules-less) workspace.
+  # Lockfile-exact (`npm ci`), offline-preferred; the probe package is the one
+  # migrate.ts's first import needs, whose absence is the 2026-10-28 failure.
+  SCHEMA_CONTRACT_STATIC_NPM_BIN="${SCHEMA_CONTRACT_STATIC_NPM_BIN:-npm}"
+  SCHEMA_CONTRACT_STATIC_NPM_ARGS="${SCHEMA_CONTRACT_STATIC_NPM_ARGS:---include=dev --prefer-offline}"
+  SCHEMA_CONTRACT_STATIC_PROBE_PKG="${SCHEMA_CONTRACT_STATIC_PROBE_PKG:-pg}"
 fi

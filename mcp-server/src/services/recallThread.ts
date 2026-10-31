@@ -53,6 +53,9 @@ import {
   readEdgeWeight,
   prioritizeFrontier,
   dropReasonFor,
+  eventLogOf,
+  supersededHistoryOf,
+  type SupersededEntry,
   type FrontierCandidate,
   type ThreadNode,
   type ThreadEdge,
@@ -70,6 +73,7 @@ export {
   readEdgeWeight,
   prioritizeFrontier,
   dropReasonFor,
+  eventLogOf,
 } from './recallThreadCore.js';
 export type {
   ThreadNode,
@@ -147,6 +151,8 @@ export interface ThreadResult {
   edges: ThreadEdge[];
   /** Ids the agent should NOT rely on (trust.abstain) — pulled out for a quick scan. */
   abstain: string[]; // trust-render-exempt: the thread-level abstain LIST field (ids), not a rendered marker
+  /** Superseded records the thread abstains on, as history (summary/full only; empty at headline). */
+  superseded: SupersededEntry[];
   /** True when the node cap was hit (more was reachable). Honest, never silent. */
   truncated: boolean;
   /**
@@ -176,6 +182,28 @@ export interface ThreadResult {
    * `headline` (no bodies) and at `full` (nothing is clipped).
    */
   clippedNodes: number;
+  /**
+   * THREADS THAT NAME THIS ONE: records with an inbound related_to edge to a
+   * TASK anchor that are themselves members (outgoing informs) of a DIFFERENT task, oldest
+   * first. Independent of the walk and of maxNodes. Empty for non-task anchors.
+   */
+  mentionedBy: MentionedByEntry[];
+  /** The real number of such records (greater than mentionedBy.length when the list cap bit). */
+  mentionedByTotal: number;
+}
+
+/** One record from another thread that names the anchor. */
+export interface MentionedByEntry {
+  id: string;
+  type: EdgeNodeType;
+  createdAt: string | null;
+  /** The (earliest-linked) other task this record is a member of. */
+  taskId: string;
+  taskTitle: string | null;
+  /** Every other task this record informs, `taskId` first. */
+  taskIds: string[];
+  /** Content around the anchor's id8 (or the content head when the id8 is not spelled out). */
+  snippet: string;
 }
 
 /** Anchor resolution failures (actionable; surfaced as a tool error, not a crash). */
@@ -483,6 +511,34 @@ function leashWeakEdges<T extends { edgeType: string }>(
   return links.filter((l) => !weak.has(l.edgeType));
 }
 
+/**
+ * MENTION-NOT-NODE. For a TASK anchor, the ids of records whose inbound
+ * `related_to` edge was minted by the name-scan (links.created_by = config.mentionCreatedBy)
+ * AND which are a member (outgoing `informs`) of a DIFFERENT task spine. Such a record merely
+ * NAMES the anchor: the default walk must not follow that edge (gatherMentionedBy lists it
+ * instead). Declared links, records with no other spine and non-task anchors yield nothing.
+ */
+async function loadMentionIds(
+  anchor: ResolvedAnchor,
+  config: ThreadConfig,
+  pool: Pool
+): Promise<Set<string>> {
+  if (anchor.type !== 'task') return new Set();
+  const rows = (
+    await pool.query(
+      `SELECT DISTINCT r.from_id::text AS id
+         FROM links r
+         JOIN links m ON m.from_id = r.from_id
+                     AND m.edge_type = 'informs'
+                     AND m.to_type = 'task'
+                     AND m.to_id <> $1::uuid
+        WHERE r.to_id = $1::uuid AND r.edge_type = 'related_to' AND r.created_by = $2`,
+      [anchor.id, config.mentionCreatedBy]
+    )
+  ).rows as { id: string }[];
+  return new Set(rows.map((r) => r.id));
+}
+
 async function traverse(
   anchor: ResolvedAnchor,
   opts: {
@@ -498,6 +554,13 @@ async function traverse(
   const { depth, edgeTypes, config } = opts;
   const explicitEdgeTypes = edgeTypes !== undefined;
   const weakSet = new Set(config.weakEdgeTypes);
+  // Name-scan mentions of the anchor from other spines: not nodes in the DEFAULT walk only.
+  const mentionIds = explicitEdgeTypes ? new Set<string>() : await loadMentionIds(anchor, config, pool);
+  const isMention = (nodeId: string, ce: { direction: string; edgeType: string; connectedId: string }) =>
+    nodeId === anchor.id &&
+    ce.direction === 'in' &&
+    ce.edgeType === 'related_to' &&
+    mentionIds.has(ce.connectedId);
   // Nodes first reached through a weak edge: admitted, but never expanded in the default walk.
   const weakReached = new Set<string>();
   const nodes = new Map<string, RawNode>();
@@ -585,6 +648,7 @@ async function traverse(
 
       for (const ce of connected) {
         if (!EDGE_NODE_TYPES.includes(ce.connectedType)) continue; // unknown endpoint kind → skip
+        if (isMention(node.id, ce)) continue; // a mention, not a node (listed in mentionedBy)
 
         // Record the edge in canonical from→to orientation (getLinks gives direction).
         const from = ce.direction === 'out' ? node.id : ce.connectedId;
@@ -654,6 +718,7 @@ async function traverse(
       connected = leashWeakEdges(connected, node, explicitEdgeTypes, weakReached, config);
       for (const ce of connected) {
         if (!EDGE_NODE_TYPES.includes(ce.connectedType)) continue;
+        if (isMention(node.id, ce)) continue;
         if (nodes.has(ce.connectedId) || overflow.has(ce.connectedId)) continue;
         overflow.add(ce.connectedId);
         if (weakSet.has(ce.edgeType)) weakReached.add(ce.connectedId);
@@ -949,6 +1014,83 @@ export async function gatherThread(
   };
 }
 
+/** Clip `content` to `width` chars centred on the first occurrence of `needle` (else the head). */
+export function snippetAround(content: string, needle: string, width: number): string {
+  const flat = content.replace(/\s+/g, ' ').trim();
+  if (flat.length <= width) return flat;
+  const at = flat.toLowerCase().indexOf(needle.toLowerCase());
+  const centre = at < 0 ? 0 : at + Math.floor(needle.length / 2);
+  const start = Math.max(0, Math.min(flat.length - width, centre - Math.floor(width / 2)));
+  const end = start + width;
+  return (start > 0 ? '…' : '') + flat.slice(start, end) + (end < flat.length ? '…' : '');
+}
+
+/**
+ * THREADS THAT NAME THIS ONE. For a TASK anchor: every record R with an
+ * inbound related_to edge to the anchor AND an outgoing informs edge to a DIFFERENT task.
+ * Its own query, not a walk node set: the default walk may or may not list R,
+ * and maxNodes must never clip this list (it has its own cap in ThreadConfig).
+ */
+export async function gatherMentionedBy(
+  anchorId: string,
+  anchorType: EdgeNodeType,
+  config: ThreadConfig = THREAD_CONFIG,
+  pool: Pool = db
+): Promise<{ entries: MentionedByEntry[]; total: number }> {
+  if (anchorType !== 'task') return { entries: [], total: 0 };
+  const rows = (
+    await pool.query(
+      `SELECT r.from_id::text AS id, r.from_type AS type, m.to_id::text AS task_id
+         FROM links r
+         JOIN links m ON m.from_id = r.from_id
+                     AND m.edge_type = 'informs'
+                     AND m.to_type = 'task'
+                     AND m.to_id <> $1::uuid
+        WHERE r.to_id = $1::uuid AND r.edge_type = 'related_to'
+        ORDER BY m.created_at ASC, m.id ASC`,
+      [anchorId]
+    )
+  ).rows as { id: string; type: EdgeNodeType; task_id: string }[];
+  if (rows.length === 0) return { entries: [], total: 0 };
+
+  const tasksOf = new Map<string, { type: EdgeNodeType; taskIds: string[] }>();
+  for (const r of rows) {
+    const e = tasksOf.get(r.id) ?? { type: r.type, taskIds: [] };
+    if (!e.taskIds.includes(r.task_id)) e.taskIds.push(r.task_id);
+    tasksOf.set(r.id, e);
+  }
+  const refs: { id: string; type: EdgeNodeType }[] = [];
+  const taskRefs = new Set<string>();
+  for (const [id, e] of tasksOf) {
+    refs.push({ id, type: e.type });
+    for (const t of e.taskIds) taskRefs.add(t);
+  }
+  const hydrated = await hydrateNodes(
+    [...refs, ...[...taskRefs].map((id) => ({ id, type: 'task' as EdgeNodeType }))],
+    pool
+  );
+  const needle = anchorId.slice(0, 8); // headline-clip-exempt: id8 is the fixed 8-hex task-id short form, not a headline budget
+  const entries: MentionedByEntry[] = [];
+  for (const [id, e] of tasksOf) {
+    const h = hydrated.get(id);
+    if (!h) continue; // dangling referent
+    entries.push({
+      id,
+      type: e.type,
+      createdAt: h.createdAt ? new Date(h.createdAt).toISOString() : null,
+      taskId: e.taskIds[0],
+      taskTitle: hydrated.get(e.taskIds[0])?.title ?? null,
+      taskIds: e.taskIds,
+      snippet: snippetAround(h.content ?? '', needle, config.mentionedBySnippetWidth),
+    });
+  }
+  entries.sort(
+    (a, b) =>
+      (a.createdAt ? Date.parse(a.createdAt) : 0) - (b.createdAt ? Date.parse(b.createdAt) : 0) || a.id.localeCompare(b.id)
+  );
+  return { entries: entries.slice(0, config.mentionedByMaxEntries), total: entries.length };
+}
+
 /**
  * Build the full thread for an anchor (the route's single entry point). Steps:
  *   1-5. GATHER (gatherThread): resolve the anchor → BFS both directions to the effective
@@ -971,6 +1113,7 @@ export async function buildThread(
 ): Promise<ThreadResult> {
   const altitude = args.altitude;
   const gathered = await gatherThread(args, config, pool);
+  const mentioned = await gatherMentionedBy(gathered.anchorId, gathered.anchorType, config, pool);
 
   // 6. ORDER (causal + temporal, anchor pinned first) then SHAPE to the altitude.
   const ordered = orderThread(gathered.nodes, gathered.edges, gathered.anchorId);
@@ -985,6 +1128,17 @@ export async function buildThread(
       config
     )
   );
+
+  // THE TASK ANCHOR'S EVENT LOG — the causal steps that live only in
+  // tasks.metadata.noteLog. Anchor only; the anchor is the one node whose story this is.
+  const anchorIdx = nodes.findIndex((n) => n.id === gathered.anchorId);
+  if (anchorIdx >= 0 && nodes[anchorIdx].type === 'task') {
+    const log = eventLogOf(ordered[anchorIdx].metadata, altitude, config);
+    if (log) {
+      nodes[anchorIdx].events = log.events;
+      nodes[anchorIdx].eventsTotal = log.total;
+    }
+  }
 
   // CLIPPING IS AN OMISSION TOO — counted from the SAME clipper shapeNode
   // used, so the reported number cannot drift from what was actually clipped. Only the
@@ -1015,6 +1169,7 @@ export async function buildThread(
     nodes,
     edges: gathered.edges,
     abstain, // trust-render-exempt: the abstain LIST on the result object; renders nothing
+    superseded: altitude === 'headline' ? [] : supersededHistoryOf(nodes),
     truncated: gathered.truncated,
     truncatedCount: gathered.truncatedCount,
     resumeMaxNodes: gathered.resumeMaxNodes,
@@ -1024,5 +1179,7 @@ export async function buildThread(
     maxNodesRequested: gathered.maxNodesRequested,
     omissions: gathered.omissions,
     clippedNodes,
+    mentionedBy: mentioned.entries,
+    mentionedByTotal: mentioned.total,
   };
 }

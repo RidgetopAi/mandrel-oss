@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # ci-workflow.test.sh — pins the CI wiring of the OSS gate:
-#   A. .github/workflows/ci.yml defines exactly one job, triggered on push and pull_request to main,
+#   A. .github/workflows/ci.yml defines exactly one job, triggered on push (main and export/**) and pull_request (main),
 #      whose run step executes `bash scripts/oss-gate.sh`, and names no private-repo vocabulary.
 #   B. scripts/oss-gate.sh STAGE H selects every scripts/test/*.test.sh of the real tree  — so a newly added test is enforced without any wiring.
 #   C. STAGE H goes RED on a failing test and GREEN without one (measured on a fixture repo, so this
@@ -39,8 +39,9 @@ trigger_branches() {  # <push|pull_request> — branch list lines under that tri
 }
 for ev in push pull_request; do
   check "triggered on $ev" grep -qE "^  $ev:" <<<"$on_block"
-  check "$ev is limited to branch main" grep -qE '^branches:main$|^-main$|^branches:$' <<<"$(trigger_branches $ev)"
 done
+check "push is limited to branches main and export/**" grep -qxE "branches:main,'export/\*\*'" <<<"$(trigger_branches push)"
+check "pull_request is limited to branch main" grep -qE '^branches:main$|^-main$|^branches:$' <<<"$(trigger_branches pull_request)"
 check "no other trigger" test "$(printf '%s\n' "$on_block" | grep -cE '^  [a-z_]+:')" -eq 2
 
 runs="$(grep -E '^[[:space:]]*(-[[:space:]]+)?run:' "$WORKFLOW" | sed -E 's/^[[:space:]]*(-[[:space:]]+)?run:[[:space:]]*//')"

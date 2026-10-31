@@ -61,6 +61,23 @@ export interface RootDoc {
   createdAt: string;
 }
 
+/** One milestone member of a branch — a station on the Map. */
+export interface BranchMilestone {
+  id: string;
+  createdAt: string;
+  title: string;
+}
+
+/** The share of recent contexts that sit on no branch (the Map's strip). */
+export interface UnbranchedShare {
+  /** Non-archived contexts in the window that are on no branch (no membership, no declared strong link to a spine). */
+  unbranched: number;
+  /** ALL non-archived contexts of the project scope created inside the window. */
+  total: number;
+  /** The window, in days, these two numbers cover. */
+  windowDays: number;
+}
+
 /** One branch on the resume surface. */
 export interface BranchSummary {
   spineId: string;
@@ -71,8 +88,13 @@ export interface BranchSummary {
   named: boolean;
   /** Declared membership edges onto this spine. */
   members: number;
+  /** Oldest member's created_at — where the branch's line starts on the Map. */
+  firstActiveAt: string;
   /** Newest declared member edge's created_at — the "newest-active" ordering key. */
   lastActiveAt: string;
+  /** Member contexts of type 'milestone', oldest first, capped by config.map.milestonesMax
+   *  (the Map's stations). */
+  milestones: BranchMilestone[];
   /** A session is currently standing on this branch (branch_positions). */
   open: boolean;
   /**
@@ -115,12 +137,22 @@ export interface BranchListResult {
   /** The `branchListMax` cap actually applied to `branches.length` this call
    *  (config.treewalkerConfig — MANDREL_TW_BRANCH_LIST_MAX). */
   cap: number;
+  /** The `sinceDays` window actually applied to the list (echoed, never implied). */
+  sinceDays: number;
+  /** The unbranched share over the project's recent non-archived contexts. */
+  unbranched: UnbranchedShare;
 }
 
 /** The scope predicate used by every query here: ($all OR project_id = ANY($ids)). */
 function scopeParams(scope: ProjectListScope): { ids: string[]; all: boolean } {
   const all = scope.mode === ALL_PROJECTS;
   return { ids: all ? [] : [...scope.projectIds], all };
+}
+
+/** The effective `sinceDays`: a positive integer, defaulted and clamped by config.map. */
+export function resolveSinceDays(raw: number | undefined, config: TreewalkerConfig): number {
+  if (raw === undefined || !Number.isFinite(raw) || raw < 1) return config.map.sinceDaysDefault;
+  return Math.min(Math.floor(raw), config.map.sinceDaysMax);
 }
 
 export class TreeWalkerTiersService {
@@ -329,9 +361,12 @@ export class TreeWalkerTiersService {
     scope: ProjectListScope,
     config: TreewalkerConfig = TREEWALKER_CONFIG,
     pool: Pool = db,
+    sinceDaysParam?: number,
   ): Promise<BranchListResult> {
     const { ids, all } = scopeParams(scope);
     const cap = config.branchListMax;
+    const sinceDays = resolveSinceDays(sinceDaysParam, config);
+    const unbranched = await TreeWalkerTiersService.getUnbranched(scope, config, pool);
     /**
      * `drawers` is computed from the FULL scoped `scoped`/`totals` CTEs — never the
      * capped page — because "is this spine itself a member" is a question about the
@@ -348,14 +383,16 @@ export class TreeWalkerTiersService {
           WHERE ($2::boolean OR project_id = ANY($1::uuid[]))
        ),
        totals AS (
-         SELECT spine_id, spine_type, count(*)::int AS members, max(created_at) AS last_active
+         SELECT spine_id, spine_type, count(*)::int AS members,
+                  min(created_at) AS first_active, max(created_at) AS last_active
            FROM scoped
           GROUP BY 1, 2
        ),
        drawers AS (
-         SELECT t.spine_id, t.spine_type, t.members, t.last_active
+         SELECT t.spine_id, t.spine_type, t.members, t.first_active, t.last_active
            FROM totals t
-          WHERE NOT EXISTS (
+          WHERE t.last_active >= now() - ($4::int * interval '1 day')
+            AND NOT EXISTS (
             SELECT 1 FROM scoped s WHERE s.member_id = t.spine_id
           )
             -- LIVE SPINES ONLY, and it has to happen HERE (see the CLAUSE 5 note above):
@@ -377,7 +414,7 @@ export class TreeWalkerTiersService {
             )
        )
        SELECT
-         d.spine_id, d.spine_type, d.members, d.last_active,
+         d.spine_id, d.spine_type, d.members, d.first_active, d.last_active,
          (
            SELECT count(*)::int
              FROM scoped s
@@ -388,13 +425,13 @@ export class TreeWalkerTiersService {
          FROM drawers d
         ORDER BY d.last_active DESC
         LIMIT $3`,
-      [ids, all, cap],
+      [ids, all, cap, sinceDays],
     );
-    if (grouped.rows.length === 0) return { branches: [], total: 0, cap };
+    if (grouped.rows.length === 0) return { branches: [], total: 0, cap, sinceDays, unbranched };
     const total = grouped.rows[0].total_branches as number;
 
     const byType = (t: string) => grouped.rows.filter((r) => r.spine_type === t).map((r) => r.spine_id as string);
-    const [ctx, dec, task, open] = await Promise.all([
+    const [ctx, dec, task, open, ms] = await Promise.all([
       pool.query(
         `SELECT id, content AS body, tags FROM contexts
           WHERE id = ANY($1::uuid[]) AND archived_at IS NULL`,
@@ -415,7 +452,35 @@ export class TreeWalkerTiersService {
           WHERE ($2::boolean OR project_id = ANY($1::uuid[]))`,
         [ids, all],
       ),
+      // MILESTONE STATIONS: the member contexts typed 'milestone', oldest first. DISTINCT
+      // member_id because the branch_membership view LEFT JOINs links and can repeat a row.
+      pool.query(
+        `SELECT DISTINCT ON (bm.spine_id, bm.member_id)
+                bm.spine_id, bm.member_id AS id, bm.created_at, c.content AS body
+           FROM branch_membership bm
+           JOIN contexts c ON c.id = bm.member_id AND c.archived_at IS NULL
+          WHERE bm.spine_id = ANY($1::uuid[])
+            AND bm.member_type = 'context'
+            AND c.context_type = 'milestone'
+            AND ($3::boolean OR bm.project_id = ANY($2::uuid[]))
+          ORDER BY bm.spine_id, bm.member_id, bm.created_at`,
+        [grouped.rows.map((r) => r.spine_id as string), ids, all],
+      ),
     ]);
+    const milestonesBySpine = new Map<string, BranchMilestone[]>();
+    for (const r of ms.rows) {
+      const list = milestonesBySpine.get(r.spine_id as string) ?? [];
+      list.push({
+        id: r.id as string,
+        createdAt: new Date(r.created_at).toISOString(),
+        title: contextTitle(r.body),
+      });
+      milestonesBySpine.set(r.spine_id as string, list);
+    }
+    for (const [k, list] of milestonesBySpine) {
+      list.sort((a, b) => a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id));
+      milestonesBySpine.set(k, list.slice(0, config.map.milestonesMax));
+    }
 
     const meta = new Map<string, { title: string; tags: string[] }>();
     for (const r of ctx.rows) meta.set(r.id, { title: contextTitle(r.body), tags: r.tags ?? [] });
@@ -438,13 +503,57 @@ export class TreeWalkerTiersService {
           name: nameTag ? nameTag.slice(prefix.length) : m.title,
           named: nameTag !== undefined,
           members: r.members as number,
+          firstActiveAt: new Date(r.first_active).toISOString(),
           lastActiveAt: new Date(r.last_active).toISOString(),
+          milestones: milestonesBySpine.get(r.spine_id as string) ?? [],
           open: openSpines.has(r.spine_id as string),
           // Every row here already survived the `drawers` CTE's NOT EXISTS filter above.
           isTopLevel: true,
           sectionCount: r.section_count as number,
         };
       });
-    return { branches, total, cap };
+    return { branches, total, cap, sinceDays, unbranched };
+  }
+
+  /**
+   * The UNBRANCHED share: over the scope's non-archived contexts created in the last
+   * `config.map.unbranchedWindowDays`, how many are on NO branch — neither a
+   * `branch_membership` member nor the source of a declared strong edge to a spine (the
+   * thread-v2 member predicate, config.branch). `total` is the windowed non-archived
+   * context count, so `unbranched <= total` and the two always share one population.
+   */
+  static async getUnbranched(
+    scope: ProjectListScope,
+    config: TreewalkerConfig = TREEWALKER_CONFIG,
+    pool: Pool = db,
+  ): Promise<UnbranchedShare> {
+    const { ids, all } = scopeParams(scope);
+    const b = config.branch;
+    const windowDays = config.map.unbranchedWindowDays;
+    const r = await pool.query(
+      `WITH spines AS (SELECT DISTINCT spine_id FROM branch_membership)
+       SELECT count(*)::int AS total,
+              count(*) FILTER (WHERE NOT (
+                EXISTS (SELECT 1 FROM branch_membership bm WHERE bm.member_id = c.id)
+                OR EXISTS (
+                  SELECT 1 FROM links l
+                   WHERE l.from_id = c.id
+                     AND l.provenance_class = $3
+                     AND l.edge_type = ANY($4::text[])
+                     AND l.mint_via <> ALL($5::text[])
+                     AND l.to_id IN (SELECT spine_id FROM spines)
+                )
+              ))::int AS unbranched
+         FROM contexts c
+        WHERE ($2::boolean OR c.project_id = ANY($1::uuid[]))
+          AND c.archived_at IS NULL
+          AND c.created_at >= now() - ($6::int * interval '1 day')`,
+      [ids, all, b.declaredProvenance, [...b.strongEdgeTypes], [...b.excludedMintVia], windowDays],
+    );
+    return {
+      unbranched: r.rows[0].unbranched as number,
+      total: r.rows[0].total as number,
+      windowDays,
+    };
   }
 }

@@ -199,6 +199,8 @@ const CASES: ReadonlyArray<readonly [string, (cfg: AxiosRequestConfig) => Promis
   // hazard as getResumeThread.
   ['treewalker.getTrunk', (c) => api.treewalker.getTrunk(c)],
   ['treewalker.getBranches', (c) => api.treewalker.getBranches(c)],
+  // Why: header-scoped like the rest; a foreign record is a 404, not a leak.
+  ['treewalker.getWhy', (c) => api.treewalker.getWhy('record-1', c)],
 ];
 
 describe('scope() reaches the wire through a REAL api.* call (§A1, Reviewer B1)', () => {

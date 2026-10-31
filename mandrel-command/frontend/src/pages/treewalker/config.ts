@@ -1,14 +1,14 @@
 /**
  * TreeWalker configuration — the single named home for every TreeWalker tunable (house rule
  * configs-not-hardcoded). Holds the NEW trust vocabulary (proven / soaking / unproven /
- * stale), the record-kind colour order (colour ENCODES the kind, fixed categorical order),
- * the graph-layout geometry, and the backend-readiness flag that gates the live data path.
+ * stale),
+ * the view registry + story-role vocabulary, and the backend-readiness flag that gates the live data path.
  *
  * The typed-EDGE vocabulary (decided_by / informs / caused / supersedes labels + endpoint
  * dots) is REUSED from the shared `config/graphEdges` module — NOT re-copied here
  * (one home for the edge vocab). Only the trust vocab is new, and it lives here.
  */
-import type { RecordKind, TrustLevel } from '../../api/domains/treewalker';
+import type { TrustLevel } from '../../api/domains/treewalker';
 
 // Re-export the shared typed-edge vocabulary so the parts import it from the module home.
 export { edgeLabel, kindDotVar, EDGE_LABELS, KIND_DOT_VAR } from '../../config/graphEdges';
@@ -24,20 +24,6 @@ export const TREEWALKER_CONFIG = {
   backendReady: true,
   /** react-query staleTime for the thread read. */
   staleTimeMs: 1000 * 60 * 2,
-  /** Canvas height (px) — the graph viewport (mock `.canvas` = 600px). */
-  canvasHeight: 600,
-  /** Grid layout geometry for the deterministic node placement (see graph.ts). */
-  layout: {
-    /** Columns in the deterministic grid layout. */
-    columns: 3,
-    /** Horizontal spacing between lane columns (px). */
-    columnGap: 210,
-    /** Vertical spacing between depth rows (px). */
-    rowGap: 96,
-    /** Top/left padding of the laid-out graph (px). */
-    padX: 40,
-    padY: 30,
-  },
   /**
    * The character budget for an UNNAMED drawer's rendered label (P2).
    * A named drawer shows its full `branch:<name>` tag untruncated — it was
@@ -47,6 +33,19 @@ export const TREEWALKER_CONFIG = {
    * `.branchName` still applies underneath as a second line of defense for edge widths.
    */
   branchTitleMaxChars: 40,
+} as const;
+
+/** Copy for the one compact header row (title, branch selector, trunk / trust controls). */
+export const HEADER_CONFIG = {
+  selectLabel: 'Branch',
+  /** Shown as the selected option when the walked anchor is not one of the listed branches. */
+  currentOption: 'Current thread',
+  loadingOption: 'Loading branches…',
+  noBranchesOption: 'No branches yet',
+  /** `{shown}` and `{total}` are filled from the served page. */
+  cappedNote: '{shown} of {total} branches',
+  jumpLabel: 'Jump to trunk',
+  trustedLabel: 'Only trusted',
 } as const;
 
 /**
@@ -91,52 +90,187 @@ export function trustDotVar(trust: TrustLevel | undefined | null): string {
 }
 
 /**
- * RECORD-KIND VOCABULARY — kind → { label, colour token }. Colour encodes the record kind
- * on the node body dot + the story kind tag (decision=blue, task=teal, context=violet,
- * handoff=teal). FIXED categorical order (the legend renders in this order).
+ * VIEW REGISTRY — the tab bar renders exactly the views registered here, in this order, and
+ * nothing else (a view that is not registered has no tab and no route). `storyView` is the
+ * first entry; Why (punch D) adds the second; the Timeline / Map punches each add one.
+ * `defaultViewId` is what a URL with no (or an unknown) `view` param opens on.
  */
-export const KIND_META: Record<RecordKind, { label: string; dotVar: string }> = {
-  decision: { label: 'decision', dotVar: '--blue' },
-  task: { label: 'task', dotVar: '--teal' },
-  context: { label: 'context', dotVar: '--violet' },
-  handoff: { label: 'handoff', dotVar: '--teal' },
-} as const;
-
-/** The fixed categorical kind order (the canvas legend's `record` row). */
-export const KIND_ORDER: readonly RecordKind[] = ['decision', 'task', 'context', 'handoff'] as const;
-
-export function kindLabel(kind: RecordKind | undefined | null): string {
-  if (!kind) return 'record';
-  return KIND_META[kind]?.label ?? kind;
-}
-export function kindColorVar(kind: RecordKind | undefined | null): string {
-  if (!kind) return '--tx-3';
-  return KIND_META[kind]?.dotVar ?? '--tx-3';
-}
-
-/**
- * The typed edges the legend documents, in fixed order, with the CSS-module edge class that
- * paints each (informs=teal, decided=blue, caused=violet, supersedes=dashed rose). The label
- * text itself comes from the shared `edgeLabel(edgeType,'outgoing')` — not re-typed here.
- */
-export const EDGE_LEGEND: readonly { edgeType: string; klass: string }[] = [
-  { edgeType: 'decided_by', klass: 'decided' },
-  { edgeType: 'informs', klass: 'informs' },
-  { edgeType: 'caused', klass: 'caused' },
-  { edgeType: 'supersedes', klass: 'supersedes' },
+export const VIEW_REGISTRY = [
+  { id: 'story', label: 'Story' },
+  { id: 'why', label: 'Why' },
+  { id: 'timeline', label: 'Timeline' },
+  { id: 'map', label: 'Map' },
 ] as const;
+export type TreeWalkerViewId = (typeof VIEW_REGISTRY)[number]['id'];
+export const DEFAULT_VIEW_ID: TreeWalkerViewId = 'story';
+/** URL query keys carrying the page state, so a view + branch is linkable. */
+export const URL_PARAMS = { view: 'view', anchor: 'anchor', record: 'record', beat: 'beat' } as const;
 
-/** edgeType → the CSS-module edge class that colours it (default = neutral `informs` tint). */
-export const EDGE_CLASS: Record<string, string> = {
-  decided_by: 'decided',
-  informs: 'informs',
-  caused: 'caused',
-  supersedes: 'supersedes',
-} as const;
+/** The view ids a record id / branch id navigates to (see WhyView + StoryView links). */
+export const WHY_VIEW_ID: TreeWalkerViewId = 'why';
+export const STORY_VIEW_ID: TreeWalkerViewId = 'story';
 
-export function edgeClass(edgeType: string): string {
-  return EDGE_CLASS[edgeType] ?? 'informs';
+export function resolveViewId(raw: string | null | undefined): TreeWalkerViewId {
+  return VIEW_REGISTRY.find((v) => v.id === raw)?.id ?? DEFAULT_VIEW_ID;
 }
 
-/** The Graph / Story view toggle values. */
-export type TreeWalkerView = 'graph' | 'story';
+/** A role's marker shape on the story rail — roles differ by SHAPE, not hue alone. */
+export type MarkerShape = 'square' | 'circle' | 'dot' | 'ring' | 'diamond';
+export type StoryRoleKey = 'decision' | 'task' | 'outcome' | 'problem' | 'review' | 'plan' | 'work';
+
+/** Every story role: label, colour TOKEN (a CSS custom-property name) and marker shape. Fixed order = the Key's order. */
+export const STORY_ROLES: Record<StoryRoleKey, { label: string; colorVar: string; marker: MarkerShape }> = {
+  decision: { label: 'Decision', colorVar: '--blue', marker: 'square' },
+  outcome: { label: 'Outcome', colorVar: '--green', marker: 'diamond' },
+  problem: { label: 'Problem', colorVar: '--rose', marker: 'ring' },
+  task: { label: 'Task', colorVar: '--teal', marker: 'circle' },
+  plan: { label: 'Plan', colorVar: '--amber', marker: 'ring' },
+  review: { label: 'Review', colorVar: '--violet', marker: 'dot' },
+  work: { label: 'Work', colorVar: '--tx-3', marker: 'dot' },
+};
+export const STORY_ROLE_ORDER = Object.keys(STORY_ROLES) as StoryRoleKey[];
+
+/** context_type → role for context nodes; every other context_type (and handoffs) is `defaultContextRole`. */
+export const CONTEXT_TYPE_ROLE: Record<string, StoryRoleKey> = {
+  milestone: 'outcome',
+  error: 'problem',
+  reflections: 'review',
+  planning: 'plan',
+};
+
+export const STORY_CONFIG = {
+  /** Consecutive same-role beats in one chapter at/above this count collapse into one group. */
+  collapseThreshold: 3,
+  defaultContextRole: 'work' as StoryRoleKey,
+  /** Edge type that makes a task a spawned-task chip under a decision (task --decided_by--> decision). */
+  spawnEdgeType: 'decided_by',
+  /** Task statuses that count as still open. */
+  openTaskStatuses: ['todo', 'in_progress'] as readonly string[],
+  /** Task statuses → the chip state it renders as. Anything else renders as `open`. */
+  chipStatus: { done: 'done', completed: 'done', cancelled: 'cancelled' } as Record<string, 'done' | 'cancelled'>,
+  /** Roles whose beats render as a bordered card. */
+  cardRoles: ['decision', 'outcome'] as readonly StoryRoleKey[],
+  /** A chapter's title comes from its first beat having one of these roles, in priority order. */
+  chapterTitleRoles: ['outcome', 'decision', 'problem'] as readonly StoryRoleKey[],
+  locale: 'en-US',
+  dateFormat: { month: 'short', day: 'numeric' } as Intl.DateTimeFormatOptions,
+  timeFormat: { hour: '2-digit', minute: '2-digit', hour12: false } as Intl.DateTimeFormatOptions,
+} as const;
+
+/** The Why view's copy + shape tunables (labels are the mockup's "D · Why" artboard). */
+export const WHY_CONFIG = {
+  columns: { because: 'Because of', series: 'Same series' },
+  spawnedNote: 'one hop further',
+  branchLabel: 'part of branch',
+  beforeHeading: 'Just before, on this branch',
+  beforeNote: 'Ordered by time, not by an edge.',
+  seriesNote: 'Series links are suggested, never causal.',
+  emptyCauses: 'No declared cause recorded.',
+  emptySeries: 'Not part of a suggested series.',
+  emptyBefore: 'Nothing earlier on a branch.',
+  noRecord: 'Pick a record in Story — click its id — to see why it exists.',
+  /** Kind → label for the record kind marker. */
+  kindLabels: { decision: 'Decision', task: 'Task', context: 'Context', handoff: 'Handoff' } as Record<string, string>,
+  locale: 'en-US',
+  dateFormat: { month: 'short', day: 'numeric', year: 'numeric' } as Intl.DateTimeFormatOptions,
+  timeFormat: { hour: '2-digit', minute: '2-digit', hour12: false } as Intl.DateTimeFormatOptions,
+} as const;
+
+/** The Timeline view's layout + copy tunables (the mockup's "B · Timeline" artboard). Pixel values feed the pure `timeline.ts`. */
+export const TIMELINE_CONFIG = {
+  /** A gap between consecutive records longer than this many hours is folded. */
+  foldGapHours: 12,
+  /** The fixed width a folded gap is drawn at. Must exceed twice `bandPadPx`. */
+  foldedGapPx: 72,
+  /** Floor for horizontal pixels per real hour. The plot picks the scale that fills the box, never below this; only the floor can make it scroll. */
+  minPxPerHour: 12,
+  /** Space before the first and after the last record. */
+  edgePadPx: 24,
+  /** How far a phase band reaches past its first / last record. */
+  bandPadPx: 14,
+  /** Estimated glyph width of a phase-band label, for the fit test and row packing. Errs wide. */
+  bandLabelCharPx: 6.8,
+  /** Clear space between a marker's centre and the start of its text label, for the right-edge flip test. */
+  markerGapPx: 14,
+  /** Horizontal padding inside a band label box (both sides together). */
+  bandLabelPadPx: 16,
+  /** Clear space kept between two labels sharing a row. */
+  bandLabelGapPx: 8,
+  /** Height of one band-label row; a label that does not fit its band moves up a row. */
+  bandLabelRowPx: 22,
+  /** A Decision / Outcome label wraps to at most this many lines, and only then ends in an ellipsis. */
+  markerLabelMaxLines: 2,
+  /** A label is not drawn when the room beside its marker holds fewer characters than this. */
+  markerLabelMinChars: 4,
+  /** Half the drawn width of a marker: a label never reaches nearer than this to another marker's centre. */
+  markerHalfPx: 7,
+  /** Clear space kept between a marker label and the neighbouring marker, label or plot edge. */
+  markerLabelGapPx: 8,
+  /** Phrase put before the decision title in a spawned task's name and hover title. */
+  decidedByText: 'decided by',
+  /** The Timeline key's explanation of each task status marker. */
+  statusKey: [
+    { state: 'done', label: 'done' },
+    { state: 'open', label: 'open (todo / in progress)' },
+    { state: 'cancelled', label: 'cancelled' },
+  ] as const,
+  /** Heading of the Timeline key. */
+  keyHeading: 'Task status',
+  /** Roles whose markers carry a text label. */
+  labelledRoles: ['decision', 'outcome'] as readonly StoryRoleKey[],
+  /** Height of one lane. */
+  laneHeightPx: 44,
+  /** Height of the day-tick strip below the lanes. */
+  tickStripPx: 24,
+  /** Width of the lane-label column. */
+  laneLabelPx: 84,
+  /** The plot's minimum width, so a short branch still fills its box. */
+  minPlotPx: 320,
+  locale: 'en-US',
+  dayTickFormat: { month: 'short', day: 'numeric' } as Intl.DateTimeFormatOptions,
+  whenFormat: { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', hour12: false } as Intl.DateTimeFormatOptions,
+  emptyText: 'No records on this thread yet.',
+  unavailableText: 'The thread read is not available yet.',
+  loadingText: 'Loading the timeline…',
+} as const;
+
+/** The Map view's layout + copy tunables (the mockup's "C · Map" artboard). Pixel values feed the pure `map.ts`. */
+export const MAP_CONFIG = {
+  /** Horizontal pixels per day of the window on the linear scale. */
+  pxPerDay: 24,
+  /** The plot's minimum width, so a short window still fills its box. */
+  minPlotPx: 360,
+  /** Space left of the window start / right of the window end (labels never cross the right one). */
+  padLeftPx: 24,
+  padRightPx: 24,
+  /** Space above the topmost / below the bottommost branch row. */
+  padTopPx: 20,
+  padBottomPx: 40,
+  /** Vertical distance between branch rows on one side of the trunk, and from the trunk to the first row. */
+  rowHeightPx: 46,
+  /** Height reserved for the trunk band (the line, its ticks and its caption). */
+  trunkBandPx: 56,
+  /** A branch line is at least this long, so a single-day branch is still visible. */
+  minSpanPx: 10,
+  /** Clear space kept between two branches packed on one row. */
+  rowGapPx: 16,
+  /** Estimated glyph width of a branch label, for placement and row packing. */
+  labelCharPx: 6.6,
+  /** A branch name is cut to this many characters in its label. */
+  nameMaxChars: 28,
+  /** Distance of a label's baseline above its line. */
+  labelRaisePx: 8,
+  /** A tick is drawn every this many days from the window start. */
+  tickEveryDays: 7,
+  /** Colour TOKENS (CSS custom-property names) cycled over the branches, in order. */
+  branchPalette: ['--blue', '--teal', '--amber', '--violet', '--green', '--rose'] as readonly string[],
+  youAreHereLabel: 'you are here',
+  locale: 'en-US',
+  tickFormat: { month: 'short', day: 'numeric' } as Intl.DateTimeFormatOptions,
+  emptyText: 'No branches were active in this window.',
+  unavailableText: 'The branch map is not available yet.',
+  loadingText: 'Loading the map…',
+  /** Copy of the unbranched strip; `{pct}` and `{days}` are filled from the served share. */
+  unbranchedText: 'Not on any branch: {pct}% of records in the last {days} days',
+  unbranchedNoneText: 'No records in the last {days} days.',
+} as const;

@@ -11,7 +11,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { api } from '../../api';
 import type { UsePageProject } from '../../hooks/usePageProject';
-import type { BranchListResult, BranchSummary, ThreadGraph } from '../../api/domains/treewalker';
+import type { BranchListResult, BranchSummary, ThreadGraph, TrunkTimeline, UnbranchedShare, WhyResult } from '../../api/domains/treewalker';
 import { TREEWALKER_CONFIG } from './config';
 
 export interface TreeWalkerThreadState {
@@ -44,6 +44,10 @@ export interface TreeWalkerBranchesState {
   total: number | undefined;
   /** The cap actually applied to `branches.length`. Undefined while loading. */
   cap: number | undefined;
+  /** The window (days) the server limited the list to. Undefined while loading. */
+  sinceDays: number | undefined;
+  /** The served unbranched share. Undefined while loading. */
+  unbranched: UnbranchedShare | undefined;
   isLoading: boolean;
 }
 
@@ -63,8 +67,31 @@ export function useTreeWalkerBranches(
     branches: query.data?.branches,
     total: query.data?.total,
     cap: query.data?.cap,
+    sinceDays: query.data?.sinceDays,
+    unbranched: query.data?.unbranched,
     isLoading: enabled && query.isLoading,
   };
+}
+
+export interface TreeWalkerTrunkState {
+  trunk: TrunkTimeline | undefined;
+  isLoading: boolean;
+}
+
+/** The handoff trunk (count + newest-first entries) — the Map's spine. Enabled only for the Map view. */
+export function useTreeWalkerTrunk(
+  active: boolean,
+  projectId: string | undefined,
+  scope: UsePageProject['scope'],
+): TreeWalkerTrunkState {
+  const enabled = active && TREEWALKER_CONFIG.backendReady && Boolean(projectId);
+  const query = useQuery<TrunkTimeline>({
+    queryKey: ['treewalker', 'trunk', projectId ?? null],
+    queryFn: () => api.treewalker.getTrunk(scope()),
+    enabled,
+    staleTime: TREEWALKER_CONFIG.staleTimeMs,
+  });
+  return { trunk: query.data, isLoading: enabled && query.isLoading };
 }
 
 export function useTreeWalkerThread(
@@ -103,4 +130,26 @@ export function useTreeWalkerThread(
       void query.refetch();
     },
   };
+}
+
+export interface TreeWalkerWhyState {
+  data: WhyResult | undefined;
+  isLoading: boolean;
+  isError: boolean;
+}
+
+/** One record's Why read — enabled only with a record AND a project (see useTreeWalkerThread). */
+export function useTreeWalkerWhy(
+  recordId: string | null,
+  projectId: string | undefined,
+  scope: UsePageProject['scope'],
+): TreeWalkerWhyState {
+  const enabled = TREEWALKER_CONFIG.backendReady && Boolean(projectId) && Boolean(recordId);
+  const query = useQuery<WhyResult>({
+    queryKey: ['treewalker', 'why', recordId, projectId ?? null],
+    queryFn: () => api.treewalker.getWhy(recordId as string, scope()),
+    enabled,
+    staleTime: TREEWALKER_CONFIG.staleTimeMs,
+  });
+  return { data: query.data, isLoading: enabled && query.isLoading, isError: query.isError };
 }

@@ -77,7 +77,14 @@ curl -X POST http://localhost:8080/mcp/tools/mandrel_ping \
 secret scan, internal-refs ban). Exit code is the verdict: 0 GREEN, 1 RED,
 2 COULD-NOT-MEASURE. `--shell-tests-only` runs the shell-test stage alone; `--refs-only` runs
 the internal-refs ban alone (patterns in `scripts/oss-gate/internal-refs.patterns`, reasoned
-exceptions in `scripts/oss-gate/internal-refs.allow`). GitHub CI runs the same script.
+exceptions in `scripts/oss-gate/internal-refs.allow`). GitHub CI runs the same script, on pushes to
+`main` and `export/**` and on pull requests to `main`.
+
+Two modes split the run at the network boundary. `--deps-only` (network on) installs the
+dependencies (stage D) and stops. `--installed` (network off) runs T, L, U, H, S and R on an
+already-installed tree: it never installs and never reaches the registry, and a package with no
+`node_modules` is COULD-NOT-MEASURE. `--deps-only` then `--installed` is the whole gate; a bare
+`bash scripts/oss-gate.sh` still does both in one process and needs the network.
 
 ## ESSENTIAL REFERENCE
 

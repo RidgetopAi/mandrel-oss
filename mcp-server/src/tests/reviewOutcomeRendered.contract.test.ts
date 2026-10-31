@@ -96,6 +96,8 @@ function threadResult(nodes: ThreadNode[]): ThreadResult {
     altitude: 'headline',
     nodes,
     edges: [],
+    mentionedBy: [],
+    mentionedByTotal: 0,
     truncated: false,
     truncatedCount: 0,
     depthUsed: 2,

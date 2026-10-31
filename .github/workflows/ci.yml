@@ -5,7 +5,7 @@ name: CI
 # Its exit code is the verdict: 0 GREEN, 1 RED, 2 COULD-NOT-MEASURE (all fail the job).
 on:
   push:
-    branches: [main]
+    branches: [main, 'export/**']
   pull_request:
     branches: [main]
 

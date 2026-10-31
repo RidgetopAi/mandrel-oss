@@ -1,0 +1,212 @@
+/* Timeline view. Colour only through CSS tokens; a role's token arrives as --role. */
+.timeline {
+  display: grid;
+  grid-template-columns: var(--tl-label-w) minmax(0, 1fr);
+  margin-top: var(--sp-3);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  min-width: 0;
+  max-width: 100%;
+}
+.empty {
+  padding: var(--sp-4);
+  color: var(--tx-3);
+  font-size: 0.85rem;
+}
+
+/* ---- lane-label column (outside the scroller, so it stays put) ---- */
+.labels {
+  border-right: 1px solid var(--line);
+}
+.bandSpacer {
+  height: var(--tl-band-h);
+}
+.laneLabel {
+  height: var(--tl-lane-h);
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  padding-left: var(--sp-2);
+  font-size: 0.74rem;
+  color: var(--tx-2);
+  box-sizing: border-box;
+}
+.key {
+  margin-top: 0;
+  flex: none;
+}
+
+/* ---- the scrolling plot ---- */
+.scroller {
+  overflow-x: auto;
+  overflow-y: hidden;
+  min-width: 0;
+}
+.plot {
+  position: relative;
+}
+.bandStrip {
+  position: relative;
+  height: var(--tl-band-h);
+}
+.bandHead {
+  position: absolute;
+  height: var(--tl-label-row-h);
+  box-sizing: border-box;
+  padding: 0 var(--sp-2);
+  display: flex;
+  align-items: center;
+  font-size: 0.68rem;
+  color: var(--tx-3);
+  white-space: nowrap;
+  overflow: hidden;
+}
+/* A label moved off its band keeps a tick on its left edge to show where it points. */
+.bandHeadRaised {
+  border-left: 1px solid var(--tx-4);
+  color: var(--tx-2);
+}
+.lanes {
+  position: relative;
+}
+.band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--line-soft);
+}
+.bandAlt {
+  background: var(--line);
+}
+.laneLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px solid var(--line);
+}
+.gap {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-left: 1px dashed var(--tx-4);
+  border-right: 1px dashed var(--tx-4);
+  box-sizing: border-box;
+}
+.gapLabel {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  color: var(--tx-2);
+  background: var(--bg);
+  padding: 2px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+/* ---- record markers ---- */
+.point {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: var(--sp-1);
+  transform: translateX(-50%);
+  text-decoration: none;
+  color: var(--tx-2);
+  z-index: 1;
+}
+.point:hover,
+.point:focus-visible {
+  z-index: 3;
+  color: var(--tx);
+}
+.point:focus-visible {
+  outline: 2px solid var(--teal);
+  outline-offset: 2px;
+}
+.glyph {
+  margin-top: 0;
+  flex: none;
+}
+.pointLabel {
+  position: absolute;
+  left: calc(100% + var(--sp-1));
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.66rem;
+  line-height: 1.25;
+  text-align: left;
+}
+.pointLabelLine {
+  display: block;
+  white-space: nowrap;
+}
+.pointLabelFlip {
+  left: auto;
+  right: calc(100% + var(--sp-1));
+  text-align: right;
+}
+
+/* ---- day ticks ---- */
+.tickStrip {
+  position: relative;
+  height: var(--tl-tick-h);
+  border-top: 1px solid var(--line);
+}
+.tick {
+  position: absolute;
+  top: 0;
+  padding-left: 4px;
+  border-left: 1px solid var(--tx-4);
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  line-height: var(--tl-tick-h);
+  color: var(--tx-3);
+  white-space: nowrap;
+}
+
+/* ---- task status: shape and fill, not hue alone ---- */
+/* done = the role's filled marker (default); open = hollow ring; cancelled = dimmed with a strike */
+.status-open .glyph {
+  background: var(--bg);
+}
+.status-cancelled {
+  opacity: 0.7;
+}
+.status-cancelled .glyph::after {
+  content: '';
+  position: absolute;
+  left: -5px;
+  right: -5px;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: var(--tx);
+  transform: rotate(-35deg);
+}
+
+.statusKey {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-1) var(--sp-3);
+  list-style: none;
+  margin: 0;
+  padding: var(--sp-2);
+  border-top: 1px solid var(--line);
+  font-size: 0.74rem;
+  color: var(--tx-2);
+}
+.statusKeyHead {
+  font-family: var(--mono);
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  color: var(--tx-3);
+}
+.statusKeyRow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+}

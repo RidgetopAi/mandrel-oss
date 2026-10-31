@@ -106,6 +106,7 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
   let adminToken: string;
 
   const cleanup = async () => {
+    await pool.query('DELETE FROM branch_memberships WHERE project_id = ANY($1::uuid[])', [[P_A, P_B]]);
     for (const t of ['contexts', 'technical_decisions', 'tasks']) {
       await pool.query(`DELETE FROM ${t} WHERE project_id = ANY($1::uuid[])`, [[P_A, P_B]]);
     }
@@ -133,13 +134,25 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
     const embedding = vectorLiteral();
 
     for (const [pid, mark] of [[P_A, MARK_A], [P_B, MARK_B]] as const) {
-      // THE TREEWALKER ANCHOR. `ref:resume` is what the resume-thread endpoint resolves, and
-      // the content becomes a node title in the response — so the marker is visible in the
-      // shaped payload, not just in the row.
-      await pool.query(
+      const planted = await pool.query(
         `INSERT INTO contexts (project_id, context_type, content, tags, ${embeddingCol})
-         VALUES ($1,'handoff',$2,$3,$4::vector)`,
+         VALUES ($1,'handoff',$2,$3,$4::vector) RETURNING id`,
         [pid, `★ Handoff planted ${mark}`, ['ref:resume'], embedding]
+      );
+      // THE TREEWALKER ANCHOR. Thread v2 resolves the project's newest-active BRANCH (the
+      // first GET /branches drawer), not the resume handoff — so each project gets a spine
+      // task with a recorded branch member. The spine's title becomes a node title in the
+      // response, so the marker is visible in the shaped payload, not just in the row.
+      const spine = await pool.query(
+        `INSERT INTO tasks (project_id, title, description, type, status, priority, tags)
+         VALUES ($1,$2,'d','general','in_progress','medium','{}') RETURNING id`,
+        [pid, `Spine planted ${mark}`]
+      );
+      await pool.query(
+        `INSERT INTO branch_memberships
+           (record_id, record_type, spine_id, spine_type, attached_to_id, attached_to_type, source, project_id)
+         VALUES ($1,'context',$2,'task',$2,'task','recorded',$3)`,
+        [planted.rows[0].id, spine.rows[0].id, pid]
       );
       // A second context, so the dashboard COUNT for each project is a distinct number
       // (A=2, B=1) and "scoped to A" cannot be confused with "scoped to B".
@@ -194,7 +207,7 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
   //  TREEWALKER — header-scoped, no path or query alternative
   // ══════════════════════════════════════════════════════════════════════════════════
   describe('TreeWalker — GET /api/treewalker/thread', () => {
-    it('scoped to A: walks A\'s resume anchor and NOT the one planted in B', async () => {
+    it('scoped to A: walks A\'s newest branch and NOT the one planted in B', async () => {
       const res = await get('/api/treewalker/thread', P_A);
       expect(res.status).toBe(200);
       expect(carries(res.body, MARK_A)).toBe(true);
@@ -216,7 +229,7 @@ describeDb('insight pages — the request names the PAGE\'s project', () => {
       expect(res.status).toBe(200);
       const reachedBoth = carries(res.body, MARK_A) && carries(res.body, MARK_B);
       const reachedForeign = carries(res.body, MARK_B);
-      // The anchor an unscoped walk resolves is whichever `ref:resume` context is newest
+      // The branch an unscoped walk resolves is whichever branch is newest-active
       // across every project, so the precise body varies. What must be true is that the
       // scope no longer confines it to A — B is reachable.
       expect(reachedBoth || reachedForeign).toBe(true);

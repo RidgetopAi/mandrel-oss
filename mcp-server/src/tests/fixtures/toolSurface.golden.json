@@ -7053,6 +7053,38 @@
                 },
                 "content": {
                   "type": "string"
+                },
+                "events": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "at": {
+                        "type": "string"
+                      },
+                      "actor": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "note": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "at",
+                      "actor",
+                      "note"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "eventsTotal": {
+                  "type": "number"
+                },
+                "kind": {
+                  "type": "string"
                 }
               },
               "required": [
@@ -7090,6 +7122,37 @@
             "type": "array",
             "items": {
               "type": "string"
+            }
+          },
+          "superseded": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "createdAt": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": [
+                    "string",
+                    "null"
+                  ]
+                },
+                "supersededBy": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "title"
+              ],
+              "additionalProperties": false
             }
           },
           "currentState": {
@@ -7516,6 +7579,36 @@
               "droppedEdges"
             ],
             "additionalProperties": true
+          },
+          "mentionedBy": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "taskId": {
+                  "type": "string"
+                },
+                "snippet": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "type",
+                "taskId",
+                "snippet"
+              ],
+              "additionalProperties": true
+            }
+          },
+          "mentionedByTotal": {
+            "type": "number"
           },
           "total": {
             "type": "number"
